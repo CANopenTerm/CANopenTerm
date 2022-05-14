@@ -30,16 +30,18 @@
 #endif
 #include "PCANBasic.h"
 
-extern void nmt_client_widget(struct nk_context *ctx);
+extern void nmt_client_widget(struct nk_context *ctx, Uint32* can_status);
 
-static void set_style(struct nk_context *ctx);
+static void     set_style(struct nk_context *ctx);
+static SDL_bool init_can(int* can_status);
 
 int main(int argc, char* argv[])
 {
-    int                status     = EXIT_SUCCESS;
-    unsigned int       can_status;
-    SDL_bool           is_running = SDL_TRUE;
-    SDL_RendererFlags  flags      = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+    int                status          = EXIT_SUCCESS;
+    Uint32             can_status;
+    SDL_bool           can_initialised = SDL_FALSE;
+    SDL_bool           is_running      = SDL_TRUE;
+    SDL_RendererFlags  flags           = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     SDL_Window        *window;
     SDL_Renderer      *renderer;
     struct nk_context *ctx;
@@ -90,22 +92,17 @@ int main(int argc, char* argv[])
     set_style(ctx);
 
     /* Initialise CAN */
-    can_status = CAN_Initialize(
-        PCAN_USBBUS1,
-        PCAN_BAUD_250K,
-        PCAN_USB,
-        0, 0);
-    if (PCAN_ERROR_OK != can_status)
-    {
-        char err_message[100] = { 0 };
-        CAN_GetErrorText(can_status, 0x09, err_message);
-        SDL_LogWarn(0, "CAN could not be initialised: %s", err_message);
-    }
+    can_initialised = init_can(&can_status);
 
     while (SDL_TRUE == is_running)
     {
-        SDL_bool  show_menu = SDL_TRUE;
+        SDL_bool  show_menu   = SDL_TRUE;
         SDL_Event event;
+
+        if (SDL_FALSE == can_initialised)
+        {
+            can_initialised = init_can(&can_status);
+        }
 
         nk_input_begin(ctx);
         while (SDL_PollEvent(&event))
@@ -119,7 +116,7 @@ int main(int argc, char* argv[])
         }
         nk_input_end(ctx);
 
-        nmt_client_widget(ctx);
+        nmt_client_widget(ctx, &can_status);
 
         SDL_SetRenderDrawColor(renderer, 0xf6, 0xf8, 0xfa, 0xff);
         SDL_RenderClear(renderer);
@@ -172,4 +169,28 @@ static void set_style(struct nk_context *ctx)
     //table[NK_COLOR_TAB_HEADER]              = nk_rgba(0xff, 0x00, 0x00, 0xff);
 
     nk_style_from_table(ctx, table);
+}
+
+static SDL_bool init_can(int* can_status)
+{
+    char err_message[100] = { 0 };
+
+    *can_status = CAN_Initialize(
+        PCAN_USBBUS1,
+        PCAN_BAUD_250K,
+        PCAN_USB,
+        0, 0);
+
+    CAN_GetErrorText(*can_status, 0x09, err_message);
+
+    if ((*can_status & PCAN_ERROR_OK) == *can_status)
+    {
+        SDL_LogInfo(0, "CAN successfully initialised");
+        return SDL_TRUE;
+    }
+    else
+    {
+        SDL_LogWarn(0, "CAN could not be initialised: %s", err_message);
+        return SDL_FALSE;
+    }
 }

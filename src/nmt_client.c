@@ -7,7 +7,6 @@
  *
  **/
 
-#include <stdint.h>
 #include "SDL.h"
 #include "config.h"
 #include "nuklear.h"
@@ -26,9 +25,9 @@ typedef enum
 
 } nmt_command_t;
 
-void send_nmt_command(nmt_command_t command, uint8_t node_id)
+Uint32 send_nmt_command(nmt_command_t command, Uint8 node_id)
 {
-    int      can_status;
+    Uint32   can_status;
     TPCANMsg can_message;
 
     if (node_id > 0x7f)
@@ -49,11 +48,13 @@ void send_nmt_command(nmt_command_t command, uint8_t node_id)
         CAN_GetErrorText(can_status, 0x09, err_message);
         SDL_LogWarn(0, "Could not send NMT command 0x%2x: %s", command, err_message);
     }
+
+    return can_status;
 }
 
-void nmt_client_widget(struct nk_context *ctx)
+void nmt_client_widget(struct nk_context *ctx, Uint32* can_status)
 {
-    uint8_t node_id = 0x30; // DEBUG
+    Uint8 node_id = 0x30; // DEBUG
 
     if (0 != nk_begin(
             ctx,
@@ -68,27 +69,27 @@ void nmt_client_widget(struct nk_context *ctx)
         nk_layout_row_push(ctx, 195);
         if (0 != nk_button_text(ctx, "0x01 Enter Operational    ", 26))
         {
-            send_nmt_command(NMT_OPERATIONAL, node_id);
+            *can_status = send_nmt_command(NMT_OPERATIONAL, node_id);
         }
         nk_layout_row_push(ctx, 195);
         if (0 != nk_button_text(ctx, "0x02 Enter Stop           ", 26))
         {
-            send_nmt_command(NMT_STOP, node_id);
+            *can_status = send_nmt_command(NMT_STOP, node_id);
         }
         nk_layout_row_push(ctx, 195);
         if (0 != nk_button_text(ctx, "0x80 Enter Pre-operational", 26))
         {
-            send_nmt_command(NMT_PRE_OPERATIONAL, node_id);
+            *can_status = send_nmt_command(NMT_PRE_OPERATIONAL, node_id);
         }
         nk_layout_row_push(ctx, 195);
         if (0 != nk_button_text(ctx, "0x81 Reset node           ", 26))
         {
-            send_nmt_command(NMT_RESET_NODE, node_id);
+            *can_status = send_nmt_command(NMT_RESET_NODE, node_id);
         }
         nk_layout_row_push(ctx, 195);
         if (0 != nk_button_text(ctx, "0x82 Reset communication  ", 26))
         {
-            send_nmt_command(NMT_RESET_COMM, node_id);
+            *can_status = send_nmt_command(NMT_RESET_COMM, node_id);
         }
         nk_layout_row_end(ctx);
     }
