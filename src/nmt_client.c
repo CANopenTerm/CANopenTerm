@@ -7,13 +7,14 @@
  *
  **/
 
-#include "SDL.h"
-#include "config.h"
-#include "nuklear.h"
 #ifdef _WIN32
 #include <windows.h>
 #endif
 #include "PCANBasic.h"
+
+#include "SDL.h"
+#include "config.h"
+#include "nuklear.h"
 
 typedef enum
 {
@@ -46,7 +47,7 @@ Uint32 send_nmt_command(nmt_command_t command, Uint8 node_id)
     {
         char err_message[100] = { 0 };
         CAN_GetErrorText(can_status, 0x09, err_message);
-        SDL_LogWarn(0, "Could not send NMT command 0x%2x: %s", command, err_message);
+        SDL_LogWarn(0, "Could not send NMT command 0x%x: %s", command, err_message);
     }
 
     return can_status;

@@ -104,15 +104,16 @@ ExternalProject_Add(Lua_devel
   TLS_VERIFY true
   SOURCE_DIR ${LUA_PATH}/
 
-  BUILD_COMMAND ${CMAKE_COMMAND}   -E echo "Skipping build step."
+  BUILD_IN_SOURCE 1
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Lua_devel.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 set(LUA_INCLUDE_DIR ${LUA_PATH})
-#
+link_directories(${LUA_PATH})
 
+#
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   SYSTEM ${SDL2_INCLUDE_DIR}
@@ -139,10 +140,11 @@ add_dependencies(
   Lua_devel)
 
 target_link_libraries(
-   ${PROJECT_NAME}
-   ${SDL2_LIBRARY}
-   ${SDL2MAIN_LIBRARY}
-   ${PCAN_LIBRARY})
+  ${PROJECT_NAME}
+  ${SDL2_LIBRARY}
+  ${SDL2MAIN_LIBRARY}
+  ${PCAN_LIBRARY}
+  lua)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
   set(COMPILE_OPTIONS

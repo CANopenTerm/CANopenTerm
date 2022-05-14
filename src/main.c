@@ -8,6 +8,10 @@
  **/
 
 #include <stdlib.h>
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+
 #include "config.h"
 
 #include "SDL.h"
@@ -34,6 +38,9 @@ extern void nmt_client_widget(struct nk_context *ctx, Uint32* can_status);
 
 static void     set_style(struct nk_context *ctx);
 static SDL_bool init_can(int* can_status);
+static void     deinit_can(void);
+static void     set_zoom_factor(Uint8 zoom_factor);
+static Uint8    get_zoom_factor(void);
 
 int main(int argc, char* argv[])
 {
@@ -45,6 +52,7 @@ int main(int argc, char* argv[])
     SDL_Window        *window;
     SDL_Renderer      *renderer;
     struct nk_context *ctx;
+    lua_State         *L;
 
     /* Initialise SDL */
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
@@ -91,6 +99,10 @@ int main(int argc, char* argv[])
     }
     set_style(ctx);
 
+    /* Initialise Lua */
+    L = luaL_newstate();
+    luaL_openlibs(L);
+
     /* Initialise CAN */
     can_initialised = init_can(&can_status);
 
@@ -127,11 +139,13 @@ int main(int argc, char* argv[])
     }
 
 cleanup:
-    CAN_Uninitialize(PCAN_NONEBUS);
+    deinit_can();
+    lua_close(L);
     nk_sdl_shutdown();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+
     return status;
 }
 
@@ -190,7 +204,12 @@ static SDL_bool init_can(int* can_status)
     }
     else
     {
-        SDL_LogWarn(0, "CAN could not be initialised: %s", err_message);
+        SDL_LogVerbose(0, "CAN could not be initialised: %s", err_message);
         return SDL_FALSE;
     }
+}
+
+static void deinit_can(void)
+{
+    CAN_Uninitialize(PCAN_NONEBUS);
 }
