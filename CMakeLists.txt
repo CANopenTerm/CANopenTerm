@@ -1,0 +1,162 @@
+cmake_minimum_required(VERSION 3.10)
+project(CANopenTerm C)
+
+set(CMAKE_C_STANDARD 90)
+
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
+
+include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+
+# SDL2
+set(SDL2_PLATFORM  "x64")
+set(SDL2_VERSION   "2.0.22")
+set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION})
+set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(SDL2_PLATFORM "x86")
+endif()
+
+ExternalProject_Add(SDL2_devel
+  URL https://www.libsdl.org/release/${SDL2_DEVEL_PKG}
+  URL_HASH SHA1=efa040633c4faf8b006c0c1e552456ca4e5a3a53
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+  DOWNLOAD_NO_PROGRESS true
+  TLS_VERIFY true
+  SOURCE_DIR ${SDL2_PATH}/
+  BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib
+  BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib
+
+  BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
+
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+  ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
+
+  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/SDL2_devel.cmake" ${SDL2_PATH}/CMakeLists.txt)
+
+set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
+set(SDL2_LIBRARY     ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib)
+set(SDL2MAIN_LIBRARY ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib)
+
+find_package(SDL2 REQUIRED)
+
+# PCAN-Basic API
+set(PCAN_PLATFORM  "x64")
+set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic API")
+set(PCAN_DEVEL_PKG pcan-basic.zip)
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(PCAN_PLATFORM "Win32")
+endif()
+
+ExternalProject_Add(PCAN_devel
+  URL https://www.peak-system.com/fileadmin/media/files/${PCAN_DEVEL_PKG}
+  URL_HASH SHA1=02ade3d72dfe1e5611f378b5d58fd009ed20319d
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+  DOWNLOAD_NO_PROGRESS true
+  TLS_VERIFY true
+  SOURCE_DIR ${PCAN_PATH}/
+  BUILD_BYPRODUCTS ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib
+
+  BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
+
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+  ${PCAN_PATH}/${PCAN_PLATFORM}/PCANBasic.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
+
+  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
+
+set(PCAN_INCLUDE_DIR ${PCAN_PATH}/Include)
+set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
+
+# Nuklear
+set(NUKLEAR_VERSION   "4.9.6")
+set(NUKLEAR_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/Nuklear-${NUKLEAR_VERSION})
+set(NUKLEAR_DEVEL_PKG ${NUKLEAR_VERSION}.zip)
+
+ExternalProject_Add(Nuklear_devel
+  URL https://github.com/Immediate-Mode-UI/Nuklear/archive/refs/tags/${NUKLEAR_DEVEL_PKG}
+  URL_HASH SHA1=d7e3273bfe27634cfc1b92e86316e5af53b407eb
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+  DOWNLOAD_NO_PROGRESS true
+  TLS_VERIFY true
+  SOURCE_DIR ${NUKLEAR_PATH}/
+
+  BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+
+  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Nuklear_devel.cmake" ${NUKLEAR_PATH}/CMakeLists.txt)
+
+set(NUKLEAR_INCLUDE_DIR ${NUKLEAR_PATH})
+
+# Lua
+set(LUA_VERSION   "5.4.4")
+set(LUA_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION})
+set(LUA_DEVEL_PKG v${LUA_VERSION}.zip)
+
+ExternalProject_Add(Lua_devel
+  URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
+  URL_HASH SHA1=21b2815c0ec280877a2a8af4b865cba30df80260
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+  DOWNLOAD_NO_PROGRESS true
+  TLS_VERIFY true
+  SOURCE_DIR ${LUA_PATH}/
+
+  BUILD_COMMAND ${CMAKE_COMMAND}   -E echo "Skipping build step."
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+
+  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Lua_devel.cmake" ${LUA_PATH}/CMakeLists.txt)
+
+set(LUA_INCLUDE_DIR ${LUA_PATH})
+#
+
+include_directories(
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
+  SYSTEM ${SDL2_INCLUDE_DIR}
+  SYSTEM ${PCAN_INCLUDE_DIR}
+  SYSTEM ${NUKLEAR_INCLUDE_DIR}
+  SYSTEM ${LUA_INCLUDE_DIR})
+
+set(project_sources
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
+
+add_executable(
+  ${PROJECT_NAME}
+  ${project_sources})
+
+add_dependencies(
+  ${PROJECT_NAME}
+  SDL2_devel
+  PCAN_devel
+  Nuklear_devel
+  Lua_devel)
+
+target_link_libraries(
+   ${PROJECT_NAME}
+   ${SDL2_LIBRARY}
+   ${SDL2MAIN_LIBRARY}
+   ${PCAN_LIBRARY})
+
+if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+  set(COMPILE_OPTIONS
+    -Wall
+    -Wextra
+    -Wpedantic)
+
+elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+  set(COMPILE_OPTIONS
+    -Wall
+    -Wextra
+    -Wpedantic)
+
+elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  set(COMPILE_OPTIONS
+    /W4)
+endif()
