@@ -13,18 +13,9 @@
 #include "PCANBasic.h"
 
 #include "SDL.h"
-#include "config.h"
+#include "core.h"
+#include "nmt_client.h"
 #include "nuklear.h"
-
-typedef enum
-{
-    NMT_OPERATIONAL     = 0x01,
-    NMT_STOP            = 0x02,
-    NMT_PRE_OPERATIONAL = 0x80,
-    NMT_RESET_NODE      = 0x81,
-    NMT_RESET_COMM      = 0x82
-
-} nmt_command_t;
 
 Uint32 send_nmt_command(nmt_command_t command, Uint8 node_id)
 {
@@ -53,46 +44,55 @@ Uint32 send_nmt_command(nmt_command_t command, Uint8 node_id)
     return can_status;
 }
 
-void nmt_client_widget(struct nk_context *ctx, Uint32* can_status)
+void nmt_client_widget(core_t* core)
 {
-    Uint8 node_id = 0x30; // DEBUG
+    int window_width;
+    int window_height;
+
+    if (NULL == core)
+    {
+        return;
+    }
+
+    SDL_GetWindowSize(core->window, &window_width, &window_height);
 
     if (0 != nk_begin(
-            ctx,
+            core->ctx,
             "NMT commands",
-            nk_rect(WINDOW_WIDTH - 220, 10, 210, 180),
+            nk_rect((float)window_width - 220, 10, 210, 180),
             NK_WINDOW_BORDER  |
             NK_WINDOW_TITLE   |
             NK_WINDOW_MOVABLE |
             NK_WINDOW_NO_SCROLLBAR))
     {
-        nk_layout_row_begin(ctx, NK_STATIC, 25, 1);
-        nk_layout_row_push(ctx, 195);
-        if (0 != nk_button_text(ctx, "0x01 Enter Operational    ", 26))
+        nk_layout_row_begin(core->ctx, NK_STATIC, 25, 1);
+        nk_layout_row_push(core->ctx, 195);
+        if (0 != nk_button_text(core->ctx, "0x01 Enter Operational    ", 26))
         {
-            *can_status = send_nmt_command(NMT_OPERATIONAL, node_id);
+            core->can_status = send_nmt_command(NMT_OPERATIONAL, core->node_id);
         }
-        nk_layout_row_push(ctx, 195);
-        if (0 != nk_button_text(ctx, "0x02 Enter Stop           ", 26))
+        nk_layout_row_push(core->ctx, 195);
+        if (0 != nk_button_text(core->ctx, "0x02 Enter Stop           ", 26))
         {
-            *can_status = send_nmt_command(NMT_STOP, node_id);
+            core->can_status = send_nmt_command(NMT_STOP, core->node_id);
         }
-        nk_layout_row_push(ctx, 195);
-        if (0 != nk_button_text(ctx, "0x80 Enter Pre-operational", 26))
+        nk_layout_row_push(core->ctx, 195);
+        if (0 != nk_button_text(core->ctx, "0x80 Enter Pre-operational", 26))
         {
-            *can_status = send_nmt_command(NMT_PRE_OPERATIONAL, node_id);
+            core->can_status = send_nmt_command(NMT_PRE_OPERATIONAL, core->node_id);
         }
-        nk_layout_row_push(ctx, 195);
-        if (0 != nk_button_text(ctx, "0x81 Reset node           ", 26))
+        nk_layout_row_push(core->ctx, 195);
+        if (0 != nk_button_text(core->ctx, "0x81 Reset node           ", 26))
         {
-            *can_status = send_nmt_command(NMT_RESET_NODE, node_id);
+            core->can_status = send_nmt_command(NMT_RESET_NODE, core->node_id);
         }
-        nk_layout_row_push(ctx, 195);
-        if (0 != nk_button_text(ctx, "0x82 Reset communication  ", 26))
+        nk_layout_row_push(core->ctx, 195);
+        if (0 != nk_button_text(core->ctx, "0x82 Reset communication  ", 26))
         {
-            *can_status = send_nmt_command(NMT_RESET_COMM, node_id);
+            core->can_status = send_nmt_command(NMT_RESET_COMM, core->node_id);
         }
-        nk_layout_row_end(ctx);
+        nk_layout_row_end(core->ctx);
     }
-    nk_end(ctx);
+
+    nk_end(core->ctx);
 }
