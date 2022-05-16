@@ -4,11 +4,12 @@
 
 A versatile software tool to analyse and configure CANopen devices.
 
-## Features
-
-- Configure and test your CANopen network(s) using custom Lua scripts.
-
 ## Licence and Credits
 
 This project is licensed under the "The MIT License".  See the file
 [LICENSE.md](LICENSE.md) for details.
+
+[dirent](https://github.com/tronkko/dirent) by Toni Ronkko is licensed
+under the "The MIT License".  See the file
+[https://github.com/tronkko/dirent/blob/master/LICENSE](LICENSE) for
+details.
