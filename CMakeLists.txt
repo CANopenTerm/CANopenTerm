@@ -192,6 +192,7 @@ if(UNIX)
     ${PROJECT_NAME}
     ${SDL2_LIBRARIES}
     ${PCAN_LIBRARY}
+    ${CMAKE_DL_LIBS}
     lua
     m)
 endif(UNIX)
