@@ -11,5 +11,5 @@ This project is licensed under the "The MIT License".  See the file
 
 [dirent](https://github.com/tronkko/dirent) by Toni Ronkko is licensed
 under the "The MIT License".  See the file
-[https://github.com/tronkko/dirent/blob/master/LICENSE](LICENSE) for
+[LICENSE](https://github.com/tronkko/dirent/blob/master/LICENSE) for
 details.
