@@ -8,67 +8,100 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # SDL2
-set(SDL2_PLATFORM  "x64")
-set(SDL2_VERSION   "2.0.22")
-set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION})
-set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
+if (WIN32)
+  set(SDL2_PLATFORM  "x64")
+  set(SDL2_VERSION   "2.0.22")
+  set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION})
+  set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-  set(SDL2_PLATFORM "x86")
-endif()
+  if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(SDL2_PLATFORM "x86")
+  endif()
 
-ExternalProject_Add(SDL2_devel
-  URL https://www.libsdl.org/release/${SDL2_DEVEL_PKG}
-  URL_HASH SHA1=efa040633c4faf8b006c0c1e552456ca4e5a3a53
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
-  DOWNLOAD_NO_PROGRESS true
-  TLS_VERIFY true
-  SOURCE_DIR ${SDL2_PATH}/
-  BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib
-  BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib
+  ExternalProject_Add(SDL2_devel
+    URL https://www.libsdl.org/release/${SDL2_DEVEL_PKG}
+    URL_HASH SHA1=efa040633c4faf8b006c0c1e552456ca4e5a3a53
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${SDL2_PATH}/
+    BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib
+    BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib
 
-  BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
+    BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
 
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
-  ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+    ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/SDL2_devel.cmake" ${SDL2_PATH}/CMakeLists.txt)
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/SDL2_devel.cmake" ${SDL2_PATH}/CMakeLists.txt)
 
-set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
-set(SDL2_LIBRARY     ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib)
-set(SDL2MAIN_LIBRARY ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib)
+  set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
+  set(SDL2_LIBRARY     ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib)
+  set(SDL2MAIN_LIBRARY ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib)
+endif(WIN32)
 
 find_package(SDL2 REQUIRED)
 
 # PCAN-Basic API
 set(PCAN_PLATFORM  "x64")
-set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic API")
-set(PCAN_DEVEL_PKG pcan-basic.zip)
+set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API")
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
   set(PCAN_PLATFORM "Win32")
 endif()
 
-ExternalProject_Add(PCAN_devel
-  URL https://www.peak-system.com/fileadmin/media/files/${PCAN_DEVEL_PKG}
-  URL_HASH SHA1=02ade3d72dfe1e5611f378b5d58fd009ed20319d
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
-  DOWNLOAD_NO_PROGRESS true
-  TLS_VERIFY true
-  SOURCE_DIR ${PCAN_PATH}/
-  BUILD_BYPRODUCTS ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib
+if(WIN32)
+  set(PCAN_DEVEL_PKG  pcan-basic.zip)
+  set(PCAN_DEVEL_URL  https://www.peak-system.com/fileadmin/media/files)
+  set(PCAN_DEVEL_HASH 02ade3d72dfe1e5611f378b5d58fd009ed20319d)
 
-  BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
+  ExternalProject_Add(PCAN_devel
+    URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
+    URL_HASH SHA1=${PCAN_DEVEL_HASH}
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${PCAN_PATH}/
+    BUILD_BYPRODUCTS ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib
 
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
-  ${PCAN_PATH}/${PCAN_PLATFORM}/PCANBasic.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
+    BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
 
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+    ${PCAN_PATH}/${PCAN_PLATFORM}/PCANBasic.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 
-set(PCAN_INCLUDE_DIR ${PCAN_PATH}/Include)
-set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
+
+  set(PCAN_INCLUDE_DIR ${PCAN_PATH}/Include)
+  set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
+endif(WIN32)
+
+if(UNIX)
+  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-4.6.0.tar.gz)
+  set(PCAN_DEVEL_URL https://www.peak-system.com/produktcd/Develop/PC%20interfaces/Linux/PCAN-Basic_API_for_Linux)
+  set(PCAN_DEVEL_HASH 348db1fd0c685a88fce846e94fd8ddac277fe838)
+
+  ExternalProject_Add(PCAN_devel
+    URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
+    URL_HASH SHA1=${PCAN_DEVEL_HASH}
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${PCAN_PATH}/
+
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
+
+  set(PCAN_INCLUDE_DIR
+    ${PCAN_PATH}/libpcanbasic/pcanbasic)
+
+  set(PCAN_LIBRARY pcanbasic)
+  link_directories(${PCAN_PATH})
+endif(UNIX)
 
 # Nuklear
 set(NUKLEAR_VERSION   "4.9.6")
@@ -113,11 +146,12 @@ ExternalProject_Add(Lua_devel
 set(LUA_INCLUDE_DIR ${LUA_PATH})
 link_directories(${LUA_PATH})
 
-#
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   SYSTEM ${SDL2_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}
+  SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/driver
+  SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/lib
   SYSTEM ${NUKLEAR_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR})
 
@@ -136,17 +170,31 @@ add_executable(
 
 add_dependencies(
   ${PROJECT_NAME}
-  SDL2_devel
   PCAN_devel
   Nuklear_devel
   Lua_devel)
 
-target_link_libraries(
-  ${PROJECT_NAME}
-  ${SDL2_LIBRARY}
-  ${SDL2MAIN_LIBRARY}
-  ${PCAN_LIBRARY}
-  lua)
+if(WIN32)
+  add_dependencies(
+    ${PROJECT_NAME}
+    SDL2_devel)
+
+  target_link_libraries(
+    ${PROJECT_NAME}
+    ${SDL2_LIBRARY}
+    ${SDL2MAIN_LIBRARY}
+    ${PCAN_LIBRARY}
+    lua)
+endif(WIN32)
+
+if(UNIX)
+  target_link_libraries(
+    ${PROJECT_NAME}
+    ${SDL2_LIBRARIES}
+    ${PCAN_LIBRARY}
+    lua
+    m)
+endif(UNIX)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
   set(COMPILE_OPTIONS
