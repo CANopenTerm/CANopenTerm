@@ -192,9 +192,7 @@ if(UNIX)
     ${PROJECT_NAME}
     ${SDL2_LIBRARIES}
     ${PCAN_LIBRARY}
-    lua
-    m
-    dl)
+    dl lua m pthread)
 endif(UNIX)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
