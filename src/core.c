@@ -152,7 +152,6 @@ void core_deinit(core_t *core)
     if (core)
     {
         free(core);
-        core = NULL;
     }
 
     SDL_Quit();
