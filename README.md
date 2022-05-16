@@ -1,15 +1,28 @@
 # CANopenTerm
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7a21b716448541289bb0b83b8bec7289)](https://www.codacy.com/gh/mupfdev/CANopenTerm/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mupfdev/CANopenTerm&amp;utm_campaign=Badge_Grade)
+[![CMake](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml/badge.svg)](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml)
 
 A versatile software tool to analyse and configure CANopen devices.
+
+## Status
+
+The project is currently at the early stages of its development.  It is
+therefore not suitable for productive use.
+
+## Compiling
+
+### Windows
+
+The easiest way to get CANopenTerm up and running is Visual Studio 2022
+with [C++ CMake tools for
+Windows](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio)
+installed.  Simply open the cloned repository via `File -> Open ->
+Folder`.  Everything else is set up automatically.
+
+### Linux
 
 ## Licence and Credits
 
 This project is licensed under the "The MIT License".  See the file
 [LICENSE.md](LICENSE.md) for details.
-
-[dirent](https://github.com/tronkko/dirent) by Toni Ronkko is licensed
-under the "The MIT License".  See the file
-[LICENSE](https://github.com/tronkko/dirent/blob/master/LICENSE) for
-details.
