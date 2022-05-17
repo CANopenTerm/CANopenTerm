@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.17)
 project(CANopenTerm C)
 
 set(CMAKE_C_STANDARD 90)
@@ -8,15 +8,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # SDL2
+set(SDL2_VERSION "2.0.22")
+
 if (WIN32)
-  set(SDL2_PLATFORM  "x64")
-  set(SDL2_VERSION   "2.0.22")
-  set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION})
   set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
+  set(SDL2_PLATFORM  "x64")
 
   if(CMAKE_SIZEOF_VOID_P EQUAL 4)
     set(SDL2_PLATFORM "x86")
   endif()
+
+  set(SDL2_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION}_${SDL2_PLATFORM})
 
   ExternalProject_Add(SDL2_devel
     URL https://www.libsdl.org/release/${SDL2_DEVEL_PKG}
@@ -41,17 +43,40 @@ if (WIN32)
   set(SDL2MAIN_LIBRARY ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib)
 endif(WIN32)
 
+if(UNIX)
+  set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION})
+  set(SDL2_DEVEL_PKG SDL2-${SDL2_VERSION}.tar.gz)
+
+  ExternalProject_Add(SDL2_devel
+    URL https://www.libsdl.org/release/${SDL2_DEVEL_PKG}
+    URL_HASH SHA1=66dd460befa7f4c4664b7591228a3951bbbb19a7
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${SDL2_PATH}/
+    BINARY_DIR ${SDL2_PATH}_build
+    BUILD_BYPRODUCTS ${SDL2_PATH}_build/libSDL2.a
+    BUILD_BYPRODUCTS ${SDL2_PATH}_build/libSDL2main.a
+
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+    PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step.")
+
+  set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
+  set(SDL2_LIBRARY     ${SDL2_PATH}_build/libSDL2.a)
+  set(SDL2MAIN_LIBRARY ${SDL2_PATH}_build/libSDL2main.a)
+endif(UNIX)
+
 find_package(SDL2 REQUIRED)
 
 # PCAN-Basic API
-set(PCAN_PLATFORM  "x64")
-set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API")
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-  set(PCAN_PLATFORM "Win32")
-endif()
-
 if(WIN32)
+  set(PCAN_PLATFORM  "x64")
+  set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Windows")
+
+  if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(PCAN_PLATFORM "Win32")
+  endif()
+
   set(PCAN_DEVEL_PKG  pcan-basic.zip)
   set(PCAN_DEVEL_URL  https://www.peak-system.com/fileadmin/media/files)
   set(PCAN_DEVEL_HASH 02ade3d72dfe1e5611f378b5d58fd009ed20319d)
@@ -78,6 +103,7 @@ if(WIN32)
 endif(WIN32)
 
 if(UNIX)
+  set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Linux")
   set(PCAN_DEVEL_PKG PCAN-Basic_Linux-4.6.0.tar.gz)
   set(PCAN_DEVEL_URL https://www.peak-system.com/produktcd/Develop/PC%20interfaces/Linux/PCAN-Basic_API_for_Linux)
   set(PCAN_DEVEL_HASH 348db1fd0c685a88fce846e94fd8ddac277fe838)
@@ -170,15 +196,12 @@ add_executable(
 
 add_dependencies(
   ${PROJECT_NAME}
+  SDL2_devel
   PCAN_devel
   Nuklear_devel
   Lua_devel)
 
 if(WIN32)
-  add_dependencies(
-    ${PROJECT_NAME}
-    SDL2_devel)
-
   target_link_libraries(
     ${PROJECT_NAME}
     ${SDL2_LIBRARY}

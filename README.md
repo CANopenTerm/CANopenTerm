@@ -22,6 +22,16 @@ Folder`.  Everything else is set up automatically.
 
 ### Linux
 
+CANopenTerm can also be compiled on Linux with the included CMake
+configuration.  All required dependencies are fetched at compile time.
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+````
+
 ## Licence and Credits
 
 This project is licensed under the "The MIT License".  See the file
