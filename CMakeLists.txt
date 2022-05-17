@@ -11,6 +11,10 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 set(SDL2_VERSION "2.0.22")
 
 if (WIN32)
+  if (CMAKE_BUILD_TYPE MATCHES Release)
+    set(GUI_TYPE WIN32)
+  endif()
+
   set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
   set(SDL2_PLATFORM  "x64")
 
@@ -185,6 +189,7 @@ set(project_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/menu_bar.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
@@ -192,6 +197,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
 add_executable(
   ${PROJECT_NAME}
+  ${GUI_TYPE}
   ${project_sources})
 
 add_dependencies(

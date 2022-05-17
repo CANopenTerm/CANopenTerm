@@ -48,5 +48,10 @@ void deinit_can(core_t* core)
 
 SDL_bool is_can_initialised(core_t* core)
 {
+    if (NULL == core)
+    {
+        return SDL_FALSE;
+    }
+
     return core->can_initialised;
 }

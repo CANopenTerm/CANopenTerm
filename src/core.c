@@ -9,14 +9,12 @@
 
 #include "core.h"
 #include "can.h"
+#include "menu_bar.h"
 #include "nmt_client.h"
 
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-
-#define WINDOW_WIDTH  640
-#define WINDOW_HEIGHT 480
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -122,6 +120,7 @@ status_t core_update(core_t *core)
     nk_input_end(core->ctx);
 
     // Add widgets.
+    menu_bar_widget(core);
     nmt_client_widget(core);
 
     // Update window.
