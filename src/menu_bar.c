@@ -15,10 +15,27 @@
 
 void menu_bar_widget(core_t* core)
 {
+    static SDL_bool show_about = SDL_FALSE;
+
+    int window_width;
+    int window_height;
+
+    if (NULL == core)
+    {
+        return;
+    }
+
+    if (NULL == core)
+    {
+        return;
+    }
+
+    SDL_GetWindowSize(core->window, &window_width, &window_height);
+
     if (nk_begin(
             core->ctx,
             "Menu",
-            nk_rect(0, 0, WINDOW_WIDTH, 30),
+            nk_rect(0, 0, window_width, 30),
             NK_WINDOW_NO_SCROLLBAR |
             NK_WINDOW_BACKGROUND))
     {
@@ -50,6 +67,11 @@ void menu_bar_widget(core_t* core)
             nk_layout_row_dynamic(core->ctx, 20, 2);
             nk_slider_int(core->ctx, 0x00, (int*)&core->node_id, 0x7f, 1);
             nk_label(core->ctx, node_id, NK_TEXT_LEFT);
+            nk_layout_row_dynamic(core->ctx, 20, 1);
+            if (nk_menu_item_label(core->ctx, "About", NK_TEXT_LEFT))
+            {
+                show_about = SDL_TRUE;
+            }
             if (nk_menu_item_label(core->ctx, "Quit", NK_TEXT_LEFT))
             {
                 core->is_running = SDL_FALSE;
@@ -57,6 +79,28 @@ void menu_bar_widget(core_t* core)
             nk_menu_end(core->ctx);
         }
         nk_menubar_end(core->ctx);
+
+        if (SDL_TRUE == show_about)
+        {
+            if (nk_popup_begin(
+                    core->ctx,
+                    NK_POPUP_STATIC,
+                    "About",
+                    NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE,
+                    nk_rect(10, 10, 420, 160)))
+            {
+                nk_layout_row_dynamic(core->ctx, 20, 1);
+                nk_label(core->ctx, "CANopenTerm", NK_TEXT_CENTERED);
+                nk_label(core->ctx, "Copyright (c) 2022, Michael Fitzmayer.", NK_TEXT_CENTERED);
+                nk_label(core->ctx, "This project is licensed under the \"The MIT License\".", NK_TEXT_CENTERED);
+                nk_label(core->ctx, "See https://github.com/mupfdev/CANopenTerm for details.", NK_TEXT_CENTERED);
+                nk_popup_end(core->ctx);
+            }
+            else
+            {
+                show_about = SDL_FALSE;
+            }
+        }
     }
     nk_end(core->ctx);
 }

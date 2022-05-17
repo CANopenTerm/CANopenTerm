@@ -13,9 +13,6 @@
 #include "SDL.h"
 #include "lua.h"
 
-#define WINDOW_WIDTH  640
-#define WINDOW_HEIGHT 480
-
 typedef enum status
 {
     COT_OK = 0,

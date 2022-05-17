@@ -16,6 +16,9 @@
 #include "lualib.h"
 #include "lauxlib.h"
 
+#define WINDOW_WIDTH  640
+#define WINDOW_HEIGHT 480
+
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
 #define NK_INCLUDE_STANDARD_VARARGS
@@ -172,10 +175,10 @@ static void set_gui_style(struct nk_context *ctx)
     //table[NK_COLOR_TOGGLE_CURSOR]           = nk_rgba(0x, 0x, 0x, 0xff);
     //table[NK_COLOR_SELECT]                  = nk_rgba(0x, 0x, 0x, 0xff);
     //table[NK_COLOR_SELECT_ACTIVE]           = nk_rgba(0x, 0x, 0x, 0xff);
-    //table[NK_COLOR_SLIDER]                  = nk_rgba(0x, 0x, 0x, 0xff);
-    //table[NK_COLOR_SLIDER_CURSOR]           = nk_rgba(0x, 0x, 0x, 0xff);
-    //table[NK_COLOR_SLIDER_CURSOR_HOVER]     = nk_rgba(0x, 0x, 0x, 0xff);
-    //table[NK_COLOR_SLIDER_CURSOR_ACTIVE]    = nk_rgba(0x, 0x, 0x, 0xff);
+    table[NK_COLOR_SLIDER]                  = nk_rgba(0xcc, 0xcc, 0xcc, 0xff);
+    table[NK_COLOR_SLIDER_CURSOR]           = nk_rgba(0x77, 0x77, 0x77, 0xff);
+    table[NK_COLOR_SLIDER_CURSOR_HOVER]     = nk_rgba(0x00, 0x00, 0x00, 0xff);
+    table[NK_COLOR_SLIDER_CURSOR_ACTIVE]    = nk_rgba(0x00, 0x00, 0x00, 0xff);
     //table[NK_COLOR_PROPERTY]                = nk_rgba(0x, 0x, 0x, 0xff);
     //table[NK_COLOR_EDIT]                    = nk_rgba(0x, 0x, 0x, 0xff);
     //table[NK_COLOR_EDIT_CURSOR]             = nk_rgba(0x, 0x, 0x, 0xff);
