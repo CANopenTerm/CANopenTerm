@@ -10,6 +10,12 @@ A versatile software tool to analyse and configure CANopen devices.
 The project is currently at the early stages of its development.  It is
 therefore not suitable for productive use.
 
+## Supported hardware
+
+Currently, only USB-based CAN dongles from [PEAK-System Technik
+GmbH](https://www.peak-system.com/Products.57.0.html?L=1) are supported.
+An abstraction for other manufacturers is being considered.
+
 ## Compiling
 
 ### Windows
