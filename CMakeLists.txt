@@ -25,7 +25,7 @@ if (WIN32)
   set(SDL2_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION}_${SDL2_PLATFORM})
 
   ExternalProject_Add(SDL2_devel
-    URL https://www.libsdl.org/release/${SDL2_DEVEL_PKG}
+    URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
     URL_HASH SHA1=efa040633c4faf8b006c0c1e552456ca4e5a3a53
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
