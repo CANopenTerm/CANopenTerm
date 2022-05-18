@@ -18,10 +18,13 @@ An abstraction for other manufacturers is being considered.
 
 ## Lua API
 
-`send_nmt_command (int nmt_command, int node_id)`
+NMT commands can be sent with the following Lua function:
 
-NMT commands can be sent with the following Lua function.  The following
-commands are supported:
+````lua
+send_nmt_command (nmt_command, node_id)
+```
+
+The following commands are supported:
 
 ```
 0x01 = Start (go to Operational)
