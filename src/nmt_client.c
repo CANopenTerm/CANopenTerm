@@ -13,6 +13,7 @@
 #include "PCANBasic.h"
 
 #include "SDL.h"
+#include "lua.h"
 #include "core.h"
 #include "nmt_client.h"
 #include "nuklear.h"
@@ -42,6 +43,38 @@ Uint32 send_nmt_command(nmt_command_t command, Uint8 node_id)
     }
 
     return can_status;
+}
+
+int lua_send_nmt_command(lua_State *L)
+{
+    int command = luaL_checkinteger(L, 1);
+    int node_id = luaL_checkinteger(L, 2);
+
+    switch (command)
+    {
+        case NMT_OPERATIONAL:
+        case NMT_STOP:
+        case NMT_PRE_OPERATIONAL:
+        case NMT_RESET_NODE:
+        case NMT_RESET_COMM:
+            break;
+        default:
+            return 0;
+    }
+
+    if (node_id > 0x7f)
+    {
+        node_id = 0x00 + (node_id % 0x7f);
+    }
+
+    if (PCAN_ERROR_OK != send_nmt_command(command, node_id))
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 void nmt_client_widget(core_t* core)

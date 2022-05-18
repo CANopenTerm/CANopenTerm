@@ -16,6 +16,23 @@ Currently, only USB-based CAN dongles from [PEAK-System Technik
 GmbH](https://www.peak-system.com/Products.57.0.html?L=1) are supported.
 An abstraction for other manufacturers is being considered.
 
+## Lua API
+
+`send_nmt_command (int nmt_command, int node_id)`
+
+NMT commands can be sent with the following Lua function.  The following
+commands are supported:
+
+```
+0x01 = Start (go to Operational)
+0x02 = Stop (go to Stopped)
+0x80 = Go to Pre-operational
+0x81 = Reset node (Application reset)
+0x82 = Reset communication
+```
+
+The node ID parameter must be between 0x00 and 0x7f.
+
 ## Compiling
 
 ### Windows

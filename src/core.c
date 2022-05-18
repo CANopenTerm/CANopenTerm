@@ -35,7 +35,7 @@ static void set_gui_style(struct nk_context *ctx);
 
 status_t core_init(core_t **core)
 {
-    SDL_RendererFlags flags  = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+    SDL_RendererFlags flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
     *core = (core_t*)calloc(1, sizeof(struct core));
     if (NULL == *core)
@@ -58,7 +58,9 @@ status_t core_init(core_t **core)
         SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH,
         WINDOW_HEIGHT,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
+        SDL_WINDOW_SHOWN         |
+        SDL_WINDOW_ALLOW_HIGHDPI |
+        SDL_WINDOW_RESIZABLE);
 
     if (NULL == (*core)->window)
     {
@@ -86,6 +88,8 @@ status_t core_init(core_t **core)
     // Initialise Lua.
     (*core)->L = luaL_newstate();
     luaL_openlibs((*core)->L);
+    lua_pushcfunction((*core)->L, lua_send_nmt_command);
+    lua_setglobal((*core)->L, "send_nmt_command");
 
     // Initialise CAN.
     init_can((*core));

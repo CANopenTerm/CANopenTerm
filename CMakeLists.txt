@@ -11,9 +11,9 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 set(SDL2_VERSION "2.0.22")
 
 if (WIN32)
-  if (CMAKE_BUILD_TYPE MATCHES Release)
-    set(GUI_TYPE WIN32)
-  endif()
+  #if (CMAKE_BUILD_TYPE MATCHES Release)
+  #  set(GUI_TYPE WIN32)
+  #endif()
 
   set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
   set(SDL2_PLATFORM  "x64")
@@ -52,7 +52,7 @@ if(UNIX)
   set(SDL2_DEVEL_PKG SDL2-${SDL2_VERSION}.tar.gz)
 
   ExternalProject_Add(SDL2_devel
-    URL https://www.libsdl.org/release/${SDL2_DEVEL_PKG}
+    URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
     URL_HASH SHA1=66dd460befa7f4c4664b7591228a3951bbbb19a7
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
@@ -156,8 +156,15 @@ set(NUKLEAR_INCLUDE_DIR ${NUKLEAR_PATH})
 
 # Lua
 set(LUA_VERSION   "5.4.4")
-set(LUA_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION})
 set(LUA_DEVEL_PKG v${LUA_VERSION}.zip)
+
+if(WIN32)
+  set(LUA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION}_Windows)
+endif(WIN32)
+
+if(UNIX)
+  set(LUA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION}_Linux)
+endif(UNIX)
 
 ExternalProject_Add(Lua_devel
   URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
@@ -176,6 +183,29 @@ ExternalProject_Add(Lua_devel
 set(LUA_INCLUDE_DIR ${LUA_PATH})
 link_directories(${LUA_PATH})
 
+# dirent
+if(WIN32)
+  set(DIRENT_VERSION   "1.23.2")
+  set(DIRENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/dirent-${DIRENT_VERSION})
+  set(DIRENT_DEVEL_PKG ${DIRENT_VERSION}.zip)
+
+  ExternalProject_Add(dirent_devel
+    URL https://github.com/tronkko/dirent/archive/refs/tags/${DIRENT_DEVEL_PKG}
+    URL_HASH SHA1=0059b1031f4cd078ab0f9bfcadc3903949e4dd3d
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${DIRENT_PATH}/
+
+    BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dirent_devel.cmake" ${DIRENT_PATH}/CMakeLists.txt)
+
+  set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
+endif()
+
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   SYSTEM ${SDL2_INCLUDE_DIR}
@@ -183,14 +213,16 @@ include_directories(
   SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/lib
   SYSTEM ${NUKLEAR_INCLUDE_DIR}
-  SYSTEM ${LUA_INCLUDE_DIR})
+  SYSTEM ${LUA_INCLUDE_DIR}
+  SYSTEM ${DIRENT_INCLUDE_DIR})
 
 set(project_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/menu_bar.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/sdo_client.c)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
