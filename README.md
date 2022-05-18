@@ -26,7 +26,7 @@ send_nmt_command (nmt_command, node_id)
 
 The following commands are supported:
 
-```
+```text
 0x01 = Start (go to Operational)
 0x02 = Stop (go to Stopped)
 0x80 = Go to Pre-operational
