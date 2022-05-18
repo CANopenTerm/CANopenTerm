@@ -34,7 +34,7 @@ The following commands are supported:
 0x82 = Reset communication
 ```
 
-The node ID parameter must be between 0x00 and 0x7f.
+The node ID parameter must be between `0x00` and `0x7f`.
 
 ## Compiling
 
