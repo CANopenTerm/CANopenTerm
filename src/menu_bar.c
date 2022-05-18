@@ -8,10 +8,14 @@
  **/
 
 #include "SDL.h"
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+#include "dirent.h"
+#include "nuklear.h"
 #include "can.h"
 #include "core.h"
 #include "menu_bar.h"
-#include "nuklear.h"
 
 void menu_bar_widget(core_t* core)
 {
@@ -41,7 +45,7 @@ void menu_bar_widget(core_t* core)
     {
         nk_menubar_begin(core->ctx);
         nk_layout_row_begin(core->ctx, NK_STATIC, 25, 5);
-        nk_layout_row_push(core->ctx, 45);
+        nk_layout_row_push(core->ctx, 55);
 
         if (nk_menu_begin_label(core->ctx, "Menu", NK_TEXT_LEFT, nk_vec2(150, 200)))
         {
@@ -78,6 +82,45 @@ void menu_bar_widget(core_t* core)
             }
             nk_menu_end(core->ctx);
         }
+
+        if (nk_menu_begin_label(core->ctx, "Scripts", NK_TEXT_LEFT, nk_vec2(150, 200)))
+        {
+            DIR           *dir;
+            struct dirent *ent;
+            nk_layout_row_dynamic(core->ctx, 20, 1);
+
+            dir = opendir("./scripts");
+            if (NULL != dir)
+            {
+                while ((ent = readdir (dir)) != NULL) {
+                    switch (ent->d_type) {
+                        case DT_REG:
+                            if (nk_menu_item_label(core->ctx, ent->d_name, NK_TEXT_LEFT))
+                            {
+                                char script_path[64] = { 0 };
+                                SDL_snprintf(script_path, 64, "scripts/%s", ent->d_name);
+                                if (LUA_OK == luaL_dofile(core->L, script_path))
+                                {
+                                    lua_pop(core->L, lua_gettop(core->L));
+                                }
+                                else
+                                {
+
+                                }
+                            }
+                            break;
+                        case DT_DIR:
+                        case DT_LNK:
+                        default:
+                            break;
+                    }
+                }
+                closedir (dir);
+            }
+
+            nk_menu_end(core->ctx);
+        }
+
         nk_menubar_end(core->ctx);
 
         if (SDL_TRUE == show_about)
