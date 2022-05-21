@@ -16,6 +16,17 @@ Currently, only USB-based CAN dongles from [PEAK-System Technik
 GmbH](https://www.peak-system.com/Products.57.0.html?L=1) are supported.
 An abstraction for other manufacturers is being considered.
 
+## Command-line interface
+
+CANopenTerm by default uses the command line interface.  The following
+commands are recognised:
+
+```text
+Activate GUI: g
+NMT command:  n [Node-ID] [Command]
+Quit:         q
+```
+
 ## Lua API
 
 NMT commands can be sent with the following Lua function:

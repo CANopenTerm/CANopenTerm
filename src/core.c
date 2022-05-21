@@ -25,7 +25,8 @@ status_t core_init(core_t **core)
         return COT_ERROR;
     }
 
-    puts("CANopenTerm\r\n");
+    puts("CANopenTerm");
+    puts("Copyright (c) 2022, Michael Fitzmayer.\r\n");
 
     // Initialise SDL.
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
