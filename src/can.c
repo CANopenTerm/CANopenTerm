@@ -15,35 +15,20 @@
 #endif
 #include "PCANBasic.h"
 
-void init_can(core_t* core)
+static int can_monitor(void *core);
+
+void can_init(core_t* core)
 {
-    char err_message[100] = { 0 };
-
-    core->can_status = CAN_Initialize(
-        PCAN_USBBUS1,
-        PCAN_BAUD_250K,
-        PCAN_USB,
-        0, 0);
-
-    CAN_GetErrorText(core->can_status, 0x09, err_message);
-
-    if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
-    {
-        SDL_LogInfo(0, "CAN successfully initialised");
-        core->can_initialised = SDL_TRUE;
-    }
-    else
-    {
-        SDL_LogVerbose(0, "CAN could not be initialised: %s", err_message);
-        core->can_initialised = SDL_FALSE;
-    }
+    core->can_monitor_th = SDL_CreateThread(can_monitor, "CAN monitor thread", (void *)core);
 }
 
-void deinit_can(core_t* core)
+void can_deinit(core_t* core)
 {
-    core->can_status      = 0;
-    core->can_initialised = SDL_FALSE;
+    core->can_status         = 0;
+    core->is_can_initialised = SDL_FALSE;
+
     CAN_Uninitialize(PCAN_NONEBUS);
+    SDL_DetachThread(core->can_monitor_th);
 }
 
 SDL_bool is_can_initialised(core_t* core)
@@ -53,5 +38,42 @@ SDL_bool is_can_initialised(core_t* core)
         return SDL_FALSE;
     }
 
-    return core->can_initialised;
+    return core->is_can_initialised;
+}
+
+static int can_monitor(void *core_pt)
+{
+    char    err_message[100] = { 0 };
+    core_t* core             = core_pt;
+
+    if (NULL == core)
+    {
+        return 1;
+    }
+
+    while (SDL_FALSE == is_can_initialised(core))
+    {
+        core->can_status = CAN_Initialize(
+            PCAN_USBBUS1,
+            PCAN_BAUD_250K,
+            PCAN_USB,
+            0, 0);
+
+        CAN_GetErrorText(core->can_status, 0x09, err_message);
+
+        if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
+        {
+            SDL_LogInfo(0, "CAN successfully initialised");
+            core->is_can_initialised = SDL_TRUE;
+        }
+        else
+        {
+            SDL_LogVerbose(0, "CAN could not be initialised: %s", err_message);
+            core->is_can_initialised = SDL_FALSE;
+        }
+
+        SDL_Delay(100);
+    }
+
+    return 0;
 }

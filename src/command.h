@@ -1,4 +1,4 @@
-/** @file can.h
+/** @file command.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,13 +7,11 @@
  *
  **/
 
-#ifndef CAN_H
-#define CAN_H
+#ifndef COMMAND_H
+#define COMMAND_H
 
 #include "core.h"
 
-void     can_init(core_t* core_t);
-void     can_deinit(core_t* core);
-SDL_bool is_can_initialised(core_t* core);
+void parse_command(char* input, core_t* core);
 
-#endif /* CAN_H */
+#endif /* COMMAND_H */

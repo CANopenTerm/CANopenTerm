@@ -78,7 +78,7 @@ void menu_bar_widget(core_t* core)
             }
             if (nk_menu_item_label(core->ctx, "Quit", NK_TEXT_LEFT))
             {
-                core->is_running = SDL_FALSE;
+                gui_deinit(core);
             }
             nk_menu_end(core->ctx);
         }

@@ -218,7 +218,9 @@ include_directories(
 
 set(project_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/gui.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/menu_bar.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c

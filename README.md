@@ -21,7 +21,7 @@ An abstraction for other manufacturers is being considered.
 NMT commands can be sent with the following Lua function:
 
 ```lua
-send_nmt_command (nmt_command, node_id)
+send_nmt_command (node_id, nmt_command)
 ```
 
 The following commands are supported:

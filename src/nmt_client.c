@@ -18,9 +18,9 @@
 #include "nmt_client.h"
 #include "nuklear.h"
 
-Uint32 send_nmt_command(nmt_command_t command, Uint8 node_id)
+Uint32 send_nmt_command(Uint8 node_id, nmt_command_t command)
 {
-    Uint32   can_status;
+    Uint32   can_status = PCAN_ERROR_OK;
     TPCANMsg can_message;
 
     if (node_id > 0x7f)
@@ -34,21 +34,34 @@ Uint32 send_nmt_command(nmt_command_t command, Uint8 node_id)
     can_message.DATA[0] = command;
     can_message.DATA[1] = node_id;
 
+    switch (command)
+    {
+        case NMT_OPERATIONAL:
+        case NMT_STOP:
+        case NMT_PRE_OPERATIONAL:
+        case NMT_RESET_NODE:
+        case NMT_RESET_COMM:
+            break;
+        default:
+            SDL_LogWarn(0, "Invalid NMT command 0x%x", command);
+            return can_status;
+    }
+
     can_status = CAN_Write(PCAN_USBBUS1, &can_message);
     if (PCAN_ERROR_OK != can_status)
     {
         char err_message[100] = { 0 };
         CAN_GetErrorText(can_status, 0x09, err_message);
-        SDL_LogWarn(0, "Could not send NMT command 0x%x: %s", command, err_message);
+        SDL_LogWarn(0, "%s (NMT 0x%x)", err_message, command);
     }
 
     return can_status;
 }
 
-int lua_send_nmt_command(lua_State *L)
+int lua_send_nmt_command(lua_State* L)
 {
-    int command = luaL_checkinteger(L, 1);
-    int node_id = luaL_checkinteger(L, 2);
+    int node_id = luaL_checkinteger(L, 1);
+    int command = luaL_checkinteger(L, 2);
 
     switch (command)
     {
@@ -67,7 +80,7 @@ int lua_send_nmt_command(lua_State *L)
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (PCAN_ERROR_OK != send_nmt_command(command, node_id))
+    if (PCAN_ERROR_OK != send_nmt_command(node_id, command))
     {
         return 0;
     }
@@ -75,6 +88,12 @@ int lua_send_nmt_command(lua_State *L)
     {
         return 1;
     }
+}
+
+void lua_register_nmt_command(core_t* core)
+{
+    lua_pushcfunction(core->L, lua_send_nmt_command);
+    lua_setglobal(core->L, "send_nmt_command");
 }
 
 void nmt_client_widget(core_t* core)
@@ -92,7 +111,7 @@ void nmt_client_widget(core_t* core)
     if (0 != nk_begin(
             core->ctx,
             "NMT commands",
-            nk_rect((float)window_width - 220, 10, 210, 180),
+            nk_rect((float)window_width - 220, 40, 210, 180),
             NK_WINDOW_BORDER  |
             NK_WINDOW_TITLE   |
             NK_WINDOW_MOVABLE |
@@ -102,27 +121,27 @@ void nmt_client_widget(core_t* core)
         nk_layout_row_push(core->ctx, 195);
         if (0 != nk_button_text(core->ctx, "0x01 Enter Operational    ", 26))
         {
-            core->can_status = send_nmt_command(NMT_OPERATIONAL, core->node_id);
+            core->can_status = send_nmt_command(core->node_id, NMT_OPERATIONAL);
         }
         nk_layout_row_push(core->ctx, 195);
         if (0 != nk_button_text(core->ctx, "0x02 Enter Stop           ", 26))
         {
-            core->can_status = send_nmt_command(NMT_STOP, core->node_id);
+            core->can_status = send_nmt_command(core->node_id, NMT_STOP);
         }
         nk_layout_row_push(core->ctx, 195);
         if (0 != nk_button_text(core->ctx, "0x80 Enter Pre-operational", 26))
         {
-            core->can_status = send_nmt_command(NMT_PRE_OPERATIONAL, core->node_id);
+            core->can_status = send_nmt_command(core->node_id, NMT_PRE_OPERATIONAL);
         }
         nk_layout_row_push(core->ctx, 195);
         if (0 != nk_button_text(core->ctx, "0x81 Reset node           ", 26))
         {
-            core->can_status = send_nmt_command(NMT_RESET_NODE, core->node_id);
+            core->can_status = send_nmt_command(core->node_id, NMT_RESET_NODE);
         }
         nk_layout_row_push(core->ctx, 195);
         if (0 != nk_button_text(core->ctx, "0x82 Reset communication  ", 26))
         {
-            core->can_status = send_nmt_command(NMT_RESET_COMM, core->node_id);
+            core->can_status = send_nmt_command(core->node_id, NMT_RESET_COMM);
         }
         nk_layout_row_end(core->ctx);
     }

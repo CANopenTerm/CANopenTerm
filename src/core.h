@@ -26,12 +26,14 @@ typedef struct core
 {
     SDL_Window        *window;
     SDL_Renderer      *renderer;
+    SDL_Thread        *can_monitor_th;
     lua_State         *L;
     struct nk_context *ctx;
     Uint32             can_status;
     Uint8              node_id;
-    SDL_bool           can_initialised;
+    SDL_bool           is_can_initialised;
     SDL_bool           is_running;
+    SDL_bool           is_gui_active;
 
 } core_t;
 
