@@ -85,15 +85,17 @@ void menu_bar_widget(core_t* core)
 
         if (nk_menu_begin_label(core->ctx, "Scripts", NK_TEXT_LEFT, nk_vec2(150, 200)))
         {
-            DIR           *dir;
-            struct dirent *ent;
+            DIR *dir;
             nk_layout_row_dynamic(core->ctx, 20, 1);
 
             dir = opendir("./scripts");
             if (NULL != dir)
             {
-                while ((ent = readdir (dir)) != NULL) {
-                    switch (ent->d_type) {
+                struct dirent *ent;
+                while ((ent = readdir (dir)) != NULL)
+                {
+                    switch (ent->d_type)
+                    {
                         case DT_REG:
                             if (nk_menu_item_label(core->ctx, ent->d_name, NK_TEXT_LEFT))
                             {

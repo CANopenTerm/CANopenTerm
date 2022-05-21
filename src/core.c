@@ -78,6 +78,11 @@ status_t core_update(core_t *core)
 
 void core_deinit(core_t *core)
 {
+    if (NULL == core)
+    {
+        return;
+    }
+
     if (is_gui_active(core))
     {
         gui_deinit(core);
@@ -85,11 +90,7 @@ void core_deinit(core_t *core)
 
     can_deinit(core);
     lua_close(core->L);
-
-    if (core)
-    {
-        free(core);
-    }
+    free(core);
 
     SDL_Quit();
 }
