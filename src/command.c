@@ -26,20 +26,21 @@ void parse_command(char* input, core_t* core)
     char* input_savptr = input;
 
     token = SDL_strtokr(input_savptr, delim, &input_savptr);
+
     if (NULL == token)
     {
         print_usage_information();
         return;
     }
-    else if (0 == SDL_strncmp(token, "q", 2))
+    else if (0 == SDL_strncmp(token, "q", 1))
     {
         core->is_running = SDL_FALSE;
     }
-    else if (0 == SDL_strncmp(token, "g", 2))
+    else if (0 == SDL_strncmp(token, "g", 1))
     {
         gui_init(core);
     }
-    else if (0 == SDL_strncmp(token, "n", 2))
+    else if (0 == SDL_strncmp(token, "n", 1))
     {
         Uint32 node_id;
         Uint32 command;
@@ -88,11 +89,11 @@ void parse_command(char* input, core_t* core)
         }
         send_nmt_command((Uint16)node_id, (Uint8)command);
     }
-    else if (0 == SDL_strncmp(token, "l", 2))
+    else if (0 == SDL_strncmp(token, "l", 1))
     {
         list_scripts();
     }
-    else if (0 == SDL_strncmp(token, "s", 2))
+    else if (0 == SDL_strncmp(token, "s", 1))
     {
         
     }
