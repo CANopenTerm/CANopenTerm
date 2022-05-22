@@ -3,8 +3,6 @@ project(CANopenTerm C)
 
 set(CMAKE_C_STANDARD 90)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
-
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # SDL2
@@ -69,8 +67,6 @@ if(UNIX)
   set(SDL2_LIBRARY     ${SDL2_PATH}_build/libSDL2.a)
   set(SDL2MAIN_LIBRARY ${SDL2_PATH}_build/libSDL2main.a)
 endif(UNIX)
-
-find_package(SDL2 REQUIRED)
 
 # PCAN-Basic API
 if(WIN32)
@@ -253,7 +249,8 @@ endif(WIN32)
 if(UNIX)
   target_link_libraries(
     ${PROJECT_NAME}
-    ${SDL2_LIBRARIES}
+    ${SDL2_LIBRARY}
+    ${SDL2MAIN_LIBRARY}
     ${PCAN_LIBRARY}
     lua
     dl
