@@ -12,6 +12,7 @@
 #include "lualib.h"
 #include "lauxlib.h"
 #include "dirent.h"
+#include "core.h"
 #include "scripts.h"
 
 void list_scripts(void)
@@ -36,5 +37,19 @@ void list_scripts(void)
             }
         }
         closedir (dir);
+    }
+}
+
+void run_script(const char* name, core_t* core)
+{
+    char script_path[64] = { 0 };
+    SDL_snprintf(script_path, 64, "scripts/%s", name);
+    if (LUA_OK == luaL_dofile(core->L, script_path))
+    {
+        lua_pop(core->L, lua_gettop(core->L));
+    }
+    else
+    {
+        SDL_LogWarn(0, "Could not load script '%s'", name);
     }
 }

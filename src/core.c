@@ -8,6 +8,10 @@
  **/
 
 #include <stdio.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "core.h"
 #include "command.h"
 #include "can.h"
@@ -24,6 +28,10 @@ status_t core_init(core_t **core)
     {
         return COT_ERROR;
     }
+
+#ifdef _WIN32
+    SetConsoleOutputCP(65001);
+#endif
 
     puts("CANopenTerm");
     puts("Copyright (c) 2022, Michael Fitzmayer.\r\n");
@@ -71,7 +79,7 @@ status_t core_update(core_t *core)
     }
 
     printf(": ");
-    gets(command);
+    fgets(command, 64, stdin);
     parse_command(command, core);
 
     return COT_OK;

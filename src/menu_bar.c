@@ -16,6 +16,7 @@
 #include "can.h"
 #include "core.h"
 #include "menu_bar.h"
+#include "scripts.h"
 
 void menu_bar_widget(core_t* core)
 {
@@ -99,16 +100,7 @@ void menu_bar_widget(core_t* core)
                         case DT_REG:
                             if (nk_menu_item_label(core->ctx, ent->d_name, NK_TEXT_LEFT))
                             {
-                                char script_path[64] = { 0 };
-                                SDL_snprintf(script_path, 64, "scripts/%s", ent->d_name);
-                                if (LUA_OK == luaL_dofile(core->L, script_path))
-                                {
-                                    lua_pop(core->L, lua_gettop(core->L));
-                                }
-                                else
-                                {
-
-                                }
+                                run_script(ent->d_name, core);
                             }
                             break;
                         case DT_DIR:

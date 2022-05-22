@@ -22,9 +22,11 @@ CANopenTerm by default uses the command line interface.  The following
 commands are recognised:
 
 ```text
+Clear output: c
 Activate GUI: g
-NMT command:  n [Node-ID] [Command]
+NMT command:  n [node_id] [command or alias]
 List scripts: l
+Run script:   s [script_name]
 Quit:         q
 ```
 

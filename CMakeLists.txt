@@ -273,5 +273,6 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   set(COMPILE_OPTIONS
-    /W4)
+    /W4
+    /utf-8)
 endif()

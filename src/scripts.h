@@ -13,5 +13,6 @@
 #include "core.h"
 
 void list_scripts(void);
+void run_script(const char* name, core_t* core);
 
 #endif /* SCRIPTS_H */

@@ -7,6 +7,7 @@
  *
  **/
 
+#include <stdio.h>
 #include "SDL.h"
 #include "core.h"
 #include "command.h"
@@ -14,13 +15,21 @@
 #include "nmt_client.h"
 #include "scripts.h"
 
+#ifdef _WIN32
+#  define CLEAR_CMD "cls"
+#elif defined(unix) || defined(__unix__) || defined(__unix)
+#  define CLEAR_CMD "clear"
+#else
+#  define CLEAR_CMD ""
+#endif
+
 static void convert_token_to_uint(char* token, Uint32* result);
 static void print_usage_information(void);
 
 void parse_command(char* input, core_t* core)
 {
     int   index;
-    char  delim[2]     = " ";
+    char* delim        = " \n";
     char* context      = NULL;
     char* token        = NULL;
     char* input_savptr = input;
@@ -31,6 +40,10 @@ void parse_command(char* input, core_t* core)
     {
         print_usage_information();
         return;
+    }
+    else if (0 == SDL_strncmp(token, "c", 1))
+    {
+        system(CLEAR_CMD);
     }
     else if (0 == SDL_strncmp(token, "q", 1))
     {
@@ -95,7 +108,16 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
-        
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            run_script(token, core);
+        }
     }
     else
     {
@@ -117,5 +139,14 @@ static void convert_token_to_uint(char* token, Uint32* result)
 
 static void print_usage_information(void)
 {
-    // tbd.
+    puts(" ┌─────╥──────────────────────────────╥──────────────┐");
+    puts(" │ CMD ║ Parameter(s)                 ║ Function     │");
+    puts(" ├─────╫──────────────────────────────╫──────────────┤");
+    puts(" │  c  ║                              ║ Clear putput │");
+    puts(" │  g  ║                              ║ Activate GUI │");
+    puts(" │  n  ║ [node_id] [command or alias] ║ NMT command  │");
+    puts(" │  l  ║                              ║ List scripts │");
+    puts(" │  s  ║ [script_name]                ║ Run script   │");
+    puts(" │  q  ║                              ║ Quit         │");
+    puts(" └─────╨──────────────────────────────╨──────────────┘");
 }
