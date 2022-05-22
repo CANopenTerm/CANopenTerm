@@ -38,7 +38,6 @@ void parse_command(char* input, core_t* core)
 
     if (NULL == token)
     {
-        print_usage_information();
         return;
     }
     else if (0 == SDL_strncmp(token, "c", 1))
@@ -121,7 +120,6 @@ void parse_command(char* input, core_t* core)
     }
     else
     {
-        print_usage_information();
     }
 }
 
