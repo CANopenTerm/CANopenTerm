@@ -92,7 +92,7 @@ void menu_bar_widget(core_t* core)
             if (NULL != dir)
             {
                 struct dirent *ent;
-                while ((ent = readdir (dir)) != NULL)
+                while (NULL != (ent = readdir (dir)))
                 {
                     switch (ent->d_type)
                     {

@@ -24,6 +24,7 @@ commands are recognised:
 ```text
 Activate GUI: g
 NMT command:  n [Node-ID] [Command]
+List scripts: l
 Quit:         q
 ```
 

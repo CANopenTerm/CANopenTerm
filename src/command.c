@@ -12,6 +12,7 @@
 #include "command.h"
 #include "gui.h"
 #include "nmt_client.h"
+#include "scripts.h"
 
 static void convert_token_to_uint(char* token, Uint32* result);
 static void print_usage_information(void);
@@ -86,6 +87,14 @@ void parse_command(char* input, core_t* core)
             }
         }
         send_nmt_command((Uint16)node_id, (Uint8)command);
+    }
+    else if (0 == SDL_strncmp(token, "l", 2))
+    {
+        list_scripts();
+    }
+    else if (0 == SDL_strncmp(token, "s", 2))
+    {
+        
     }
     else
     {
