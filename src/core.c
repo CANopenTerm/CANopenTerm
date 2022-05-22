@@ -16,10 +16,7 @@
 #include "command.h"
 #include "can.h"
 #include "gui.h"
-
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+#include "scripts.h"
 
 status_t core_init(core_t **core)
 {
@@ -46,8 +43,7 @@ status_t core_init(core_t **core)
     }
 
     // Initialise Lua.
-    (*core)->L = luaL_newstate();
-    luaL_openlibs((*core)->L);
+    scripts_init((*core));
     lua_register_nmt_command((*core));
 
     // Initialise CAN.
@@ -98,7 +94,7 @@ void core_deinit(core_t *core)
     }
 
     can_deinit(core);
-    lua_close(core->L);
+    scripts_deinit(core);
     free(core);
 
     SDL_Quit();

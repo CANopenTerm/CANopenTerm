@@ -15,6 +15,27 @@
 #include "core.h"
 #include "scripts.h"
 
+void scripts_init(core_t* core)
+{
+    if (NULL == core)
+    {
+        return;
+    }
+
+    core->L = luaL_newstate();
+    luaL_openlibs(core->L);
+}
+
+void scripts_deinit(core_t* core)
+{
+    if (NULL == core)
+    {
+        return;
+    }
+
+    lua_close(core->L);
+}
+
 void list_scripts(void)
 {
     DIR *dir;
@@ -43,6 +64,12 @@ void list_scripts(void)
 void run_script(const char* name, core_t* core)
 {
     char script_path[64] = { 0 };
+
+    if (NULL == core)
+    {
+        return;
+    }
+
     SDL_snprintf(script_path, 64, "scripts/%s", name);
     if (LUA_OK == luaL_dofile(core->L, script_path))
     {

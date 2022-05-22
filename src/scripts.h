@@ -12,6 +12,8 @@
 
 #include "core.h"
 
+void scripts_deinit(core_t* core);
+void scripts_deinit(core_t* core);
 void list_scripts(void);
 void run_script(const char* name, core_t* core);
 
