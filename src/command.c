@@ -120,6 +120,7 @@ void parse_command(char* input, core_t* core)
     }
     else
     {
+        print_usage_information();
     }
 }
 
