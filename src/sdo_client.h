@@ -21,6 +21,12 @@ typedef enum
 
 } data_type_t;
 
-Uint32 write_sdo(Uint8 index, Uint16 sub_index, data_type_t data_type, Uint32 data, Uint8 node_id);
+typedef enum
+{
+    READ_DICT_OBJECT = 0x40
+
+} sdo_command_code_t;
+
+Uint32 read_sdo(Uint8 node_id, Uint8 index, Uint16 sub_index);
 
 #endif /* SDO_CLIENT_H */

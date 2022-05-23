@@ -30,11 +30,6 @@ void menu_bar_widget(core_t* core)
         return;
     }
 
-    if (NULL == core)
-    {
-        return;
-    }
-
     SDL_GetWindowSize(core->window, &window_width, &window_height);
 
     if (nk_begin(

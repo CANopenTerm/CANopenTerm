@@ -24,6 +24,9 @@ void scripts_init(core_t* core)
 
     core->L = luaL_newstate();
     luaL_openlibs(core->L);
+
+    lua_pushcfunction(core->L, lua_delay_ms);
+    lua_setglobal(core->L, "delay_in_ms");
 }
 
 void scripts_deinit(core_t* core)
@@ -79,4 +82,12 @@ void run_script(const char* name, core_t* core)
     {
         SDL_LogWarn(0, "Could not load script '%s'", name);
     }
+}
+
+int lua_delay_ms(lua_State* L)
+{
+    Uint32 delay_in_ms = (Uint32)luaL_checkinteger(L, 1);
+
+    SDL_Delay(delay_in_ms);
+    return 1;
 }

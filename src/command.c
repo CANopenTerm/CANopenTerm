@@ -105,6 +105,10 @@ void parse_command(char* input, core_t* core)
     {
         list_scripts();
     }
+    else if (0 == SDL_strncmp(token, "r", 1))
+    {
+        
+    }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
@@ -138,14 +142,15 @@ static void convert_token_to_uint(char* token, Uint32* result)
 
 static void print_usage_information(void)
 {
-    puts(" ┌─────╥──────────────────────────────╥──────────────┐");
-    puts(" │ CMD ║ Parameter(s)                 ║ Function     │");
-    puts(" ├─────╫──────────────────────────────╫──────────────┤");
-    puts(" │  c  ║                              ║ Clear putput │");
-    puts(" │  g  ║                              ║ Activate GUI │");
-    puts(" │  n  ║ [node_id] [command or alias] ║ NMT command  │");
-    puts(" │  l  ║                              ║ List scripts │");
-    puts(" │  s  ║ [script_name]                ║ Run script   │");
-    puts(" │  q  ║                              ║ Quit         │");
-    puts(" └─────╨──────────────────────────────╨──────────────┘");
+    puts(" ┌─────╥───────────────────────────────╥──────────────┐");
+    puts(" │ CMD ║ Parameter(s)                  ║ Function     │");
+    puts(" ├─────╫───────────────────────────────╫──────────────┤");
+    puts(" │  c  ║                               ║ Clear putput │");
+    puts(" │  g  ║                               ║ Activate GUI │");
+    puts(" │  n  ║ [node_id] [command or alias]  ║ NMT command  │");
+    puts(" │  l  ║                               ║ List scripts │");
+    puts(" │  r  ║ [node_id] [index] [sub_index] ║ Read SDO     │");
+    puts(" │  s  ║ [script_name]                 ║ Run script   │");
+    puts(" │  q  ║                               ║ Quit         │");
+    puts(" └─────╨───────────────────────────────╨──────────────┘");
 }

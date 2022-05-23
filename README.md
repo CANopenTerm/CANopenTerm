@@ -26,6 +26,7 @@ Clear output: c
 Activate GUI: g
 NMT command:  n [node_id] [command or alias]
 List scripts: l
+Read SDO:     r [node_id] [index] [sub_index]
 Run script:   s [script_name]
 Quit:         q
 ```
@@ -49,6 +50,13 @@ The following commands are supported:
 ```
 
 The node ID parameter must be between `0x00` and `0x7f`.
+
+Lua does not provide its own function to delay the program flow.  The
+following function is made available for this purpose:
+
+```lua
+delay_ms (delay_ms)
+```
 
 ## Compiling
 

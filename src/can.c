@@ -51,28 +51,37 @@ static int can_monitor(void *core_pt)
         return 1;
     }
 
-    while (SDL_FALSE == is_can_initialised(core))
+    while (SDL_TRUE == core->is_running)
     {
-        core->can_status = CAN_Initialize(
-            PCAN_USBBUS1,
-            PCAN_BAUD_250K,
-            PCAN_USB,
-            0, 0);
-
-        CAN_GetErrorText(core->can_status, 0x09, err_message);
-
-        if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
+        while (SDL_FALSE == is_can_initialised(core))
         {
-            SDL_LogInfo(0, "CAN successfully initialised");
-            core->is_can_initialised = SDL_TRUE;
+            core->can_status = CAN_Initialize(
+                PCAN_USBBUS1,
+                PCAN_BAUD_250K,
+                PCAN_USB,
+                0, 0);
+
+            CAN_GetErrorText(core->can_status, 0x09, err_message);
+
+            if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
+            {
+                SDL_LogInfo(0, "CAN successfully initialised");
+                core->is_can_initialised = SDL_TRUE;
+            }
+
+            SDL_Delay(100);
         }
-        else
+
+        core->can_status = CAN_GetStatus(PCAN_USBBUS1);
+
+        if (PCAN_ERROR_ILLHW == core->can_status)
         {
-            SDL_LogVerbose(0, "CAN could not be initialised: %s", err_message);
+            core->can_status         = 0;
             core->is_can_initialised = SDL_FALSE;
-        }
 
-        SDL_Delay(100);
+            CAN_Uninitialize(PCAN_NONEBUS);
+            SDL_LogWarn(0, "CAN de-initialised: USB-dongle removed?");
+        }
     }
 
     return 0;

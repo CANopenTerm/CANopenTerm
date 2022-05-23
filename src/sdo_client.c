@@ -17,7 +17,7 @@
 #include "sdo_client.h"
 #include "nuklear.h"
 
-Uint32 write_sdo(Uint8 index, Uint16 sub_index, data_type_t data_type, Uint32 data, Uint8 node_id)
+Uint32 read_sdo(Uint8 node_id, Uint8 index, Uint16 sub_index)
 {
     Uint32   can_status;
     TPCANMsg can_message;
@@ -29,12 +29,12 @@ Uint32 write_sdo(Uint8 index, Uint16 sub_index, data_type_t data_type, Uint32 da
 
     can_message.ID      = 0x600 + node_id;
     can_message.MSGTYPE = PCAN_MESSAGE_STANDARD;
-    can_message.LEN     = data_type;
+    can_message.LEN     = 8;
 
-    /*
-    can_message.DATA[0] = command;
-    can_message.DATA[1] = node_id;
-    */
+    can_message.DATA[0] = READ_DICT_OBJECT;
+    can_message.DATA[1] = index & 0xff;
+    can_message.DATA[2] = index & 0xff00;
+    can_message.DATA[3] = sub_index;
 
     can_status = CAN_Write(PCAN_USBBUS1, &can_message);
     if (PCAN_ERROR_OK != can_status)

@@ -11,6 +11,7 @@
 #define NMT_CLIENT_H
 
 #include "SDL.h"
+#include "lua.h"
 #include "core.h"
 
 typedef enum
