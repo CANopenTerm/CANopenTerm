@@ -26,7 +26,7 @@ void scripts_init(core_t* core)
     luaL_openlibs(core->L);
 
     lua_pushcfunction(core->L, lua_delay_ms);
-    lua_setglobal(core->L, "delay_in_ms");
+    lua_setglobal(core->L, "delay_ms");
 }
 
 void scripts_deinit(core_t* core)

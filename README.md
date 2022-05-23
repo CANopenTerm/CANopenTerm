@@ -55,7 +55,7 @@ Lua does not provide its own function to delay the program flow.  The
 following function is made available for this purpose:
 
 ```lua
-delay_ms (delay_ms)
+delay_ms (delay_in_ms)
 ```
 
 ## Compiling
