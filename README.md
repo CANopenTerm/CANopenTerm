@@ -33,6 +33,11 @@ Quit:         q
 
 ## Lua API
 
+The official reference manual of Lua 5.4 can be found here: [Lua 5.4
+Reference Manual ](https://www.lua.org/manual/5.4/).  In addition to the
+functions that are part of Lua, CANopenTerm also provides additional
+functions.  These are explained in this section.
+
 NMT commands can be sent with the following Lua function:
 
 ```lua
