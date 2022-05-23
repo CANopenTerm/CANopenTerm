@@ -70,6 +70,7 @@ static int can_monitor(void *core_pt)
             }
 
             SDL_Delay(100);
+            continue;
         }
 
         core->can_status = CAN_GetStatus(PCAN_USBBUS1);
@@ -82,6 +83,7 @@ static int can_monitor(void *core_pt)
             CAN_Uninitialize(PCAN_NONEBUS);
             SDL_LogWarn(0, "CAN de-initialised: USB-dongle removed?");
         }
+        SDL_Delay(100);
     }
 
     return 0;
