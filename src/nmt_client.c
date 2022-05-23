@@ -20,8 +20,8 @@
 
 Uint32 send_nmt_command(Uint8 node_id, nmt_command_t command)
 {
-    Uint32   can_status = PCAN_ERROR_OK;
-    TPCANMsg can_message;
+    Uint32   can_status  = PCAN_ERROR_OK;
+    TPCANMsg can_message = { 0 };
 
     if (node_id > 0x7f)
     {

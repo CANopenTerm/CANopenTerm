@@ -10,7 +10,15 @@
 #ifndef CAN_H
 #define CAN_H
 
+#include "SDL.h"
 #include "core.h"
+
+typedef struct can_message
+{
+    Uint8 length;
+    Uint8 data[4];
+
+} can_message_t;
 
 void     can_init(core_t* core_t);
 void     can_deinit(core_t* core);

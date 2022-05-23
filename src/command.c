@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include "SDL.h"
+#include "can.h"
 #include "core.h"
 #include "command.h"
 #include "gui.h"
@@ -107,7 +108,45 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == SDL_strncmp(token, "r", 1))
     {
-        
+        can_message_t can_message = { 0 };
+        Uint32        node_id;
+        Uint32        sdo_index;
+        Uint32        sub_index;
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &node_id);
+        }
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &sdo_index);
+        }
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &sub_index);
+        }
+
+        read_sdo(&can_message, node_id, sdo_index, sub_index);
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
