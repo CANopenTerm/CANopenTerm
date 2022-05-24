@@ -138,15 +138,14 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
-            return;
+            sub_index = 0;
         }
         else
         {
             convert_token_to_uint(token, &sub_index);
         }
 
-        read_sdo(&can_message, node_id, sdo_index, sub_index);
+        read_sdo(&can_message, SDL_TRUE, node_id, sdo_index, sub_index);
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
@@ -188,7 +187,7 @@ static void print_usage_information(void)
     puts(" │  g  ║                               ║ Activate GUI │");
     puts(" │  n  ║ [node_id] [command or alias]  ║ NMT command  │");
     puts(" │  l  ║                               ║ List scripts │");
-    puts(" │  r  ║ [node_id] [index] [sub_index] ║ Read SDO     │");
+    puts(" │  r  ║ [node_id] [index] (sub_index) ║ Read SDO     │");
     puts(" │  s  ║ [script_name]                 ║ Run script   │");
     puts(" │  q  ║                               ║ Quit         │");
     puts(" └─────╨───────────────────────────────╨──────────────┘");

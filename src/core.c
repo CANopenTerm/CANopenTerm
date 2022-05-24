@@ -16,6 +16,8 @@
 #include "command.h"
 #include "can.h"
 #include "gui.h"
+#include "nmt_client.h"
+#include "sdo_client.h"
 #include "scripts.h"
 
 status_t core_init(core_t **core)
@@ -45,6 +47,7 @@ status_t core_init(core_t **core)
     // Initialise Lua.
     scripts_init((*core));
     lua_register_nmt_command((*core));
+    lua_register_sdo_commands((*core));
 
     // Initialise CAN.
     can_init((*core));

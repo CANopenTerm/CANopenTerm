@@ -69,6 +69,6 @@ typedef enum
 
 } sdo_abort_code_t;
 
-Uint32 read_sdo(can_message_t* sdo_response, Uint8 node_id, Uint16 index, Uint8 sub_index);
+Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_id, Uint16 index, Uint8 sub_index);
 
 #endif /* SDO_CLIENT_H */

@@ -26,7 +26,7 @@ Clear output: c
 Activate GUI: g
 NMT command:  n [node_id] [command or alias]
 List scripts: l
-Read SDO:     r [node_id] [index] [sub_index]
+Read SDO:     r [node_id] [index] (sub_index)
 Run script:   s [script_name]
 Quit:         q
 ```
@@ -52,6 +52,12 @@ The following commands are supported:
 0x80 = Go to Pre-operational
 0x81 = Reset node (Application reset)
 0x82 = Reset communication
+```
+
+To read service data objects (SDO):
+
+```lua
+read_sdo (node_id, index, sub_index)
 ```
 
 The node ID parameter must be between `0x00` and `0x7f`.
