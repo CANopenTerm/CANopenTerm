@@ -15,6 +15,8 @@
 #include "core.h"
 #include "scripts.h"
 
+static int script_thread(void *core);
+
 void scripts_init(core_t* core)
 {
     if (NULL == core)
@@ -90,4 +92,9 @@ int lua_delay_ms(lua_State* L)
 
     SDL_Delay(delay_in_ms);
     return 1;
+}
+
+static int script_thread(void *core)
+{
+
 }

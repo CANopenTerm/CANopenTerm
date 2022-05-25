@@ -100,7 +100,7 @@ void parse_command(char* input, core_t* core)
                 convert_token_to_uint(token, &command);
             }
         }
-        send_nmt_command((Uint16)node_id, (Uint8)command);
+        nmt_send_command((Uint16)node_id, (Uint8)command);
     }
     else if (0 == SDL_strncmp(token, "l", 1))
     {
@@ -145,7 +145,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sub_index);
         }
 
-        read_sdo(&can_message, SDL_TRUE, node_id, sdo_index, sub_index);
+        sdo_read(&can_message, SDL_TRUE, node_id, sdo_index, sub_index);
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {

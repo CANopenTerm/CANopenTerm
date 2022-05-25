@@ -11,17 +11,24 @@
 #define CAN_H
 
 #include "SDL.h"
+#include "lua.h"
 #include "core.h"
 
 typedef struct can_message
 {
-    Uint8 length;
-    Uint8 data[4];
+    Uint16 id;
+    Uint8  length;
+    Uint8  data[8];
 
 } can_message_t;
 
 void     can_init(core_t* core_t);
 void     can_deinit(core_t* core);
+Uint32   can_write(can_message_t* message);
+Uint32   can_read(can_message_t* message);
+int      lua_can_write(lua_State* L);
+void     lua_register_can_commands(core_t* core);
+void     can_print_error_message(const char* context, Uint32 can_status);
 SDL_bool is_can_initialised(core_t* core);
 
 #endif /* CAN_H */

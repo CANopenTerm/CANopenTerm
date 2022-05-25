@@ -41,7 +41,7 @@ functions.  These are explained in this section.
 NMT commands can be sent with the following Lua function:
 
 ```lua
-send_nmt_command (node_id, nmt_command)
+nmt_send_command (node_id, nmt_command)
 ```
 
 The following commands are supported:
@@ -57,10 +57,16 @@ The following commands are supported:
 To read service data objects (SDO):
 
 ```lua
-read_sdo (node_id, index, sub_index)
+sdo_read (node_id, index, sub_index)
 ```
 
 The node ID parameter must be between `0x00` and `0x7f`.
+
+In addition, there are also functions to address the CAN directly:
+
+```lua
+can_write (can_id, data_length, data_d0_d3, data_d4_d7)
+```
 
 Lua does not provide its own function to delay the program flow.  The
 following function is made available for this purpose:

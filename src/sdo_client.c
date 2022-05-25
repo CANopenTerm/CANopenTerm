@@ -7,11 +7,6 @@
  *
  **/
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include "PCANBasic.h"
-
 #include "SDL.h"
 #include "lua.h"
 #include "nuklear.h"
@@ -23,34 +18,31 @@
 
 static void print_abort_code_error(Uint32 abort_code);
 
-Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_id, Uint16 index, Uint8 sub_index)
+Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_id, Uint16 index, Uint8 sub_index)
 {
-    TPCANMsg can_message       = { 0 };
-    Uint32   can_status        = PCAN_ERROR_OK;
-    SDL_bool response_received = SDL_FALSE;
-    Uint64   timeout_time      = 0;
-    Uint64   time_a;
+    can_message_t can_message       = { 0 };
+    Uint32        can_status        = 0;
+    SDL_bool      response_received = SDL_FALSE;
+    Uint64        timeout_time      = 0;
+    Uint64        time_a;
 
     if (node_id > 0x7f)
     {
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    can_message.ID      = 0x600 + node_id;
-    can_message.MSGTYPE = PCAN_MESSAGE_STANDARD;
-    can_message.LEN     = 8;
+    can_message.id      = 0x600 + node_id;
+    can_message.length  = 8;
 
-    can_message.DATA[0] = READ_DICT_OBJECT;
-    can_message.DATA[1] = (Uint8)(index  & 0x00ff);
-    can_message.DATA[2] = (Uint8)((index & 0xff00) >> 8);
-    can_message.DATA[3] = sub_index;
+    can_message.data[0] = READ_DICT_OBJECT;
+    can_message.data[1] = (Uint8)(index  & 0x00ff);
+    can_message.data[2] = (Uint8)((index & 0xff00) >> 8);
+    can_message.data[3] = sub_index;
 
-    can_status = CAN_Write(PCAN_USBBUS1, &can_message);
-    if (PCAN_ERROR_OK != can_status)
+    can_status = can_write(&can_message);
+    if (0 != can_status)
     {
-        char err_message[100] = { 0 };
-        CAN_GetErrorText(can_status, 0x09, err_message);
-        SDL_LogWarn(0, "Could not send read SDO packet: %s", err_message);
+        can_print_error_message("Could not send read SDO packet", can_status);
     }
 
     time_a = SDL_GetTicks64();
@@ -59,11 +51,11 @@ Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_
         Uint64 time_b;
         Uint64 delta_time;
 
-        if ((0x580 + node_id) == can_message.ID)
+        if ((0x580 + node_id) == can_message.id)
         {
-            if ((index  & 0x00ff) == can_message.DATA[1])
+            if ((index  & 0x00ff) == can_message.data[1])
             {
-                if (((index & 0xff00) >> 8) == can_message.DATA[2])
+                if (((index & 0xff00) >> 8) == can_message.data[2])
                 {
                     response_received = SDL_TRUE;
                     continue;
@@ -71,7 +63,7 @@ Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_
             }
         }
 
-        can_status = CAN_Read(PCAN_USBBUS1, &can_message, NULL);
+        can_status = can_read(&can_message);
         time_b     = time_a;
         time_a     = SDL_GetTicks64();
 
@@ -85,11 +77,10 @@ Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_
         }
         timeout_time += delta_time;
     }
-    if (PCAN_ERROR_OK != can_status)
+
+    if (0 != can_status)
     {
-        char err_message[100] = { 0 };
-        CAN_GetErrorText(can_status, 0x09, err_message);
-        SDL_LogWarn(0, "Could not receive SDO response: %s", err_message);
+        can_print_error_message("Could not receive SDO response", can_status);
         sdo_response = NULL;
     }
     else if (timeout_time >= SDO_TIMEOUT_IN_MS)
@@ -101,7 +92,7 @@ Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_
     {
         Uint32 abort_code = 0;
         int    data_index;
-        switch (can_message.DATA[0])
+        switch (can_message.data[0])
         {
             case READ_DICT_4_BYTE_SEND:
                 sdo_response->length = 4;
@@ -116,10 +107,10 @@ Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_
                 sdo_response->length = 1;
                 break;
             case READ_ABORT:
-                abort_code = (abort_code & 0xffffff00) | can_message.DATA[7];
-                abort_code = (abort_code & 0xffff00ff) | ((Uint32)can_message.DATA[6] << 8);
-                abort_code = (abort_code & 0xff00ffff) | ((Uint32)can_message.DATA[5] << 16);
-                abort_code = (abort_code & 0x00ffffff) | ((Uint32)can_message.DATA[4] << 24);
+                abort_code = (abort_code & 0xffffff00) | can_message.data[7];
+                abort_code = (abort_code & 0xffff00ff) | ((Uint32)can_message.data[6] << 8);
+                abort_code = (abort_code & 0xff00ffff) | ((Uint32)can_message.data[5] << 16);
+                abort_code = (abort_code & 0x00ffffff) | ((Uint32)can_message.data[4] << 24);
                 abort_code = SDL_SwapBE32(abort_code);
 
                 print_abort_code_error(abort_code);
@@ -128,7 +119,7 @@ Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_
 
         for (data_index = 0; data_index < sdo_response->length; data_index += 1)
         {
-            sdo_response->data[data_index] = can_message.DATA[4 + data_index];
+            sdo_response->data[data_index] = can_message.data[4 + data_index];
         }
 
         if (SDL_TRUE == format_output)
@@ -149,9 +140,9 @@ Uint32 read_sdo(can_message_t* sdo_response, SDL_bool format_output, Uint8 node_
     return can_status;
 }
 
-int lua_read_sdo(lua_State* L)
+int lua_sdo_read(lua_State* L)
 {
-    can_message_t sdo_response;
+    sdo_message_t sdo_response;
     int           node_id   = luaL_checkinteger(L, 1);
     int           index     = luaL_checkinteger(L, 2);
     int           sub_index = luaL_checkinteger(L, 3);
@@ -161,7 +152,7 @@ int lua_read_sdo(lua_State* L)
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (PCAN_ERROR_OK != read_sdo(&sdo_response, SDL_FALSE, node_id, index, sub_index))
+    if (0 != sdo_read(&sdo_response, SDL_FALSE, node_id, index, sub_index))
     {
         return 0;
     }
@@ -173,8 +164,8 @@ int lua_read_sdo(lua_State* L)
 
 void lua_register_sdo_commands(core_t* core)
 {
-    lua_pushcfunction(core->L, lua_read_sdo);
-    lua_setglobal(core->L, "read_sdo");
+    lua_pushcfunction(core->L, lua_sdo_read);
+    lua_setglobal(core->L, "sdo_read");
 }
 
 static void print_abort_code_error(Uint32 abort_code)

@@ -12,9 +12,9 @@
 #include <windows.h>
 #endif
 
-#include "core.h"
-#include "command.h"
 #include "can.h"
+#include "command.h"
+#include "core.h"
 #include "gui.h"
 #include "nmt_client.h"
 #include "sdo_client.h"
@@ -46,6 +46,7 @@ status_t core_init(core_t **core)
 
     // Initialise Lua.
     scripts_init((*core));
+    lua_register_can_commands((*core));
     lua_register_nmt_command((*core));
     lua_register_sdo_commands((*core));
 
