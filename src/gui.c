@@ -11,6 +11,7 @@
 #include "gui.h"
 #include "menu_bar.h"
 #include "nmt_client.h"
+#include "printf.h"
 
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600
@@ -50,14 +51,14 @@ status_t gui_init(core_t* core)
 
     if (NULL == core->window)
     {
-        SDL_LogError(0, "Could not create window: %s", SDL_GetError());
+        c_log(LOG_ERROR, "Could not create window: %s", SDL_GetError());
         return COT_ERROR;
     }
 
     core->renderer = SDL_CreateRenderer(core->window, -1, flags);
     if (NULL == core->renderer)
     {
-        SDL_LogError(0, "Unable to create renderer: %s", SDL_GetError());
+        c_log(LOG_ERROR, "Unable to create renderer: %s", SDL_GetError());
         return COT_ERROR;
     }
 

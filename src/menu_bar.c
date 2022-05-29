@@ -30,6 +30,11 @@ void menu_bar_widget(core_t* core)
         return;
     }
 
+    if (SDL_FALSE == core->is_gui_active)
+    {
+        return;
+    }
+
     SDL_GetWindowSize(core->window, &window_width, &window_height);
 
     if (nk_begin(
@@ -75,6 +80,7 @@ void menu_bar_widget(core_t* core)
             if (nk_menu_item_label(core->ctx, "Quit", NK_TEXT_LEFT))
             {
                 gui_deinit(core);
+                return;
             }
             nk_menu_end(core->ctx);
         }

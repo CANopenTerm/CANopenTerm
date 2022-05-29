@@ -33,6 +33,17 @@ typedef enum color
 
 } color_t;
 
-void c_printf(const color_t fg, const color_t bg, const char* format, ...);
+typedef enum log_level
+{
+    LOG_DEFAULT = 0,
+    LOG_INFO,
+    LOG_SUCCESS,
+    LOG_WARNING,
+    LOG_ERROR
+
+} log_level_t;
+
+void c_printf(const color_t color, const char* format, ...);
+void c_log(const log_level_t level, const char* format, ...);
 
 #endif /* PRINTF_H */

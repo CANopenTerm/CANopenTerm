@@ -12,6 +12,7 @@
 #include "nuklear.h"
 #include "can.h"
 #include "core.h"
+#include "printf.h"
 #include "sdo_client.h"
 
 #define SDO_TIMEOUT_IN_MS 100
@@ -42,7 +43,7 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_
     can_status = can_write(&can_message);
     if (0 != can_status)
     {
-        can_print_error_message("Could not send read SDO packet", can_status);
+        can_print_error_message(NULL, can_status);
     }
 
     time_a = SDL_GetTicks64();
@@ -80,12 +81,12 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_
 
     if (0 != can_status)
     {
-        can_print_error_message("Could not receive SDO response", can_status);
+        can_print_error_message(NULL, can_status);
         sdo_response = NULL;
     }
     else if (timeout_time >= SDO_TIMEOUT_IN_MS)
     {
-        SDL_LogWarn(0, "SDO timeout: USB-dongle present?");
+        c_log(LOG_WARNING, "SDO timeout: USB-dongle present?");
         sdo_response = NULL;
     }
     else
@@ -124,7 +125,7 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_
 
         if (SDL_TRUE == format_output)
         {
-            SDL_Log("Index %x, Sub-index %x: %u byte(s) received: %u (0x%x)",
+            c_log(LOG_DEFAULT, "Index %x, Sub-index %x: %u byte(s) received: %u (0x%x)",
                     index,
                     sub_index,
                     sdo_response->length,
@@ -133,7 +134,7 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_
         }
         else
         {
-            printf("%u (0x%x)", (Uint32)*sdo_response->data, (Uint32)*sdo_response->data);
+            c_log(LOG_DEFAULT, "%u (0x%x)", (Uint32)*sdo_response->data, (Uint32)*sdo_response->data);
         }
     }
 
@@ -173,97 +174,97 @@ static void print_abort_code_error(Uint32 abort_code)
     switch(abort_code)
     {
         case ABORT_TOGGLE_BIT_NOT_ALTERED:
-            SDL_LogWarn(0, "Toggle bit not altered");
+            c_log(LOG_WARNING, "Toggle bit not altered");
             break;
         case ABORT_SDO_PROTOCOL_TIMED_OUT:
-            SDL_LogWarn(0, "SDO protocol timed out");
+            c_log(LOG_WARNING, "SDO protocol timed out");
             break;
         case ABORT_CMD_SPECIFIER_INVALID_UNKNOWN:
-            SDL_LogWarn(0, "Client/server command specifier not valid or unknown");
+            c_log(LOG_WARNING, "Client/server command specifier not valid or unknown");
             break;
         case ABORT_INVALID_BLOCK_SIZE:
-            SDL_LogWarn(0, "Invalid block size");
+            c_log(LOG_WARNING, "Invalid block size");
             break;
         case ABORT_INVALID_SEQUENCE_NUMBER:
-            SDL_LogWarn(0, "Invalid sequence number");
+            c_log(LOG_WARNING, "Invalid sequence number");
             break;
         case ABORT_CRC_ERROR:
-            SDL_LogWarn(0, "CRC error");
+            c_log(LOG_WARNING, "CRC error");
             break;
         case ABORT_OUT_OF_MEMORY:
-            SDL_LogWarn(0, "Out of memory");
+            c_log(LOG_WARNING, "Out of memory");
             break;
         case ABORT_UNSUPPORTED_ACCESS:
-            SDL_LogWarn(0, "Unsupported access to an object");
+            c_log(LOG_WARNING, "Unsupported access to an object");
             break;
         case ABORT_ATTEMPT_TO_READ_WRITE_ONLY:
-            SDL_LogWarn(0, "Attempt to read a write only object");
+            c_log(LOG_WARNING, "Attempt to read a write only object");
             break;
         case ABORT_ATTEMPT_TO_WRITE_READ_ONLY:
-            SDL_LogWarn(0, "Attempt to write a read only object");
+            c_log(LOG_WARNING, "Attempt to write a read only object");
             break;
         case ABORT_OBJECT_DOES_NOT_EXIST:
-            SDL_LogWarn(0, "Object does not exist in the object dictionary");
+            c_log(LOG_WARNING, "Object does not exist in the object dictionary");
             break;
         case ABORT_OBJECT_CANNOT_BE_MAPPED:
-            SDL_LogWarn(0, "Object cannot be mapped to the PDO");
+            c_log(LOG_WARNING, "Object cannot be mapped to the PDO");
             break;
         case ABORT_WOULD_EXCEED_PDO_LENGTH:
-            SDL_LogWarn(0, "Number, length of the object would exceed PDO length");
+            c_log(LOG_WARNING, "Number, length of the object would exceed PDO length");
             break;
         case ABORT_GENERAL_INCOMPATIBILITY_REASON:
-            SDL_LogWarn(0, "General parameter incompatibility reason");
+            c_log(LOG_WARNING, "General parameter incompatibility reason");
             break;
         case ABORT_GENERAL_INTERNAL_INCOMPATIBILITY:
-            SDL_LogWarn(0, "General internal incompatibility in the device");
+            c_log(LOG_WARNING, "General internal incompatibility in the device");
             break;
         case ABORT_ACCESS_FAILED_DUE_HARDWARE_ERROR:
-            SDL_LogWarn(0, "Access failed due to an hardware error");
+            c_log(LOG_WARNING, "Access failed due to an hardware error");
             break;
         case ABORT_DATA_TYPE_DOES_NOT_MATCH:
-            SDL_LogWarn(0, "Data type does not match, length does not match");
+            c_log(LOG_WARNING, "Data type does not match, length does not match");
             break;
         case ABORT_DATA_TYPE_LENGTH_TOO_HIGH:
-            SDL_LogWarn(0, "Data type does not match, length too high");
+            c_log(LOG_WARNING, "Data type does not match, length too high");
             break;
         case ABORT_DATA_TYPE_LENGTH_TOO_LOW:
-            SDL_LogWarn(0, "Data type does not match, length too low");
+            c_log(LOG_WARNING, "Data type does not match, length too low");
             break;
         case ABORT_SUB_INDEX_DOES_NOT_EXIST:
-            SDL_LogWarn(0, "Sub-index does not exist");
+            c_log(LOG_WARNING, "Sub-index does not exist");
             break;
         case ABORT_INVALID_VALUE_FOR_PARAMETER:
-            SDL_LogWarn(0, "Invalid value for parameter");
+            c_log(LOG_WARNING, "Invalid value for parameter");
             break;
         case ABORT_VALUE_FOR_PARAMETER_TOO_HIGH:
-            SDL_LogWarn(0, "Value for parameter written too high");
+            c_log(LOG_WARNING, "Value for parameter written too high");
             break;
         case ABORT_VALUE_FOR_PARAMETER_TOO_LOW:
-            SDL_LogWarn(0, "Value for parameter written too low");
+            c_log(LOG_WARNING, "Value for parameter written too low");
             break;
         case ABORT_MAX_VALUE_LESS_THAN_MIN_VALUE:
-            SDL_LogWarn(0, "Maximum value is less than minimum value");
+            c_log(LOG_WARNING, "Maximum value is less than minimum value");
             break;
         case ABORT_RESOURCE_NOT_AVAILABLE:
-            SDL_LogWarn(0, "Resource not available: SDO connection");
+            c_log(LOG_WARNING, "Resource not available: SDO connection");
             break;
         case ABORT_GENERAL_ERROR:
-            SDL_LogWarn(0, "General error");
+            c_log(LOG_WARNING, "General error");
             break;
         case ABORT_DATA_CANNOT_BE_TRANSFERRED:
-            SDL_LogWarn(0, "Data cannot be transferred");
+            c_log(LOG_WARNING, "Data cannot be transferred");
             break;
         case ABORT_DATA_CANNOT_TRANSFERRED_LOCAL_CTRL:
-            SDL_LogWarn(0, "Data cannot be transferred or stored to the application because of local control");
+            c_log(LOG_WARNING, "Data cannot be transferred or stored to the application because of local control");
             break;
         case ABORT_DATA_CANNOT_TRANSFERRED_DEV_STATE:
-            SDL_LogWarn(0, "Data cannot be transferred because of the present device state");
+            c_log(LOG_WARNING, "Data cannot be transferred because of the present device state");
             break;
         case ABORT_NO_OBJECT_DICTIONARY_PRESENT:
-            SDL_LogWarn(0, "Object dictionary dynamic generation fails or no object dictionary present");
+            c_log(LOG_WARNING, "Object dictionary dynamic generation fails or no object dictionary present");
             break;
         case ABORT_NO_DATA_AVAILABLE:
-            SDL_LogWarn(0, "No data available");
+            c_log(LOG_WARNING, "No data available");
             break;
     }
 }

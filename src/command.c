@@ -14,6 +14,7 @@
 #include "command.h"
 #include "gui.h"
 #include "nmt_client.h"
+#include "printf.h"
 #include "scripts.h"
 
 #ifdef _WIN32
@@ -72,7 +73,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            nmt_print_help();
             return;
         }
         else
@@ -180,15 +181,48 @@ static void convert_token_to_uint(char* token, Uint32* result)
 
 static void print_usage_information(void)
 {
-    puts(" ┌─────╥───────────────────────────────╥──────────────┐");
-    puts(" │ CMD ║ Parameter(s)                  ║ Function     │");
-    puts(" ├─────╫───────────────────────────────╫──────────────┤");
-    puts(" │  c  ║                               ║ Clear putput │");
-    puts(" │  g  ║                               ║ Activate GUI │");
-    puts(" │  n  ║ [node_id] [command or alias]  ║ NMT command  │");
-    puts(" │  l  ║                               ║ List scripts │");
-    puts(" │  r  ║ [node_id] [index] (sub_index) ║ Read SDO     │");
-    puts(" │  s  ║ [script_name]                 ║ Run script   │");
-    puts(" │  q  ║                               ║ Quit         │");
-    puts(" └─────╨───────────────────────────────╨──────────────┘");
+    color_t frame_color = DARK_CYAN;
+    color_t text_color  = DARK_WHITE;
+
+    c_printf(frame_color, " ┌─────╥───────────────────────────────╥──────────────┐\r\n │ ");
+    c_printf(text_color,  "CMD ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Parameter(s)                  ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Function     ");
+    c_printf(frame_color, "│\r\n ├─────╫───────────────────────────────╫──────────────┤\r\n │  ");
+    c_printf(text_color,  "c  ");
+    c_printf(frame_color, "║                               ║ ");
+    c_printf(text_color,  "Clear output ");
+    c_printf(frame_color, "│\r\n │  ");
+    c_printf(text_color,  "g  ");
+    c_printf(frame_color, "║                               ║ ");
+    c_printf(text_color,  "Activate GUI ");
+    c_printf(frame_color, "│\r\n │  ");
+    c_printf(text_color,  "n  ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "[node_id] [command or alias]");
+    c_printf(frame_color, "  ║ ");
+    c_printf(text_color,  "NMT command  ");
+    c_printf(frame_color, "│\r\n │  ");
+    c_printf(text_color,  "l  ");
+    c_printf(frame_color, "║                               ║ ");
+    c_printf(text_color,  "List scripts ");
+    c_printf(frame_color, "│\r\n │  ");
+    c_printf(text_color,  "r  ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "[node_id] [index] (sub_index) ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Read SDO     ");
+    c_printf(frame_color, "│\r\n │  ");
+    c_printf(text_color,  "s  ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "[script_name]");
+    c_printf(frame_color, "                 ║ ");
+    c_printf(text_color,  "Run script   ");
+    c_printf(frame_color, "│\r\n │  ");
+    c_printf(text_color,  "q  ");
+    c_printf(frame_color, "║                               ║ ");
+    c_printf(text_color,  "Quit         ");
+    c_printf(frame_color, "│\r\n └─────╨───────────────────────────────╨──────────────┘\r\n");
 }

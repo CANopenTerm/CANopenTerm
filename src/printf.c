@@ -45,7 +45,7 @@ static int printf_init(void)
 }
 #endif /* _WIN32 */
 
-void c_printf(const color_t fg, const color_t bg, const char* format, ...)
+void c_printf(const color_t color, const char* format, ...)
 {
     char    buffer[1024];
     va_list varg;
@@ -66,7 +66,7 @@ void c_printf(const color_t fg, const color_t bg, const char* format, ...)
         }
     }
 
-    switch(fg)
+    switch(color)
     {
         default:
             attr |= default_attr;
@@ -104,56 +104,13 @@ void c_printf(const color_t fg, const color_t bg, const char* format, ...)
             break;
     }
 
-    if (fg >= LIGHT_BLACK)
+    if (color >= LIGHT_BLACK)
     {
         attr |= FOREGROUND_INTENSITY;
     }
 
-    switch(bg)
-    {
-        default:
-            attr |= default_attr;
-            break;
-        case DARK_BLACK:
-        case LIGHT_BLACK:
-            break;
-        case DARK_BLUE:
-        case LIGHT_BLUE:
-            attr |= BACKGROUND_BLUE;
-            break;
-        case DARK_GREEN:
-        case LIGHT_GREEN:
-            attr |= BACKGROUND_GREEN;
-            break;
-        case DARK_CYAN:
-        case LIGHT_CYAN:
-            attr |= (BACKGROUND_BLUE | BACKGROUND_GREEN);
-            break;
-        case DARK_RED:
-        case LIGHT_RED:
-            attr |= BACKGROUND_RED;
-            break;
-        case DARK_MAGENTA:
-        case LIGHT_MAGENTA:
-            attr |= (BACKGROUND_RED | BACKGROUND_BLUE);
-            break;
-        case DARK_YELLOW:
-        case LIGHT_YELLOW:
-            attr |= (BACKGROUND_RED | BACKGROUND_GREEN);
-            break;
-        case DARK_WHITE:
-        case LIGHT_WHITE:
-            attr |= (BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
-            break;
-    }
-
-    if (bg >= LIGHT_BLACK)
-    {
-        attr |= BACKGROUND_INTENSITY;
-    }
-
 #elif defined __linux__
-    switch(fg)
+    switch(color)
     {
         default:
             break;
@@ -207,59 +164,6 @@ void c_printf(const color_t fg, const color_t bg, const char* format, ...)
             break;
     }
 
-    switch(bg)
-    {
-        default:
-            break;
-        case DARK_BLACK:
-            printf("\e[40m");
-            break;
-        case DARK_BLUE:
-            printf("\e[44m");
-            break;
-        case DARK_GREEN:
-            printf("\e[42m");
-            break;
-        case DARK_CYAN:
-            printf("\e[46m");
-            break;
-        case DARK_RED:
-            printf("\e[41m");
-            break;
-        case DARK_MAGENTA:
-            printf("\e[45m");
-            break;
-        case DARK_YELLOW:
-            printf("\e[43m");
-            break;
-        case DARK_WHITE:
-            printf("\e[47m");
-            break;
-        case LIGHT_BLACK:
-            printf("\e[0;100m");
-            break;
-        case LIGHT_BLUE:
-            printf("\e[0;104m");
-            break;
-        case LIGHT_GREEN:
-            printf("\e[0;102m");
-            break;
-        case LIGHT_CYAN:
-            printf("\e[0;106m");
-            break;
-        case LIGHT_RED:
-            printf("\e[0;101m");
-            break;
-        case LIGHT_MAGENTA:
-            printf("\e[0;105m");
-            break;
-        case LIGHT_YELLOW:
-            printf("\e[0;103m");
-            break;
-        case LIGHT_WHITE:
-            printf("\e[0;107m");
-            break;
-    }
 #endif /* _WIN32 */
 
    va_start(varg, format);
@@ -277,4 +181,34 @@ void c_printf(const color_t fg, const color_t bg, const char* format, ...)
 #elif defined __linux__
    printf("\e[0m");
 #endif
+}
+
+void c_log(const log_level_t level, const char* format, ...)
+{
+    char    buffer[1024];
+    va_list varg;
+
+   va_start(varg, format);
+   SDL_vsnprintf(buffer, 1024, format, varg);
+   va_end(varg);
+
+    switch(level)
+    {
+        default:
+        case LOG_DEFAULT:
+            break;
+        case LOG_INFO:
+            c_printf(DARK_WHITE,  "[INFO]    ");
+            break;
+        case LOG_SUCCESS:
+            c_printf(LIGHT_GREEN, "[SUCCESS] ");
+            break;
+        case LOG_WARNING:
+            c_printf(DARK_YELLOW, "[WARNING] ");
+            break;
+        case LOG_ERROR:
+            c_printf(LIGHT_RED,   "[ERROR]   ");
+            break;
+    }
+    c_printf(DARK_WHITE, "%s\r\n", buffer);
 }

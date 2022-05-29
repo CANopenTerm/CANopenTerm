@@ -13,6 +13,7 @@
 #include "core.h"
 #include "nmt_client.h"
 #include "nuklear.h"
+#include "printf.h"
 
 Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command)
 {
@@ -38,14 +39,14 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command)
         case NMT_RESET_COMM:
             break;
         default:
-            SDL_LogWarn(0, "Invalid NMT command 0x%x", command);
+            nmt_print_help();
             return can_status;
     }
 
     can_status = can_write(&can_message);
     if (0 != can_status)
     {
-        can_print_error_message("Could not send NMT command", can_status);
+        can_print_error_message(NULL, can_status);
     }
 
     return can_status;
@@ -99,6 +100,11 @@ void nmt_client_widget(core_t* core)
         return;
     }
 
+    if (SDL_FALSE == core->is_gui_active)
+    {
+        return;
+    }
+
     SDL_GetWindowSize(core->window, &window_width, &window_height);
 
     if (0 != nk_begin(
@@ -140,4 +146,36 @@ void nmt_client_widget(core_t* core)
     }
 
     nk_end(core->ctx);
+}
+
+void nmt_print_help(void)
+{
+    color_t frame_color = DARK_CYAN;
+    color_t text_color  = DARK_WHITE;
+
+    c_printf(frame_color, " ┌──────╥────────────────────────────────┐\r\n │ ");
+    c_printf(text_color,  "CMD  ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Description                    ");
+    c_printf(frame_color, "│\r\n ├──────╫────────────────────────────────┤\r\n │ ");
+    c_printf(text_color,  "0x01 ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Start (go to Operational)      ");
+    c_printf(frame_color, "│\r\n │ ");
+    c_printf(text_color,  "0x02 ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Stop (go to Stopped)           ");
+    c_printf(frame_color, "│\r\n │ ");
+    c_printf(text_color,  "0x80 ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Go to Pre-operational          ");
+    c_printf(frame_color, "│\r\n │ ");
+    c_printf(text_color,  "0x81 ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Reset node (Application reset) ");
+    c_printf(frame_color, "│\r\n │ ");
+    c_printf(text_color,  "0x82 ");
+    c_printf(frame_color, "║ ");
+    c_printf(text_color,  "Reset communication            ");
+    c_printf(frame_color, "│\r\n └──────╨────────────────────────────────┘\r\n");
 }

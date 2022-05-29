@@ -13,6 +13,7 @@
 #include "lauxlib.h"
 #include "dirent.h"
 #include "core.h"
+#include "printf.h"
 #include "scripts.h"
 
 static int script_thread(void *core);
@@ -89,7 +90,7 @@ void run_script(const char* name, core_t* core)
     }
     else
     {
-        SDL_LogWarn(0, "Could not load script '%s'", name);
+        c_log(LOG_WARNING, "Could not load script '%s'", name);
     }
 }
 

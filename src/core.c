@@ -33,15 +33,15 @@ status_t core_init(core_t **core)
     SetConsoleOutputCP(65001);
 #endif
 
-    printf("CANopenTerm\r\n");
-    printf("Copyright (c) 2022, Michael Fitzmayer.\r\n");
+    puts("CANopenTerm");
+    puts("Copyright (c) 2022, Michael Fitzmayer.\r\n");
 
     // Initialise SDL.
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
 
     if (0 != SDL_Init(SDL_INIT_VIDEO))
     {
-        SDL_LogError(0, "Unable to initialise video sub-system: %s", SDL_GetError());
+        c_log(LOG_ERROR, "Unable to initialise video sub-system: %s", SDL_GetError());
         return COT_ERROR;
     }
 
@@ -82,7 +82,7 @@ status_t core_update(core_t *core)
         }
     }
 
-    printf(": ");
+    c_printf(LIGHT_WHITE, ": ");
     fgets(command, 64, stdin);
     parse_command(command, core);
 

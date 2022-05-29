@@ -11,6 +11,7 @@
 #include "lua.h"
 #include "can.h"
 #include "core.h"
+#include "printf.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -114,11 +115,11 @@ void can_print_error_message(const char* context, Uint32 can_status)
         CAN_GetErrorText(can_status, 0x09, err_message);
         if (NULL == context)
         {
-            SDL_LogWarn(0, "%s", err_message);
+            c_log(LOG_WARNING, "%s", err_message);
         }
         else
         {
-            SDL_LogWarn(0, "%s: %s", context, err_message);
+            c_log(LOG_WARNING, "%s: %s", context, err_message);
         }
     }
 }
@@ -157,7 +158,7 @@ static int can_monitor(void *core_pt)
 
             if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
             {
-                SDL_LogInfo(0, "CAN successfully initialised");
+                c_log(LOG_SUCCESS, "CAN successfully initialised");
                 core->is_can_initialised = SDL_TRUE;
             }
 
@@ -173,7 +174,7 @@ static int can_monitor(void *core_pt)
             core->is_can_initialised = SDL_FALSE;
 
             CAN_Uninitialize(PCAN_NONEBUS);
-            SDL_LogWarn(0, "CAN de-initialised: USB-dongle removed?");
+            c_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
         }
         SDL_Delay(100);
     }
