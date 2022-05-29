@@ -17,6 +17,7 @@
 #include "core.h"
 #include "gui.h"
 #include "nmt_client.h"
+#include "printf.h"
 #include "sdo_client.h"
 #include "scripts.h"
 
@@ -32,8 +33,8 @@ status_t core_init(core_t **core)
     SetConsoleOutputCP(65001);
 #endif
 
-    puts("CANopenTerm");
-    puts("Copyright (c) 2022, Michael Fitzmayer.\r\n");
+    printf("CANopenTerm\r\n");
+    printf("Copyright (c) 2022, Michael Fitzmayer.\r\n");
 
     // Initialise SDL.
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
@@ -46,9 +47,12 @@ status_t core_init(core_t **core)
 
     // Initialise Lua.
     scripts_init((*core));
-    lua_register_can_commands((*core));
-    lua_register_nmt_command((*core));
-    lua_register_sdo_commands((*core));
+    if (NULL != (*core)->L)
+    {
+        lua_register_can_commands((*core));
+        lua_register_nmt_command((*core));
+        lua_register_sdo_commands((*core));
+    }
 
     // Initialise CAN.
     can_init((*core));
@@ -99,7 +103,6 @@ void core_deinit(core_t *core)
 
     can_deinit(core);
     scripts_deinit(core);
-    free(core);
-
     SDL_Quit();
+    free(core);
 }

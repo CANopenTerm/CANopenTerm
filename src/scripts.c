@@ -25,10 +25,14 @@ void scripts_init(core_t* core)
     }
 
     core->L = luaL_newstate();
-    luaL_openlibs(core->L);
 
-    lua_pushcfunction(core->L, lua_delay_ms);
-    lua_setglobal(core->L, "delay_ms");
+    if (NULL != core->L)
+    {
+        luaL_openlibs(core->L);
+
+        lua_pushcfunction(core->L, lua_delay_ms);
+        lua_setglobal(core->L, "delay_ms");
+    }
 }
 
 void scripts_deinit(core_t* core)
@@ -38,7 +42,10 @@ void scripts_deinit(core_t* core)
         return;
     }
 
-    lua_close(core->L);
+    if (NULL != core->L)
+    {
+        lua_close(core->L);
+    }
 }
 
 void list_scripts(void)
