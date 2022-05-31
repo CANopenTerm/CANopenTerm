@@ -14,6 +14,7 @@
 #include "nmt_client.h"
 #include "nuklear.h"
 #include "printf.h"
+#include "table.h"
 
 Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command)
 {
@@ -150,32 +151,15 @@ void nmt_client_widget(core_t* core)
 
 void nmt_print_help(void)
 {
-    color_t frame_color = DARK_CYAN;
-    color_t text_color  = DARK_WHITE;
+    table_t table = { DARK_CYAN, DARK_WHITE, 4, 5, 30 };
 
-    c_printf(frame_color, " ┌──────╥────────────────────────────────┐\r\n │ ");
-    c_printf(text_color,  "CMD  ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Description                    ");
-    c_printf(frame_color, "│\r\n ├──────╫────────────────────────────────┤\r\n │ ");
-    c_printf(text_color,  "0x01 ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Start (go to Operational)      ");
-    c_printf(frame_color, "│\r\n │ ");
-    c_printf(text_color,  "0x02 ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Stop (go to Stopped)           ");
-    c_printf(frame_color, "│\r\n │ ");
-    c_printf(text_color,  "0x80 ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Go to Pre-operational          ");
-    c_printf(frame_color, "│\r\n │ ");
-    c_printf(text_color,  "0x81 ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Reset node (Application reset) ");
-    c_printf(frame_color, "│\r\n │ ");
-    c_printf(text_color,  "0x82 ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Reset communication            ");
-    c_printf(frame_color, "│\r\n └──────╨────────────────────────────────┘\r\n");
+    table_print_header(&table);
+    table_print_row("CMD", "Alias", "Description", &table);
+    table_print_divider(&table);
+    table_print_row("0x01", "op",    "Start (go to Operational)",      &table);
+    table_print_row("0x02", "stop",  "Stop (go to Stopped)",           &table);
+    table_print_row("0x80", "preop", "Go to Pre-operational",          &table);
+    table_print_row("0x81", "reset", "Reset node (Application reset)", &table);
+    table_print_row("0x82", " ",     "Reset communication",            &table);
+    table_print_footer(&table);
 }

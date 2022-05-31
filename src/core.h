@@ -34,6 +34,7 @@ typedef struct core
     SDL_bool           is_can_initialised;
     SDL_bool           is_running;
     SDL_bool           is_gui_active;
+    SDL_bool           is_script_running;
 
 } core_t;
 

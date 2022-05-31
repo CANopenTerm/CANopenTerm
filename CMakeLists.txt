@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 project(CANopenTerm C)
 
 set(CMAKE_C_STANDARD 90)
@@ -222,7 +222,8 @@ set(project_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/printf.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/sdo_client.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/sdo_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/table.c)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)

@@ -16,6 +16,7 @@
 #include "nmt_client.h"
 #include "printf.h"
 #include "scripts.h"
+#include "table.h"
 
 #ifdef _WIN32
 #  define CLEAR_CMD "cls"
@@ -181,48 +182,17 @@ static void convert_token_to_uint(char* token, Uint32* result)
 
 static void print_usage_information(void)
 {
-    color_t frame_color = DARK_CYAN;
-    color_t text_color  = DARK_WHITE;
+    table_t table = { DARK_CYAN, DARK_WHITE, 3, 29, 12 };
 
-    c_printf(frame_color, " ┌─────╥───────────────────────────────╥──────────────┐\r\n │ ");
-    c_printf(text_color,  "CMD ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Parameter(s)                  ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Function     ");
-    c_printf(frame_color, "│\r\n ├─────╫───────────────────────────────╫──────────────┤\r\n │  ");
-    c_printf(text_color,  "c  ");
-    c_printf(frame_color, "║                               ║ ");
-    c_printf(text_color,  "Clear output ");
-    c_printf(frame_color, "│\r\n │  ");
-    c_printf(text_color,  "g  ");
-    c_printf(frame_color, "║                               ║ ");
-    c_printf(text_color,  "Activate GUI ");
-    c_printf(frame_color, "│\r\n │  ");
-    c_printf(text_color,  "n  ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "[node_id] [command or alias]");
-    c_printf(frame_color, "  ║ ");
-    c_printf(text_color,  "NMT command  ");
-    c_printf(frame_color, "│\r\n │  ");
-    c_printf(text_color,  "l  ");
-    c_printf(frame_color, "║                               ║ ");
-    c_printf(text_color,  "List scripts ");
-    c_printf(frame_color, "│\r\n │  ");
-    c_printf(text_color,  "r  ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "[node_id] [index] (sub_index) ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "Read SDO     ");
-    c_printf(frame_color, "│\r\n │  ");
-    c_printf(text_color,  "s  ");
-    c_printf(frame_color, "║ ");
-    c_printf(text_color,  "[script_name]");
-    c_printf(frame_color, "                 ║ ");
-    c_printf(text_color,  "Run script   ");
-    c_printf(frame_color, "│\r\n │  ");
-    c_printf(text_color,  "q  ");
-    c_printf(frame_color, "║                               ║ ");
-    c_printf(text_color,  "Quit         ");
-    c_printf(frame_color, "│\r\n └─────╨───────────────────────────────╨──────────────┘\r\n");
+    table_print_header(&table);
+    table_print_row("CMD", "Parameter(s)",                  "Function",     &table);
+    table_print_divider(&table);
+    table_print_row(" c ", " ",                             "Clear output", &table);
+    table_print_row(" g ", " ",                             "Activate GUI", &table);
+    table_print_row(" n ", "[node_id] [command or alias]",  "NMT command",  &table);
+    table_print_row(" l ", " ",                             "List scripts", &table);
+    table_print_row(" r ", "[node_id] [index] (sub_index)", "Read SDO",     &table);
+    table_print_row(" s ", "[script_name]",                 "Run script",   &table);
+    table_print_row(" q ", " ",                             "Quit",         &table);
+    table_print_footer(&table);
 }
