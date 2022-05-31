@@ -7,5 +7,5 @@ A versatile software tool to analyse and configure CANopen devices.
 
 ## Project site
 
-The project can be found on GitHub:
-[CANopenTerm](https://github.com/mupfdev/CANopenTerm)
+The project can be found on
+[GitHub](https://github.com/mupfdev/CANopenTerm).
