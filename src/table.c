@@ -11,76 +11,21 @@
 #include "table.h"
 #include "printf.h"
 
+static print_frame(const char* left, const char* center, const char* right, table_t* t);
+
 void table_print_header(table_t* t)
 {
-    int index;
-
-    c_printf(t->frame_color, " ┌─");
-    for (index = 0; index < t->column_a_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─╥─");
-
-    for (index = 0; index < t->column_b_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─╥─");
-
-    for (index = 0; index < t->column_c_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─┐\r\n");
+    print_frame("┌─", "─╥─", "─┐", t);
 }
 
 void table_print_divider(table_t* t)
 {
-    int index;
-
-    c_printf(t->frame_color, " ├─");
-    for (index = 0; index < t->column_a_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─╫─");
-
-    for (index = 0; index < t->column_b_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─╫─");
-
-    for (index = 0; index < t->column_c_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─┤\r\n");
+    print_frame("├─", "─╫─", "─┤", t);
 }
 
 void table_print_footer(table_t* t)
 {
-    int index;
-
-    c_printf(t->frame_color, " └─");
-    for (index = 0; index < t->column_a_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─╨─");
-
-    for (index = 0; index < t->column_b_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─╨─");
-
-    for (index = 0; index < t->column_c_width; index += 1)
-    {
-        c_printf(t->frame_color, "─");
-    }
-    c_printf(t->frame_color, "─┘\r\n");
+    print_frame("└─", "─╨─", "─┘", t);
 }
 
 void table_print_row(const char* column_a, const char* column_b, const char* column_c, table_t* t)
@@ -130,4 +75,28 @@ void table_print_row(const char* column_a, const char* column_b, const char* col
         }
     }
     c_printf(t->frame_color, " │\r\n");
+}
+
+static print_frame(const char* left, const char* center, const char* right, table_t* t)
+{
+    int index;
+
+    c_printf(t->frame_color, " %s", left);
+    for (index = 0; index < t->column_a_width; index += 1)
+    {
+        c_printf(t->frame_color, "─");
+    }
+    c_printf(t->frame_color, "%s", center);
+
+    for (index = 0; index < t->column_b_width; index += 1)
+    {
+        c_printf(t->frame_color, "─");
+    }
+    c_printf(t->frame_color, "%s", center);
+
+    for (index = 0; index < t->column_c_width; index += 1)
+    {
+        c_printf(t->frame_color, "─");
+    }
+    c_printf(t->frame_color, "%s\r\n", right);
 }
