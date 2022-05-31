@@ -7,6 +7,7 @@
  *
  **/
 
+#include "SDL.h"
 #include "table.h"
 #include "printf.h"
 
