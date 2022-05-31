@@ -183,6 +183,11 @@ void c_printf(const color_t color, const char* format, ...)
 #endif
 }
 
+void c_print_prompt(void)
+{
+    c_printf(LIGHT_WHITE, ": ");
+}
+
 void c_log(const log_level_t level, const char* format, ...)
 {
     char    buffer[1024];

@@ -160,6 +160,7 @@ static int can_monitor(void *core_pt)
             {
                 c_log(LOG_SUCCESS, "CAN successfully initialised");
                 core->is_can_initialised = SDL_TRUE;
+                c_print_prompt();
             }
 
             SDL_Delay(100);
@@ -175,6 +176,7 @@ static int can_monitor(void *core_pt)
 
             CAN_Uninitialize(PCAN_NONEBUS);
             c_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
+            c_print_prompt();
         }
         SDL_Delay(100);
     }

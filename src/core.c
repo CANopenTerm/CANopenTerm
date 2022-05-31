@@ -82,7 +82,7 @@ status_t core_update(core_t *core)
         }
     }
 
-    c_printf(LIGHT_WHITE, ": ");
+    c_print_prompt();
     fgets(command, 64, stdin);
     parse_command(command, core);
 
