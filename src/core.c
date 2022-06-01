@@ -20,6 +20,7 @@
 #include "printf.h"
 #include "sdo_client.h"
 #include "scripts.h"
+#include "version.h"
 
 status_t core_init(core_t **core)
 {
@@ -33,8 +34,11 @@ status_t core_init(core_t **core)
     SetConsoleOutputCP(65001);
 #endif
 
-    puts("CANopenTerm");
-    puts("Copyright (c) 2022, Michael Fitzmayer.\r\n");
+    c_printf(DARK_WHITE, "CANopenTerm %u.%u.%u\r\n",
+             VERSION_MAJOR,
+             VERSION_MINOR,
+             VERSION_BUILD);
+    c_printf(DARK_WHITE, "Copyright (c) 2022, Michael Fitzmayer.\r\n\r\n");
 
     // Initialise SDL.
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");

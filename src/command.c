@@ -149,6 +149,71 @@ void parse_command(char* input, core_t* core)
 
         sdo_read(&can_message, SDL_TRUE, node_id, sdo_index, sub_index);
     }
+    else if (0 == SDL_strncmp(token, "w", 1))
+    {
+        can_message_t can_message = { 0 };
+        Uint32        node_id;
+        Uint32        sdo_index;
+        Uint32        sub_index;
+        Uint32        sdo_data;
+        Uint32        sdo_data_length;
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &node_id);
+        }
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &sdo_index);
+        }
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &sub_index);
+        }
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information();
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &sdo_data_length);
+        }
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            sdo_data = 0;
+        }
+        else
+        {
+            convert_token_to_uint(token, &sdo_data);
+        }
+
+        sdo_write(&can_message, SDL_TRUE, node_id, sdo_index, sub_index, sdo_data_length, sdo_data);
+    }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
@@ -182,17 +247,18 @@ static void convert_token_to_uint(char* token, Uint32* result)
 
 static void print_usage_information(void)
 {
-    table_t table = { DARK_CYAN, DARK_WHITE, 3, 29, 12 };
+    table_t table = { DARK_CYAN, DARK_WHITE, 3, 45, 12 };
 
     table_print_header(&table);
-    table_print_row("CMD", "Parameter(s)",                  "Function",     &table);
+    table_print_row("CMD", "Parameter(s)",                                  "Function",     &table);
     table_print_divider(&table);
-    table_print_row(" c ", " ",                             "Clear output", &table);
-    table_print_row(" g ", " ",                             "Activate GUI", &table);
-    table_print_row(" n ", "[node_id] [command or alias]",  "NMT command",  &table);
-    table_print_row(" l ", " ",                             "List scripts", &table);
-    table_print_row(" r ", "[node_id] [index] (sub_index)", "Read SDO",     &table);
-    table_print_row(" s ", "[script_name]",                 "Run script",   &table);
-    table_print_row(" q ", " ",                             "Quit",         &table);
+    table_print_row(" c ", " ",                                             "Clear output", &table);
+    table_print_row(" g ", " ",                                             "Activate GUI", &table);
+    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",  &table);
+    table_print_row(" l ", " ",                                             "List scripts", &table);
+    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",     &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",    &table);
+    table_print_row(" s ", "[script_name]",                                 "Run script",   &table);
+    table_print_row(" q ", " ",                                             "Quit",         &table);
     table_print_footer(&table);
 }

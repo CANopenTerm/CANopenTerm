@@ -40,6 +40,12 @@ To read service data objects (SDO):
 sdo_read (node_id, index, sub_index)
 ```
 
+The respective write function:
+
+```lua
+sdo_write (node_id, index, sub_index, length, data)
+```
+
 ## Generic CAN interface
 
 In addition, there are also functions to address the CAN directly:
