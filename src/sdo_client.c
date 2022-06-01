@@ -21,7 +21,7 @@ static Uint32 sdo_result;
 
 static void print_abort_code_error(Uint32 abort_code);
 
-Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index)
+Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
 {
     can_message_t can_message       = { 0 };
     Uint32        can_status        = 0;
@@ -35,12 +35,42 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id
     }
 
     can_message.id      = 0x600 + node_id;
-    can_message.length  = 8;
 
-    can_message.data[0] = READ_DICT_OBJECT;
     can_message.data[1] = (Uint8)(index  & 0x00ff);
     can_message.data[2] = (Uint8)((index & 0xff00) >> 8);
     can_message.data[3] = sub_index;
+
+    switch (sdo_type)
+    {
+        default:
+        case EXPEDITED_SDO_READ:
+            can_message.length  = 8;
+            can_message.data[0] = READ_DICT_OBJECT;
+            break;
+        case EXPEDITED_SDO_WRITE:
+            can_message.length  = 4 + length;
+            can_message.data[4] = (Uint8)(data  & 0x000000ff);
+            can_message.data[5] = (Uint8)((data & 0x0000ff00) >> 8);
+            can_message.data[6] = (Uint8)((data & 0x00ff0000) >> 16);
+            can_message.data[7] = (Uint8)((data & 0xff000000) >> 24);
+            switch(length)
+            {
+                case 1:
+                    can_message.data[0] = WRITE_DICT_1_BYTE_SENT;
+                    break;
+                case 2:
+                    can_message.data[0] = WRITE_DICT_2_BYTE_SENT;
+                    break;
+                case 3:
+                    can_message.data[0] = WRITE_DICT_3_BYTE_SENT;
+                    break;
+                case 4:
+                default:
+                    can_message.data[0] = WRITE_DICT_4_BYTE_SENT;
+                    break;
+            }
+            break;
+    }
 
     can_status = can_write(&can_message);
     if (0 != can_status)
@@ -95,157 +125,21 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id
     {
         Uint32 abort_code = 0;
         int    data_index;
-
         switch (can_message.data[0])
         {
             case READ_DICT_4_BYTE_SENT:
-                sdo_response->length = 4;
-                break;
-            case READ_DICT_3_BYTE_SENT:
-                sdo_response->length = 3;
-                break;
-            case READ_DICT_2_BYTE_SENT:
-                sdo_response->length = 2;
-                break;
-            case READ_DICT_1_BYTE_SENT:
-                sdo_response->length = 1;
-                break;
-            case SDO_ABORT:
-                abort_code = (abort_code & 0xffffff00) | can_message.data[7];
-                abort_code = (abort_code & 0xffff00ff) | ((Uint32)can_message.data[6] << 8);
-                abort_code = (abort_code & 0xff00ffff) | ((Uint32)can_message.data[5] << 16);
-                abort_code = (abort_code & 0x00ffffff) | ((Uint32)can_message.data[4] << 24);
-                abort_code = SDL_SwapBE32(abort_code);
-
-                print_abort_code_error(abort_code);
-                return can_status;
-        }
-
-        for (data_index = 0; data_index < sdo_response->length; data_index += 1)
-        {
-            sdo_response->data[data_index] = can_message.data[4 + data_index];
-        }
-
-        if (SDL_TRUE == show_result)
-        {
-            c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %u (0x%x)",
-                  index,
-                  sub_index,
-                  sdo_response->length,
-                  (Uint32)*sdo_response->data,
-                  (Uint32)*sdo_response->data);
-        }
-    }
-
-    return can_status;
-}
-
-Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
-{
-    can_message_t can_message       = { 0 };
-    Uint32        can_status        = 0;
-    SDL_bool      response_received = SDL_FALSE;
-    Uint64        timeout_time      = 0;
-    Uint64        time_a;
-
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
-
-    can_message.id      = 0x600 + node_id;
-    can_message.length  = 4 + length;
-
-    switch(length)
-    {
-        case 1:
-            can_message.data[0] = WRITE_DICT_1_BYTE_SENT;
-            break;
-        case 2:
-            can_message.data[0] = WRITE_DICT_2_BYTE_SENT;
-            break;
-        case 3:
-            can_message.data[0] = WRITE_DICT_3_BYTE_SENT;
-            break;
-        case 4:
-        default:
-            can_message.data[0] = WRITE_DICT_4_BYTE_SENT;
-            break;
-    }
-
-    can_message.data[1] = (Uint8)(index  & 0x00ff);
-    can_message.data[2] = (Uint8)((index & 0xff00) >> 8);
-    can_message.data[3] = sub_index;
-
-    can_message.data[4] = (Uint8)(data  & 0x000000ff);
-    can_message.data[5] = (Uint8)((data & 0x0000ff00) >> 8);
-    can_message.data[6] = (Uint8)((data & 0x00ff0000) >> 16);
-    can_message.data[7] = (Uint8)((data & 0xff000000) >> 24);
-
-    can_status = can_write(&can_message);
-    if (0 != can_status)
-    {
-        can_print_error_message(NULL, can_status);
-    }
-
-    time_a = SDL_GetTicks64();
-    while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
-    {
-        Uint64 time_b;
-        Uint64 delta_time;
-
-        if ((0x580 + node_id) == can_message.id)
-        {
-            if ((index  & 0x00ff) == can_message.data[1])
-            {
-                if (((index & 0xff00) >> 8) == can_message.data[2])
-                {
-                    response_received = SDL_TRUE;
-                    continue;
-                }
-            }
-        }
-
-        can_status = can_read(&can_message);
-        time_b     = time_a;
-        time_a     = SDL_GetTicks64();
-
-        if (time_a > time_b)
-        {
-            delta_time = time_a - time_b;
-        }
-        else
-        {
-            delta_time = time_b - time_a;
-        }
-        timeout_time += delta_time;
-    }
-
-    if (0 != can_status)
-    {
-        can_print_error_message(NULL, can_status);
-        sdo_response = NULL;
-    }
-    else if (timeout_time >= SDO_TIMEOUT_IN_MS)
-    {
-        c_log(LOG_WARNING, "SDO timeout: USB-dongle present?");
-        sdo_response = NULL;
-    }
-    else
-    {
-        Uint32 abort_code = 0;
-        int    data_index;
-        switch (can_message.data[0])
-        {
             case WRITE_DICT_4_BYTE_SENT:
                 sdo_response->length = 4;
                 break;
+            case READ_DICT_3_BYTE_SENT:
             case WRITE_DICT_3_BYTE_SENT:
                 sdo_response->length = 3;
                 break;
+            case READ_DICT_2_BYTE_SENT:
             case WRITE_DICT_2_BYTE_SENT:
                 sdo_response->length = 2;
                 break;
+            case READ_DICT_1_BYTE_SENT:
             case WRITE_DICT_1_BYTE_SENT:
                 sdo_response->length = 1;
                 break;
@@ -267,12 +161,31 @@ Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_i
 
         if (SDL_TRUE == show_result)
         {
-            c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) written: %u (0x%x)",
+            const  char*  str_read    = "read";
+            const  char*  str_written = "written";
+            const  char** str_action  = NULL;
+            Uint32        output_data;
+
+            switch (sdo_type)
+            {
+                default:
+                case EXPEDITED_SDO_READ:
+                    output_data = (Uint32)*sdo_response->data;
+                    str_action  = &str_read;
+                    break;
+                case EXPEDITED_SDO_WRITE:
+                    output_data = data;
+                    str_action  = &str_written;
+                    break;
+            }
+
+            c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %u (0x%x)",
                   index,
                   sub_index,
-                  length,
-                  data,
-                  data);
+                  sdo_response->length,
+                  *str_action,
+                  output_data,
+                  output_data);
         }
     }
 
@@ -281,7 +194,7 @@ Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_i
 
 int lua_sdo_read(lua_State* L)
 {
-    sdo_message_t sdo_response;
+    can_message_t sdo_response;
     int           node_id   = luaL_checkinteger(L, 1);
     int           index     = luaL_checkinteger(L, 2);
     int           sub_index = luaL_checkinteger(L, 3);
@@ -291,7 +204,7 @@ int lua_sdo_read(lua_State* L)
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (0 != sdo_read(&sdo_response, SDL_FALSE, node_id, index, sub_index))
+    if (0 != sdo_send(EXPEDITED_SDO_READ, &sdo_response, SDL_FALSE, node_id, index, sub_index, 0, 0))
     {
         return 0;
     }
@@ -306,7 +219,7 @@ int lua_sdo_read(lua_State* L)
 
 int lua_sdo_write(lua_State* L)
 {
-    sdo_message_t sdo_response;
+    can_message_t sdo_response;
     int           node_id   = luaL_checkinteger(L, 1);
     int           index     = luaL_checkinteger(L, 2);
     int           sub_index = luaL_checkinteger(L, 3);
@@ -318,7 +231,7 @@ int lua_sdo_write(lua_State* L)
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (0 != sdo_write(&sdo_response, SDL_FALSE, node_id, index, sub_index, length, data))
+    if (0 != sdo_send(EXPEDITED_SDO_WRITE, &sdo_response, SDL_FALSE, node_id, index, sub_index, length, data))
     {
         return 0;
     }

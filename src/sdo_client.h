@@ -16,6 +16,13 @@
 
 typedef enum
 {
+    EXPEDITED_SDO_READ = 0,
+    EXPEDITED_SDO_WRITE
+
+} sdo_type_t;
+
+typedef enum
+{
     UNSIGNED8  = 1,
     UNSIGNED16 = 2,
     UNSIGNED32 = 4
@@ -74,15 +81,7 @@ typedef enum
 
 } sdo_abort_code_t;
 
-typedef struct sdo_message
-{
-    Uint8 length;
-    Uint8 data[4];
-
-} sdo_message_t;
-
-Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index);
-Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
+Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
 int    lua_sdo_read(lua_State* L);
 int    lua_sdo_write(lua_State* L);
 void   lua_register_sdo_commands(core_t* core);

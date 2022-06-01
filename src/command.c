@@ -16,6 +16,7 @@
 #include "nmt_client.h"
 #include "printf.h"
 #include "scripts.h"
+#include "sdo_client.h"
 #include "table.h"
 
 #ifdef _WIN32
@@ -110,7 +111,7 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == SDL_strncmp(token, "r", 1))
     {
-        can_message_t can_message = { 0 };
+        can_message_t sdo_response = { 0 };
         Uint32        node_id;
         Uint32        sdo_index;
         Uint32        sub_index;
@@ -147,11 +148,11 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sub_index);
         }
 
-        sdo_read(&can_message, SDL_TRUE, node_id, sdo_index, sub_index);
+        sdo_send(EXPEDITED_SDO_READ, &sdo_response, SDL_TRUE, node_id, sdo_index, sub_index, 0, 0);
     }
     else if (0 == SDL_strncmp(token, "w", 1))
     {
-        can_message_t can_message = { 0 };
+        can_message_t sdo_response = { 0 };
         Uint32        node_id;
         Uint32        sdo_index;
         Uint32        sub_index;
@@ -212,7 +213,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sdo_data);
         }
 
-        sdo_write(&can_message, SDL_TRUE, node_id, sdo_index, sub_index, sdo_data_length, sdo_data);
+        sdo_send(EXPEDITED_SDO_WRITE, &sdo_response, SDL_TRUE, node_id, sdo_index, sub_index, sdo_data_length, sdo_data);
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
