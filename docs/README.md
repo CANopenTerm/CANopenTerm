@@ -22,7 +22,3 @@ The project can be found on
 - Optional graphical user interface.
 
 - Can be used without limitations under Windows as well on Linux.
-
-- Fully open source under the terms of "The MIT License".  See the file
-  [LICENSE.md](https://github.com/mupfdev/CANopenTerm/blob/main/LICENSE.md)
-  for details.
