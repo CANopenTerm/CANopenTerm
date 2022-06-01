@@ -81,8 +81,8 @@ typedef struct sdo_message
 
 } sdo_message_t;
 
-Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_id, Uint16 index, Uint8 sub_index);
-Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
+Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index);
+Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
 int    lua_sdo_read(lua_State* L);
 int    lua_sdo_write(lua_State* L);
 void   lua_register_sdo_commands(core_t* core);

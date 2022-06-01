@@ -102,24 +102,6 @@ int lua_delay_ms(lua_State* L)
     return 1;
 }
 
-
-
 static int script_thread(void *core)
 {
-    /*
-    core_t* core = core_pt;
-
-    if (NULL == core)
-    {
-        return 1;
-    }
-
-
-    while (SDL_TRUE == core->is_script_running)
-    {
-        
-    }
-
-    return 0;
-    */
 }

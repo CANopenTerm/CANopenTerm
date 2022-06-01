@@ -40,7 +40,18 @@ To read service data objects (SDO):
 sdo_read (node_id, index, sub_index)
 ```
 
-The respective write function:
+The result is not displayed automatically, but the most recent result
+can be accessed via the global variable `sdo_result`:
+
+```lua
+sdo_read (0x50, 0x2100, 1)
+print(sdo_result)
+sdo_write (0x50, 0x2100, 1, 4, 1)
+sdo_read (0x50, 0x2100, 1)
+print(sdo_result)
+```
+
+To write SDOs, the following function is available:
 
 ```lua
 sdo_write (node_id, index, sub_index, length, data)

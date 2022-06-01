@@ -17,9 +17,11 @@
 
 #define SDO_TIMEOUT_IN_MS 100
 
+static Uint32 sdo_result;
+
 static void print_abort_code_error(Uint32 abort_code);
 
-Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_id, Uint16 index, Uint8 sub_index)
+Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index)
 {
     can_message_t can_message       = { 0 };
     Uint32        can_status        = 0;
@@ -93,6 +95,7 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_
     {
         Uint32 abort_code = 0;
         int    data_index;
+
         switch (can_message.data[0])
         {
             case READ_DICT_4_BYTE_SENT:
@@ -123,7 +126,7 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_
             sdo_response->data[data_index] = can_message.data[4 + data_index];
         }
 
-        if (SDL_TRUE == format_output)
+        if (SDL_TRUE == show_result)
         {
             c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %u (0x%x)",
                   index,
@@ -132,16 +135,12 @@ Uint32 sdo_read(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_
                   (Uint32)*sdo_response->data,
                   (Uint32)*sdo_response->data);
         }
-        else
-        {
-            c_log(LOG_DEFAULT, "%u (0x%x)", (Uint32)*sdo_response->data, (Uint32)*sdo_response->data);
-        }
     }
 
     return can_status;
 }
 
-Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
+Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
 {
     can_message_t can_message       = { 0 };
     Uint32        can_status        = 0;
@@ -173,7 +172,6 @@ Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node
             can_message.data[0] = WRITE_DICT_4_BYTE_SENT;
             break;
     }
-
 
     can_message.data[1] = (Uint8)(index  & 0x00ff);
     can_message.data[2] = (Uint8)((index & 0xff00) >> 8);
@@ -267,7 +265,7 @@ Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node
             sdo_response->data[data_index] = can_message.data[4 + data_index];
         }
 
-        if (SDL_TRUE == format_output)
+        if (SDL_TRUE == show_result)
         {
             c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) written: %u (0x%x)",
                   index,
@@ -275,10 +273,6 @@ Uint32 sdo_write(sdo_message_t* sdo_response, SDL_bool format_output, Uint8 node
                   length,
                   data,
                   data);
-        }
-        else
-        {
-            c_log(LOG_DEFAULT, "%u (0x%x)", data, data);
         }
     }
 
@@ -303,6 +297,9 @@ int lua_sdo_read(lua_State* L)
     }
     else
     {
+        sdo_result = (Uint32)*sdo_response.data;
+        lua_pushinteger(L, sdo_result);
+        lua_setglobal(L, "sdo_result");
         return 1;
     }
 }
