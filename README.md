@@ -5,6 +5,23 @@
 
 A versatile software tool to analyse and configure CANopen devices.
 
+## Features
+
+- Read and write expedided Service Data Objects (SDO).
+
+- Send Network management (NMT) commands.
+
+- Automate your workflow by writing Scripts in [Lua
+  5.4](https://www.lua.org/manual/5.4/).
+
+- Optional graphical user interface.
+
+- Can be used without limitations under Windows as well on Linux.
+
+- Fully open source under the terms of "The MIT License".  See the file
+  [LICENSE.md](https://github.com/mupfdev/CANopenTerm/blob/main/LICENSE.md)
+  for details.
+
 ## Documentation
 
 The documentation can be found [here](https://mupfdev.github.io/CANopenTerm).

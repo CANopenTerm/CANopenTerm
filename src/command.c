@@ -255,11 +255,11 @@ static void print_usage_information(void)
     table_print_divider(&table);
     table_print_row(" c ", " ",                                             "Clear output", &table);
     table_print_row(" g ", " ",                                             "Activate GUI", &table);
-    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",  &table);
     table_print_row(" l ", " ",                                             "List scripts", &table);
+    table_print_row(" s ", "[script_name]",                                 "Run script",   &table);
+    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",  &table);
     table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",     &table);
     table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",    &table);
-    table_print_row(" s ", "[script_name]",                                 "Run script",   &table);
     table_print_row(" q ", " ",                                             "Quit",         &table);
     table_print_footer(&table);
 }
