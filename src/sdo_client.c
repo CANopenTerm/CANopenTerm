@@ -19,9 +19,105 @@
 
 static Uint32 sdo_result;
 
-static void print_abort_code_error(Uint32 abort_code);
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
+static void   print_abort_code_error(Uint32 abort_code);
 
-Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
+Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index)
+{
+    return sdo_send(
+        EXPEDITED_SDO_READ,
+        sdo_response,
+        show_result,
+        node_id,
+        index,
+        sub_index,
+        0, 0);
+}
+
+Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
+{
+    return sdo_send(
+        EXPEDITED_SDO_WRITE,
+        sdo_response,
+        show_result,
+        node_id,
+        index,
+        sub_index,
+        length,
+        data);
+}
+
+int lua_sdo_read(lua_State* L)
+{
+    can_message_t sdo_response = { 0 };;
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+
+    if (node_id > 0x7f)
+    {
+        node_id = 0x00 + (node_id % 0x7f);
+    }
+
+    if (0 != sdo_read(
+            &sdo_response,
+            SDL_FALSE,
+            (Uint8)node_id,
+            (Uint16)index,
+            (Uint8)sub_index))
+    {
+        return 0;
+    }
+    else
+    {
+        sdo_result = (Uint32)sdo_response.data[4];
+        lua_pushinteger(L, sdo_result);
+        lua_setglobal(L, "sdo_result");
+        return 1;
+    }
+}
+
+int lua_sdo_write(lua_State* L)
+{
+    can_message_t sdo_response = { 0 };
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+    int           length       = luaL_checkinteger(L, 4);
+    int           data         = luaL_checkinteger(L, 5);
+
+    if (node_id > 0x7f)
+    {
+        node_id = 0x00 + (node_id % 0x7f);
+    }
+
+    if (0 != sdo_write(
+            &sdo_response,
+            SDL_FALSE,
+            (Uint8)node_id,
+            (Uint16)index,
+            (Uint8)sub_index,
+            (Uint8)length,
+            (Uint32)data))
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+void lua_register_sdo_commands(core_t* core)
+{
+    lua_pushcfunction(core->L, lua_sdo_read);
+    lua_setglobal(core->L, "sdo_read");
+
+    lua_pushcfunction(core->L, lua_sdo_write);
+    lua_setglobal(core->L, "sdo_write");
+}
+
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
 {
     can_message_t can_message       = { 0 };
     Uint32        can_status        = 0;
@@ -114,12 +210,10 @@ Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_
     if (0 != can_status)
     {
         can_print_error_message(NULL, can_status);
-        sdo_response = NULL;
     }
     else if (timeout_time >= SDO_TIMEOUT_IN_MS)
     {
         c_log(LOG_WARNING, "SDO timeout: USB-dongle present?");
-        sdo_response = NULL;
     }
     else
     {
@@ -156,7 +250,7 @@ Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_
 
         for (data_index = 0; data_index < sdo_response->length; data_index += 1)
         {
-            sdo_response->data[data_index] = can_message.data[4 + data_index];
+            sdo_response->data[4 + data_index] = can_message.data[4 + data_index];
         }
 
         if (SDL_TRUE == show_result)
@@ -170,7 +264,7 @@ Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_
             {
                 default:
                 case EXPEDITED_SDO_READ:
-                    output_data = (Uint32)*sdo_response->data;
+                    output_data = (Uint32)sdo_response->data[4];
                     str_action  = &str_read;
                     break;
                 case EXPEDITED_SDO_WRITE:
@@ -190,64 +284,6 @@ Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_
     }
 
     return can_status;
-}
-
-int lua_sdo_read(lua_State* L)
-{
-    can_message_t sdo_response;
-    int           node_id   = luaL_checkinteger(L, 1);
-    int           index     = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
-
-    if (0 != sdo_send(EXPEDITED_SDO_READ, &sdo_response, SDL_FALSE, node_id, index, sub_index, 0, 0))
-    {
-        return 0;
-    }
-    else
-    {
-        sdo_result = (Uint32)*sdo_response.data;
-        lua_pushinteger(L, sdo_result);
-        lua_setglobal(L, "sdo_result");
-        return 1;
-    }
-}
-
-int lua_sdo_write(lua_State* L)
-{
-    can_message_t sdo_response;
-    int           node_id   = luaL_checkinteger(L, 1);
-    int           index     = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    int           length    = luaL_checkinteger(L, 4);
-    int           data      = luaL_checkinteger(L, 5);
-
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
-
-    if (0 != sdo_send(EXPEDITED_SDO_WRITE, &sdo_response, SDL_FALSE, node_id, index, sub_index, length, data))
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
-}
-
-void lua_register_sdo_commands(core_t* core)
-{
-    lua_pushcfunction(core->L, lua_sdo_read);
-    lua_setglobal(core->L, "sdo_read");
-
-    lua_pushcfunction(core->L, lua_sdo_write);
-    lua_setglobal(core->L, "sdo_write");
 }
 
 static void print_abort_code_error(Uint32 abort_code)
