@@ -21,6 +21,15 @@ then
     return
 end
 
+print("Please enter the interval in milliseconds.")
+io.write(": ")
+msg_interval = io.read("*n")
+
+if (not(msg_interval))
+then
+    msg_interval = 0
+end
+
 print("Generating chaos.")
 print_progress(progress)
 
@@ -40,7 +49,7 @@ do
         print_progress(progress)
     end
 
-    delay_ms(1)
+    delay_ms(msg_interval)
 end
 io.write("\n")
 io.flush()
