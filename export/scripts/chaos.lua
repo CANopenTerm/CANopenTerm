@@ -11,10 +11,20 @@ progress = 0
 
 math.randomseed(os.time())
 
+print("How many messages should be sent?")
+io.write(": ")
+msg_count = io.read("*n")
+
+if (not(msg_count))
+then
+    io.flush()
+    return
+end
+
 print("Generating chaos.")
 print_progress(progress)
 
-for i = 1, 100000, 1
+for i = 1, msg_count, 1
 do
     node_id    = math.random(0x7f)
     data_d0_d3 = math.random(0xffffffff)
@@ -23,7 +33,7 @@ do
     can_write(node_id, 8, data_d0_d3, data_d0_d3);
 
     counter = counter + 1
-    if(counter >= 1000)
+    if(counter >= (msg_count / 100))
     then
         progress = progress + 1
         counter  = 0
@@ -32,5 +42,5 @@ do
 
     delay_ms(1)
 end
-io.write('\n')
+io.write("\n")
 io.flush()
