@@ -38,7 +38,7 @@ do
     data_d0_d3 = math.random(0xffffffff)
     data_d4_d7 = math.random(0xffffffff)
 
-    can_write(node_id, 8, data_d0_d3, data_d0_d3);
+    can_write(node_id, 8, data_d0_d3, data_d4_d7);
 
     counter = counter + 1
     if(counter >= (msg_count / 100))
