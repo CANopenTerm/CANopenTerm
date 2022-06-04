@@ -17,8 +17,7 @@ msg_count = io.read("*n")
 
 if (not(msg_count))
 then
-    io.flush()
-    return
+    msg_count = 100
 end
 
 print("Please enter the interval in milliseconds.")
