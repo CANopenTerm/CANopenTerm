@@ -74,20 +74,19 @@ void pdo_del(Uint16 can_id)
 
 static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
 {
+    int           index;
+    int           offset  = 0;
     pdo_t*        pdo     = pdo_pt;
     can_message_t message = { 0 };
 
     message.id      = pdo->can_id;
     message.length  = pdo->length;
 
-    message.data[7] = ( pdo->data        & 0xFF);
-    message.data[6] = ((pdo->data >> 8)  & 0xFF);
-    message.data[5] = ((pdo->data >> 16) & 0xFF);
-    message.data[4] = ((pdo->data >> 24) & 0xFF);
-    message.data[3] = ((pdo->data >> 32) & 0xFF);
-    message.data[2] = ((pdo->data >> 40) & 0xFF);
-    message.data[1] = ((pdo->data >> 48) & 0xFF);
-    message.data[0] = ((pdo->data >> 56) & 0xFF);
+    for (index = (pdo->length - 1); index >= 0; index -= 1)
+    {
+        message.data[index] = ((pdo->data >> offset) & 0xFF);
+        offset += 8;
+    }
 
     can_write(&message);
 
