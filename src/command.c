@@ -48,7 +48,10 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == SDL_strncmp(token, "c", 1))
     {
-        system(CLEAR_CMD);
+        if (0 != system(CLEAR_CMD))
+        {
+            c_log(LOG_WARNING, "Could not clear screen");
+        }
     }
     else if (0 == SDL_strncmp(token, "q", 1))
     {
