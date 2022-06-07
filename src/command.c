@@ -167,7 +167,8 @@ void parse_command(char* input, core_t* core)
             token = SDL_strtokr(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
-                data = 0;
+                print_usage_information(SDL_FALSE);
+                return;
             }
             else
             {
@@ -382,7 +383,7 @@ static void print_usage_information(SDL_bool show_all)
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",    &table);
     table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",       &table);
     table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",      &table);
-    table_print_row(" p ", "add [can_id] [event_time_ms] [length] (data)",  "Add TPDO",       &table);
+    table_print_row(" p ", "add [can_id] [event_time_ms] [length] [data]",  "Add TPDO",       &table);
     table_print_row(" p ", "del [can_id]",                                  "Remove TPDO",    &table);
     table_print_row(" q ", " ",                                             "Quit",           &table);
     table_print_footer(&table);
