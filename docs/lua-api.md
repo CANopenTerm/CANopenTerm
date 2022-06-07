@@ -46,7 +46,7 @@ pdo_add (can_id, event_time_ms, length, data_d0_d3, data_d4_d7)
 pdo_del (can_id)
 ```
 
-The CAN IDs reserved according to CiA 301 can be used:
+The CAN-IDs reserved according to CiA 301 can be used:
 
 ```text
 0x181 - 0x1ff (TPDO1)
