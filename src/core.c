@@ -17,6 +17,7 @@
 #include "core.h"
 #include "gui.h"
 #include "nmt_client.h"
+#include "pdo.h"
 #include "printf.h"
 #include "sdo_client.h"
 #include "scripts.h"
@@ -55,6 +56,7 @@ status_t core_init(core_t **core)
     {
         lua_register_can_commands((*core));
         lua_register_nmt_command((*core));
+        lua_register_pdo_commands((*core));
         lua_register_sdo_commands((*core));
     }
 

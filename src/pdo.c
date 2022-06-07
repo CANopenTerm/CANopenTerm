@@ -8,16 +8,17 @@
  **/
 
 #include "SDL.h"
+#include "lua.h"
 #include "can.h"
 #include "pdo.h"
 #include "printf.h"
+#include "table.h"
 
 static pdo_t pdo[PDO_MAX];
 
-static Uint32   pdo_send_callback(Uint32 interval, void *param);
-static SDL_bool pdo_is_id_valid(Uint16 can_id);
+static Uint32 pdo_send_callback(Uint32 interval, void *param);
 
-void pdo_add(Uint16 can_id, Uint32 interval_in_ms, Uint8 length, Uint64 data)
+void pdo_add(Uint16 can_id, Uint32 event_time_ms, Uint8 length, Uint64 data)
 {
     int index;
 
@@ -39,7 +40,7 @@ void pdo_add(Uint16 can_id, Uint32 interval_in_ms, Uint8 length, Uint64 data)
             pdo[index].can_id = can_id;
             pdo[index].length = length;
             pdo[index].data   = data;
-            pdo[index].id     = SDL_AddTimer(interval_in_ms, pdo_send_callback, &pdo[index]);
+            pdo[index].id     = SDL_AddTimer(event_time_ms, pdo_send_callback, &pdo[index]);
             return;
         }
     }
@@ -72,6 +73,38 @@ void pdo_del(Uint16 can_id)
     }
 }
 
+int lua_pdo_add(lua_State* L)
+{
+    int    can_id        = luaL_checkinteger(L, 1);
+    int    event_time_ms = luaL_checkinteger(L, 2);
+    int    length        = luaL_checkinteger(L, 3);
+    Uint32 data_d0_d3    = luaL_checkinteger(L, 4);
+    Uint32 data_d4_d7    = luaL_checkinteger(L, 5);
+    Uint64 data          = ((Uint64)data_d0_d3 << 32) | data_d4_d7;
+
+    pdo_add(can_id, event_time_ms, length, data);
+
+    return 1;
+}
+
+int lua_pdo_del(lua_State* L)
+{
+    int can_id = luaL_checkinteger(L, 1);
+
+    pdo_del(can_id);
+
+    return 1;
+}
+
+void lua_register_pdo_commands(core_t* core)
+{
+    lua_pushcfunction(core->L, lua_pdo_add);
+    lua_setglobal(core->L, "pdo_add");
+
+    lua_pushcfunction(core->L, lua_pdo_del);
+    lua_setglobal(core->L, "pdo_del");
+}
+
 static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
 {
     int           index;
@@ -93,7 +126,21 @@ static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
     return interval;
 }
 
-static SDL_bool pdo_is_id_valid(Uint16 can_id)
+void pdo_print_help(void)
+{
+    table_t table = { DARK_CYAN, DARK_WHITE, 13, 6, 7 };
+
+    table_print_header(&table);
+    table_print_row("CAN-ID", "Object", "Spec.", &table);
+    table_print_divider(&table);
+    table_print_row("0x181 - 0x1ff", "TPDO1", "CiA 301", &table);
+    table_print_row("0x281 - 0x1ff", "TPDO2", "CiA 301", &table);
+    table_print_row("0x381 - 0x1ff", "TPDO3", "CiA 301", &table);
+    table_print_row("0x481 - 0x1ff", "TPDO4", "CiA 301", &table);
+    table_print_footer(&table);
+}
+
+SDL_bool pdo_is_id_valid(Uint16 can_id)
 {
     /* TPDO 1 (0x181 - 0x1ff)
      * TPDO 2 (0x281 - 0x2ff)

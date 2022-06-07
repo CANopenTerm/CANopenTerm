@@ -175,6 +175,12 @@ void parse_command(char* input, core_t* core)
                 convert_token_to_uint64(token, &data);
             }
 
+            if (SDL_FALSE == pdo_is_id_valid(can_id))
+            {
+                pdo_print_help();
+                return;
+            }
+
             if (SDL_FALSE == is_can_initialised(core))
             {
                 c_log(LOG_WARNING, "Could not add PDO: CAN not initialised");
@@ -196,6 +202,12 @@ void parse_command(char* input, core_t* core)
             else
             {
                 convert_token_to_uint(token, &can_id);
+            }
+
+            if (SDL_FALSE == pdo_is_id_valid(can_id))
+            {
+                pdo_print_help();
+                return;
             }
 
             if (SDL_FALSE == is_can_initialised(core))

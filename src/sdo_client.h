@@ -11,6 +11,7 @@
 #define SDO_CLIENT_H
 
 #include "SDL.h"
+#include "lua.h"
 #include "can.h"
 #include "core.h"
 

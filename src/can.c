@@ -73,22 +73,22 @@ Uint32 can_read(can_message_t* message)
 int lua_can_write(lua_State* L)
 {
     int    can_id         = luaL_checkinteger(L, 1);
-    int    data_length    = luaL_checkinteger(L, 2);
+    int    length         = luaL_checkinteger(L, 2);
     Uint32 data_d0_d3     = luaL_checkinteger(L, 3);
     Uint32 data_d4_d7     = luaL_checkinteger(L, 4);
     can_message_t message = { 0 };
 
     message.id      = can_id;
-    message.length  = data_length;
+    message.length  = length;
 
-    message.data[3] = ( data_d0_d3        & 0xFF);
-    message.data[2] = ((data_d0_d3 >> 8)  & 0xFF);
-    message.data[1] = ((data_d0_d3 >> 16) & 0xFF);
-    message.data[0] = ((data_d0_d3 >> 24) & 0xFF);
-    message.data[7] = ( data_d4_d7        & 0xFF);
-    message.data[6] = ((data_d4_d7 >> 8)  & 0xFF);
-    message.data[5] = ((data_d4_d7 >> 16) & 0xFF);
-    message.data[4] = ((data_d4_d7 >> 24) & 0xFF);
+    message.data[3] = ( data_d0_d3        & 0xff);
+    message.data[2] = ((data_d0_d3 >> 8)  & 0xff);
+    message.data[1] = ((data_d0_d3 >> 16) & 0xff);
+    message.data[0] = ((data_d0_d3 >> 24) & 0xff);
+    message.data[7] = ( data_d4_d7        & 0xff);
+    message.data[6] = ((data_d4_d7 >> 8)  & 0xff);
+    message.data[5] = ((data_d4_d7 >> 16) & 0xff);
+    message.data[4] = ((data_d4_d7 >> 24) & 0xff);
 
     if (0 != can_write(&message))
     {

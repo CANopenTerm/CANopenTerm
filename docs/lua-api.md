@@ -1,7 +1,8 @@
 # Lua API
 
 One of the essential and certainly most useful parts of CANopenTerm is
-the possibility to write scripts to automate recurring processes.
+the possibility to write scripts to automate recurring processes or
+tests.
 
 To write your own scripts, please refer to the official Lua 5.4
 reference manual which can be found here: [Lua 5.4 Reference
@@ -30,6 +31,28 @@ The following commands are supported:
 0x80 = Go to Pre-operational
 0x81 = Reset node (Application reset)
 0x82 = Reset communication
+```
+
+## Process data objects (PDO)
+
+It is possible to create up to 504 asynchronous TPDOs, which are then
+sent cyclically at the specified interval.  This is extremely useful,
+especially for testing purposes.
+
+The following functions are available for this task:
+
+```lua
+pdo_add (can_id, event_time_ms, length, data_d0_d3, data_d4_d7)
+pdo_del (can_id)
+```
+
+The CAN IDs reserved according to CiA 301 can be used:
+
+```text
+0x181 - 0x1ff (TPDO1)
+0x281 - 0x2ff (TPDO2)
+0x381 - 0x3ff (TPDO3)
+0x481 - 0x4ff (TPDO4)
 ```
 
 ## Service data objects (SDO)
