@@ -79,8 +79,8 @@ static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
     pdo_t*        pdo     = pdo_pt;
     can_message_t message = { 0 };
 
-    message.id      = pdo->can_id;
-    message.length  = pdo->length;
+    message.id     = pdo->can_id;
+    message.length = pdo->length;
 
     for (index = (pdo->length - 1); index >= 0; index -= 1)
     {
