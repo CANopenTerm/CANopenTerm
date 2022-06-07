@@ -96,7 +96,7 @@ static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
 static SDL_bool pdo_is_id_valid(Uint16 can_id)
 {
     /* TPDO 1 (0x181 - 0x1ff)
-     * TPDO 2 (0x201 - 0x2ff)
+     * TPDO 2 (0x281 - 0x2ff)
      * TPDO 3 (0x381 - 0x3ff)
      * TPDO 4 (0x481 - 0x4ff)
      */
