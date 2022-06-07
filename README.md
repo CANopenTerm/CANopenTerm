@@ -11,6 +11,8 @@ A versatile software tool to analyse and configure CANopen devices.
 
 - Send Network management (NMT) commands.
 
+- Create asynchronous Process Data Objects (PDO) for testing.
+
 - Automate your workflow by writing Scripts in [Lua
   5.4](https://www.lua.org/manual/5.4/).
 

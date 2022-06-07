@@ -19,27 +19,27 @@
 
 static Uint32 sdo_result;
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
 static void   print_abort_code_error(Uint32 abort_code);
 
-Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index)
+Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index)
 {
     return sdo_send(
         EXPEDITED_SDO_READ,
         sdo_response,
-        show_result,
+        show_output,
         node_id,
         index,
         sub_index,
         0, 0);
 }
 
-Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
+Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
 {
     return sdo_send(
         EXPEDITED_SDO_WRITE,
         sdo_response,
-        show_result,
+        show_output,
         node_id,
         index,
         sub_index,
@@ -117,7 +117,7 @@ void lua_register_sdo_commands(core_t* core)
     lua_setglobal(core->L, "sdo_write");
 }
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_result, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data)
 {
     can_message_t can_message       = { 0 };
     Uint32        can_status        = 0;
@@ -253,7 +253,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
             sdo_response->data[4 + data_index] = can_message.data[4 + data_index];
         }
 
-        if (SDL_TRUE == show_result)
+        if (SDL_TRUE == show_output)
         {
             const  char*  str_read    = "read";
             const  char*  str_written = "written";

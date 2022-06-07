@@ -220,6 +220,7 @@ set(project_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/menu_bar.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/printf.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sdo_client.c

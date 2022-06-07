@@ -36,6 +36,7 @@ typedef enum color
 typedef enum log_level
 {
     LOG_DEFAULT = 0,
+    LOG_SUPPRESS,
     LOG_INFO,
     LOG_SUCCESS,
     LOG_WARNING,

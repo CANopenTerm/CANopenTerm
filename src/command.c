@@ -14,6 +14,7 @@
 #include "command.h"
 #include "gui.h"
 #include "nmt_client.h"
+#include "pdo.h"
 #include "printf.h"
 #include "scripts.h"
 #include "sdo_client.h"
@@ -28,7 +29,8 @@
 #endif
 
 static void convert_token_to_uint(char* token, Uint32* result);
-static void print_usage_information(void);
+static void convert_token_to_uint64(char* token, Uint64* result);
+static void print_usage_information(SDL_bool show_all);
 
 void parse_command(char* input, core_t* core)
 {
@@ -56,6 +58,10 @@ void parse_command(char* input, core_t* core)
     {
         gui_init(core);
     }
+    else if (0 == SDL_strncmp(token, "h", 1))
+    {
+        print_usage_information(SDL_TRUE);
+    }
     else if (0 == SDL_strncmp(token, "n", 1))
     {
         Uint32 node_id;
@@ -64,7 +70,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -109,6 +115,104 @@ void parse_command(char* input, core_t* core)
     {
         list_scripts();
     }
+    else if (0 == SDL_strncmp(token, "p", 1))
+    {
+        Uint32 can_id;
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information(SDL_FALSE);
+            return;
+        }
+        else if (0 == SDL_strncmp(token, "add", 3))
+        {
+            Uint32 event_time_ms;
+            Uint32 length;
+            Uint64 data;
+
+            token = SDL_strtokr(input_savptr, delim, &input_savptr);
+            if (NULL == token)
+            {
+                print_usage_information(SDL_FALSE);
+                return;
+            }
+            else
+            {
+                convert_token_to_uint(token, &can_id);
+            }
+
+            token = SDL_strtokr(input_savptr, delim, &input_savptr);
+            if (NULL == token)
+            {
+                print_usage_information(SDL_FALSE);
+                return;
+            }
+            else
+            {
+                convert_token_to_uint(token, &event_time_ms);
+            }
+
+            token = SDL_strtokr(input_savptr, delim, &input_savptr);
+            if (NULL == token)
+            {
+                print_usage_information(SDL_FALSE);
+                return;
+            }
+            else
+            {
+                convert_token_to_uint(token, &length);
+            }
+
+            token = SDL_strtokr(input_savptr, delim, &input_savptr);
+            if (NULL == token)
+            {
+                data = 0;
+            }
+            else
+            {
+                convert_token_to_uint64(token, &data);
+            }
+
+            if (SDL_FALSE == is_can_initialised(core))
+            {
+                c_log(LOG_WARNING, "Could not add PDO: CAN not initialised");
+                return;
+            }
+            else
+            {
+                pdo_add((Uint16)can_id, event_time_ms, length, data);
+            }
+        }
+        else if (0 == SDL_strncmp(token, "del", 3))
+        {
+            token = SDL_strtokr(input_savptr, delim, &input_savptr);
+            if (NULL == token)
+            {
+                print_usage_information(SDL_FALSE);
+                return;
+            }
+            else
+            {
+                convert_token_to_uint(token, &can_id);
+            }
+
+            if (SDL_FALSE == is_can_initialised(core))
+            {
+                c_log(LOG_WARNING, "Could not delete PDO: CAN not initialised");
+                return;
+            }
+            else
+            {
+                pdo_del((Uint16)can_id);
+            }
+        }
+        else
+        {
+            print_usage_information(SDL_FALSE);
+            return;
+        }
+    }
     else if (0 == SDL_strncmp(token, "r", 1))
     {
         can_message_t sdo_response = { 0 };
@@ -119,7 +223,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -130,7 +234,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -162,7 +266,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -173,7 +277,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -184,7 +288,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -195,7 +299,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -220,7 +324,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information();
+            print_usage_information(SDL_FALSE);
             return;
         }
         else
@@ -230,7 +334,7 @@ void parse_command(char* input, core_t* core)
     }
     else
     {
-        print_usage_information();
+        print_usage_information(SDL_FALSE);
     }
 }
 
@@ -246,20 +350,40 @@ static void convert_token_to_uint(char* token, Uint32* result)
     }
 }
 
-static void print_usage_information(void)
+static void convert_token_to_uint64(char* token, Uint64* result)
 {
-    table_t table = { DARK_CYAN, DARK_WHITE, 3, 45, 12 };
+    if (('0' == token[0]) && ('x' == token[1]))
+    {
+        *result = SDL_strtoull(token, NULL, 16);
+    }
+    else
+    {
+        *result = SDL_strtoull(token, NULL, 10);
+    }
+}
+
+static void print_usage_information(SDL_bool show_all)
+{
+    table_t table = { DARK_CYAN, DARK_WHITE, 3, 45, 14 };
 
     table_print_header(&table);
     table_print_row("CMD", "Parameter(s)",                                  "Function",     &table);
     table_print_divider(&table);
-    table_print_row(" c ", " ",                                             "Clear output", &table);
-    table_print_row(" g ", " ",                                             "Activate GUI", &table);
-    table_print_row(" l ", " ",                                             "List scripts", &table);
-    table_print_row(" s ", "[script_name]",                                 "Run script",   &table);
-    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",  &table);
-    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",     &table);
-    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",    &table);
-    table_print_row(" q ", " ",                                             "Quit",         &table);
+    table_print_row(" h ", " ",                                             "Show full help", &table);
+
+    if (SDL_TRUE == show_all)
+    {
+        table_print_row(" c ", " ",                                         "Clear output",   &table);
+        table_print_row(" g ", " ",                                         "Activate GUI",   &table);
+        table_print_row(" l ", " ",                                         "List scripts",   &table);
+        table_print_row(" s ", "[script_name]",                             "Run script",     &table);
+    }
+
+    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",    &table);
+    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",       &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",      &table);
+    table_print_row(" p ", "add [can_id] [event_time_ms] [length] (data)",  "Add TPDO",       &table);
+    table_print_row(" p ", "del [can_id]",                                  "Remove TPDO",    &table);
+    table_print_row(" q ", " ",                                             "Quit",           &table);
     table_print_footer(&table);
 }

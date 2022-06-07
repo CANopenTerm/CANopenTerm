@@ -74,12 +74,12 @@ int lua_can_write(lua_State* L)
 {
     int    can_id         = luaL_checkinteger(L, 1);
     int    data_length    = luaL_checkinteger(L, 2);
-    Uint64 data_d0_d3     = luaL_checkinteger(L, 3);
-    Uint64 data_d4_d7     = luaL_checkinteger(L, 4);
+    Uint32 data_d0_d3     = luaL_checkinteger(L, 3);
+    Uint32 data_d4_d7     = luaL_checkinteger(L, 4);
     can_message_t message = { 0 };
 
-    message.id     = can_id;
-    message.length = data_length;
+    message.id      = can_id;
+    message.length  = data_length;
 
     message.data[3] = ( data_d0_d3        & 0xFF);
     message.data[2] = ((data_d0_d3 >> 8)  & 0xFF);

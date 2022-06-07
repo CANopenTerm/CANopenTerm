@@ -193,9 +193,14 @@ void c_log(const log_level_t level, const char* format, ...)
     char    buffer[1024];
     va_list varg;
 
-   va_start(varg, format);
-   SDL_vsnprintf(buffer, 1024, format, varg);
-   va_end(varg);
+    if (LOG_SUPPRESS == level)
+    {
+        return;
+    }
+
+    va_start(varg, format);
+    SDL_vsnprintf(buffer, 1024, format, varg);
+    va_end(varg);
 
     switch(level)
     {
