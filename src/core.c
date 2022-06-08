@@ -109,7 +109,7 @@ void core_deinit(core_t *core)
         gui_deinit(core);
     }
 
-    can_deinit(core);
+    can_quit(core);
     scripts_deinit(core);
     SDL_Quit();
     free(core);

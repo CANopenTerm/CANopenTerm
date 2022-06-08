@@ -46,6 +46,31 @@ void parse_command(char* input, core_t* core)
     {
         return;
     }
+    else if (0 == SDL_strncmp(token, "b", 1))
+    {
+        Uint32 command;
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            can_print_baud_rate_help(core);
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &command);
+        }
+
+        if (command > 13)
+        {
+            can_print_baud_rate_help(core);
+            return;
+        }
+        else
+        {
+            can_set_baud_rate(command, core);
+        }
+    }
     else if (0 == SDL_strncmp(token, "c", 1))
     {
         if (0 != system(CLEAR_CMD))
@@ -389,6 +414,7 @@ static void print_usage_information(SDL_bool show_all)
 
     if (SDL_TRUE == show_all)
     {
+        table_print_row(" b ", "(command)",                                 "Set baud rate",  &table);
         table_print_row(" c ", " ",                                         "Clear output",   &table);
         table_print_row(" g ", " ",                                         "Activate GUI",   &table);
         table_print_row(" l ", " ",                                         "List scripts",   &table);

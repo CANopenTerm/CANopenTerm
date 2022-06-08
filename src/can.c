@@ -12,6 +12,7 @@
 #include "can.h"
 #include "core.h"
 #include "printf.h"
+#include "table.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -22,15 +23,39 @@ static int can_monitor(void *core);
 
 void can_init(core_t* core)
 {
+    if (NULL == core)
+    {
+        return;
+    }
+
     core->can_monitor_th = SDL_CreateThread(can_monitor, "CAN monitor thread", (void *)core);
 }
 
 void can_deinit(core_t* core)
 {
+    if (NULL == core)
+    {
+        return;
+    }
+
     core->can_status         = 0;
     core->is_can_initialised = SDL_FALSE;
 
-    CAN_Uninitialize(PCAN_NONEBUS);
+    CAN_Uninitialize(PCAN_USBBUS1);
+}
+
+void can_quit(core_t* core)
+{
+    if (NULL == core)
+    {
+        return;
+    }
+
+    if (SDL_TRUE == is_can_initialised(core))
+    {
+        can_deinit(core);
+    }
+
     SDL_DetachThread(core->can_monitor_th);
 }
 
@@ -68,6 +93,21 @@ Uint32 can_read(can_message_t* message)
     }
 
     return can_status;
+}
+
+void can_set_baud_rate(Uint8 command, core_t* core)
+{
+    if (NULL == core)
+    {
+        return;
+    }
+
+    core->baud_rate = command;
+
+    if (SDL_TRUE == is_can_initialised(core))
+    {
+        can_deinit(core);
+    }
 }
 
 int lua_can_write(lua_State* L)
@@ -124,6 +164,50 @@ void can_print_error_message(const char* context, Uint32 can_status)
     }
 }
 
+void can_print_baud_rate_help(core_t* core)
+{
+    table_t      table         = { DARK_CYAN, DARK_WHITE, 3, 13, 6 };
+    char         status[14][7] = { 0 };
+    unsigned int status_index  = core->baud_rate;
+    unsigned int index;
+
+    if (status_index > 13)
+    {
+        status_index = 13;
+    }
+
+    for (index = 0; index < 14; index += 1)
+    {
+        if (status_index == index)
+        {
+            SDL_snprintf(status[index], 7, "Active");
+        }
+        else
+        {
+            SDL_snprintf(status[index], 2, " ");
+        }
+    }
+
+    table_print_header(&table);
+    table_print_row("CMD", "Description", "Status", &table);
+    table_print_divider(&table);
+    table_print_row("  0", "1 MBit/s",      status[0],  &table);
+    table_print_row("  1", "800 kBit/s",    status[1],  &table);
+    table_print_row("  2", "500 kBit/s",    status[2],  &table);
+    table_print_row("  3", "250 kBit/s",    status[3],  &table);
+    table_print_row("  4", "125 kBit/s",    status[4],  &table);
+    table_print_row("  5", "100 kBit/s",    status[5],  &table);
+    table_print_row("  6", "95,238 kBit/s", status[6],  &table);
+    table_print_row("  7", "83,333 kBit/s", status[7],  &table);
+    table_print_row("  8", "50 kBit/s",     status[8],  &table);
+    table_print_row("  9", "47,619 kBit/s", status[9],  &table);
+    table_print_row(" 10", "33,333 kBit/s", status[10], &table);
+    table_print_row(" 11", "20 kBit/s",     status[11], &table);
+    table_print_row(" 12", "10 kBit/s",     status[12], &table);
+    table_print_row(" 13", "5 kBit/s",      status[13], &table);
+    table_print_footer(&table);
+}
+
 SDL_bool is_can_initialised(core_t* core)
 {
     if (NULL == core)
@@ -144,13 +228,64 @@ static int can_monitor(void *core_pt)
         return 1;
     }
 
+    core->baud_rate = 3;
+
     while (SDL_TRUE == core->is_running)
     {
         while (SDL_FALSE == is_can_initialised(core))
         {
+            TPCANBaudrate baud_rate;
+
+            switch (core->baud_rate)
+            {
+                case 0:
+                    baud_rate = PCAN_BAUD_1M;
+                    break;
+                case 1:
+                    baud_rate = PCAN_BAUD_800K;
+                    break;
+                case 2:
+                    baud_rate = PCAN_BAUD_500K;
+                    break;
+                case 3:
+                default:
+                    baud_rate = PCAN_BAUD_250K;
+                    break;
+                case 4:
+                    baud_rate = PCAN_BAUD_125K;
+                    break;
+                case 5:
+                    baud_rate = PCAN_BAUD_100K;
+                    break;
+                case 6:
+                    baud_rate = PCAN_BAUD_95K;
+                    break;
+                case 7:
+                    baud_rate = PCAN_BAUD_83K;
+                    break;
+                case 8:
+                    baud_rate = PCAN_BAUD_50K;
+                    break;
+                case 9:
+                    baud_rate = PCAN_BAUD_47K;
+                    break;
+                case 10:
+                    baud_rate = PCAN_BAUD_33K;
+                    break;
+                case 11:
+                    baud_rate = PCAN_BAUD_20K;
+                    break;
+                case 12:
+                    baud_rate = PCAN_BAUD_10K;
+                    break;
+                case 13:
+                    baud_rate = PCAN_BAUD_5K;
+                    break;
+            }
+
             core->can_status = CAN_Initialize(
                 PCAN_USBBUS1,
-                PCAN_BAUD_250K,
+                baud_rate,
                 PCAN_USB,
                 0, 0);
 
@@ -174,7 +309,7 @@ static int can_monitor(void *core_pt)
             core->can_status         = 0;
             core->is_can_initialised = SDL_FALSE;
 
-            CAN_Uninitialize(PCAN_NONEBUS);
+            CAN_Uninitialize(PCAN_USBBUS1);
             c_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
             c_print_prompt();
         }
