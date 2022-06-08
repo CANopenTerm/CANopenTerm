@@ -29,6 +29,11 @@ void pdo_add(Uint16 can_id, Uint32 event_time_ms, Uint8 length, Uint64 data)
         return;
     }
 
+    if (length > 8)
+    {
+        length = 8;
+    }
+
     // Delete PDO to avoid duplicate entries.
     pdo_del(can_id);
 
