@@ -1,4 +1,10 @@
--- Chaos generator
+--[[
+
+Title:   Chaos generator
+Author:  Michael Fitzmayer
+License: Public domain
+
+--]]
 
 function print_progress(progress)
     io.write("\rProgress: ")
