@@ -96,3 +96,16 @@ following function is made available for this purpose:
 ```lua
 delay_ms (delay_in_ms)
 ```
+
+For example, loops can be interrupted as follows:
+
+```lua
+while (condition)
+do
+    poll_keys()
+    if (key_is_hit)
+    then
+        break
+    end
+end
+```

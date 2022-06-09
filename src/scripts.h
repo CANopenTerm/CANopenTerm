@@ -12,10 +12,11 @@
 
 #include "core.h"
 
-void scripts_deinit(core_t* core);
+void scripts_init(core_t* core);
 void scripts_deinit(core_t* core);
 void list_scripts(void);
 void run_script(const char* name, core_t* core);
 int  lua_delay_ms(lua_State* L);
+int  lua_poll_keys(lua_State* L);
 
 #endif /* SCRIPTS_H */

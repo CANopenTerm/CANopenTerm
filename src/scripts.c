@@ -8,6 +8,7 @@
  **/
 
 #include "SDL.h"
+#include "conio.h"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
@@ -31,6 +32,9 @@ void scripts_init(core_t* core)
 
         lua_pushcfunction(core->L, lua_delay_ms);
         lua_setglobal(core->L, "delay_ms");
+
+        lua_pushcfunction(core->L, lua_poll_keys);
+        lua_setglobal(core->L, "poll_keys");
     }
 }
 
@@ -98,4 +102,20 @@ int lua_delay_ms(lua_State* L)
 
     SDL_Delay(delay_in_ms);
     return 1;
+}
+
+int lua_poll_keys(lua_State* L)
+{
+    if (0 != kbhit())
+    {
+        char key = getch();
+
+        lua_pushboolean(L, 1);
+        lua_setglobal(L, "key_is_hit");
+    }
+    else
+    {
+        lua_pushboolean(L, 0);
+        lua_setglobal(L, "key_is_hit");
+    }
 }

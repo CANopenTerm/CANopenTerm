@@ -298,7 +298,7 @@ static int can_monitor(void *core_pt)
                 c_print_prompt();
             }
 
-            SDL_Delay(100);
+            SDL_Delay(10);
             continue;
         }
 
@@ -313,7 +313,7 @@ static int can_monitor(void *core_pt)
             c_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
             c_print_prompt();
         }
-        SDL_Delay(100);
+        SDL_Delay(10);
     }
 
     return 0;
