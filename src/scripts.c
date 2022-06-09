@@ -113,6 +113,7 @@ int lua_poll_keys(lua_State* L)
     if (0 != kbhit())
     {
         char key = getch();
+        (void)key;
 
         lua_pushboolean(L, 1);
         lua_setglobal(L, "key_is_hit");
