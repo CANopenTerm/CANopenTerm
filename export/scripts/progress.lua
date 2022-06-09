@@ -14,6 +14,13 @@ do
     io.write("\rProgress: ")
     io.write(progress)
     io.write("%")
+
+    poll_keys()
+    if (key_is_hit)
+    then
+        break;
+    end
+
     delay_ms(100)
 end
 io.write('\n')
