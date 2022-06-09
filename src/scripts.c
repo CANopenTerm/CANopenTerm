@@ -7,8 +7,11 @@
  *
  **/
 
-#include "SDL.h"
+#ifdef _WIN32
 #include "conio.h"
+#endif
+
+#include "SDL.h"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
@@ -106,6 +109,7 @@ int lua_delay_ms(lua_State* L)
 
 int lua_poll_keys(lua_State* L)
 {
+#ifdef _WIN32
     if (0 != kbhit())
     {
         char key = getch();
@@ -114,6 +118,7 @@ int lua_poll_keys(lua_State* L)
         lua_setglobal(L, "key_is_hit");
     }
     else
+#endif
     {
         lua_pushboolean(L, 0);
         lua_setglobal(L, "key_is_hit");
