@@ -138,7 +138,7 @@ void pdo_print_help(void)
     table_print_header(&table);
     table_print_row("CAN-ID", "Object", "Spec.", &table);
     table_print_divider(&table);
-    table_print_row("0x00  - 0x7f",  "Node-ID", "CiA 301", &table);
+    table_print_row("0x000 - 0x07f", "Node-ID", " ",       &table);
     table_print_row("0x181 - 0x1ff", "TPDO1",   "CiA 301", &table);
     table_print_row("0x281 - 0x1ff", "TPDO2",   "CiA 301", &table);
     table_print_row("0x381 - 0x1ff", "TPDO3",   "CiA 301", &table);
@@ -148,7 +148,7 @@ void pdo_print_help(void)
 
 SDL_bool pdo_is_id_valid(Uint16 can_id)
 {
-    /* Node-ID (0x00  - 0x7f)
+    /* Node-ID (0x000 - 0x07f)
      * TPDO 1  (0x181 - 0x1ff)
      * TPDO 2  (0x281 - 0x2ff)
      * TPDO 3  (0x381 - 0x3ff)
