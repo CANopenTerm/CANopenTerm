@@ -35,7 +35,7 @@ The following commands are supported:
 
 ## Process data objects (PDO)
 
-It is possible to create up to 504 asynchronous TPDOs, which are then
+It is possible to create up to 632 asynchronous PDOs, which are then
 sent cyclically at the specified interval.  This is extremely useful,
 especially for testing purposes.
 
