@@ -133,26 +133,32 @@ static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
 
 void pdo_print_help(void)
 {
-    table_t table = { DARK_CYAN, DARK_WHITE, 13, 6, 7 };
+    table_t table = { DARK_CYAN, DARK_WHITE, 13, 7, 7 };
 
     table_print_header(&table);
     table_print_row("CAN-ID", "Object", "Spec.", &table);
     table_print_divider(&table);
-    table_print_row("0x181 - 0x1ff", "TPDO1", "CiA 301", &table);
-    table_print_row("0x281 - 0x1ff", "TPDO2", "CiA 301", &table);
-    table_print_row("0x381 - 0x1ff", "TPDO3", "CiA 301", &table);
-    table_print_row("0x481 - 0x1ff", "TPDO4", "CiA 301", &table);
+    table_print_row("0x00  - 0x7f",  "Node-ID", "CiA 301", &table);
+    table_print_row("0x181 - 0x1ff", " TPDO1",  "CiA 301", &table);
+    table_print_row("0x281 - 0x1ff", " TPDO2",  "CiA 301", &table);
+    table_print_row("0x381 - 0x1ff", " TPDO3",  "CiA 301", &table);
+    table_print_row("0x481 - 0x1ff", " TPDO4",  "CiA 301", &table);
     table_print_footer(&table);
 }
 
 SDL_bool pdo_is_id_valid(Uint16 can_id)
 {
-    /* TPDO 1 (0x181 - 0x1ff)
-     * TPDO 2 (0x281 - 0x2ff)
-     * TPDO 3 (0x381 - 0x3ff)
-     * TPDO 4 (0x481 - 0x4ff)
+    /* Node-ID (0x00  - 0x7f)
+     * TPDO 1  (0x181 - 0x1ff)
+     * TPDO 2  (0x281 - 0x2ff)
+     * TPDO 3  (0x381 - 0x3ff)
+     * TPDO 4  (0x481 - 0x4ff)
      */
-    if ((can_id >= 0x180) && (can_id <= 0x4ff))
+    if ((can_id >= 0x00) && (can_id <= 0x7f))
+    {
+        return SDL_TRUE
+    }    
+    else if ((can_id >= 0x180) && (can_id <= 0x4ff))
     {
         switch (can_id)
         {
