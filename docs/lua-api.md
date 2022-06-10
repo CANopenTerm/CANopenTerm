@@ -49,7 +49,7 @@ pdo_del (can_id)
 The CAN-IDs reserved according to CiA 301 can be used:
 
 ```text
-0x00  - 0x7f  (Node-ID)
+0x000 - 0x07f (Node-ID)
 0x181 - 0x1ff (TPDO1)
 0x281 - 0x2ff (TPDO2)
 0x381 - 0x3ff (TPDO3)
