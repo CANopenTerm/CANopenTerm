@@ -124,4 +124,6 @@ int lua_poll_keys(lua_State* L)
         lua_pushboolean(L, 0);
         lua_setglobal(L, "key_is_hit");
     }
+
+    return 1;
 }
