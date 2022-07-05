@@ -44,12 +44,17 @@ status_t core_init(core_t **core)
     // Initialise SDL.
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
 
-    if (0 != SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER))
+    if (0 != SDL_InitSubSystem(SDL_INIT_VIDEO))
     {
-        c_log(LOG_ERROR, "Unable to initialise SDL: %s", SDL_GetError());
+        c_log(LOG_ERROR, "Unable to initialise SDL timer sub-system: %s", SDL_GetError());
         return COT_ERROR;
     }
 
+    if (0 != SDL_InitSubSystem(SDL_INIT_TIMER))
+    {
+        c_log(LOG_WARNING, "Unable to initialise SDL video sub-system: %s", SDL_GetError());
+    }
+   
     // Initialise Lua.
     scripts_init((*core));
     if (NULL != (*core)->L)
