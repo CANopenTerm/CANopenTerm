@@ -157,7 +157,7 @@ SDL_bool pdo_is_id_valid(Uint16 can_id)
     if ((can_id >= 0x00) && (can_id <= 0x7f))
     {
         return SDL_TRUE;
-    }    
+    }
     else if ((can_id >= 0x180) && (can_id <= 0x4ff))
     {
         switch (can_id)
