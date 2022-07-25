@@ -11,7 +11,7 @@
 #include "table.h"
 #include "printf.h"
 
-static print_frame(const char* left, const char* center, const char* right, table_t* t);
+static void print_frame(const char* left, const char* center, const char* right, table_t* t);
 
 void table_print_header(table_t* t)
 {
@@ -77,7 +77,7 @@ void table_print_row(const char* column_a, const char* column_b, const char* col
     c_printf(t->frame_color, " │\r\n");
 }
 
-static print_frame(const char* left, const char* center, const char* right, table_t* t)
+static void print_frame(const char* left, const char* center, const char* right, table_t* t)
 {
     int index;
 
