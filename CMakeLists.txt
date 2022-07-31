@@ -104,9 +104,9 @@ endif(WIN32)
 
 if(UNIX)
   set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Linux")
-  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-4.6.0.tar.gz)
+  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-4.6.1.tar.gz)
   set(PCAN_DEVEL_URL https://www.peak-system.com/produktcd/Develop/PC%20interfaces/Linux/PCAN-Basic_API_for_Linux)
-  set(PCAN_DEVEL_HASH 348db1fd0c685a88fce846e94fd8ddac277fe838)
+  set(PCAN_DEVEL_HASH 9fb9577cc4b4855ca78f073c5a5d0aa32684cb46)
 
   ExternalProject_Add(PCAN_devel
     URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
