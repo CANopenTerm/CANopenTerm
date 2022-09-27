@@ -1,4 +1,4 @@
-[![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.png)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
+[![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
 
 # CANopenTerm
 
