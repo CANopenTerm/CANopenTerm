@@ -1,3 +1,5 @@
+[![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.png)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
+
 # CANopenTerm
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://www.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CANopenTerm/CANopenTerm&amp;utm_campaign=Badge_Grade)
