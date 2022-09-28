@@ -126,27 +126,27 @@ if(UNIX)
 endif(UNIX)
 
 # libsocketcan
-if(UNIX)
-  set(SOCKETCAN_VERSION   "0.0.12")
-  set(SOCKETCAN_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/libsocketcan-${SOCKETCAN_VERSION})
-  set(SOCKETCAN_DEVEL_PKG libsocketcan-${SOCKETCAN_VERSION}.tar.gz)
+#if(UNIX)
+#  set(SOCKETCAN_VERSION   "0.0.12")
+#  set(SOCKETCAN_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/libsocketcan-${SOCKETCAN_VERSION})
+#  set(SOCKETCAN_DEVEL_PKG libsocketcan-${SOCKETCAN_VERSION}.tar.gz)
 
-  ExternalProject_Add(socketcan_devel
-    URL https://git.pengutronix.de/cgit/tools/libsocketcan/snapshot/${SOCKETCAN_DEVEL_PKG}
-    URL_HASH SHA1=b914fc7e32184f8a43bff79723a17d426a2e1037
-    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
-    DOWNLOAD_NO_PROGRESS true
-    TLS_VERIFY true
-    SOURCE_DIR ${SOCKETCAN_PATH}/
+#  ExternalProject_Add(socketcan_devel
+#    URL https://git.pengutronix.de/cgit/tools/libsocketcan/snapshot/${SOCKETCAN_DEVEL_PKG}
+#    URL_HASH SHA1=b914fc7e32184f8a43bff79723a17d426a2e1037
+#    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+#    DOWNLOAD_NO_PROGRESS true
+#    TLS_VERIFY true
+#    SOURCE_DIR ${SOCKETCAN_PATH}/
 
-    BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
-    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+#    BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
+#    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/socketcan_devel.cmake" ${SOCKETCAN_PATH}/CMakeLists.txt)
+#    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+#    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/socketcan_devel.cmake" ${SOCKETCAN_PATH}/CMakeLists.txt)
 
-  set(SOCKETCAN_INCLUDE_DIR ${SOCKETCAN_PATH}/include)
-endif(UNIX)
+#  set(SOCKETCAN_INCLUDE_DIR ${SOCKETCAN_PATH}/include)
+#endif(UNIX)
 
 # Nuklear
 set(NUKLEAR_VERSION   "4.9.6")
@@ -227,7 +227,7 @@ include_directories(
   SYSTEM ${PCAN_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/lib
-  SYSTEM ${SOCKETCAN_INCLUDE_DIR}
+#  SYSTEM ${SOCKETCAN_INCLUDE_DIR}
   SYSTEM ${NUKLEAR_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
@@ -261,11 +261,11 @@ add_dependencies(
   Nuklear_devel
   Lua_devel)
 
-if(UNIX)
-  add_dependencies(
-    ${PROJECT_NAME}
-    socketcan_devel)
-endif(UNIX)
+#if(UNIX)
+#  add_dependencies(
+#    ${PROJECT_NAME}
+#    socketcan_devel)
+#endif(UNIX)
 
 if(WIN32)
   target_link_libraries(
