@@ -6,13 +6,9 @@ set(CMAKE_C_STANDARD 90)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # SDL2
-set(SDL2_VERSION "2.0.22")
+set(SDL2_VERSION "2.24.0")
 
-if (WIN32)
-  #if (CMAKE_BUILD_TYPE MATCHES Release)
-  #  set(GUI_TYPE WIN32)
-  #endif()
-
+if(WIN32)
   set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
   set(SDL2_PLATFORM  "x64")
 
@@ -24,7 +20,7 @@ if (WIN32)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=efa040633c4faf8b006c0c1e552456ca4e5a3a53
+    URL_HASH SHA1=8a54459189e88c30ba024ee5f18ce4b1a5d1d9e7
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -51,7 +47,7 @@ if(UNIX)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=66dd460befa7f4c4664b7591228a3951bbbb19a7
+    URL_HASH SHA1=04d7768f4418ba03537ef14a86a0c1c45582f5c3
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -79,7 +75,7 @@ if(WIN32)
 
   set(PCAN_DEVEL_PKG  pcan-basic.zip)
   set(PCAN_DEVEL_URL  https://www.peak-system.com/fileadmin/media/files)
-  set(PCAN_DEVEL_HASH 02ade3d72dfe1e5611f378b5d58fd009ed20319d)
+  set(PCAN_DEVEL_HASH 96525d0bfee58622957e5055eacc774804eacc4c)
 
   ExternalProject_Add(PCAN_devel
     URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
@@ -127,6 +123,29 @@ if(UNIX)
 
   set(PCAN_LIBRARY pcanbasic)
   link_directories(${PCAN_PATH})
+endif(UNIX)
+
+# libsocketcan
+if(UNIX)
+  set(SOCKETCAN_VERSION   "0.0.12")
+  set(SOCKETCAN_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/libsocketcan-${SOCKETCAN_VERSION})
+  set(SOCKETCAN_DEVEL_PKG libsocketcan-${SOCKETCAN_VERSION}.tar.gz)
+
+  ExternalProject_Add(socketcan_devel
+    URL https://git.pengutronix.de/cgit/tools/libsocketcan/snapshot/${SOCKETCAN_DEVEL_PKG}
+    URL_HASH SHA1=b914fc7e32184f8a43bff79723a17d426a2e1037
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${SOCKETCAN_PATH}/
+
+    BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/socketcan_devel.cmake" ${SOCKETCAN_PATH}/CMakeLists.txt)
+
+  set(SOCKETCAN_INCLUDE_DIR ${SOCKETCAN_PATH}/include)
 endif(UNIX)
 
 # Nuklear
@@ -208,6 +227,7 @@ include_directories(
   SYSTEM ${PCAN_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/lib
+  SYSTEM ${SOCKETCAN_INCLUDE_DIR}
   SYSTEM ${NUKLEAR_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
@@ -240,6 +260,12 @@ add_dependencies(
   PCAN_devel
   Nuklear_devel
   Lua_devel)
+
+if(UNIX)
+  add_dependencies(
+    ${PROJECT_NAME}
+    socketcan_devel)
+endif(UNIX)
 
 if(WIN32)
   target_link_libraries(

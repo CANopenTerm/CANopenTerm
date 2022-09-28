@@ -13,12 +13,12 @@
             "variables": [
                 {
                     "name": "SDL2_INCLUDE_DIR",
-                    "value": "${projectDir}\\deps\\SDL2-2.0.22\\include",
+                    "value": "${projectDir}\\deps\\SDL2-2.24.0_x64\\include",
                     "type": "PATH"
                 },
                 {
                     "name": "SDL2_LIBRARY",
-                    "value": "${projectDir}\\deps\\SDL2-2.0.22\\lib\\x64\\SDL2.lib",
+                    "value": "${projectDir}\\deps\\SDL2-2.24.0_x64\\lib\\x64\\SDL2.lib",
                     "type": "FILEPATH"
                 }
             ]
@@ -36,12 +36,12 @@
             "variables": [
                 {
                     "name": "SDL2_INCLUDE_DIR",
-                    "value": "${projectDir}\\deps\\SDL2-2.0.22\\include",
+                    "value": "${projectDir}\\deps\\SDL2-2.24.0_x64\\include",
                     "type": "PATH"
                 },
                 {
                     "name": "SDL2_LIBRARY",
-                    "value": "${projectDir}\\deps\\SDL2-2.0.22\\lib\\x64\\SDL2.lib",
+                    "value": "${projectDir}\\deps\\SDL2-2.24.0_x64\\lib\\x64\\SDL2.lib",
                     "type": "FILEPATH"
                 }
             ]
