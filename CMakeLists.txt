@@ -65,6 +65,8 @@ if(UNIX)
 endif(UNIX)
 
 # PCAN-Basic API
+set(PCAN_VERSION "4.6.1")
+
 if(WIN32)
   set(PCAN_PLATFORM  "x64")
   set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Windows")
@@ -73,8 +75,8 @@ if(WIN32)
     set(PCAN_PLATFORM "Win32")
   endif()
 
-  set(PCAN_DEVEL_PKG  pcan-basic.zip)
-  set(PCAN_DEVEL_URL  https://www.peak-system.com/fileadmin/media/files)
+  set(PCAN_DEVEL_PKG  PCAN-Basic_Windows-${PCAN_VERSION}.zip)
+  set(PCAN_DEVEL_URL  https://raw.githubusercontent.com/CANopenTerm/canopenterm.github.io/main/mirror)
   set(PCAN_DEVEL_HASH 96525d0bfee58622957e5055eacc774804eacc4c)
 
   ExternalProject_Add(PCAN_devel
@@ -100,8 +102,8 @@ endif(WIN32)
 
 if(UNIX)
   set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Linux")
-  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-4.6.1.tar.gz)
-  set(PCAN_DEVEL_URL https://www.peak-system.com/produktcd/Develop/PC%20interfaces/Linux/PCAN-Basic_API_for_Linux)
+  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-${PCAN_VERSION}.tar.gz)
+  set(PCAN_DEVEL_URL https://raw.githubusercontent.com/CANopenTerm/canopenterm.github.io/main/mirror)
   set(PCAN_DEVEL_HASH 9fb9577cc4b4855ca78f073c5a5d0aa32684cb46)
 
   ExternalProject_Add(PCAN_devel
