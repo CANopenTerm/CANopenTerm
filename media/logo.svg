@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="63.277588mm"
-   height="28.898653mm"
-   viewBox="0 0 63.277588 28.898653"
+   width="63.277813mm"
+   height="31.398651mm"
+   viewBox="0 0 63.277813 31.398651"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04, custom)"
@@ -29,14 +29,14 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="2.0737236"
-     inkscape:cx="192.64862"
+     inkscape:cx="166.84962"
      inkscape:cy="57.384697"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="g17215" />
   <defs
      id="defs2">
     <linearGradient
@@ -61,11 +61,31 @@
        y2="66.770172"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(57.635862,-66.73347)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient8323"
+       id="linearGradient841"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(57.635862,-66.73347)"
+       x1="31.772163"
+       y1="86.179771"
+       x2="64.319183"
+       y2="66.770172" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient8323"
+       id="linearGradient843"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(57.635862,-66.73347)"
+       x1="31.772163"
+       y1="86.179771"
+       x2="64.319183"
+       y2="66.770172" />
   </defs>
   <g
      inkscape:label="Layer 1"
      id="layer1"
-     transform="translate(-73.361207)"
+     transform="translate(-73.561207)"
      sodipodi:insensitive="true">
     <g
        id="g17215"
@@ -77,16 +97,19 @@
          inkscape:label="logo">
         <path
            d="M 100.95546,19.550929 89.345478,9.7668517 100.95546,-5.9604645e-7 103.64263,2.7216267 l -8.543839,7.010774 8.543839,7.0969013 z"
-           id="path871" />
+           id="path871"
+           style="fill:url(#linearGradient841)" />
         <path
            d="M 109.04455,-5.9604645e-7 120.65453,9.7668517 109.04455,19.550929 106.3746,16.829302 114.90122,9.8013027 106.3746,2.7216267 Z"
-           id="path873" />
+           id="path873"
+           style="fill:url(#linearGradient843)" />
       </g>
       <g
          aria-label="CANopenTerm"
          id="text6882"
          style="font-weight:bold;font-size:10.5833px;line-height:1.25;font-family:Consolas;-inkscape-font-specification:'Consolas Bold';fill:#505050;stroke-width:0.264583"
-         inkscape:label="title">
+         inkscape:label="title"
+         transform="translate(0.2,2.5)">
         <path
            d="m 78.125759,26.583556 q -0.449583,0.180867 -0.873329,0.268717 -0.418578,0.08785 -0.873329,0.08785 -0.728635,0 -1.291906,-0.211872 -0.558104,-0.217041 -0.945676,-0.640786 -0.382404,-0.423746 -0.583942,-1.049028 -0.19637,-0.630451 -0.19637,-1.462439 0,-0.852658 0.217041,-1.514114 0.21704,-0.666624 0.620115,-1.121375 0.403075,-0.459919 0.976681,-0.69763 Q 75.753818,20 76.472119,20 q 0.232543,0 0.43408,0.01034 0.206705,0.01033 0.403075,0.04134 0.19637,0.02584 0.397907,0.07235 0.201538,0.04651 0.418578,0.118855 v 1.260901 q -0.439248,-0.206705 -0.837155,-0.294555 -0.397908,-0.08785 -0.723468,-0.08785 -0.480589,0 -0.821653,0.175699 -0.341063,0.170532 -0.563271,0.485757 -0.21704,0.310057 -0.320393,0.744138 -0.103353,0.428913 -0.103353,0.945676 0,0.547768 0.103353,0.981849 0.10852,0.428913 0.330728,0.728635 0.222208,0.299723 0.568439,0.459919 0.346231,0.155029 0.821653,0.155029 0.170531,0 0.366901,-0.03101 0.201538,-0.03617 0.403075,-0.08785 0.206705,-0.05684 0.403075,-0.12919 0.201537,-0.07752 0.372069,-0.155029 z"
            id="path830" />
