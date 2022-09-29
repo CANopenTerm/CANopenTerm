@@ -5,17 +5,14 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://www.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CANopenTerm/CANopenTerm&amp;utm_campaign=Badge_Grade)
 [![CMake](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/cmake.yml/badge.svg)](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml)
 
-A versatile software tool to analyse and configure CANopen devices.
-
-## About
-
 You work in an R&D environment and are responsible for the development
 or testing of CANopen devices? Or you are an application engineer and
 need a practical tool to communicate within a CANopen network?
 
-Then CANopenTerm is exactly the right thing for you, because it was
-developed for exactly this purpose. CANopenTerm is an interactive
-terminal that communicates via external CAN hardware on the BUS. In
+Then CANopenTerm is exactly the right tool for you, because it was
+developed for exactly this purpose.  CANopenTerm is a versatile software
+tool to analyse and configure CANopen devices.  It is an interactive
+terminal that communicates via external CAN hardware on the CAN-Bus.  In
 addition to an integrated help for each command, a Lua API is also
 available, which can be used to automate recurring tasks, such as
 writing and reading an EDS, generating traffic, etc.
