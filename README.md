@@ -9,13 +9,24 @@ You work in an R&D environment and are responsible for the development
 or testing of CANopen devices? Or you are an application engineer and
 need a practical tool to communicate within a CANopen network?
 
-Then CANopenTerm is exactly the right tool for you, because it was
-developed for exactly this purpose.  CANopenTerm is a versatile software
-tool to analyse and configure CANopen devices.  It is an interactive
-terminal that communicates via external CAN hardware on the CAN-Bus.  In
-addition to an integrated help for each command, a Lua API is also
-available, which can be used to automate recurring tasks, such as
-writing and reading an EDS, generating traffic, etc.
+You work in an R&D environment and are responsible for the development
+or testing of CANopen devices? Or you are an application engineer and
+you need a simple tool to communicate easily and efficiently on a
+CANopen network?
+
+The you have come to the right place!
+
+CANopenTerm is a versatile, albeit simple to use, software tool for
+analysing and testing CANopen networks and devices with the aid of an
+interactive terminal.  In addition to reading and writing expedited
+**Service Data Objects** (SDO) and sending **Network Management**
+commands (NMT), it is also possible to simulate asynchronous **Process
+Data Objects (PDO)**.  Complex, recurring tasks can be automated with
+the help of scripts written in [Lua
+5.4](https://www.lua.org/manual/5.4/) and a custom API.
+
+In addition, CANopenTerm is entirely free and has been released under
+the terms of a permissive open source license.
 
 ## Features
 
