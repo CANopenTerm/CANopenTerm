@@ -15,10 +15,10 @@ The you have come to the right place!
 CANopenTerm is a versatile, albeit simple to use, software tool for
 analysing and testing CANopen networks and devices with the aid of an
 interactive terminal.  In addition to reading and writing expedited
-**Service Data Objects** (SDO) and sending **Network Management**
-commands (NMT), it is also possible to simulate asynchronous **Process
-Data Objects (PDO)**.  Complex, recurring tasks can be automated with
-the help of scripts written in [Lua
+**Service Data Objects** (**SDO**) and sending **Network Management**
+commands (**NMT**), it is also possible to simulate asynchronous
+**Process Data Objects** (**PDO**).  Complex, recurring tasks can be
+automated with the help of scripts written in [Lua
 5.4](https://www.lua.org/manual/5.4/) and a custom API.
 
 In addition, CANopenTerm is entirely free and has been released under
