@@ -7,10 +7,6 @@
 
 You work in an R&D environment and are responsible for the development
 or testing of CANopen devices? Or you are an application engineer and
-need a practical tool to communicate within a CANopen network?
-
-You work in an R&D environment and are responsible for the development
-or testing of CANopen devices? Or you are an application engineer and
 you need a simple tool to communicate easily and efficiently on a
 CANopen network?
 
