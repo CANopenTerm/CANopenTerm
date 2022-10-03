@@ -25,10 +25,6 @@
 
 status_t core_init(core_t **core)
 {
-#ifdef _WIN32
-    HANDLE handleConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-#endif
-
     *core = (core_t*)calloc(1, sizeof(struct core));
     if (NULL == *core)
     {
@@ -59,7 +55,7 @@ status_t core_init(core_t **core)
     {
         c_log(LOG_WARNING, "Unable to initialise SDL video sub-system: %s", SDL_GetError());
     }
-   
+
     // Initialise Lua.
     scripts_init((*core));
     if (NULL != (*core)->L)
