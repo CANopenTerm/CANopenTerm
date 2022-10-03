@@ -25,6 +25,10 @@
 
 status_t core_init(core_t **core)
 {
+#ifdef _WIN32
+    HANDLE handleConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+#endif
+
     *core = (core_t*)calloc(1, sizeof(struct core));
     if (NULL == *core)
     {
@@ -33,6 +37,7 @@ status_t core_init(core_t **core)
 
 #ifdef _WIN32
     SetConsoleOutputCP(65001);
+    SetConsoleTitle("CANopenTerm");
 #endif
 
     c_printf(DARK_WHITE, "CANopenTerm %u.%u.%u\r\n",
