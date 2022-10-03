@@ -5,14 +5,14 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://www.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CANopenTerm/CANopenTerm&amp;utm_campaign=Badge_Grade)
 [![CMake](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/cmake.yml/badge.svg)](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml)
 
-You work in an R&D environment and are responsible for the development
-or testing of CANopen devices? Or you are an application engineer and
-you need a simple tool to communicate easily and efficiently on a
-CANopen network?
+Do you work in an R&D environment and are responsible for the
+development or testing of CANopen devices? You are an application
+engineer in need of a simple tool to communicate easily and efficiently
+on a CANopen network?
 
-The you have come to the right place!
+Then you have come to the right place!
 
-CANopenTerm is a versatile, albeit simple to use, software tool for
+CANopenTerm is a versatile, yet simple to use, software tool for
 analysing and testing CANopen networks and devices with the aid of an
 interactive terminal.  In addition to reading and writing expedited
 **Service Data Objects** (**SDO**) and sending **Network Management**
