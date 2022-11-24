@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 90)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # SDL2
-set(SDL2_VERSION "2.24.0")
+set(SDL2_VERSION "2.26.0")
 
 if(WIN32)
   set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
@@ -20,7 +20,7 @@ if(WIN32)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=8a54459189e88c30ba024ee5f18ce4b1a5d1d9e7
+    URL_HASH SHA1=f1665949752ceabd4d1ba7a547678369487743ad
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -47,7 +47,7 @@ if(UNIX)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=04d7768f4418ba03537ef14a86a0c1c45582f5c3
+    URL_HASH SHA1=788380a96075119a2ab1e5b53f2fee74fa957fa2
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
