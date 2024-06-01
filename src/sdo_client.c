@@ -77,6 +77,13 @@ int lua_sdo_read(lua_State* L)
     }
 }
 
+int lua_sdo_reset_result(lua_State* L)
+{
+    sdo_result = (Uint32)0U;
+    lua_pushinteger(L, sdo_result);
+    lua_setglobal(L, "sdo_result");
+}
+
 int lua_sdo_write(lua_State* L)
 {
     can_message_t sdo_response = { 0 };
@@ -112,6 +119,9 @@ void lua_register_sdo_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_sdo_read);
     lua_setglobal(core->L, "sdo_read");
+
+    lua_pushcfunction(core->L, lua_sdo_reset_result);
+    lua_setglobal(core->L, "sdo_reset_result");
 
     lua_pushcfunction(core->L, lua_sdo_write);
     lua_setglobal(core->L, "sdo_write");
