@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 90)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # SDL2
-set(SDL2_VERSION "2.26.0")
+set(SDL2_VERSION "2.30.3")
 
 if(WIN32)
   set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
@@ -47,7 +47,7 @@ if(UNIX)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=788380a96075119a2ab1e5b53f2fee74fa957fa2
+    URL_HASH SHA1=2878b4b1fbe9e4b22a317ad52c9d751c70e8df62
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -65,7 +65,8 @@ if(UNIX)
 endif(UNIX)
 
 # PCAN-Basic API
-set(PCAN_VERSION "4.6.1")
+set(PCAN_VERSION_WINDOWS "4.6.1")
+set(PCAN_VERSION_LINUX   "4.6.1")
 
 if(WIN32)
   set(PCAN_PLATFORM  "x64")
@@ -75,9 +76,9 @@ if(WIN32)
     set(PCAN_PLATFORM "Win32")
   endif()
 
-  set(PCAN_DEVEL_PKG  PCAN-Basic_Windows-${PCAN_VERSION}.zip)
+  set(PCAN_DEVEL_PKG  PCAN-Basic_Windows-${PCAN_VERSION_WINDOWS}.zip)
   set(PCAN_DEVEL_URL  https://canopenterm.de/mirror)
-  set(PCAN_DEVEL_HASH 96525d0bfee58622957e5055eacc774804eacc4c)
+  set(PCAN_DEVEL_HASH 5aa4459340986d921a63f15cc643733ab7d9c011)
 
   ExternalProject_Add(PCAN_devel
     URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
@@ -102,9 +103,9 @@ endif(WIN32)
 
 if(UNIX)
   set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Linux")
-  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-${PCAN_VERSION}.tar.gz)
+  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-${PCAN_VERSION_LINUX}.tar.gz)
   set(PCAN_DEVEL_URL https://canopenterm.de/mirror)
-  set(PCAN_DEVEL_HASH 9fb9577cc4b4855ca78f073c5a5d0aa32684cb46)
+  set(PCAN_DEVEL_HASH fa7f9eb4635497036b8dedef6e8eb27e3e435d7f)
 
   ExternalProject_Add(PCAN_devel
     URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
@@ -151,13 +152,13 @@ endif(UNIX)
 #endif(UNIX)
 
 # Nuklear
-set(NUKLEAR_VERSION   "4.9.6")
+set(NUKLEAR_VERSION   "4.12.0")
 set(NUKLEAR_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/Nuklear-${NUKLEAR_VERSION})
 set(NUKLEAR_DEVEL_PKG ${NUKLEAR_VERSION}.zip)
 
 ExternalProject_Add(Nuklear_devel
   URL https://github.com/Immediate-Mode-UI/Nuklear/archive/refs/tags/${NUKLEAR_DEVEL_PKG}
-  URL_HASH SHA1=d7e3273bfe27634cfc1b92e86316e5af53b407eb
+  URL_HASH SHA1=3eb18d3b1d9424d5e4a8a1dee2d053417e1b9e20
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
@@ -172,7 +173,7 @@ ExternalProject_Add(Nuklear_devel
 set(NUKLEAR_INCLUDE_DIR ${NUKLEAR_PATH})
 
 # Lua
-set(LUA_VERSION   "5.4.4")
+set(LUA_VERSION   "5.4.6")
 set(LUA_DEVEL_PKG v${LUA_VERSION}.zip)
 
 if(WIN32)
@@ -185,7 +186,7 @@ endif(UNIX)
 
 ExternalProject_Add(Lua_devel
   URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
-  URL_HASH SHA1=21b2815c0ec280877a2a8af4b865cba30df80260
+  URL_HASH SHA1=96abb80f46e2c6548b47632384205bddfaeb6c37
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
@@ -202,13 +203,13 @@ link_directories(${LUA_PATH})
 
 # dirent
 if(WIN32)
-  set(DIRENT_VERSION   "1.23.2")
+  set(DIRENT_VERSION   "1.2.4")
   set(DIRENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/dirent-${DIRENT_VERSION})
   set(DIRENT_DEVEL_PKG ${DIRENT_VERSION}.zip)
 
   ExternalProject_Add(dirent_devel
     URL https://github.com/tronkko/dirent/archive/refs/tags/${DIRENT_DEVEL_PKG}
-    URL_HASH SHA1=0059b1031f4cd078ab0f9bfcadc3903949e4dd3d
+    URL_HASH SHA1=70b02369071572dd1b080057a6b9170dec04868d
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
