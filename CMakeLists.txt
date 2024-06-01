@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(CANopenTerm C)
 
 set(CMAKE_C_STANDARD 90)
+cmake_policy(SET CMP0135 NEW)
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
@@ -122,7 +123,7 @@ if(UNIX)
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
 
   set(PCAN_INCLUDE_DIR
-    ${PCAN_PATH}/libpcanbasic/pcanbasic)
+    ${PCAN_PATH}/libpcanbasic/pcanbasic/include)
 
   set(PCAN_LIBRARY pcanbasic)
   link_directories(${PCAN_PATH})
@@ -152,13 +153,13 @@ endif(UNIX)
 #endif(UNIX)
 
 # Nuklear
-set(NUKLEAR_VERSION   "4.12.0")
+set(NUKLEAR_VERSION   "4.9.4")
 set(NUKLEAR_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/Nuklear-${NUKLEAR_VERSION})
 set(NUKLEAR_DEVEL_PKG ${NUKLEAR_VERSION}.zip)
 
 ExternalProject_Add(Nuklear_devel
   URL https://github.com/Immediate-Mode-UI/Nuklear/archive/refs/tags/${NUKLEAR_DEVEL_PKG}
-  URL_HASH SHA1=3eb18d3b1d9424d5e4a8a1dee2d053417e1b9e20
+  URL_HASH SHA1=d912d4e25a8b2ea03aae78e13bd3a300faf85de8
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
@@ -228,8 +229,8 @@ include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   SYSTEM ${SDL2_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}
-  SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/driver
-  SYSTEM ${PCAN_INCLUDE_DIR}/src/pcan/lib
+  SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
+  SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
 #  SYSTEM ${SOCKETCAN_INCLUDE_DIR}
   SYSTEM ${NUKLEAR_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}

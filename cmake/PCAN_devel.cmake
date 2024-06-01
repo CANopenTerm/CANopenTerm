@@ -20,7 +20,8 @@ if(UNIX)
   target_include_directories(
     pcanbasic
     PUBLIC ${SRC_DIR}/pcan/driver
-    PUBLIC ${SRC_DIR}/pcan/lib)
+    PUBLIC ${SRC_DIR}/pcan/lib
+    PUBLIC ${SRC_DIR}/../include)
 
   target_compile_definitions(
     pcanbasic
