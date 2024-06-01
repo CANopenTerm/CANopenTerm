@@ -1,6 +1,6 @@
-[![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
-
 # CANopenTerm
+
+[![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://www.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CANopenTerm/CANopenTerm&amp;utm_campaign=Badge_Grade)
 [![CMake](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/cmake.yml/badge.svg)](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml)

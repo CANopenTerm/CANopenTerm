@@ -1,3 +1,5 @@
+# MIT License
+
 Copyright 2024 Michael Fitzmayer
 
 Permission is hereby granted, free of charge, to any person obtaining a
