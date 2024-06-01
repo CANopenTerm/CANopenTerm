@@ -36,7 +36,7 @@ void parse_command(char* input, core_t* core)
 {
     int   index;
     char* delim        = " \n";
-    char* context      = NULL;
+    char* context;
     char* token        = NULL;
     char* input_savptr = input;
 
