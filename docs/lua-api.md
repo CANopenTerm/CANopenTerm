@@ -65,7 +65,8 @@ sdo_read (node_id, index, sub_index)
 ```
 
 The result is not displayed automatically, but the most recent result
-can be accessed via the global variable `sdo_result`:
+can be accessed via the global variable `sdo_result` which can be reset to
+`0` using the function `sdo_reset_result()`:
 
 ```lua
 sdo_read (0x50, 0x2100, 1)
@@ -73,6 +74,7 @@ print(sdo_result)
 sdo_write (0x50, 0x2100, 1, 4, 1)
 sdo_read (0x50, 0x2100, 1)
 print(sdo_result)
+sdo_reset_result()
 ```
 
 To write SDOs, the following function is available:

@@ -2,7 +2,7 @@
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
- *  Copyright (c) 2022, Michael Fitzmayer. All rights reserved.
+ *  Copyright (c) 2024, Michael Fitzmayer. All rights reserved.
  *  SPDX-License-Identifier: MIT
  *
  **/
@@ -40,7 +40,7 @@ status_t core_init(core_t **core)
              VERSION_MAJOR,
              VERSION_MINOR,
              VERSION_BUILD);
-    c_printf(DARK_WHITE, "Copyright (c) 2022, Michael Fitzmayer.\r\n\r\n");
+    c_printf(DARK_WHITE, "Copyright (c) 2024, Michael Fitzmayer.\r\n\r\n");
 
     // Initialise SDL.
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");

@@ -21,7 +21,7 @@ if(WIN32)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=f1665949752ceabd4d1ba7a547678369487743ad
+    URL_HASH SHA1=2878b4b1fbe9e4b22a317ad52c9d751c70e8df62
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -204,7 +204,7 @@ link_directories(${LUA_PATH})
 
 # dirent
 if(WIN32)
-  set(DIRENT_VERSION   "1.2.4")
+  set(DIRENT_VERSION   "1.24")
   set(DIRENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/dirent-${DIRENT_VERSION})
   set(DIRENT_DEVEL_PKG ${DIRENT_VERSION}.zip)
 

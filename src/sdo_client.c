@@ -2,7 +2,7 @@
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
- *  Copyright (c) 2022, Michael Fitzmayer. All rights reserved.
+ *  Copyright (c) 2024, Michael Fitzmayer. All rights reserved.
  *  SPDX-License-Identifier: MIT
  *
  **/
@@ -82,6 +82,7 @@ int lua_sdo_reset_result(lua_State* L)
     sdo_result = (Uint32)0U;
     lua_pushinteger(L, sdo_result);
     lua_setglobal(L, "sdo_result");
+    return 1;
 }
 
 int lua_sdo_write(lua_State* L)

@@ -2,7 +2,7 @@
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
- *  Copyright (c) 2022, Michael Fitzmayer. All rights reserved.
+ *  Copyright (c) 2024, Michael Fitzmayer. All rights reserved.
  *  SPDX-License-Identifier: MIT
  *
  **/
@@ -129,7 +129,7 @@ void menu_bar_widget(core_t* core)
             {
                 nk_layout_row_dynamic(core->ctx, 20, 1);
                 nk_label(core->ctx, "CANopenTerm", NK_TEXT_CENTERED);
-                nk_label(core->ctx, "Copyright (c) 2022, Michael Fitzmayer.", NK_TEXT_CENTERED);
+                nk_label(core->ctx, "Copyright (c) 2024, Michael Fitzmayer.", NK_TEXT_CENTERED);
                 nk_label(core->ctx, "This project is licensed under the \"The MIT License\".", NK_TEXT_CENTERED);
                 nk_label(core->ctx, "See https://github.com/mupfdev/CANopenTerm for details.", NK_TEXT_CENTERED);
                 nk_popup_end(core->ctx);
