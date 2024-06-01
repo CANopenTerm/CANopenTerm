@@ -43,7 +43,7 @@ the terms of a permissive open source license.
 
 ## Documentation
 
-The documentation can be found [here](https://canopenterm.github.io).
+The documentation can be found [here](https://canopenterm.de).
 
 ## License
 
