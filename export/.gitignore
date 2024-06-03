@@ -1,2 +1,4 @@
 *
+!scripts
+!*.lua
 !.gitignore
