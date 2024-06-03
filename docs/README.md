@@ -43,4 +43,4 @@ the terms of a permissive open source license.
 
 ## Screenshot
 
-[![CANopenTerm screenshot](https://raw.githubusercontent.com/CANopenTerm/canopenterm.github.io/main/media/screenshot.png)](https://raw.githubusercontent.com/CANopenTerm/canopenterm.github.io/main/media/screenshot.png?raw=true "CANopenTerm screenshot")
+[![CANopenTerm screenshot](https://canopenterm.de/media/screenshot.png)](https://canopenterm.de/media/screenshot.png "CANopenTerm screenshot")
