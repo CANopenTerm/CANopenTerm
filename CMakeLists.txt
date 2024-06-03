@@ -290,6 +290,10 @@ if(UNIX)
     dl
     m
     pthread)
+
+    add_compile_definitions(
+      ${PROJECT_NAME}
+      USE_LIBSOCKETCAN)
 endif(UNIX)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
