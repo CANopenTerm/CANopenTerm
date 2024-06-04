@@ -2,10 +2,10 @@
 
 ## Supported hardware
 
-Currently, only USB-based CAN dongles from [PEAK-System Technik
-GmbH](https://www.peak-system.com/Products.57.0.html?L=1) are supported.
-An abstraction for other manufacturers is being considered and SocketCAN
-support for Linux is in the works.
+On Windows, only USB dongles from [PEAK-System Technik
+GmbH](https://www.peak-system.com/Products.57.0.html?L=1) are currently
+supported.  SocketCAN is used under Linux, so the CAN can be accessed
+hardware-independently.
 
 ## Download
 
@@ -33,14 +33,15 @@ The easiest way to get CANopenTerm up and running is Visual Studio 2022
 with [C++ CMake tools for
 Windows](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-studio)
 installed.  Simply open the cloned repository via `File -> Open ->
-Folder`.  Everything else is set up automatically.
+Folder`.  All required dependencies are fetched at compile time.
 
 ### Linux
 
 CANopenTerm can also be compiled on Linux with the included CMake
-configuration.  All required dependencies are fetched at compile time.
+configuration.  
 
 ```bash
+sudo apt-get install libreadline-dev libsocketcan-dev
 mkdir build
 cd build
 cmake ..
