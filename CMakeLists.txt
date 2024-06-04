@@ -102,54 +102,31 @@ if(WIN32)
   set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
 endif(WIN32)
 
-if(UNIX)
-  set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Linux")
-  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-${PCAN_VERSION_LINUX}.tar.gz)
-  set(PCAN_DEVEL_URL https://canopenterm.de/mirror)
-  set(PCAN_DEVEL_HASH fa7f9eb4635497036b8dedef6e8eb27e3e435d7f)
-
-  ExternalProject_Add(PCAN_devel
-    URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
-    URL_HASH SHA1=${PCAN_DEVEL_HASH}
-    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
-    DOWNLOAD_NO_PROGRESS true
-    TLS_VERIFY true
-    SOURCE_DIR ${PCAN_PATH}/
-
-    BUILD_IN_SOURCE 1
-    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
-
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
-
-  set(PCAN_INCLUDE_DIR
-    ${PCAN_PATH}/libpcanbasic/pcanbasic/include)
-
-  set(PCAN_LIBRARY pcanbasic)
-  link_directories(${PCAN_PATH})
-endif(UNIX)
-
-# libsocketcan
 #if(UNIX)
-#  set(SOCKETCAN_VERSION   "0.0.12")
-#  set(SOCKETCAN_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/libsocketcan-${SOCKETCAN_VERSION})
-#  set(SOCKETCAN_DEVEL_PKG libsocketcan-${SOCKETCAN_VERSION}.tar.gz)
+#  set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Linux")
+#  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-${PCAN_VERSION_LINUX}.tar.gz)
+#  set(PCAN_DEVEL_URL https://canopenterm.de/mirror)
+#  set(PCAN_DEVEL_HASH fa7f9eb4635497036b8dedef6e8eb27e3e435d7f)
 
-#  ExternalProject_Add(socketcan_devel
-#    URL https://git.pengutronix.de/cgit/tools/libsocketcan/snapshot/${SOCKETCAN_DEVEL_PKG}
-#    URL_HASH SHA1=b914fc7e32184f8a43bff79723a17d426a2e1037
+#  ExternalProject_Add(PCAN_devel
+#    URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
+#    URL_HASH SHA1=${PCAN_DEVEL_HASH}
 #    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
 #    DOWNLOAD_NO_PROGRESS true
 #    TLS_VERIFY true
-#    SOURCE_DIR ${SOCKETCAN_PATH}/
+#    SOURCE_DIR ${PCAN_PATH}/
 
-#    BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
+#    BUILD_IN_SOURCE 1
 #    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
 #    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-#    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/socketcan_devel.cmake" ${SOCKETCAN_PATH}/CMakeLists.txt)
+#    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
 
-#  set(SOCKETCAN_INCLUDE_DIR ${SOCKETCAN_PATH}/include)
+#  set(PCAN_INCLUDE_DIR
+#    ${PCAN_PATH}/libpcanbasic/pcanbasic/include)
+
+#  set(PCAN_LIBRARY pcanbasic)
+#  link_directories(${PCAN_PATH})
 #endif(UNIX)
 
 # Nuklear
@@ -231,7 +208,6 @@ include_directories(
   SYSTEM ${PCAN_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
-#  SYSTEM ${SOCKETCAN_INCLUDE_DIR}
   SYSTEM ${NUKLEAR_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
@@ -261,15 +237,14 @@ add_executable(
 add_dependencies(
   ${PROJECT_NAME}
   SDL2_devel
-  PCAN_devel
   Nuklear_devel
   Lua_devel)
 
-#if(UNIX)
-#  add_dependencies(
-#    ${PROJECT_NAME}
-#    socketcan_devel)
-#endif(UNIX)
+if(WIN32)
+  add_dependencies(
+    ${PROJECT_NAME}
+    PCAN_devel)
+endif(WIN32)
 
 if(WIN32)
   target_link_libraries(
@@ -285,7 +260,6 @@ if(UNIX)
     ${PROJECT_NAME}
     ${SDL2_LIBRARY}
     ${SDL2MAIN_LIBRARY}
-    ${PCAN_LIBRARY}
     lua
     dl
     m

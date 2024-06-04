@@ -302,8 +302,14 @@ static int can_monitor(void* core_pt)
                 return 1;
             }
 
-            strcpy(ifr.ifr_name, ifname);
-            ioctl(can_socket, SIOCGIFINDEX, &ifr);
+            strcpy(ifr.ifr_name, core->can_interface);
+            if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0)
+            {
+                c_log(LOG_ERROR, "Invalid CAN interface: %s", core->can_interface);
+                close(can_socket);
+                core->is_can_initialised = SDL_FALSE;
+                return 1;
+            }
 
             addr.can_family  = AF_CAN;
             addr.can_ifindex = ifr.ifr_ifindex;

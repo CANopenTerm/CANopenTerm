@@ -7,6 +7,9 @@
  *
  **/
 
+#ifdef USE_LIBSOCKETCAN
+#include <string.h>
+#endif
 #include <stdlib.h>
 #include "core.h"
 #include "SDL.h"
@@ -21,6 +24,18 @@ int main(int argc, char* argv[])
     {
         status = EXIT_FAILURE;
     }
+
+#ifdef USE_LIBSOCKETCAN
+    if (argc > 1)
+    {
+        strncpy(core->can_interface, argv[1], sizeof(core->can_interface) - 1);
+        core->can_interface[sizeof(core->can_interface) - 1] = '\0';
+    }
+    else
+    {
+        strcpy(core->can_interface, "can0");
+    }
+#endif
 
     while (SDL_TRUE == core->is_running)
     {
