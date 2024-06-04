@@ -128,7 +128,7 @@ Uint32 can_read(can_message_t* message)
         message->data[index] = frame.data[index];
     }
 
-    return nbytes;
+    return 0;
 #else
     Uint32 can_status;
     TPCANMsg pcan_message = { 0 };
@@ -216,7 +216,7 @@ void can_print_error_message(const char* context, Uint32 can_status)
         }
     }
 #else
-    // Handle libsocketcan error messages if needed
+    // Handle libsocketcan error messages if needed.
 #endif
 }
 
@@ -388,11 +388,15 @@ static int can_monitor(void* core_pt)
                 c_print_prompt();
             }
 #endif
-            SDL_Delay(10);
+            SDL_Delay(1);
             continue;
         }
 
 #ifdef USE_LIBSOCKETCAN
+
+// Temporarily disabled because until a different solution is found.
+// Continously reading CAN frames, leads to a SDO timeout.
+#if 0
         struct can_frame frame;
         int nbytes = read(can_socket, &frame, sizeof(frame));
 
@@ -403,6 +407,7 @@ static int can_monitor(void* core_pt)
             c_log(LOG_WARNING, "CAN de-initialised: Error in CAN read?");
             c_print_prompt();
         }
+#endif
 #else
         core->can_status = CAN_GetStatus(PCAN_USBBUS1);
 
@@ -416,7 +421,7 @@ static int can_monitor(void* core_pt)
             c_print_prompt();
         }
 #endif
-        SDL_Delay(10);
+        SDL_Delay(1);
     }
 
     return 0;

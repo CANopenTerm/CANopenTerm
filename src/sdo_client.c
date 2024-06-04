@@ -191,9 +191,10 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
         Uint64 time_b;
         Uint64 delta_time;
 
+        can_status = can_read(&can_message);
         if ((0x580 + node_id) == can_message.id)
         {
-            if ((index  & 0x00ff) == can_message.data[1])
+            if ((index & 0x00ff) == can_message.data[1])
             {
                 if (((index & 0xff00) >> 8) == can_message.data[2])
                 {
@@ -203,9 +204,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
             }
         }
 
-        can_status = can_read(&can_message);
-        time_b     = time_a;
-        time_a     = SDL_GetTicks64();
+        time_b = time_a;
+        time_a = SDL_GetTicks64();
 
         if (time_a > time_b)
         {
