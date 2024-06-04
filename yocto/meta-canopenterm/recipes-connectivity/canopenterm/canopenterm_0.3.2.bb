@@ -1,14 +1,14 @@
 SUMMARY = "CANopenTerm"
 DESCRIPTION = "A versatile software tool to analyse and configure \
 CANopen devices."
-HOMEPAGE = "https://github.com/mupfdev/CANopenTerm"
+HOMEPAGE = "https://github.com/CANopenTerm/CANopenTerm"
 
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://LICENSE.md;md5=f3cc781d7819d4da0c60b846649a23a7"
+LIC_FILES_CHKSUM = "file://LICENSE.md;md5=10e84ea70e8c3a1fbc462f5424806474"
 
 python do_display_banner() {
-    bb.plain("CANopenTerm 0.2.7");
-    bb.plain("Copyright (c) 2022, Michael Fitzmayer");
+    bb.plain("CANopenTerm 0.3.2");
+    bb.plain("Copyright (c) 2024, Michael Fitzmayer");
 }
 
 addtask display_banner before do_build
@@ -18,8 +18,8 @@ SRC_URI = "https://github.com/mupfdev/CANopenTerm/archive/refs/tags/v${PV}.tar.g
 
 S = "${WORKDIR}/CANopenTerm-${PV}"
 
-SRC_URI[md5sum] = "3751890cfde0c7ab8b7cd59df886566b"
-SRC_URI[sha256sum] = "1acae11c8e223f8825f756077ba0c243dfb19aee56dc98d37d4918749683ff23"
+SRC_URI[md5sum] = "bc00e65b3886794896532dab970c618a"
+SRC_URI[sha256sum] = "32183d1d8ac0b50d44b121c37782562bf96850ef1f6275b64129946619c19c94"
 
 do_compile() {
     ${CC} \
@@ -36,16 +36,20 @@ do_compile() {
     ${S}/src/scripts.c \
     ${S}/src/sdo_client.c \
     ${S}/src/table.c \
-    $(pkg-config --cflags --libs --static sdl2 lua) -lpcan \
+    -DUSE_LIBSOCKETCAN \
+    $(pkg-config --cflags --libs --static sdl2 lua) \
     -L${D}${libdir} \
     -o ${S}/export/CANopenTerm
 }
 
 do_install () {
     install -d ${D}${bindir}
+    install -d ${D}/usr/share/CANopenTerm/scripts
+    install -m 0644 ${S}/export/scripts/* ${D}/usr/share/CANopenTerm/scripts
     install -m 0755 ${S}/export/CANopenTerm ${D}${bindir}
 }
 
-DEPENDS = "libsdl2 lua nuklear pcan-basic-api pkgconfig"
+DEPENDS = "libsdl2 lua nuklear libsocketcan pkgconfig"
+FILES:${PN} = "/usr/bin/CANopenTerm /usr/share/CANopenTerm"
 
 inherit pkgconfig
