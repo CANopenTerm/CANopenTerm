@@ -7,7 +7,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=10e84ea70e8c3a1fbc462f5424806474"
 
 python do_display_banner() {
-    bb.plain("CANopenTerm 0.3.2");
+    bb.plain("CANopenTerm 0.3.3");
     bb.plain("Copyright (c) 2024, Michael Fitzmayer");
 }
 
@@ -18,8 +18,8 @@ SRC_URI = "https://github.com/mupfdev/CANopenTerm/archive/refs/tags/v${PV}.tar.g
 
 S = "${WORKDIR}/CANopenTerm-${PV}"
 
-SRC_URI[md5sum] = "bc00e65b3886794896532dab970c618a"
-SRC_URI[sha256sum] = "32183d1d8ac0b50d44b121c37782562bf96850ef1f6275b64129946619c19c94"
+SRC_URI[md5sum] = "4dd92b9a8131daa8e59f5eee5e1aceda"
+SRC_URI[sha256sum] = "8b44864c0621b67a3c03f0372e54286bd6faa247b112bf8824a00ae8c4acaf25"
 
 do_compile() {
     ${CC} \
