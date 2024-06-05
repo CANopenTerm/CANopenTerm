@@ -293,7 +293,6 @@ static int can_monitor(void* core_pt)
 #ifdef USE_LIBSOCKETCAN
             struct sockaddr_can addr;
             struct ifreq ifr;
-            const char* ifname = "can0";
 
             can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
             if (can_socket < 0)

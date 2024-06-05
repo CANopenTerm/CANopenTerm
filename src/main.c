@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     }
 
 #ifdef USE_LIBSOCKETCAN
-    if (argc > 1)
+    if ((argc > 1) && (argv[1] != NULL))
     {
         strncpy(core->can_interface, argv[1], sizeof(core->can_interface) - 1);
         core->can_interface[sizeof(core->can_interface) - 1] = '\0';
