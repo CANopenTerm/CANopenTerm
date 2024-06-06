@@ -12,6 +12,7 @@
 #endif
 #include <stdlib.h>
 #include "core.h"
+#include "scripts.h"
 #include "SDL.h"
 #include "SDL_main.h"
 
@@ -20,8 +21,9 @@ static size_t strlcpy(char* dst, const char* src, size_t dstsize);
 
 int main(int argc, char* argv[])
 {
-    int     status = EXIT_SUCCESS;
-    core_t* core = NULL;
+    int      status      = EXIT_SUCCESS;
+    int      script_arg  = 1;
+    core_t*  core        = NULL;
 
     if (COT_OK != core_init(&core))
     {
@@ -37,20 +39,27 @@ int main(int argc, char* argv[])
     {
         strlcpy(core->can_interface, "can0", sizeof(core->can_interface));
     }
+    script_arg = 2;
 #endif
+
+    if ((argc > script_arg) && (argv[script_arg] != NULL))
+    {
+        run_script(argv[script_arg], core);
+        core->is_running = SDL_FALSE;
+    }
 
     while (SDL_TRUE == core->is_running)
     {
         switch (core_update(core))
         {
-        case COT_QUIT:
-            core->is_running = SDL_FALSE;
-            break;
-        case COT_ERROR:
-            status = EXIT_FAILURE;
-            break;
-        default:
-            continue;
+            case COT_QUIT:
+                core->is_running = SDL_FALSE;
+                break;
+            case COT_ERROR:
+                status = EXIT_FAILURE;
+                break;
+            default:
+                continue;
         }
     }
 
