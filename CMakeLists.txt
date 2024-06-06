@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 project(CANopenTerm C)
 
 set(CMAKE_C_STANDARD 90)
-cmake_policy(SET CMP0135 NEW)
+if (POLICY CMP0135)
+  cmake_policy(SET CMP0135 NEW)
+endif()
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
@@ -269,6 +271,24 @@ if(UNIX)
       ${PROJECT_NAME}
       USE_LIBSOCKETCAN)
 endif(UNIX)
+
+if(UNIX AND EXISTS "/proc/cpuinfo")
+    file(READ "/proc/cpuinfo" CPUINFO)
+    if(CPUINFO MATCHES "Raspberry Pi")
+      message(STATUS "Raspberry Pi detected")
+
+    link_directories(/opt/vc/lib)
+
+    target_link_libraries(${PROJECT_NAME}
+      /opt/vc/lib/libbcm_host.so
+      /opt/vc/lib/libvchiq_arm.so
+      /opt/vc/lib/libvcos.so)
+
+    include_directories(/opt/vc/include)
+    include_directories(/opt/vc/include/interface/vcos/pthreads)
+    include_directories(/opt/vc/include/interface/vmcs_host/linux)
+  endif()
+endif()
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
   set(COMPILE_OPTIONS

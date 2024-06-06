@@ -47,3 +47,15 @@ cd build
 cmake ..
 make
 ````
+
+### Raspberry Pi
+
+To compile CANopenTerm on the Raspberry Pi, another dependency is required.
+
+```bash
+sudo apt-get install libreadline-dev libsocketcan-dev libraspberrypi-dev
+mkdir build
+cd build
+cmake ..
+make
+````
