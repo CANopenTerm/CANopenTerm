@@ -17,7 +17,7 @@ Then you have come to the right place!
 
 CANopenTerm is a versatile, yet simple to use, software tool for
 analysing and testing CANopen networks and devices with the aid of an
-interactive terminal.  In addition to reading and writing expedited
+interactive terminal.  In addition to reading and writing
 **Service Data Objects** (**SDO**) and sending **Network Management**
 commands (**NMT**), it is also possible to simulate asynchronous
 **Process Data Objects** (**PDO**).  Complex, recurring tasks can be
@@ -29,7 +29,7 @@ the terms of a permissive open source license.
 
 ## Features
 
-- Read and write expedided Service Data Objects (SDO).
+- Read and write Service Data Objects (SDO).
 
 - Send Network management (NMT) commands.
 

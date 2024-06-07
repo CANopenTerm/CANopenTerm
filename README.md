@@ -29,7 +29,7 @@ the terms of a permissive open source license.
 
 ## Features
 
-- Read and write expedided Service Data Objects (SDO).
+- Read and write Service Data Objects (SDO).
 
 - Send Network management (NMT) commands.
 
