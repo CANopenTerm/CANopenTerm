@@ -10,6 +10,8 @@
 #ifndef CAN_H
 #define CAN_H
 
+#define CAN_MAX_DATA_LENGTH 0xff
+
 #include "SDL.h"
 #include "lua.h"
 #include "core.h"
@@ -18,7 +20,7 @@ typedef struct can_message
 {
     Uint16 id;
     Uint8  length;
-    Uint8  data[8];
+    Uint8  data[CAN_MAX_DATA_LENGTH + 1];
 
 } can_message_t;
 

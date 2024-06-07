@@ -17,8 +17,9 @@
 
 typedef enum
 {
-    EXPEDITED_SDO_READ = 0,
-    EXPEDITED_SDO_WRITE
+    SDO_READ = 0,
+    EXPEDITED_SDO_WRITE,
+    NORMAL_SDO_WRITE
 
 } sdo_type_t;
 
@@ -32,17 +33,19 @@ typedef enum
 
 typedef enum
 {
-    READ_DICT_OBJECT       = 0x40,
-    READ_DICT_4_BYTE_SENT  = 0x43, // Read Dictionary Object reply,  expedited, 4 bytes sent
-    READ_DICT_3_BYTE_SENT  = 0x47, // Read Dictionary Object reply,  expedited, 3 bytes sent
-    READ_DICT_2_BYTE_SENT  = 0x4b, // Read Dictionary Object reply,  expedited, 2 bytes sent
-    READ_DICT_1_BYTE_SENT  = 0x4f, // Read Dictionary Object reply,  expedited, 1 byte sent
-    WRITE_DICT_OBJECT      = 0x60,
-    WRITE_DICT_4_BYTE_SENT = 0x23, // Write Dictionary Object reply, expedited, 4 bytes sent
-    WRITE_DICT_3_BYTE_SENT = 0x27, // Write Dictionary Object reply, expedited, 3 bytes sent
-    WRITE_DICT_2_BYTE_SENT = 0x2b, // Write Dictionary Object reply, expedited, 2 bytes sent
-    WRITE_DICT_1_BYTE_SENT = 0x2f, // Write Dictionary Object reply, expedited, 1 byte sent
-    SDO_ABORT              = 0x80
+    READ_DICT_OBJECT         = 0x40, // Read Dictionary Obejct reply,  normal, no size indicated
+    READ_DICT_SIZE_INDICATED = 0x41, // Read Dictionary Object reply,  normal, size indicated
+    READ_DICT_NO_SIZE        = 0x42, // Read Dictionary Object reply,  expedited, no size indicated
+    READ_DICT_4_BYTE_SENT    = 0x43, // Read Dictionary Object reply,  expedited, 4 bytes sent
+    READ_DICT_3_BYTE_SENT    = 0x47, // Read Dictionary Object reply,  expedited, 3 bytes sent
+    READ_DICT_2_BYTE_SENT    = 0x4b, // Read Dictionary Object reply,  expedited, 2 bytes sent
+    READ_DICT_1_BYTE_SENT    = 0x4f, // Read Dictionary Object reply,  expedited, 1 byte sent
+    WRITE_DICT_OBJECT        = 0x60,
+    WRITE_DICT_4_BYTE_SENT   = 0x23, // Write Dictionary Object reply, expedited, 4 bytes sent
+    WRITE_DICT_3_BYTE_SENT   = 0x27, // Write Dictionary Object reply, expedited, 3 bytes sent
+    WRITE_DICT_2_BYTE_SENT   = 0x2b, // Write Dictionary Object reply, expedited, 2 bytes sent
+    WRITE_DICT_1_BYTE_SENT   = 0x2f, // Write Dictionary Object reply, expedited, 1 byte sent
+    SDO_ABORT                = 0x80
 
 } sdo_command_code_t;
 
@@ -83,8 +86,7 @@ typedef enum
 } sdo_abort_code_t;
 
 Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index);
-
-Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, Uint32 data);
+Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data);
 int    lua_sdo_read(lua_State* L);
 int    lua_sdo_reset_result(lua_State* L);
 int    lua_sdo_write(lua_State* L);
