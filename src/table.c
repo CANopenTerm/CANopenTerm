@@ -15,6 +15,7 @@ static void print_frame(const char* left, const char* center, const char* right,
 
 void table_print_header(table_t* t)
 {
+    puts("");
     print_frame("┌─", "─╥─", "─┐", t);
 }
 
