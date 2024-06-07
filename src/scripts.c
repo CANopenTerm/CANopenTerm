@@ -9,6 +9,10 @@
 
 #ifdef _WIN32
 #include "conio.h"
+#else
+#include <unistd.h>
+#include <termios.h>
+#include <fcntl.h>
 #endif
 
 #ifdef USE_LIBSOCKETCAN
@@ -18,6 +22,11 @@
 #include <stdlib.h>
 
 static const char* script_dirs[] = { "/usr/local/share/CANopenTerm/scripts", "/usr/share/CANopenTerm/scripts", "./scripts" };
+
+static void set_nonblocking(int fd, int nonblocking);
+static void set_terminal_raw_mode(struct termios* orig_termios);
+static void reset_terminal_mode(struct termios* orig_termios);
+
 #endif
 
 #include "SDL.h"
@@ -167,6 +176,12 @@ int lua_delay_ms(lua_State * L)
 
 int lua_poll_keys(lua_State * L)
 {
+#ifdef USE_LIBSOCKETCAN
+    struct termios orig_termios;
+    char buffer = 0;
+    int n;
+#endif
+
 #ifdef _WIN32
     if (0 != kbhit())
     {
@@ -176,8 +191,23 @@ int lua_poll_keys(lua_State * L)
         lua_pushboolean(L, 1);
         lua_setglobal(L, "key_is_hit");
     }
-    else
+#elif defined USE_LIBSOCKETCAN
+
+    set_terminal_raw_mode(&orig_termios);
+    set_nonblocking(STDIN_FILENO, 1);
+
+    n = read(STDIN_FILENO, &buffer, 1);
+
+    reset_terminal_mode(&orig_termios);
+    set_nonblocking(STDIN_FILENO, 0);
+
+    if (n > 0)
+    {
+        lua_pushboolean(L, 1);
+        lua_setglobal(L, "key_is_hit");
+    }
 #endif
+    else
     {
         lua_pushboolean(L, 0);
         lua_setglobal(L, "key_is_hit");
@@ -185,3 +215,32 @@ int lua_poll_keys(lua_State * L)
 
     return 1;
 }
+
+#ifdef USE_LIBSOCKETCAN
+static void set_nonblocking(int fd, int nonblocking)
+{
+    int flags = fcntl(fd, F_GETFL, 0);
+    if (nonblocking)
+    {
+        fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    }
+    else
+    {
+        fcntl(fd, F_SETFL, flags & ~O_NONBLOCK);
+    }
+}
+
+static void set_terminal_raw_mode(struct termios* orig_termios)
+{
+    struct termios new_termios;
+    tcgetattr(STDIN_FILENO, orig_termios);
+    new_termios = *orig_termios;
+    cfmakeraw(&new_termios);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+}
+
+static void reset_terminal_mode(struct termios* orig_termios)
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
+}
+#endif
