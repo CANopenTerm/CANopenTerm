@@ -358,7 +358,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sdo_data);
         }
 
-        sdo_write(&sdo_response, SDL_TRUE, node_id, sdo_index, sub_index, sdo_data_length, sdo_data);
+        sdo_write(&sdo_response, SDL_TRUE, node_id, sdo_index, sub_index, sdo_data_length, (void*)&sdo_data);
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
