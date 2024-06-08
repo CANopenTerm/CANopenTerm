@@ -203,6 +203,11 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
         Uint64 delta_time;
     
         can_status = can_read(&msg_in);
+        if (0 != can_status)
+        {
+            can_print_error_message(NULL, can_status);
+        }
+
         if ((0x580 + node_id) == msg_in.id)
         {
             if ((index & 0x00ff) == msg_in.data[1])
@@ -296,7 +301,6 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                 if (0 != can_status)
                 {
                     can_print_error_message(NULL, can_status);
-                    break;
                 }
 
                 for (n = 0; n < expected_msgs; n += 1)
@@ -311,6 +315,11 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                         Uint64 delta_time;
 
                         can_status = can_read(&msg_in);
+                        if (0 != can_status)
+                        {
+                            can_print_error_message(NULL, can_status);
+                        }                 
+                        
                         if ((0x580 + node_id) == msg_in.id)
                         {
                             msg_out.data[0]  = cmd;
