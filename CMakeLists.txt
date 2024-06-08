@@ -104,54 +104,6 @@ if(WIN32)
   set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
 endif(WIN32)
 
-#if(UNIX)
-#  set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps/PCAN-Basic_API_Linux")
-#  set(PCAN_DEVEL_PKG PCAN-Basic_Linux-${PCAN_VERSION_LINUX}.tar.gz)
-#  set(PCAN_DEVEL_URL https://canopenterm.de/mirror)
-#  set(PCAN_DEVEL_HASH fa7f9eb4635497036b8dedef6e8eb27e3e435d7f)
-
-#  ExternalProject_Add(PCAN_devel
-#    URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
-#    URL_HASH SHA1=${PCAN_DEVEL_HASH}
-#    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
-#    DOWNLOAD_NO_PROGRESS true
-#    TLS_VERIFY true
-#    SOURCE_DIR ${PCAN_PATH}/
-
-#    BUILD_IN_SOURCE 1
-#    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
-
-#    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-#    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
-
-#  set(PCAN_INCLUDE_DIR
-#    ${PCAN_PATH}/libpcanbasic/pcanbasic/include)
-
-#  set(PCAN_LIBRARY pcanbasic)
-#  link_directories(${PCAN_PATH})
-#endif(UNIX)
-
-# Nuklear
-set(NUKLEAR_VERSION   "4.9.4")
-set(NUKLEAR_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/Nuklear-${NUKLEAR_VERSION})
-set(NUKLEAR_DEVEL_PKG ${NUKLEAR_VERSION}.zip)
-
-ExternalProject_Add(Nuklear_devel
-  URL https://github.com/Immediate-Mode-UI/Nuklear/archive/refs/tags/${NUKLEAR_DEVEL_PKG}
-  URL_HASH SHA1=d912d4e25a8b2ea03aae78e13bd3a300faf85de8
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
-  DOWNLOAD_NO_PROGRESS true
-  TLS_VERIFY true
-  SOURCE_DIR ${NUKLEAR_PATH}/
-
-  BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
-
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Nuklear_devel.cmake" ${NUKLEAR_PATH}/CMakeLists.txt)
-
-set(NUKLEAR_INCLUDE_DIR ${NUKLEAR_PATH})
-
 # Lua
 set(LUA_VERSION   "5.4.6")
 set(LUA_DEVEL_PKG v${LUA_VERSION}.zip)
@@ -210,7 +162,6 @@ include_directories(
   SYSTEM ${PCAN_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
-  SYSTEM ${NUKLEAR_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
 
@@ -218,9 +169,7 @@ set(project_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/gui.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/menu_bar.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/printf.c
@@ -239,7 +188,6 @@ add_executable(
 add_dependencies(
   ${PROJECT_NAME}
   SDL2_devel
-  Nuklear_devel
   Lua_devel)
 
 if(WIN32)

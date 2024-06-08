@@ -38,8 +38,6 @@ the terms of a permissive open source license.
 - Automate your workflow by writing Scripts in [Lua
   5.4](https://www.lua.org/manual/5.4/).
 
-- Optional graphical user interface.
-
 - Can be used without limitations under Windows as well on Linux.
 
 ## Documentation

@@ -9,7 +9,6 @@
 
 #include "SDL.h"
 #include "lua.h"
-#include "nuklear.h"
 #include "can.h"
 #include "core.h"
 #include "printf.h"

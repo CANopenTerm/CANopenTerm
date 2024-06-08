@@ -12,7 +12,6 @@
 #include "can.h"
 #include "core.h"
 #include "command.h"
-#include "gui.h"
 #include "nmt_client.h"
 #include "pdo.h"
 #include "printf.h"
@@ -81,10 +80,6 @@ void parse_command(char* input, core_t* core)
     else if (0 == SDL_strncmp(token, "q", 1))
     {
         core->is_running = SDL_FALSE;
-    }
-    else if (0 == SDL_strncmp(token, "g", 1))
-    {
-        gui_init(core);
     }
     else if (0 == SDL_strncmp(token, "h", 1))
     {
@@ -416,7 +411,6 @@ static void print_usage_information(SDL_bool show_all)
     {
         table_print_row(" b ", "(command)",                                 "Set baud rate",  &table);
         table_print_row(" c ", " ",                                         "Clear output",   &table);
-        table_print_row(" g ", " ",                                         "Activate GUI",   &table);
         table_print_row(" l ", " ",                                         "List scripts",   &table);
         table_print_row(" s ", "[script_name]",                             "Run script",     &table);
     }

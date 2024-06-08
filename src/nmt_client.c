@@ -12,7 +12,6 @@
 #include "can.h"
 #include "core.h"
 #include "nmt_client.h"
-#include "nuklear.h"
 #include "printf.h"
 #include "table.h"
 
@@ -89,64 +88,6 @@ void lua_register_nmt_command(core_t* core)
 {
     lua_pushcfunction(core->L, lua_nmt_send_command);
     lua_setglobal(core->L, "nmt_send_command");
-}
-
-void nmt_client_widget(core_t* core)
-{
-    int window_width;
-    int window_height;
-
-    if (NULL == core)
-    {
-        return;
-    }
-
-    if (SDL_FALSE == core->is_gui_active)
-    {
-        return;
-    }
-
-    SDL_GetWindowSize(core->window, &window_width, &window_height);
-
-    if (0 != nk_begin(
-            core->ctx,
-            "NMT commands",
-            nk_rect((float)window_width - 220, 40, 210, 180),
-            NK_WINDOW_BORDER  |
-            NK_WINDOW_TITLE   |
-            NK_WINDOW_MOVABLE |
-            NK_WINDOW_NO_SCROLLBAR))
-    {
-        nk_layout_row_begin(core->ctx, NK_STATIC, 25, 1);
-        nk_layout_row_push(core->ctx, 195);
-        if (0 != nk_button_text(core->ctx, "0x01 Enter Operational    ", 26))
-        {
-            core->can_status = nmt_send_command(core->node_id, NMT_OPERATIONAL);
-        }
-        nk_layout_row_push(core->ctx, 195);
-        if (0 != nk_button_text(core->ctx, "0x02 Enter Stop           ", 26))
-        {
-            core->can_status = nmt_send_command(core->node_id, NMT_STOP);
-        }
-        nk_layout_row_push(core->ctx, 195);
-        if (0 != nk_button_text(core->ctx, "0x80 Enter Pre-operational", 26))
-        {
-            core->can_status = nmt_send_command(core->node_id, NMT_PRE_OPERATIONAL);
-        }
-        nk_layout_row_push(core->ctx, 195);
-        if (0 != nk_button_text(core->ctx, "0x81 Reset node           ", 26))
-        {
-            core->can_status = nmt_send_command(core->node_id, NMT_RESET_NODE);
-        }
-        nk_layout_row_push(core->ctx, 195);
-        if (0 != nk_button_text(core->ctx, "0x82 Reset communication  ", 26))
-        {
-            core->can_status = nmt_send_command(core->node_id, NMT_RESET_COMM);
-        }
-        nk_layout_row_end(core->ctx);
-    }
-
-    nk_end(core->ctx);
 }
 
 void nmt_print_help(void)
