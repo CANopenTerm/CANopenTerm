@@ -82,6 +82,19 @@ local indices = {
     -- TBC.
 }
 
+print("Enter node ID:")
+io.write(": ")
+local node_id_default = 0x40
+local node_id         = io.read("*n")
+
+if (not(node_id)) then
+    node_id = node_id_default
+end
+
+if (node_id < 1 or node_id > 127) then
+    node_id = node_id_default
+end
+
 local max_desc_length = 0
 for _, entry in ipairs(indices) do
     local desc_length = #entry.description
@@ -102,7 +115,7 @@ for _, entry in ipairs(indices) do
         print(string.format(" %-10s   %-10s   %-"..max_desc_length.."s   %-20s ", "Index", "Sub-Index", "Description", "Value"))
     else
         for sub_index = start_sub_index, end_sub_index do
-            local value = sdo_read(0x40, index, sub_index)
+            local value = sdo_read(node_id, index, sub_index)
 
             if value ~= nil then
                 print(string.format(" %-10s   %-10s   %-"..max_desc_length.."s   %-20s ", string.format("0x%x", index), string.format("0x%x", sub_index), entry.description, value))
