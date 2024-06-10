@@ -18,8 +18,8 @@ SRC_URI = "https://github.com/mupfdev/CANopenTerm/archive/refs/tags/v${PV}.tar.g
 
 S = "${WORKDIR}/CANopenTerm-${PV}"
 
-SRC_URI[md5sum] = "d9e95499657fef15004b43ac6c9a18c5"
-SRC_URI[sha256sum] = "e92b1906a1df5bb3ea61f58a93642a413d0caefbc5f5b2690f02e2a6a6a8c2b6"
+SRC_URI[md5sum] = "d49547f23230168fe3df03ff33e683e0"
+SRC_URI[sha256sum] = "9bc4c2482447849357e3c60a3506dc95e77e65c6500aa499803dc1bc51b0fff7"
 
 do_compile() {
     ${CC} \
