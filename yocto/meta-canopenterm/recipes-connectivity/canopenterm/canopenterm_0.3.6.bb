@@ -7,19 +7,16 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=10e84ea70e8c3a1fbc462f5424806474"
 
 python do_display_banner() {
-    bb.plain("CANopenTerm 0.3.4");
+    bb.plain("CANopenTerm ${PV}");
     bb.plain("Copyright (c) 2024, Michael Fitzmayer");
 }
 
 addtask display_banner before do_build
 
-SRC_URI = "https://github.com/mupfdev/CANopenTerm/archive/refs/tags/v${PV}.tar.gz \
-"
+SRC_URI = "git://github.com/CANopenTerm/CANopenTerm.git;protocol=https;branch=main"
+SRCREV  = "c26eb8d3778975d6677ceb9928e3a4f3470a8b8c"
 
-S = "${WORKDIR}/CANopenTerm-${PV}"
-
-SRC_URI[md5sum] = "d49547f23230168fe3df03ff33e683e0"
-SRC_URI[sha256sum] = "9bc4c2482447849357e3c60a3506dc95e77e65c6500aa499803dc1bc51b0fff7"
+S = "${WORKDIR}/git"
 
 do_compile() {
     ${CC} \
@@ -47,7 +44,7 @@ do_install () {
     install -m 0755 ${S}/export/CANopenTerm ${D}${bindir}
 }
 
-DEPENDS = "libsdl2 lua nuklear libsocketcan pkgconfig"
+DEPENDS = "libsdl2 lua libsocketcan pkgconfig"
 FILES:${PN} = "/usr/bin/CANopenTerm /usr/share/CANopenTerm"
 
 inherit pkgconfig
