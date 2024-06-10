@@ -15,8 +15,7 @@ do
     io.write(progress)
     io.write("%")
 
-    poll_keys()
-    if (key_is_hit)
+    if (key_is_hit())
     then
         break;
     end

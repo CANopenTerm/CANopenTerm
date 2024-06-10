@@ -132,7 +132,7 @@ void parse_command(char* input, core_t* core)
                 convert_token_to_uint(token, &command);
             }
         }
-        nmt_send_command((Uint16)node_id, (Uint8)command);
+        nmt_send_command((Uint16)node_id, (Uint8)command, SDL_TRUE);
     }
     else if (0 == SDL_strncmp(token, "l", 1))
     {

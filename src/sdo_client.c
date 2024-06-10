@@ -16,10 +16,8 @@
 
 #define SDO_TIMEOUT_IN_MS 100
 
-static Uint32 sdo_result;
-
 static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data);
-static void   print_abort_code_error(Uint32 abort_code);
+static void   print_abort_code_error(Uint32 abort_code, SDL_bool show_output);
 
 Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index)
 {
@@ -48,40 +46,36 @@ Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_i
 
 int lua_sdo_read(lua_State* L)
 {
-    can_message_t sdo_response = { 0 };;
+    can_message_t sdo_response = { 0 };
     int           node_id      = luaL_checkinteger(L, 1);
     int           index        = luaL_checkinteger(L, 2);
     int           sub_index    = luaL_checkinteger(L, 3);
+    int           status;
 
     if (node_id > 0x7f)
     {
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (0 != sdo_read(
-            &sdo_response,
-            SDL_FALSE,
-            (Uint8)node_id,
-            (Uint16)index,
-            (Uint8)sub_index))
-    {
-        return 0;
-    }
-    else
-    {
-        sdo_result = (Uint32)sdo_response.data[4];
-        lua_pushinteger(L, sdo_result);
-        lua_setglobal(L, "sdo_result");
-        return 1;
-    }
-}
+    status = sdo_read(
+        &sdo_response,
+        SDL_FALSE,
+        (Uint8)node_id,
+        (Uint16)index,
+        (Uint16)sub_index);
 
-int lua_sdo_reset_result(lua_State* L)
-{
-    sdo_result = (Uint32)0U;
-    lua_pushinteger(L, sdo_result);
-    lua_setglobal(L, "sdo_result");
-    return 1;
+    switch (status)
+    {
+        case READ_DICT_OBJECT:
+        case READ_DICT_SIZE_INDICATED:
+            lua_pushstring(L, (const char*)sdo_response.data);
+            return 1;
+        case SDO_ABORT:
+            return 0;
+        default:
+            lua_pushinteger(L, (Uint32)sdo_response.data[4]);
+            return 1;
+    }
 }
 
 int lua_sdo_write(lua_State* L)
@@ -92,36 +86,39 @@ int lua_sdo_write(lua_State* L)
     int           sub_index    = luaL_checkinteger(L, 3);
     int           length       = luaL_checkinteger(L, 4);
     int           data         = luaL_checkinteger(L, 5);
+    int           status;
 
     if (node_id > 0x7f)
     {
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (0 != sdo_write(
-            &sdo_response,
-            SDL_FALSE,
-            (Uint8)node_id,
-            (Uint16)index,
-            (Uint8)sub_index,
-            (Uint8)length,
-            (void*)&data))
+    status = sdo_write(
+        &sdo_response,
+        SDL_FALSE,
+        (Uint8)node_id,
+        (Uint16)index,
+        (Uint8)sub_index,
+        (Uint8)length,
+        (void*)&data);
+
+    switch (status)
     {
-        return 0;
+        case SDO_ABORT:
+            lua_pushboolean(L, 0);
+            break;
+        default:
+            lua_pushboolean(L, 1);
+            break;
     }
-    else
-    {
-        return 1;
-    }
+
+    return 1;
 }
 
 void lua_register_sdo_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_sdo_read);
     lua_setglobal(core->L, "sdo_read");
-
-    lua_pushcfunction(core->L, lua_sdo_reset_result);
-    lua_setglobal(core->L, "sdo_reset_result");
 
     lua_pushcfunction(core->L, lua_sdo_write);
     lua_setglobal(core->L, "sdo_write");
@@ -192,7 +189,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
     can_status = can_write(&msg_out);
     if (0 != can_status)
     {
-        can_print_error_message(NULL, can_status);
+        can_print_error_message(NULL, can_status, show_output);
     }
 
     time_a = SDL_GetTicks64();
@@ -232,11 +229,15 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
 
     if (0 != can_status)
     {
-        can_print_error_message(NULL, can_status);
+        can_print_error_message(NULL, can_status, show_output);
     }
     else if (timeout_time >= SDO_TIMEOUT_IN_MS)
     {
-        c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
+        if (SDL_TRUE == show_output)
+        {
+            c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
+            return SDO_ABORT;
+        }
     }
     else
     {
@@ -245,6 +246,9 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
 
         switch (command_code)
         {
+            case WRITE_DICT_OBJECT:
+                sdo_response->length = msg_out.length;
+                break;
             case READ_DICT_NO_SIZE: /* Normal SDO. */
             case READ_DICT_SIZE_INDICATED:
                 sdo_response->length = msg_in.data[4];
@@ -273,8 +277,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                 abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
                 abort_code = SDL_SwapBE32(abort_code);
 
-                print_abort_code_error(abort_code);
-                return can_status;
+                print_abort_code_error(abort_code, show_output);
+                return SDO_ABORT;
         }
 
         switch (command_code)
@@ -294,7 +298,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                 can_status = can_write(&msg_out);
                 if (0 != can_status)
                 {
-                    can_print_error_message(NULL, can_status);
+                    can_print_error_message(NULL, can_status, show_output);
                 }
 
                 for (n = 0; n < expected_msgs; n += 1)
@@ -330,7 +334,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                                 can_status = can_write(&msg_out);
                                 if (0 != can_status)
                                 {
-                                    can_print_error_message(NULL, can_status);
+                                    can_print_error_message(NULL, can_status, show_output);
                                 }
                             }
 
@@ -360,8 +364,11 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
 
                     if (timeout_time >= SDO_TIMEOUT_IN_MS)
                     {
-                        c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
-                        break;
+                        if (SDL_TRUE == show_output)
+                        {
+                            c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
+                        }
+                        return SDO_ABORT;
                     }
                 }
                 break;
@@ -395,6 +402,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                 output_data = (Uint32)sdo_response->data[4];
                 str_action  = &str_read;
                 break;
+            case WRITE_DICT_OBJECT:
             case WRITE_DICT_4_BYTE_SENT:
             case WRITE_DICT_3_BYTE_SENT:
             case WRITE_DICT_2_BYTE_SENT:
@@ -429,11 +437,16 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
         }
     }
 
-    return can_status;
+    return command_code;
 }
 
-static void print_abort_code_error(Uint32 abort_code)
+static void print_abort_code_error(Uint32 abort_code, SDL_bool show_output)
 {
+    if (SDL_FALSE == show_output)
+    {
+        return;
+    }
+
     switch(abort_code)
     {
         case ABORT_TOGGLE_BIT_NOT_ALTERED:

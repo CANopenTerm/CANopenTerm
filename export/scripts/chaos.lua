@@ -54,8 +54,7 @@ do
         print_progress(progress)
     end
 
-    poll_keys()
-    if (key_is_hit)
+    if (key_is_hit())
     then
         break;
     end

@@ -23,6 +23,8 @@ NMT commands can be sent with the following Lua function:
 nmt_send_command (node_id, nmt_command)
 ```
 
+**Returns**: true on success, false on failure.
+
 The following commands are supported:
 
 ```text
@@ -64,17 +66,12 @@ To read service data objects (SDO):
 sdo_read (node_id, index, sub_index)
 ```
 
-The result is not displayed automatically, but the most recent result
-can be accessed via the global variable `sdo_result` which can be reset to
-`0` using the function `sdo_reset_result()`:
+**Returns**: number or string, nil on failure.
 
 ```lua
-sdo_read (0x50, 0x2100, 1)
-print(sdo_result)
+print(sdo_read (0x50, 0x2100, 1))
 sdo_write (0x50, 0x2100, 1, 4, 1)
-sdo_read (0x50, 0x2100, 1)
-print(sdo_result)
-sdo_reset_result()
+print(sdo_read (0x50, 0x2100, 1))
 ```
 
 To write SDOs, the following function is available:
@@ -83,6 +80,8 @@ To write SDOs, the following function is available:
 sdo_write (node_id, index, sub_index, length, data)
 ```
 
+**Returns**: true on success, false on failure.
+
 ## Generic CAN interface
 
 In addition, there are also functions to address the CAN directly:
@@ -90,6 +89,8 @@ In addition, there are also functions to address the CAN directly:
 ```lua
 can_write (can_id, data_length, data_d0_d3, data_d4_d7)
 ```
+
+**Returns**: true on success, false on failure.
 
 ## Program flow
 
@@ -100,13 +101,20 @@ following function is made available for this purpose:
 delay_ms (delay_in_ms)
 ```
 
+The is_key_hit() function can be used to check whether a key has been pressed:
+
+```lua
+key_is_hit ()
+```
+
+**Returns**: true or false.
+
 For example, loops can be interrupted as follows:
 
 ```lua
 while (condition)
 do
-    poll_keys()
-    if (key_is_hit)
+    if (key_is_hit())
     then
         break
     end

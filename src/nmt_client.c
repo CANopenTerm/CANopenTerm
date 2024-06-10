@@ -15,7 +15,7 @@
 #include "printf.h"
 #include "table.h"
 
-Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command)
+Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, SDL_bool show_output)
 {
     Uint32        can_status  = 0;
     can_message_t can_message = { 0 };
@@ -46,7 +46,7 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command)
     can_status = can_write(&can_message);
     if (0 != can_status)
     {
-        can_print_error_message(NULL, can_status);
+        can_print_error_message(NULL, can_status, show_output);
     }
 
     return can_status;
@@ -74,14 +74,16 @@ int lua_nmt_send_command(lua_State* L)
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (0 != nmt_send_command(node_id, command))
+    if (0 == nmt_send_command(node_id, command, SDL_FALSE))
     {
-        return 0;
+        lua_pushboolean(L, 1);
     }
     else
     {
-        return 1;
+        lua_pushboolean(L, 0);
     }
+
+    return 1;
 }
 
 void lua_register_nmt_command(core_t* core)

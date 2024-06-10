@@ -54,8 +54,8 @@ void scripts_init(core_t* core)
         lua_pushcfunction(core->L, lua_delay_ms);
         lua_setglobal(core->L, "delay_ms");
 
-        lua_pushcfunction(core->L, lua_poll_keys);
-        lua_setglobal(core->L, "poll_keys");
+        lua_pushcfunction(core->L, lua_key_is_hit);
+        lua_setglobal(core->L, "key_is_hit");
     }
 }
 
@@ -174,7 +174,7 @@ int lua_delay_ms(lua_State * L)
     return 1;
 }
 
-int lua_poll_keys(lua_State * L)
+int lua_key_is_hit(lua_State * L)
 {
 #ifdef USE_LIBSOCKETCAN
     struct termios orig_termios;
@@ -189,7 +189,6 @@ int lua_poll_keys(lua_State * L)
         (void)key;
 
         lua_pushboolean(L, 1);
-        lua_setglobal(L, "key_is_hit");
     }
 #elif defined USE_LIBSOCKETCAN
 
@@ -204,13 +203,11 @@ int lua_poll_keys(lua_State * L)
     if (n > 0)
     {
         lua_pushboolean(L, 1);
-        lua_setglobal(L, "key_is_hit");
     }
 #endif
     else
     {
         lua_pushboolean(L, 0);
-        lua_setglobal(L, "key_is_hit");
     }
 
     return 1;

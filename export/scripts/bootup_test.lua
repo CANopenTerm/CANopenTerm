@@ -88,14 +88,10 @@ do
     sdo_write(node_id_ps, 0x210e, 30, 1, 1)
     delay_ms(45000)
 
-    sdo_read(node_id_dut, 0x1018, 1)
-
-    if sdo_result ~= 0xb3 then
+    if sdo_read(node_id_dut, 0x1018, 1) ~= 0xb3 then
         log(string.format("%d,Failed,%d", i, off_time))
-        sdo_reset_result()
         delay_ms(120000)
     else
         log(string.format("%d,OK,%d", i, off_time))
-        sdo_reset_result()
     end
 end

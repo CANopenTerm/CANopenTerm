@@ -182,14 +182,16 @@ int lua_can_write(lua_State* L)
     message.data[5] = ((data_d4_d7 >> 16) & 0xff);
     message.data[4] = ((data_d4_d7 >> 24) & 0xff);
 
-    if (0 != can_write(&message))
+    if (0 == can_write(&message))
     {
-        return 0;
+        lua_pushboolean(L, 1);
     }
     else
     {
-        return 1;
+        lua_pushboolean(L, 0);
     }
+
+    return 1;
 }
 
 void lua_register_can_commands(core_t* core)
@@ -198,7 +200,7 @@ void lua_register_can_commands(core_t* core)
     lua_setglobal(core->L, "can_write");
 }
 
-void can_print_error_message(const char* context, Uint32 can_status)
+void can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output)
 {
 #ifndef USE_LIBSOCKETCAN
     if (PCAN_ERROR_OK != can_status)

@@ -24,10 +24,9 @@ typedef enum
 
 } nmt_command_t;
 
-Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command);
-int    lua_send_nmt_command(lua_State *L);
+Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, SDL_bool show_output);
+int    lua_nmt_send_command(lua_State* L);
 void   lua_register_nmt_command(core_t* core);
-void   nmt_client_widget(core_t* core);
 void   nmt_print_help(void);
 
 #endif /* NMT_CLIENT_H */
