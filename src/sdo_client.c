@@ -227,11 +227,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
 
     command_code = msg_in.data[0];
 
-    if (0 != can_status)
-    {
-        can_print_error_message(NULL, can_status, show_output);
-    }
-    else if (timeout_time >= SDO_TIMEOUT_IN_MS)
+    if (timeout_time >= SDO_TIMEOUT_IN_MS)
     {
         if (SDL_TRUE == show_output)
         {
