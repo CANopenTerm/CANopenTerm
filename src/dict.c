@@ -36,15 +36,15 @@ static const dict_entry_t dictionary[] =
     { 0x0014, 0x00, 0x00, "DEFTYPE INTEGER56" },
     { 0x0015, 0x00, 0x00, "DEFTYPE INTEGER64" },
     { 0x0016, 0x00, 0x00, "DEFTYPE UNSIGNED24" },
-    { 0x0017, 0x00, 0x00, "reserved" },
+    { 0x0017, 0x00, 0x00, "Reserved" },
     { 0x0018, 0x00, 0x00, "DEFTYPE UNSIGNED40" },
     { 0x0019, 0x00, 0x00, "DEFTYPE UNSIGNED48" },
     { 0x001A, 0x00, 0x00, "DEFTYPE UNSIGNED56" },
     { 0x001B, 0x00, 0x00, "DEFTYPE UNSIGNED64" },
-    { 0x001C, 0x00, 0x00, "reserved" },
-    { 0x001D, 0x00, 0x00, "reserved" },
-    { 0x001E, 0x00, 0x00, "reserved" },
-    { 0x001F, 0x00, 0x00, "reserved" },
+    { 0x001C, 0x00, 0x00, "Reserved" },
+    { 0x001D, 0x00, 0x00, "Reserved" },
+    { 0x001E, 0x00, 0x00, "Reserved" },
+    { 0x001F, 0x00, 0x00, "Reserved" },
     { 0x0000, 0x00, 0x00, "Communication profile area" },
     { 0x1000, 0x00, 0x00, "Device type" },
     { 0x1001, 0x00, 0x00, "Error register" },
@@ -92,12 +92,30 @@ static const dict_entry_t dictionary[] =
     { 0x1022, 0x00, 0x00, "Store format, /ISO10646/, not compressed" },
     { 0x1022, 0x01, 0x7F, "Store format, reserved" },
     { 0x1022, 0x80, 0xFF, "Store format, manufacturer-specific" },
-
+    { 0x1023, 0x00, 0x00, "OS command, Highest sub-index supported" },
+    { 0x1023, 0x01, 0x00, "OS command, Command" },
+    { 0x1023, 0x02, 0x00, "OS command, Status" },
+    { 0x1023, 0x03, 0x00, "OS command, Reply" },
+    { 0x1024, 0x00, 0x00, "OS command mode" },
+    { 0x1025, 0x00, 0x00, "OS debugger interface, Highest sub-index supported" },
+    { 0x1025, 0x00, 0x00, "OS debugger interface, Command" },
+    { 0x1025, 0x00, 0x00, "OS debugger interface, Status" },
+    { 0x1025, 0x00, 0x00, "OS debugger interface, Reply" },
+    { 0x1026, 0x00, 0x00, "OS prompt, Highest sub-index supported" },
+    { 0x1026, 0x01, 0x00, "OS prompt, StdIn" },
+    { 0x1026, 0x02, 0x00, "OS prompt, StdOut" },
+    { 0x1026, 0x03, 0x00, "OS prompt, StdErr" },
+    { 0x1027, 0x00, 0x00, "Module list, Number of connected modules" },
+    { 0x1027, 0x01, 0x00, "Module list, Module 1" },
+    { 0x1027, 0x02, 0xFE, "Module list, Module" },
+    /* TBC. */
 };
 
 const char* dict_lookup(Uint16 index, Uint8 sub_index)
 {
-    for (size_t i = 0; i < sizeof(dictionary) / sizeof(dict_entry_t); ++i)
+    size_t i;
+
+    for (i = 0; i < sizeof(dictionary) / sizeof(dict_entry_t); ++i)
     {
         Uint8 start = dictionary[i].sub_index_start;
         Uint8 end   = dictionary[i].sub_index_end;
