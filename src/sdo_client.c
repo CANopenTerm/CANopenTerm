@@ -69,13 +69,16 @@ int lua_sdo_read(lua_State* L)
         case READ_DICT_OBJECT:
         case READ_DICT_SIZE_INDICATED:
             lua_pushstring(L, (const char*)sdo_response.data);
-            return 1;
+            break;
         case SDO_ABORT:
-            return 0;
+            lua_pushnil(L);
+            break;
         default:
             lua_pushinteger(L, (Uint32)sdo_response.data[4]);
-            return 1;
+            break;
     }
+
+    return 1;
 }
 
 int lua_sdo_write(lua_State* L)
@@ -232,8 +235,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
         if (SDL_TRUE == show_output)
         {
             c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
-            return SDO_ABORT;
         }
+        return SDO_ABORT;
     }
     else
     {
