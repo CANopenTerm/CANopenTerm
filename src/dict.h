@@ -16,7 +16,8 @@
 
 typedef struct dict_entry
 {
-    Uint16      index;
+    Uint16      index_start;
+    Uint16      index_end;
     Uint8       sub_index_start;
     Uint8       sub_index_end;
     const char* description;
