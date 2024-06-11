@@ -82,6 +82,15 @@ sdo_write (node_id, index, sub_index, length, data)
 
 **Returns**: true on success, false on failure.
 
+CANopenTerm has a built-in object directory. A description can be looked-up
+up using the following function:
+
+```lua
+dict_lookup (index, sub_index)
+```
+
+**Returns**: a string or nil.
+
 ## Generic CAN interface
 
 In addition, there are also functions to address the CAN directly:

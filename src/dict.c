@@ -99,9 +99,17 @@ const char* dict_lookup(Uint16 index, Uint8 sub_index)
 {
     for (size_t i = 0; i < sizeof(dictionary) / sizeof(dict_entry_t); ++i)
     {
+        Uint8 start = dictionary[i].sub_index_start;
+        Uint8 end   = dictionary[i].sub_index_end;
+
+        if (end < start)
+        {
+            end = start;
+        }
+
         if (dictionary[i].index == index &&
-            sub_index >= dictionary[i].sub_index_start &&
-            sub_index <= dictionary[i].sub_index_end)
+            sub_index >= start &&
+            sub_index <= end)
         {
             return dictionary[i].description;
         }
