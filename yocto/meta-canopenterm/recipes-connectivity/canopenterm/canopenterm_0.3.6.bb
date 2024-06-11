@@ -24,6 +24,7 @@ do_compile() {
     ${S}/src/can.c \
     ${S}/src/command.c \
     ${S}/src/core.c \
+    ${S}/src/dict.c \
     ${S}/src/main.c \
     ${S}/src/nmt_client.c \
     ${S}/src/pdo.c \

@@ -88,7 +88,6 @@ typedef enum
 Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index);
 Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data);
 int    lua_sdo_read(lua_State* L);
-int    lua_sdo_reset_result(lua_State* L);
 int    lua_sdo_write(lua_State* L);
 void   lua_register_sdo_commands(core_t* core);
 

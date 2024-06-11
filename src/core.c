@@ -15,6 +15,7 @@
 #include "can.h"
 #include "command.h"
 #include "core.h"
+#include "dict.h"
 #include "nmt_client.h"
 #include "pdo.h"
 #include "printf.h"
@@ -53,6 +54,7 @@ status_t core_init(core_t **core)
     if (NULL != (*core)->L)
     {
         lua_register_can_commands((*core));
+        lua_register_dict_commands((*core));
         lua_register_nmt_command((*core));
         lua_register_pdo_commands((*core));
         lua_register_sdo_commands((*core));

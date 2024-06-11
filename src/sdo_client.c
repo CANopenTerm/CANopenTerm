@@ -11,6 +11,7 @@
 #include "lua.h"
 #include "can.h"
 #include "core.h"
+#include "dict.h" 
 #include "printf.h"
 #include "sdo_client.h"
 
@@ -383,6 +384,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
 
     if (SDL_TRUE == show_output)
     {
+        const  char*  description = dict_lookup(index, sub_index);
         const  char*  str_read    = "read";
         const  char*  str_written = "written";
         const  char** str_action  = &str_read;
@@ -411,12 +413,16 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                 break;
         }
 
+        if (NULL != description)
+        {
+            c_log(LOG_INFO, "%s", description);
+        }
+
         switch (command_code)
         {
             case READ_DICT_NO_SIZE:
             case READ_DICT_SIZE_INDICATED:
                 sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
-
                 c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
                     index,
                     sub_index,
