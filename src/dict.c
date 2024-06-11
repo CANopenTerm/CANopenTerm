@@ -145,7 +145,7 @@ static const dict_entry_t dictionary[] =
     { 0x1FD0, 0x1FFF, 0x00, 0x00, "Object dispatching list, Highest sub-index supported" },
     { 0x1FD0, 0x1FFF, 0x01, 0x00, "Object dispatching list, Dispatch 1" },
     { 0x1FD0, 0x1FFF, 0x02, 0xFE, "Object dispatching list, Dispatch" },
-
+    { 0xC000, 0xFFFF, 0x00, 0xFF, "Reserved" },
 };
 
 const char* dict_lookup(Uint16 index, Uint8 sub_index)
