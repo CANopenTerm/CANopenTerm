@@ -45,6 +45,7 @@ void parse_command(char* input, core_t* core)
     {
         return;
     }
+#ifndef __linux__
     else if (0 == SDL_strncmp(token, "b", 1))
     {
         Uint32 command;
@@ -70,6 +71,7 @@ void parse_command(char* input, core_t* core)
             can_set_baud_rate(command, core);
         }
     }
+#endif
     else if (0 == SDL_strncmp(token, "c", 1))
     {
         if (0 != system(CLEAR_CMD))
@@ -409,7 +411,9 @@ static void print_usage_information(SDL_bool show_all)
 
     if (SDL_TRUE == show_all)
     {
+#ifndef __linux__
         table_print_row(" b ", "(command)",                                 "Set baud rate",  &table);
+#endif
         table_print_row(" c ", " ",                                         "Clear output",   &table);
         table_print_row(" l ", " ",                                         "List scripts",   &table);
         table_print_row(" s ", "[script_name]",                             "Run script",     &table);
