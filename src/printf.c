@@ -68,6 +68,7 @@ void c_printf(const color_t color, const char* format, ...)
 
     switch(color)
     {
+        case DEFAULT_COLOR:
         default:
             attr |= default_attr;
             break;
@@ -112,6 +113,7 @@ void c_printf(const color_t color, const char* format, ...)
 #elif defined __linux__
     switch(color)
     {
+        case DEFAULT_COLOR:
         default:
             break;
         case DARK_BLACK:

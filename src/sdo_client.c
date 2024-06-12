@@ -17,53 +17,64 @@
 
 #define SDO_TIMEOUT_IN_MS 100
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data);
-static void   print_abort_code_error(Uint32 abort_code, SDL_bool show_output);
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
+static void   print_abort_code_error(Uint32 abort_code, sdo_output_mode_t output_mode);
 
-Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index)
+Uint32 sdo_read(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
 {
     return sdo_send(
         SDO_READ,
         sdo_response,
-        show_output,
+        output_mode,
         node_id,
         index,
         sub_index,
-        0, 0);
+        0, 0,
+        comment);
 }
 
-Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data)
+Uint32 sdo_write(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
 {
     return sdo_send(
         EXPEDITED_SDO_WRITE,
         sdo_response,
-        show_output,
+        output_mode,
         node_id,
         index,
         sub_index,
         length,
-        data);
+        data,
+        comment);
 }
 
 int lua_sdo_read(lua_State* L)
 {
-    can_message_t sdo_response = { 0 };
-    int           node_id      = luaL_checkinteger(L, 1);
-    int           index        = luaL_checkinteger(L, 2);
-    int           sub_index    = luaL_checkinteger(L, 3);
-    int           status;
+    can_message_t sdo_response     = { 0 };
+    sdo_output_mode_t output_mode  = NO_SDO_OUTPUT;
+    int               node_id      = luaL_checkinteger(L, 1);
+    int               index        = luaL_checkinteger(L, 2);
+    int               sub_index    = luaL_checkinteger(L, 3);
+    int               status;
+    SDL_bool          show_output  = lua_toboolean(L, 4);
+    const char*       comment      = lua_tostring(L, 5);
 
     if (node_id > 0x7f)
     {
         node_id = 0x00 + (node_id % 0x7f);
     }
 
+    if (SDL_TRUE == show_output)
+    {
+        output_mode = SCRIPT_OUTPUT;
+    }
+
     status = sdo_read(
         &sdo_response,
-        SDL_FALSE,
+        output_mode,
         (Uint8)node_id,
         (Uint16)index,
-        (Uint16)sub_index);
+        (Uint16)sub_index,
+        comment);
 
     switch (status)
     {
@@ -84,27 +95,36 @@ int lua_sdo_read(lua_State* L)
 
 int lua_sdo_write(lua_State* L)
 {
-    can_message_t sdo_response = { 0 };
-    int           node_id      = luaL_checkinteger(L, 1);
-    int           index        = luaL_checkinteger(L, 2);
-    int           sub_index    = luaL_checkinteger(L, 3);
-    int           length       = luaL_checkinteger(L, 4);
-    int           data         = luaL_checkinteger(L, 5);
-    int           status;
+    can_message_t     sdo_response = { 0 };
+    sdo_output_mode_t output_mode  = NO_SDO_OUTPUT;
+    int               node_id      = luaL_checkinteger(L, 1);
+    int               index        = luaL_checkinteger(L, 2);
+    int               sub_index    = luaL_checkinteger(L, 3);
+    int               length       = luaL_checkinteger(L, 4);
+    int               data         = luaL_checkinteger(L, 5);
+    int               status;
+    SDL_bool          show_output = lua_toboolean(L, 6);
+    const char*       comment     = lua_tostring(L, 7);
 
     if (node_id > 0x7f)
     {
         node_id = 0x00 + (node_id % 0x7f);
     }
 
+    if (SDL_TRUE == show_output)
+    {
+        output_mode = SCRIPT_OUTPUT;
+    }
+
     status = sdo_write(
         &sdo_response,
-        SDL_FALSE,
+        output_mode,
         (Uint8)node_id,
         (Uint16)index,
         (Uint8)sub_index,
         (Uint8)length,
-        (void*)&data);
+        (void*)&data,
+        comment);
 
     switch (status)
     {
@@ -128,7 +148,7 @@ void lua_register_sdo_commands(core_t* core)
     lua_setglobal(core->L, "sdo_write");
 }
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data)
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment)
 {
     can_message_t msg_in            = { 0 };
     can_message_t msg_out           = { 0 };
@@ -193,7 +213,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
     can_status = can_write(&msg_out);
     if (0 != can_status)
     {
-        can_print_error_message(NULL, can_status, show_output);
+        can_print_error_message(NULL, can_status, SDL_TRUE);
     }
 
     time_a = SDL_GetTicks64();
@@ -233,10 +253,34 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
 
     if (timeout_time >= SDO_TIMEOUT_IN_MS)
     {
-        if (SDL_TRUE == show_output)
+        if (NORMAL_OUTPUT == output_mode)
         {
             c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
         }
+        else if (SCRIPT_OUTPUT == output_mode)
+        {
+            color_t color = DARK_YELLOW;
+
+            switch (msg_out.data[0])
+            {
+                case READ_DICT_OBJECT:
+                    c_printf(color, "Read ");
+                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
+                    break;
+                case WRITE_DICT_OBJECT:
+                case WRITE_DICT_1_BYTE_SENT:
+                case WRITE_DICT_2_BYTE_SENT:
+                case WRITE_DICT_3_BYTE_SENT:
+                case WRITE_DICT_4_BYTE_SENT:
+                    color = LIGHT_BLUE;
+                    c_printf(color, "Write");
+                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, length);
+                    break;
+            }
+            c_printf(LIGHT_RED, "FAIL    ");
+            c_printf(DEFAULT_COLOR, "-                                 SDO timeout\n");
+        }
+
         return SDO_ABORT;
     }
     else
@@ -277,7 +321,11 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                 abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
                 abort_code = SDL_SwapBE32(abort_code);
 
-                print_abort_code_error(abort_code, show_output);
+                if (NORMAL_OUTPUT == output_mode)
+                {
+                    print_abort_code_error(abort_code, output_mode);
+                }
+
                 return SDO_ABORT;
         }
 
@@ -298,7 +346,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                 can_status = can_write(&msg_out);
                 if (0 != can_status)
                 {
-                    can_print_error_message(NULL, can_status, show_output);
+                    can_print_error_message(NULL, can_status, SDL_TRUE);
                 }
 
                 for (n = 0; n < expected_msgs; n += 1)
@@ -334,7 +382,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
                                 can_status = can_write(&msg_out);
                                 if (0 != can_status)
                                 {
-                                    can_print_error_message(NULL, can_status, show_output);
+                                    can_print_error_message(NULL, can_status, SDL_TRUE);
                                 }
                             }
 
@@ -364,7 +412,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
 
                     if (timeout_time >= SDO_TIMEOUT_IN_MS)
                     {
-                        if (SDL_TRUE == show_output)
+                        if (NORMAL_OUTPUT == output_mode)
                         {
                             c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
                         }
@@ -382,72 +430,168 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, SDL_boo
         }
     }
 
-    if (SDL_TRUE == show_output)
+    switch (output_mode)
     {
-        const  char*  description = dict_lookup(index, sub_index);
-        const  char*  str_read    = "read";
-        const  char*  str_written = "written";
-        const  char** str_action  = &str_read;
-        Uint32        output_data = 0;
-
-        switch (command_code)
+        case NORMAL_OUTPUT:
         {
-            case READ_DICT_NO_SIZE:
-            case READ_DICT_SIZE_INDICATED:
-                str_action = &str_read;
-                break;
-            case READ_DICT_4_BYTE_SENT:
-            case READ_DICT_3_BYTE_SENT:
-            case READ_DICT_2_BYTE_SENT:
-            case READ_DICT_1_BYTE_SENT:
-                output_data = (Uint32)sdo_response->data[4];
-                str_action  = &str_read;
-                break;
-            case WRITE_DICT_OBJECT:
-            case WRITE_DICT_4_BYTE_SENT:
-            case WRITE_DICT_3_BYTE_SENT:
-            case WRITE_DICT_2_BYTE_SENT:
-            case WRITE_DICT_1_BYTE_SENT:
-                output_data = u32_value;
-                str_action  = &str_written;
-                break;
-        }
+            const  char*  description = dict_lookup(index, sub_index);
+            const  char*  str_read    = "read";
+            const  char*  str_written = "written";
+            const  char** str_action  = &str_read;
+            Uint32        output_data = 0;
 
-        if (NULL != description)
-        {
-            c_log(LOG_INFO, "%s", description);
-        }
+            switch (command_code)
+            {
+                case READ_DICT_NO_SIZE:
+                case READ_DICT_SIZE_INDICATED:
+                    str_action = &str_read;
+                    break;
+                case READ_DICT_4_BYTE_SENT:
+                case READ_DICT_3_BYTE_SENT:
+                case READ_DICT_2_BYTE_SENT:
+                case READ_DICT_1_BYTE_SENT:
+                    output_data = (Uint32)sdo_response->data[4];
+                    str_action = &str_read;
+                    break;
+                case WRITE_DICT_OBJECT:
+                case WRITE_DICT_4_BYTE_SENT:
+                case WRITE_DICT_3_BYTE_SENT:
+                case WRITE_DICT_2_BYTE_SENT:
+                case WRITE_DICT_1_BYTE_SENT:
+                    output_data = u32_value;
+                    str_action = &str_written;
+                    break;
+            }
 
-        switch (command_code)
-        {
-            case READ_DICT_NO_SIZE:
-            case READ_DICT_SIZE_INDICATED:
-                sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
-                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
-                    index,
-                    sub_index,
-                    sdo_response->length,
-                    *str_action,
-                    (char*)sdo_response->data);
-                break;
-            default:
-                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %u (0x%x)",
-                    index,
-                    sub_index,
-                    sdo_response->length,
-                    *str_action,
-                    output_data,
-                    output_data);
-                break;
+            if (NULL != description)
+            {
+                c_log(LOG_INFO, "%s", description);
+            }
+
+            switch (command_code)
+            {
+                case READ_DICT_NO_SIZE:
+                case READ_DICT_SIZE_INDICATED:
+                    sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+                    c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
+                        index,
+                        sub_index,
+                        sdo_response->length,
+                        *str_action,
+                        (char*)sdo_response->data);
+                    break;
+                default:
+                    c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %u (0x%x)",
+                        index,
+                        sub_index,
+                        sdo_response->length,
+                        *str_action,
+                        output_data,
+                        output_data);
+                    break;
+            }
+            break;
         }
+        case SCRIPT_OUTPUT:
+        {
+            int           i;
+            char          buffer[34]  = { 0 };
+            const  char*  str_read    = "Read    ";
+            const  char*  str_written = "Write   ";
+            const  char** str_action  = &str_read;
+            Uint32        output_data = 0;
+            color_t       color       = DARK_YELLOW;
+
+            switch (command_code)
+            {
+                case READ_DICT_NO_SIZE:
+                case READ_DICT_SIZE_INDICATED:
+                    str_action = &str_read;
+                    break;
+                case READ_DICT_4_BYTE_SENT:
+                case READ_DICT_3_BYTE_SENT:
+                case READ_DICT_2_BYTE_SENT:
+                case READ_DICT_1_BYTE_SENT:
+                    output_data = (Uint32)sdo_response->data[4];
+                    str_action = &str_read;
+                    break;
+                case WRITE_DICT_OBJECT:
+                case WRITE_DICT_4_BYTE_SENT:
+                case WRITE_DICT_3_BYTE_SENT:
+                case WRITE_DICT_2_BYTE_SENT:
+                case WRITE_DICT_1_BYTE_SENT:
+                    output_data = u32_value;
+                    str_action  = &str_written;
+                    color       = LIGHT_BLUE;
+                    break;
+            }
+
+            if (NULL == comment)
+            {
+                comment = "-";
+            }
+
+            SDL_strlcpy(buffer, comment, 33);
+            for (i = SDL_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
+
+            switch (command_code)
+            {
+                case READ_DICT_NO_SIZE:
+                case READ_DICT_SIZE_INDICATED:
+                    sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+                    break;
+                default:
+                    break;
+            }
+
+            c_printf(color, "%s", *str_action);
+            c_printf(DEFAULT_COLOR, " 0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, sdo_response->length);
+            c_printf(LIGHT_GREEN, "SUCC    ");
+            c_printf(DARK_MAGENTA, "%s ", buffer);
+
+            switch (command_code)
+            {
+                case READ_DICT_NO_SIZE:
+                case READ_DICT_SIZE_INDICATED:
+                    c_printf(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
+                    break;
+                case READ_DICT_4_BYTE_SENT:
+                case WRITE_DICT_4_BYTE_SENT:
+                    c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
+                    break;
+                case READ_DICT_3_BYTE_SENT:
+                case WRITE_DICT_3_BYTE_SENT:
+                    c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
+                    break;
+                case READ_DICT_2_BYTE_SENT:
+                case WRITE_DICT_2_BYTE_SENT:
+                    c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
+                    break;
+                case READ_DICT_1_BYTE_SENT:
+                case WRITE_DICT_1_BYTE_SENT:
+                    c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
+                    break;
+                default:
+                    break;
+            }
+
+            puts("");
+            break;
+        }
+        default:
+        case NO_SDO_OUTPUT:
+            break;
     }
 
     return command_code;
 }
 
-static void print_abort_code_error(Uint32 abort_code, SDL_bool show_output)
+static void print_abort_code_error(Uint32 abort_code, sdo_output_mode_t output_mode)
 {
-    if (SDL_FALSE == show_output)
+    if (NORMAL_OUTPUT != output_mode)
     {
         return;
     }

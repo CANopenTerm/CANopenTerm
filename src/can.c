@@ -202,6 +202,11 @@ void lua_register_can_commands(core_t* core)
 
 void can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output)
 {
+    if (SDL_FALSE == show_output)
+    {
+        return;
+    } 
+
 #ifndef __linux__
     if (PCAN_ERROR_OK != can_status)
     {

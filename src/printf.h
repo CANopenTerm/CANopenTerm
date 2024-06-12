@@ -14,7 +14,8 @@
 
 typedef enum color
 {
-    DARK_BLACK = 0,
+    DEFAULT_COLOR = 0,
+    DARK_BLACK,
     DARK_BLUE,
     DARK_GREEN,
     DARK_CYAN,

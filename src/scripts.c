@@ -56,6 +56,9 @@ void scripts_init(core_t* core)
 
         lua_pushcfunction(core->L, lua_key_is_hit);
         lua_setglobal(core->L, "key_is_hit");
+
+        lua_pushcfunction(core->L, lua_print_heading);
+        lua_setglobal(core->L, "print_heading");
     }
 }
 
@@ -241,3 +244,13 @@ static void reset_terminal_mode(struct termios* orig_termios)
     tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }
 #endif
+
+lua_print_heading(lua_State* L)
+{
+    const char* heading = lua_tostring(L, 1);
+
+    c_printf(LIGHT_YELLOW, "\n%s\n", heading);
+    c_printf(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
+
+    return 0;
+}

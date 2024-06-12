@@ -85,8 +85,16 @@ typedef enum
 
 } sdo_abort_code_t;
 
-Uint32 sdo_read(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index);
-Uint32 sdo_write(can_message_t* sdo_response, SDL_bool show_output, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data);
+typedef enum sdo_output_mode
+{
+    NO_SDO_OUTPUT = 0,
+    NORMAL_OUTPUT,
+    SCRIPT_OUTPUT
+
+} sdo_output_mode_t;
+
+Uint32 sdo_read(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment);
+Uint32 sdo_write(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
 int    lua_sdo_read(lua_State* L);
 int    lua_sdo_write(lua_State* L);
 void   lua_register_sdo_commands(core_t* core);

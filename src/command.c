@@ -288,7 +288,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sub_index);
         }
 
-        sdo_read(&sdo_response, SDL_TRUE, node_id, sdo_index, sub_index);
+        sdo_read(&sdo_response, NORMAL_OUTPUT, node_id, sdo_index, sub_index, NULL);
     }
     else if (0 == SDL_strncmp(token, "w", 1))
     {
@@ -353,7 +353,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sdo_data);
         }
 
-        sdo_write(&sdo_response, SDL_TRUE, node_id, sdo_index, sub_index, sdo_data_length, (void*)&sdo_data);
+        sdo_write(&sdo_response, NORMAL_OUTPUT, node_id, sdo_index, sub_index, sdo_data_length, (void*)&sdo_data, NULL);
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {

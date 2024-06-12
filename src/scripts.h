@@ -18,5 +18,6 @@ void list_scripts(void);
 void run_script(const char* name, core_t* core);
 int  lua_delay_ms(lua_State* L);
 int  lua_key_is_hit(lua_State* L);
+int  lua_print_heading(lua_State* L);
 
 #endif /* SCRIPTS_H */

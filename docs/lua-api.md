@@ -63,21 +63,21 @@ The CAN-IDs reserved according to CiA 301 can be used:
 To read service data objects (SDO):
 
 ```lua
-sdo_read (node_id, index, sub_index)
+sdo_read (node_id, index, sub_index, show_output = false, comment = nil)
 ```
 
 **Returns**: number or string, nil on failure.
 
 ```lua
-print(sdo_read (0x50, 0x2100, 1))
+print (sdo_read (0x50, 0x2100, 1))
 sdo_write (0x50, 0x2100, 1, 4, 1)
-print(sdo_read (0x50, 0x2100, 1))
+print (sdo_read (0x50, 0x2100, 1))
 ```
 
 To write SDOs, the following function is available:
 
 ```lua
-sdo_write (node_id, index, sub_index, length, data)
+sdo_write (node_id, index, sub_index, length, data, show_output = false, comment = nil)
 ```
 
 **Returns**: true on success, false on failure.
@@ -128,4 +128,17 @@ do
         break
     end
 end
+```
+
+## Miscellaneous
+
+If you enable the optional output, it may be beneficial to have a meaningful
+heading:
+
+```lua
+local index     = 0x1018
+local sub_index = 2
+
+print_heading("What am I?")
+sdo_read( 0x40, index, sub_index_, true, dict_lookup( index, sub_index) )
 ```
