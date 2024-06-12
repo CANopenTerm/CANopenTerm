@@ -120,7 +120,7 @@ Uint32 can_read(can_message_t* message)
         return -1;
     }
 
-    message->id = frame.can_id;
+    message->id     = frame.can_id;
     message->length = frame.can_dlc;
 
     for (index = 0; index < 8; index += 1)
@@ -135,7 +135,7 @@ Uint32 can_read(can_message_t* message)
 
     can_status = CAN_Read(PCAN_USBBUS1, &pcan_message, NULL);
 
-    message->id = pcan_message.ID;
+    message->id     = pcan_message.ID;
     message->length = pcan_message.LEN;
 
     for (index = 0; index < 8; index += 1)
@@ -194,10 +194,44 @@ int lua_can_write(lua_State* L)
     return 1;
 }
 
+int lua_can_read(lua_State* L)
+{
+    can_message_t message   = { 0 };
+    char          buffer[9] = { 0 };
+    Uint32        status;
+    Uint32        length;
+
+    status = can_read(&message);
+    if (0 == status)
+    {
+        length = message.length;
+
+        if (length > 8)
+        {
+            length = 8;
+        }
+
+        lua_pushinteger(L, message.id);
+        lua_pushinteger(L, length);
+
+        SDL_memcpy((void*)&buffer, &message.data, message.length);
+
+        lua_pushlstring(L, (const char*)buffer, length);
+        return 3;
+    }
+    else
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+}
+
 void lua_register_can_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_can_write);
     lua_setglobal(core->L, "can_write");
+    lua_pushcfunction(core->L, lua_can_read);
+    lua_setglobal(core->L, "can_read");
 }
 
 void can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output)

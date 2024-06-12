@@ -94,7 +94,9 @@ int lua_pdo_add(lua_State* L)
 
 int lua_pdo_del(lua_State* L)
 {
-    int can_id = luaL_checkinteger(L, 1);
+    int         can_id      = luaL_checkinteger(L, 1);
+    SDL_bool    show_output = lua_toboolean(L, 2);
+    const char* comment     = lua_tostring(L, 3);
 
     pdo_del(can_id);
 

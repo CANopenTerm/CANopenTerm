@@ -22,6 +22,14 @@ typedef enum status
 
 } status_t;
 
+typedef enum output_mode
+{
+    NO_OUTPUT = 0,
+    NORMAL_OUTPUT,
+    SCRIPT_OUTPUT
+
+} output_mode_t;
+
 typedef struct core
 {
     SDL_Window        *window;

@@ -101,6 +101,14 @@ can_write (can_id, data_length, data_d0_d3, data_d4_d7)
 
 **Returns**: true on success, false on failure.
 
+Reading CAN messages:
+
+```lua
+can_read ()
+```
+
+**Returns** id, length and data (as string), or nil on failure.
+
 ## Program flow
 
 Lua does not provide its own function to delay the program flow.  The

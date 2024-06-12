@@ -17,10 +17,10 @@
 
 #define SDO_TIMEOUT_IN_MS 100
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
-static void   print_abort_code_error(Uint32 abort_code, sdo_output_mode_t output_mode);
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
+static void   print_abort_code_error(Uint32 abort_code, output_mode_t output_mode);
 
-Uint32 sdo_read(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
+Uint32 sdo_read(can_message_t* sdo_response,output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
 {
     return sdo_send(
         SDO_READ,
@@ -33,7 +33,7 @@ Uint32 sdo_read(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint
         comment);
 }
 
-Uint32 sdo_write(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
+Uint32 sdo_write(can_message_t* sdo_response, output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
 {
     return sdo_send(
         EXPEDITED_SDO_WRITE,
@@ -50,13 +50,13 @@ Uint32 sdo_write(can_message_t* sdo_response, sdo_output_mode_t output_mode, Uin
 int lua_sdo_read(lua_State* L)
 {
     can_message_t sdo_response     = { 0 };
-    sdo_output_mode_t output_mode  = NO_SDO_OUTPUT;
-    int               node_id      = luaL_checkinteger(L, 1);
-    int               index        = luaL_checkinteger(L, 2);
-    int               sub_index    = luaL_checkinteger(L, 3);
-    int               status;
-    SDL_bool          show_output  = lua_toboolean(L, 4);
-    const char*       comment      = lua_tostring(L, 5);
+    output_mode_t output_mode  = NO_OUTPUT;
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+    int           status;
+    SDL_bool      show_output  = lua_toboolean(L, 4);
+    const char*   comment      = lua_tostring(L, 5);
 
     if (node_id > 0x7f)
     {
@@ -95,16 +95,16 @@ int lua_sdo_read(lua_State* L)
 
 int lua_sdo_write(lua_State* L)
 {
-    can_message_t     sdo_response = { 0 };
-    sdo_output_mode_t output_mode  = NO_SDO_OUTPUT;
-    int               node_id      = luaL_checkinteger(L, 1);
-    int               index        = luaL_checkinteger(L, 2);
-    int               sub_index    = luaL_checkinteger(L, 3);
-    int               length       = luaL_checkinteger(L, 4);
-    int               data         = luaL_checkinteger(L, 5);
-    int               status;
-    SDL_bool          show_output = lua_toboolean(L, 6);
-    const char*       comment     = lua_tostring(L, 7);
+    can_message_t sdo_response = { 0 };
+    output_mode_t output_mode  = NO_OUTPUT;
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+    int           length       = luaL_checkinteger(L, 4);
+    int           data         = luaL_checkinteger(L, 5);
+    int           status;
+    SDL_bool      show_output = lua_toboolean(L, 6);
+    const char*   comment     = lua_tostring(L, 7);
 
     if (node_id > 0x7f)
     {
@@ -148,7 +148,7 @@ void lua_register_sdo_commands(core_t* core)
     lua_setglobal(core->L, "sdo_write");
 }
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment)
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment)
 {
     can_message_t msg_in            = { 0 };
     can_message_t msg_out           = { 0 };
@@ -606,14 +606,14 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_out
             break;
         }
         default:
-        case NO_SDO_OUTPUT:
+        case NO_OUTPUT:
             break;
     }
 
     return command_code;
 }
 
-static void print_abort_code_error(Uint32 abort_code, sdo_output_mode_t output_mode)
+static void print_abort_code_error(Uint32 abort_code, output_mode_t output_mode)
 {
     if (NORMAL_OUTPUT != output_mode)
     {

@@ -31,6 +31,7 @@ Uint32   can_write(can_message_t* message);
 Uint32   can_read(can_message_t* message);
 void     can_set_baud_rate(Uint8 command, core_t* core);
 int      lua_can_write(lua_State* L);
+int      lua_can_read(lua_State* L);
 void     lua_register_can_commands(core_t* core);
 void     can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output);
 void     can_print_baud_rate_help(core_t* core);
