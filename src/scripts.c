@@ -148,7 +148,7 @@ void run_script(const char* name, core_t* core)
         }
     }
 
-    c_log(LOG_WARNING, "Could not run script '%s'", name);
+    c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
 #else
     char script_path[64] = { 0 };
 
