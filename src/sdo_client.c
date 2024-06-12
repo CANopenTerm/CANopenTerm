@@ -259,7 +259,9 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_out
         }
         else if (SCRIPT_OUTPUT == output_mode)
         {
-            color_t color = DARK_YELLOW;
+            int     i;
+            char    buffer[34] = { 0 };
+            color_t color      = DARK_YELLOW;
 
             switch (msg_out.data[0])
             {
@@ -278,7 +280,24 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_out
                     break;
             }
             c_printf(LIGHT_RED, "FAIL    ");
-            c_printf(DEFAULT_COLOR, "-                                 SDO timeout\n");
+
+            if (NULL == comment)
+            {
+                comment = dict_lookup(index, sub_index);
+            }
+
+            if (NULL == comment)
+            {
+                comment = "-";
+            }
+
+            SDL_strlcpy(buffer, comment, 33);
+            for (i = SDL_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
+
+            c_printf(DEFAULT_COLOR, "%s SDO timeout\n", buffer);
         }
 
         return SDO_ABORT;
@@ -524,6 +543,11 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, sdo_out
                     str_action  = &str_written;
                     color       = LIGHT_BLUE;
                     break;
+            }
+
+            if (NULL == comment)
+            {
+                comment = dict_lookup(index, sub_index);
             }
 
             if (NULL == comment)
