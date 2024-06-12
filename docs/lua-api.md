@@ -123,8 +123,7 @@ For example, loops can be interrupted as follows:
 ```lua
 while (condition)
 do
-    if (key_is_hit())
-    then
+    if (key_is_hit()) then
         break
     end
 end
