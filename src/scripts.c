@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #endif
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
 #include <stdio.h>
 #include <dirent.h>
 #include <string.h>
@@ -76,7 +76,7 @@ void list_scripts(void)
 {
     DIR* dir;
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     int i;
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
@@ -125,7 +125,7 @@ void list_scripts(void)
 
 void run_script(const char* name, core_t* core)
 {
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     char script_path[256] = { 0 };
     const char* script_dirs[] = { "/usr/local/share/CANopenTerm/scripts", "/usr/share/CANopenTerm/scripts", "./scripts" };
     int i;
@@ -176,7 +176,7 @@ int lua_delay_ms(lua_State * L)
 
 int lua_key_is_hit(lua_State * L)
 {
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     struct termios orig_termios;
     char buffer = 0;
     int n;
@@ -190,7 +190,7 @@ int lua_key_is_hit(lua_State * L)
 
         lua_pushboolean(L, 1);
     }
-#elif defined USE_LIBSOCKETCAN
+#elif defined __linux__
 
     set_terminal_raw_mode(&orig_termios);
     set_nonblocking(STDIN_FILENO, 1);
@@ -213,7 +213,7 @@ int lua_key_is_hit(lua_State * L)
     return 1;
 }
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
 static void set_nonblocking(int fd, int nonblocking)
 {
     int flags = fcntl(fd, F_GETFL, 0);

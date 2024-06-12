@@ -18,7 +18,7 @@
 #include <windows.h>
 #endif
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
 #include <libsocketcan.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
@@ -55,7 +55,7 @@ void can_deinit(core_t* core)
     core->can_status = 0;
     core->is_can_initialised = SDL_FALSE;
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     close(can_socket);
 #else
     CAN_Uninitialize(PCAN_USBBUS1);
@@ -81,7 +81,7 @@ Uint32 can_write(can_message_t* message)
 {
     int index;
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     struct can_frame frame;
     frame.can_id = message->id;
     frame.can_dlc = message->length;
@@ -111,7 +111,7 @@ Uint32 can_write(can_message_t* message)
 Uint32 can_read(can_message_t* message)
 {
     int index;
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     struct can_frame frame;
     int nbytes = read(can_socket, &frame, sizeof(frame));
 
@@ -202,7 +202,7 @@ void lua_register_can_commands(core_t* core)
 
 void can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output)
 {
-#ifndef USE_LIBSOCKETCAN
+#ifndef __linux__
     if (PCAN_ERROR_OK != can_status)
     {
         char err_message[100] = { 0 };
@@ -292,7 +292,7 @@ static int can_monitor(void* core_pt)
     {
         while (SDL_FALSE == is_can_initialised(core))
         {
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
             struct sockaddr_can addr;
             struct ifreq ifr;
 
@@ -393,7 +393,7 @@ static int can_monitor(void* core_pt)
             continue;
         }
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
 
 // Temporarily disabled because until a different solution is found.
 // Continously reading CAN frames, leads to a SDO timeout.

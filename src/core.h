@@ -35,7 +35,7 @@ typedef struct core
     SDL_bool           is_can_initialised;
     SDL_bool           is_running;
     SDL_bool           is_script_running;
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     char can_interface[32];
 #endif
 } core_t;

@@ -7,7 +7,7 @@
  *
  **/
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
 #include <string.h>
 #endif
 #include <stdlib.h>
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
         status = EXIT_FAILURE;
     }
 
-#ifdef USE_LIBSOCKETCAN
+#ifdef __linux__
     if ((argc > 1) && (argv[1] != NULL))
     {
         strlcpy(core->can_interface, argv[1], sizeof(core->can_interface));
