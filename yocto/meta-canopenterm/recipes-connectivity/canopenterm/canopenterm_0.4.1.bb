@@ -7,7 +7,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=10e84ea70e8c3a1fbc462f5424806474"
 
 python do_display_banner() {
-    bb.plain("CANopenTerm 0.4.1");
+    bb.plain("CANopenTerm 0.4.");
     bb.plain("Copyright (c) 2024, Michael Fitzmayer");
 }
 
@@ -41,7 +41,9 @@ do_compile() {
 do_install () {
     install -d ${D}${bindir}
     install -d ${D}/usr/share/CANopenTerm/scripts
+    install -d ${D}/usr/local/share/lua/5.4
     install -m 0644 ${S}/export/scripts/* ${D}/usr/share/CANopenTerm/scripts
+    install -m 0644 ${S}/export/lua/* ${D}/usr/local/share/lua/5.4
     install -m 0755 ${S}/export/CANopenTerm ${D}${bindir}
 }
 
