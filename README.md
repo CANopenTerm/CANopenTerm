@@ -42,6 +42,14 @@ the terms of a permissive open source license.
 
 - Can be used without limitations under Windows as well on Linux.
 
+## Donation
+
+CANopenTerm is a free and open source project from which I do not make
+any money.  Do you still want to support the project? Then please
+consider making a small donation, which would be greatly appreciated!
+
+[![Donate](https://canopenterm.de/media/de-pp-logo-200px.png)](https://www.paypal.com/donate/?hosted_button_id=9K6YZYKPNUN9Q "Donate")
+
 ## Documentation
 
 The documentation can be found [here](https://canopenterm.de).
