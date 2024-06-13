@@ -50,8 +50,8 @@ Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_
 
 int lua_sdo_read(lua_State* L)
 {
-    can_message_t sdo_response     = { 0 };
-    disp_mode_t disp_mode  = NO_OUTPUT;
+    can_message_t sdo_response = { 0 };
+    disp_mode_t   disp_mode    = NO_OUTPUT;
     int           node_id      = luaL_checkinteger(L, 1);
     int           index        = luaL_checkinteger(L, 2);
     int           sub_index    = luaL_checkinteger(L, 3);

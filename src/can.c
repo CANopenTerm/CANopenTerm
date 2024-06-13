@@ -252,34 +252,6 @@ const char* can_get_error_message(Uint32 can_status)
 #endif
 }
 
-/* Obsolete; remove ASAP. Use can_get_error_message() instead. */
-void can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output)
-{
-    if (SDL_FALSE == show_output)
-    {
-        return;
-    } 
-
-#ifdef _WIN32
-    if (PCAN_ERROR_OK != can_status)
-    {
-        char err_message[100] = { 0 };
-
-        CAN_GetErrorText(can_status, 0x09, err_message);
-        if (NULL == context)
-        {
-            c_log(LOG_WARNING, "%s", err_message);
-        }
-        else
-        {
-            c_log(LOG_WARNING, "%s: %s", context, err_message);
-        }
-    }
-#else
-    // Handle libsocketcan error messages if needed.
-#endif
-}
-
 void can_print_baud_rate_help(core_t* core)
 {
     table_t      table = { DARK_CYAN, DARK_WHITE, 3, 13, 6 };

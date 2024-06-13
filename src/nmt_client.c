@@ -15,7 +15,9 @@
 #include "printf.h"
 #include "table.h"
 
-Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, SDL_bool show_output)
+static void print_error(nmt_command_t command, Uint32 can_status, disp_mode_t disp_mode);
+
+Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
 {
     Uint32        can_status  = 0;
     can_message_t can_message = { 0 };
@@ -46,7 +48,33 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, SDL_bool show_outp
     can_status = can_write(&can_message);
     if (0 != can_status)
     {
-        can_print_error_message(NULL, can_status, show_output);
+        print_error(command, can_status, disp_mode);
+    }
+    else
+    {
+        if (SCRIPT_OUTPUT == disp_mode)
+        {
+            int  i;
+            char buffer[34] = { 0 };
+
+            c_printf(DARK_CYAN, "NMT  ");
+            c_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", command);
+            c_printf(LIGHT_GREEN, "SUCC    ");
+
+            if (NULL == comment)
+            {
+                comment = "-";
+            }
+
+            SDL_strlcpy(buffer, comment, 33);
+            for (i = SDL_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
+
+            c_printf(DARK_MAGENTA, "%s ", buffer);
+            c_printf(DEFAULT_COLOR, "-\n", command);
+        }
     }
 
     return can_status;
@@ -54,8 +82,21 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, SDL_bool show_outp
 
 int lua_nmt_send_command(lua_State* L)
 {
-    int node_id = luaL_checkinteger(L, 1);
-    int command = luaL_checkinteger(L, 2);
+    disp_mode_t disp_mode   = NO_OUTPUT;
+    int         node_id     = luaL_checkinteger(L, 1);
+    int         command     = luaL_checkinteger(L, 2);
+    SDL_bool    show_output = lua_toboolean(L, 3);
+    const char* comment     = lua_tostring(L, 4);
+
+    if (node_id > 0x7f)
+    {
+        node_id = 0x00 + (node_id % 0x7f);
+    }
+
+    if (SDL_TRUE == show_output)
+    {
+        disp_mode = SCRIPT_OUTPUT;
+    }
 
     switch (command)
     {
@@ -74,7 +115,7 @@ int lua_nmt_send_command(lua_State* L)
         node_id = 0x00 + (node_id % 0x7f);
     }
 
-    if (0 == nmt_send_command(node_id, command, SDL_FALSE))
+    if (0 == nmt_send_command(node_id, command, disp_mode, comment))
     {
         lua_pushboolean(L, 1);
     }
@@ -105,4 +146,27 @@ void nmt_print_help(void)
     table_print_row("0x81", "reset", "Reset node (Application reset)", &table);
     table_print_row("0x82", " ",     "Reset communication",            &table);
     table_print_footer(&table);
+}
+
+static void print_error(nmt_command_t command, Uint32 can_status, disp_mode_t disp_mode)
+{
+    switch (disp_mode)
+    {
+        case NORMAL_OUTPUT:
+        {        
+            c_log(LOG_ERROR, "NMT 0x%02X error: %s", command, can_get_error_message(can_status));
+            break;
+        }
+        case SCRIPT_OUTPUT:
+        {
+            c_printf(DARK_CYAN, "NMT  ");
+            c_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", command);
+            c_printf(LIGHT_RED, "FAIL    ");
+            c_printf(DEFAULT_COLOR, "%s\n", can_get_error_message(can_status));
+            break;
+        }
+        default:
+        case NO_OUTPUT:
+            break;
+    }
 }

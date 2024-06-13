@@ -171,7 +171,26 @@ void run_script(const char* name, core_t* core)
 
 int lua_delay_ms(lua_State * L)
 {
-    Uint32 delay_in_ms = (Uint32)luaL_checkinteger(L, 1);
+    Uint32      delay_in_ms = (Uint32)luaL_checkinteger(L, 1);
+    SDL_bool    show_output = lua_toboolean(L, 2);
+    int         i;
+    char        buffer[34] = { 0 };
+    const char* comment     = lua_tostring(L, 3);
+
+    if (SDL_TRUE == show_output)
+    {
+        c_printf(DARK_CYAN, "Delay ");
+        c_printf(DEFAULT_COLOR, "   -       -       -         -       -       ");
+
+        SDL_strlcpy(buffer, comment, 33);
+        for (i = SDL_strlen(buffer); i < 33; ++i)
+        {
+            buffer[i] = ' ';
+        }
+
+        c_printf(DARK_MAGENTA, "%s ", buffer);
+        c_printf(DEFAULT_COLOR, "%ums\n", delay_in_ms);
+    }
 
     SDL_Delay(delay_in_ms);
     return 1;

@@ -34,7 +34,6 @@ int         lua_can_write(lua_State* L);
 int         lua_can_read(lua_State* L);
 void        lua_register_can_commands(core_t* core);
 const char* can_get_error_message(Uint32 can_status);
-void        can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output);
 void        can_print_baud_rate_help(core_t* core);
 SDL_bool    is_can_initialised(core_t* core);
 
