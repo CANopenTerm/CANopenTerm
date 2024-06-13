@@ -42,7 +42,7 @@ the terms of a permissive open source license.
 
 - Can be used without limitations under Windows as well on Linux.
 
-## Donation
+## Support
 
 CANopenTerm is a free and open source project from which I do not make
 any money.  Do you still want to support the project? Then please
