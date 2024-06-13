@@ -41,7 +41,7 @@ local function get_id_by_name(name)
   if total_devices >= 1 then
     for _, node_id in ipairs(available_nodes) do
       local device_name = sdo_read(node_id, 0x1008, 0x00)
-      if device_name == device_name then
+      if device_name == name then
         return node_id
       end
     end
