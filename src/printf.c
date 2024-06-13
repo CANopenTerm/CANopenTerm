@@ -173,13 +173,19 @@ void c_printf(const color_t color, const char* format, ...)
    va_end(varg);
 
 #ifdef _WIN32
-   SetConsoleTextAttribute(console, attr);
+   if (NULL != console)
+   {
+       SetConsoleTextAttribute(console, attr);
+   }
 #endif
 
    printf("%s", buffer);
 
 #ifdef _WIN32
-   SetConsoleTextAttribute(console, default_attr);
+   if (NULL != console)
+   {
+       SetConsoleTextAttribute(console, default_attr);
+   }
 #elif defined __linux__
    printf("\e[0m");
 #endif
