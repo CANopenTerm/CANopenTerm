@@ -33,7 +33,8 @@ static int can_socket;
 #include "PCANBasic.h"
 #endif
 
-static int can_monitor(void* core);
+static int  can_monitor(void* core);
+static char err_message[100] = { 0 };
 
 void can_init(core_t* core)
 {
@@ -234,6 +235,24 @@ void lua_register_can_commands(core_t* core)
     lua_setglobal(core->L, "can_read");
 }
 
+const char* can_get_error_message(Uint32 can_status)
+{
+#ifdef _WIN32
+    if (PCAN_ERROR_OK != can_status)
+    {
+        CAN_GetErrorText(can_status, 0x09, err_message);
+        return err_message;
+    }
+    else
+    {
+        return NULL;
+    }
+#else
+    // Handle libsocketcan error messages if needed.
+#endif
+}
+
+/* Obsolete; remove ASAP. Use can_get_error_message() instead. */
 void can_print_error_message(const char* context, Uint32 can_status, SDL_bool show_output)
 {
     if (SDL_FALSE == show_output)
@@ -241,7 +260,7 @@ void can_print_error_message(const char* context, Uint32 can_status, SDL_bool sh
         return;
     } 
 
-#ifndef __linux__
+#ifdef _WIN32
     if (PCAN_ERROR_OK != can_status)
     {
         char err_message[100] = { 0 };

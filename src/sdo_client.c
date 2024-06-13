@@ -17,16 +17,16 @@
 
 #define SDO_TIMEOUT_IN_MS 100
 
-static Uint32      sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
+static Uint32      sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
 static const char* lookup_abort_code(Uint32 abort_code);
-static void        print_abort_code_error(Uint32 abort_code, output_mode_t output_mode);
+static void        print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment, disp_mode_t disp_mode);
 
-Uint32 sdo_read(can_message_t* sdo_response,output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
+Uint32 sdo_read(can_message_t* sdo_response,disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
 {
     return sdo_send(
         SDO_READ,
         sdo_response,
-        output_mode,
+        disp_mode,
         node_id,
         index,
         sub_index,
@@ -34,12 +34,12 @@ Uint32 sdo_read(can_message_t* sdo_response,output_mode_t output_mode, Uint8 nod
         comment);
 }
 
-Uint32 sdo_write(can_message_t* sdo_response, output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
+Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
 {
     return sdo_send(
         EXPEDITED_SDO_WRITE,
         sdo_response,
-        output_mode,
+        disp_mode,
         node_id,
         index,
         sub_index,
@@ -51,7 +51,7 @@ Uint32 sdo_write(can_message_t* sdo_response, output_mode_t output_mode, Uint8 n
 int lua_sdo_read(lua_State* L)
 {
     can_message_t sdo_response     = { 0 };
-    output_mode_t output_mode  = NO_OUTPUT;
+    disp_mode_t disp_mode  = NO_OUTPUT;
     int           node_id      = luaL_checkinteger(L, 1);
     int           index        = luaL_checkinteger(L, 2);
     int           sub_index    = luaL_checkinteger(L, 3);
@@ -66,12 +66,12 @@ int lua_sdo_read(lua_State* L)
 
     if (SDL_TRUE == show_output)
     {
-        output_mode = SCRIPT_OUTPUT;
+        disp_mode = SCRIPT_OUTPUT;
     }
 
     status = sdo_read(
         &sdo_response,
-        output_mode,
+        disp_mode,
         (Uint8)node_id,
         (Uint16)index,
         (Uint16)sub_index,
@@ -97,7 +97,7 @@ int lua_sdo_read(lua_State* L)
 int lua_sdo_write(lua_State* L)
 {
     can_message_t sdo_response = { 0 };
-    output_mode_t output_mode  = NO_OUTPUT;
+    disp_mode_t disp_mode  = NO_OUTPUT;
     int           node_id      = luaL_checkinteger(L, 1);
     int           index        = luaL_checkinteger(L, 2);
     int           sub_index    = luaL_checkinteger(L, 3);
@@ -114,12 +114,12 @@ int lua_sdo_write(lua_State* L)
 
     if (SDL_TRUE == show_output)
     {
-        output_mode = SCRIPT_OUTPUT;
+        disp_mode = SCRIPT_OUTPUT;
     }
 
     status = sdo_write(
         &sdo_response,
-        output_mode,
+        disp_mode,
         (Uint8)node_id,
         (Uint16)index,
         (Uint8)sub_index,
@@ -149,7 +149,7 @@ void lua_register_sdo_commands(core_t* core)
     lua_setglobal(core->L, "sdo_write");
 }
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_mode_t output_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment)
+static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment)
 {
     can_message_t msg_in            = { 0 };
     can_message_t msg_out           = { 0 };
@@ -159,7 +159,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
     Uint64        timeout_time      = 0;
     Uint64        time_a;
     Uint32*       u32_data_ptr      = (Uint32*)data;
-    Uint32        u32_value = 0;
+    Uint32        u32_value         = 0;
+    char          reason[300]       = { 0 };
 
     if (node_id > 0x7f)
     {
@@ -175,7 +176,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
     {
         default:
         case SDO_READ:
-            msg_out.length = 8;
+            msg_out.length  = 8;
             msg_out.data[0] = READ_DICT_OBJECT;
             break;
         case EXPEDITED_SDO_WRITE:
@@ -185,7 +186,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
                 u32_value = *u32_data_ptr;
             }
 
-            msg_out.length = 4 + length;
+            msg_out.length  = 4 + length;
             msg_out.data[4] = (Uint8)(u32_value & 0x000000ff);
             msg_out.data[5] = (Uint8)((u32_value & 0x0000ff00) >> 8);
             msg_out.data[6] = (Uint8)((u32_value & 0x00ff0000) >> 16);
@@ -214,7 +215,9 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
     can_status = can_write(&msg_out);
     if (0 != can_status)
     {
-        can_print_error_message(NULL, can_status, SDL_TRUE);
+        SDL_snprintf(reason, 300, can_get_error_message(can_status));
+        print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+        return SDO_ABORT;
     }
 
     time_a = SDL_GetTicks64();
@@ -254,54 +257,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
 
     if (timeout_time >= SDO_TIMEOUT_IN_MS)
     {
-        if (NORMAL_OUTPUT == output_mode)
-        {
-            c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
-        }
-        else if (SCRIPT_OUTPUT == output_mode)
-        {
-            int     i;
-            char    buffer[34] = { 0 };
-            color_t color      = DARK_YELLOW;
-
-            switch (msg_out.data[0])
-            {
-                case READ_DICT_OBJECT:
-                    c_printf(color, "Read ");
-                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
-                    break;
-                case WRITE_DICT_OBJECT:
-                case WRITE_DICT_1_BYTE_SENT:
-                case WRITE_DICT_2_BYTE_SENT:
-                case WRITE_DICT_3_BYTE_SENT:
-                case WRITE_DICT_4_BYTE_SENT:
-                    color = LIGHT_BLUE;
-                    c_printf(color, "Write");
-                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, length);
-                    break;
-            }
-            c_printf(LIGHT_RED, "FAIL    ");
-
-            if (NULL == comment)
-            {
-                comment = dict_lookup(index, sub_index);
-            }
-
-            if (NULL == comment)
-            {
-                comment = "-";
-            }
-
-            SDL_strlcpy(buffer, comment, 33);
-            for (i = SDL_strlen(buffer); i < 33; ++i)
-            {
-                buffer[i] = ' ';
-            }
-
-            c_printf(DARK_MAGENTA, "%s ", buffer);
-            c_printf(DEFAULT_COLOR, "%s SDO timeout\n", buffer);
-        }
-
+        SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
+        print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
         return SDO_ABORT;
     }
     else
@@ -342,54 +299,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
                 abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
                 abort_code = SDL_SwapBE32(abort_code);
 
-                if (NORMAL_OUTPUT == output_mode)
-                {
-                    print_abort_code_error(abort_code, output_mode);
-                }
-                else if (SCRIPT_OUTPUT)
-                {
-                    int     i;
-                    char    buffer[34] = { 0 };
-                    color_t color = DARK_YELLOW;
-
-                    switch (msg_out.data[0])
-                    {
-                        case READ_DICT_OBJECT:
-                            c_printf(color, "Read ");
-                            c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
-                            break;
-                        case WRITE_DICT_OBJECT:
-                        case WRITE_DICT_1_BYTE_SENT:
-                        case WRITE_DICT_2_BYTE_SENT:
-                        case WRITE_DICT_3_BYTE_SENT:
-                        case WRITE_DICT_4_BYTE_SENT:
-                            color = LIGHT_BLUE;
-                            c_printf(color, "Write");
-                            c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, length);
-                            break;
-                    }
-                    c_printf(LIGHT_RED, "FAIL    ");
-
-                    if (NULL == comment)
-                    {
-                        comment = dict_lookup(index, sub_index);
-                    }
-
-                    if (NULL == comment)
-                    {
-                        comment = "-";
-                    }
-
-                    SDL_strlcpy(buffer, comment, 33);
-                    for (i = SDL_strlen(buffer); i < 33; ++i)
-                    {
-                        buffer[i] = ' ';
-                    }
-
-                    c_printf(DARK_MAGENTA, "%s ", buffer);
-                    c_printf(DEFAULT_COLOR, "0x%08X: %s\n", abort_code, lookup_abort_code(abort_code));
-                }
-
+                SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
+                print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
                 return SDO_ABORT;
         }
 
@@ -410,7 +321,9 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
                 can_status = can_write(&msg_out);
                 if (0 != can_status)
                 {
-                    can_print_error_message(NULL, can_status, SDL_TRUE);
+                    SDL_snprintf(reason, 300, can_get_error_message(can_status));
+                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+                    return SDO_ABORT;
                 }
 
                 for (n = 0; n < expected_msgs; n += 1)
@@ -446,7 +359,9 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
                                 can_status = can_write(&msg_out);
                                 if (0 != can_status)
                                 {
-                                    can_print_error_message(NULL, can_status, SDL_TRUE);
+                                    SDL_snprintf(reason, 300, can_get_error_message(can_status));
+                                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+                                    return SDO_ABORT;
                                 }
                             }
 
@@ -476,10 +391,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
 
                     if (timeout_time >= SDO_TIMEOUT_IN_MS)
                     {
-                        if (NORMAL_OUTPUT == output_mode)
-                        {
-                            c_log(LOG_WARNING, "SDO timeout: CAN-dongle present?");
-                        }
+                        SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
+                        print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
                         return SDO_ABORT;
                     }
                 }
@@ -494,7 +407,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
         }
     }
 
-    switch (output_mode)
+    switch (disp_mode)
     {
         case NORMAL_OUTPUT:
         {
@@ -751,12 +664,80 @@ static const char* lookup_abort_code(Uint32 abort_code)
     }
 }
 
-static void print_abort_code_error(Uint32 abort_code, output_mode_t output_mode)
+static void print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment, disp_mode_t disp_mode)
 {
-    if (NORMAL_OUTPUT != output_mode)
+    switch (disp_mode)
     {
-        return;
-    }
+        case NORMAL_OUTPUT:
+        {
+            const  char* description = dict_lookup(index, sub_index);
 
-    c_log(LOG_WARNING, "%s", lookup_abort_code(abort_code));
+            if (NULL != description)
+            {
+                c_log(LOG_INFO, "%s", description);
+            }
+
+            switch (sdo_type)
+            {
+                case SDO_READ:
+                    c_log(LOG_ERROR, "Index %x, Sub-index %x: 0 byte(s) read error: %s", index, sub_index, reason);
+                    break;
+                case EXPEDITED_SDO_WRITE:
+                case NORMAL_SDO_WRITE:
+                    c_log(LOG_ERROR, "Index %x, Sub-index %x: 0 byte(s) write error: %s", index, sub_index, reason);
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }
+
+        case SCRIPT_OUTPUT:
+        {
+            int     i;
+            char    buffer[34] = { 0 };
+            color_t color = DARK_YELLOW;
+
+            switch (sdo_type)
+            {
+                case SDO_READ:
+                    c_printf(color, "Read ");
+                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
+                    break;
+                case EXPEDITED_SDO_WRITE:
+                case NORMAL_SDO_WRITE:
+                    color = LIGHT_BLUE;
+                    c_printf(color, "Write");
+                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -        ", node_id, index, sub_index);
+                    break;
+                default:
+                    break;
+            }
+
+            c_printf(LIGHT_RED, "FAIL    ");
+
+            if (NULL == comment)
+            {
+                comment = dict_lookup(index, sub_index);
+            }
+
+            if (NULL == comment)
+            {
+                comment = "-";
+            }
+
+            SDL_strlcpy(buffer, comment, 33);
+            for (i = SDL_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
+
+            c_printf(DARK_MAGENTA, "%s ", buffer);
+            c_printf(DEFAULT_COLOR, "%s\n", reason);
+            break;
+        }
+        default:
+        case NO_OUTPUT:
+            break;
+    }
 }
