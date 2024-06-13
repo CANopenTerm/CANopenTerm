@@ -643,6 +643,28 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, output_
                 case WRITE_DICT_1_BYTE_SENT:
                     c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
                     break;
+                case WRITE_DICT_OBJECT:
+                {
+                    switch (length)
+                    {
+                        case 4:
+                            c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
+                            break;
+                        case 3:
+                            c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
+                            break;
+                        case 2:
+                            c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
+                            break;
+                        case 1:
+                            c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
+                            break;
+                        default:
+
+                            break;
+                    }
+                    break;
+                }
                 default:
                     break;
             }
