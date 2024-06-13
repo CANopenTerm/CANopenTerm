@@ -129,8 +129,7 @@ key_is_hit ()
 For example, loops can be interrupted as follows:
 
 ```lua
-while (condition)
-do
+while (condition) do
     if (key_is_hit()) then
         break
     end
