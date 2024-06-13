@@ -30,7 +30,7 @@ nmd_send_command (node_id, command, [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
-The **command** parameter supports the following commands:
+!> The **command** parameter supports the following commands:
 
 | Command | Description                    |
 | ------- | ------------------------------ |
@@ -45,7 +45,7 @@ The **command** parameter supports the following commands:
 It is possible to create up to 632 asynchronous PDOs, which are then
 sent cyclically at the specified interval.
 
-The following CAN IDs can be used:
+!>The following **CAN-IDs** can be used:
 
 | From  | To    | Description |
 | ----- | ----- | ----------- |
