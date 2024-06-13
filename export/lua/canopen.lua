@@ -35,4 +35,19 @@ local function find_devices(timeout_ms)
     return node_list, total_devices
 end
 
-return { find_devices = find_devices }
+local function get_id_by_name(name)
+  local available_nodes, total_devices = find_devices(1000)
+
+  if total_devices >= 1 then
+    for _, node_id in ipairs(available_nodes) do
+      local device_name = sdo_read(node_id, 0x1008, 0x00)
+      if device_name == device_name then
+        return node_id
+      end
+    end
+  end
+
+  return 0
+end
+
+return { find_devices = find_devices, get_id_by_name = get_id_by_name }
