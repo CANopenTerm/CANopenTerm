@@ -1,5 +1,5 @@
 - [CANopenTerm](/)
 - [Getting started](getting-started.md)
 - [Lua API](lua-api.md)
-- [Our GitHub site](https://github.com/CANopenTerm)
+- [Our GitHub site](https://github.com/CANopenTerm/CANopenTerm)
 - [Legal information](legal-information.md)
