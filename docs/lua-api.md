@@ -103,7 +103,8 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 
 > **show_output** Show formatted output, default is `false`.
 
-> **comment** Comment to show in formatted output, default is `nil`.
+> **comment** Comment to show in formatted output.
+              If ommited, the description from the CANopen object dictionary is used.
 
 **Returns**: number or string, nil on failure.
 
