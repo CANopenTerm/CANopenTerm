@@ -24,8 +24,8 @@ typedef struct pdo
 
 } pdo_t;
 
-void     pdo_add(Uint16 can_id, Uint32 event_time_ms, Uint8 length, Uint64 data);
-void     pdo_del(Uint16 can_id);
+SDL_bool pdo_add(Uint16 can_id, Uint32 event_time_ms, Uint8 length, Uint64 data, disp_mode_t disp_mode);
+SDL_bool pdo_del(Uint16 can_id, disp_mode_t disp_mode);
 int      lua_pdo_add(lua_State* L);
 int      lua_pdo_del(lua_State* L);
 void     lua_register_pdo_commands(core_t* core);

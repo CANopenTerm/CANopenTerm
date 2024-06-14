@@ -97,15 +97,15 @@ int lua_sdo_read(lua_State* L)
 int lua_sdo_write(lua_State* L)
 {
     can_message_t sdo_response = { 0 };
-    disp_mode_t disp_mode  = NO_OUTPUT;
+    disp_mode_t   disp_mode    = NO_OUTPUT;
+    int           status;
     int           node_id      = luaL_checkinteger(L, 1);
     int           index        = luaL_checkinteger(L, 2);
     int           sub_index    = luaL_checkinteger(L, 3);
     int           length       = luaL_checkinteger(L, 4);
-    int           data         = luaL_checkinteger(L, 5);
-    int           status;
-    SDL_bool      show_output = lua_toboolean(L, 6);
-    const char*   comment     = lua_tostring(L, 7);
+    int           data         = lua_tointeger(L, 5);
+    SDL_bool      show_output  = lua_toboolean(L, 6);
+    const char*   comment      = lua_tostring(L, 7);
 
     if (node_id > 0x7f)
     {
@@ -212,7 +212,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
         }
     }
 
-    can_status = can_write(&msg_out);
+    can_status = can_write(&msg_out, NO_OUTPUT, NULL);
     if (0 != can_status)
     {
         SDL_snprintf(reason, 300, can_get_error_message(can_status));
@@ -318,7 +318,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                 msg_out.length  = 8;
                 msg_out.data[0] = cmd;
 
-                can_status = can_write(&msg_out);
+                can_status = can_write(&msg_out, NO_OUTPUT, NULL);
                 if (0 != can_status)
                 {
                     SDL_snprintf(reason, 300, can_get_error_message(can_status));
@@ -356,7 +356,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 
                                 msg_out.data[0] = cmd;
 
-                                can_status = can_write(&msg_out);
+                                can_status = can_write(&msg_out, NO_OUTPUT, NULL);
                                 if (0 != can_status)
                                 {
                                     SDL_snprintf(reason, 300, can_get_error_message(can_status));

@@ -45,7 +45,7 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
             return can_status;
     }
 
-    can_status = can_write(&can_message);
+    can_status = can_write(&can_message, NO_OUTPUT, NULL);
     if (0 != can_status)
     {
         print_error(command, can_status, disp_mode);
@@ -159,7 +159,7 @@ static void print_error(nmt_command_t command, Uint32 can_status, disp_mode_t di
         }
         case SCRIPT_OUTPUT:
         {
-            c_printf(DARK_CYAN, "NMT  ");
+            c_printf(LIGHT_BLACK, "NMT  ");
             c_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", command);
             c_printf(LIGHT_RED, "FAIL    ");
             c_printf(DEFAULT_COLOR, "%s\n", can_get_error_message(can_status));

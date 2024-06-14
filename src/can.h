@@ -27,7 +27,7 @@ typedef struct can_message
 void        can_init(core_t* core_t);
 void        can_deinit(core_t* core);
 void        can_quit(core_t* core);
-Uint32      can_write(can_message_t* message);
+Uint32      can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment);
 Uint32      can_read(can_message_t* message);
 void        can_set_baud_rate(Uint8 command, core_t* core);
 int         lua_can_write(lua_State* L);

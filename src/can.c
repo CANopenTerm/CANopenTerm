@@ -36,6 +36,8 @@ static int can_socket;
 static int  can_monitor(void* core);
 static char err_message[100] = { 0 };
 
+static void print_error(Uint16 can_id, const char* reason, disp_mode_t disp_mode);
+
 void can_init(core_t* core)
 {
     if (NULL == core)
@@ -78,7 +80,7 @@ void can_quit(core_t* core)
     SDL_DetachThread(core->can_monitor_th);
 }
 
-Uint32 can_write(can_message_t* message)
+Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
     int index;
 
@@ -165,15 +167,18 @@ void can_set_baud_rate(Uint8 command, core_t* core)
 
 int lua_can_write(lua_State* L)
 {
-    int    can_id = luaL_checkinteger(L, 1);
-    int    length = luaL_checkinteger(L, 2);
-    Uint32 data_d0_d3 = luaL_checkinteger(L, 3);
-    Uint32 data_d4_d7 = luaL_checkinteger(L, 4);
-    can_message_t message = { 0 };
+    int           can_id      = luaL_checkinteger(L, 1);
+    int           length      = luaL_checkinteger(L, 2);
+    Uint32        can_status;
+    Uint32        data_d0_d3  = lua_tointeger(L, 3);
+    Uint32        data_d4_d7  = lua_tointeger(L, 4);
+    SDL_bool      show_output = lua_toboolean(L, 5);
+    const char*   comment     = lua_tostring(L, 6);
+    can_message_t message     = { 0 };
+    disp_mode_t   disp_mode   = NO_OUTPUT;
 
-    message.id = can_id;
-    message.length = length;
-
+    message.id      = can_id;
+    message.length  = length;
     message.data[3] = (data_d0_d3 & 0xff);
     message.data[2] = ((data_d0_d3 >> 8) & 0xff);
     message.data[1] = ((data_d0_d3 >> 16) & 0xff);
@@ -183,12 +188,42 @@ int lua_can_write(lua_State* L)
     message.data[5] = ((data_d4_d7 >> 16) & 0xff);
     message.data[4] = ((data_d4_d7 >> 24) & 0xff);
 
-    if (0 == can_write(&message))
+    if (SDL_TRUE == show_output)
     {
+        disp_mode = SCRIPT_OUTPUT;
+    }
+
+    can_status = can_write(&message, disp_mode, comment);
+
+    if (0 == can_status)
+    {
+        if (SCRIPT_OUTPUT == disp_mode)
+        {
+            int  i;
+            char buffer[34] = { 0 };
+
+            if (NULL == comment)
+            {
+                comment = "-";
+            }
+
+            SDL_strlcpy(buffer, comment, 33);
+            for (i = SDL_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
+
+            c_printf(LIGHT_BLACK, "CAN ");
+            c_printf(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
+            c_printf(LIGHT_GREEN, "SUCC    ");
+            c_printf(DARK_MAGENTA, "%s ", buffer);
+            c_printf(DEFAULT_COLOR, "Write: 0x%08X%08X\n", data_d0_d3, data_d4_d7);
+        }
         lua_pushboolean(L, 1);
     }
     else
     {
+        print_error(can_id, can_get_error_message(can_status), disp_mode);
         lua_pushboolean(L, 0);
     }
 
@@ -456,4 +491,17 @@ static int can_monitor(void* core_pt)
     }
 
     return 0;
+}
+
+static void print_error(Uint16 can_id, const char* reason, disp_mode_t disp_mode)
+{
+    if (SCRIPT_OUTPUT != disp_mode)
+    {
+        return;
+    }
+
+    c_printf(LIGHT_BLACK, "CAN ");
+    c_printf(DEFAULT_COLOR, "     0x%02X   -       -         -       ", can_id);
+    c_printf(LIGHT_RED, "FAIL    ");
+    c_printf(DEFAULT_COLOR, "%s\n", reason);
 }
