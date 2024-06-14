@@ -208,3 +208,14 @@ print_heading (heading)
 > Heading to be printed.
 
 **Returns**: Nothing.
+
+### helper functions
+
+In addition to the integrated API, there are also a couple of helper functions that can be imported:
+
+```lua
+local canopen = require "canopen"
+
+local node_list, total_devices = canopen.find_devices(timeout_ms)
+local node_id = canopen.get_id_by_name("Device name")
+```
