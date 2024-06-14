@@ -278,13 +278,10 @@ const char* can_get_error_message(Uint32 can_status)
         CAN_GetErrorText(can_status, 0x09, err_message);
         return err_message;
     }
-    else
-    {
-        return NULL;
-    }
 #else
     // Handle libsocketcan error messages if needed.
 #endif
+    return "Unknown CAN error or not handled";
 }
 
 void can_print_baud_rate_help(core_t* core)
@@ -503,5 +500,12 @@ static void print_error(Uint16 can_id, const char* reason, disp_mode_t disp_mode
     c_printf(LIGHT_BLACK, "CAN ");
     c_printf(DEFAULT_COLOR, "     0x%02X   -       -         -       ", can_id);
     c_printf(LIGHT_RED, "FAIL    ");
-    c_printf(DEFAULT_COLOR, "%s\n", reason);
+    if (NULL != reason)
+    {
+        c_printf(DEFAULT_COLOR, "%s\n", reason);
+    }
+    else
+    {
+        c_printf(DEFAULT_COLOR, "-\n");
+    }
 }

@@ -215,9 +215,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
     can_status = can_write(&msg_out, NO_OUTPUT, NULL);
     if (0 != can_status)
     {
-        SDL_snprintf(reason, 300, can_get_error_message(can_status));
-        print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-        return SDO_ABORT;
+        /* Nothing to do here. */
     }
 
     time_a = SDL_GetTicks64();
@@ -321,9 +319,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                 can_status = can_write(&msg_out, NO_OUTPUT, NULL);
                 if (0 != can_status)
                 {
-                    SDL_snprintf(reason, 300, can_get_error_message(can_status));
-                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-                    return SDO_ABORT;
+                    /* Nothing to do here. */
                 }
 
                 for (n = 0; n < expected_msgs; n += 1)
@@ -359,9 +355,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                                 can_status = can_write(&msg_out, NO_OUTPUT, NULL);
                                 if (0 != can_status)
                                 {
-                                    SDL_snprintf(reason, 300, can_get_error_message(can_status));
-                                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-                                    return SDO_ABORT;
+                                    /* Nothing to do here. */
                                 }
                             }
 

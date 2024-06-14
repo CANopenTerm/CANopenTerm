@@ -6,7 +6,7 @@ License: Public domain
 
 --]]
 
-local canopen = require "canopen"
+local canopen = require "lua/canopen"
 
 local available_nodes, total_devices = canopen.find_devices(1000)
 

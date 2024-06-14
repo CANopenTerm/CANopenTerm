@@ -21,7 +21,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-static const char* script_dirs[] = { "/usr/local/share/CANopenTerm/scripts", "/usr/share/CANopenTerm/scripts", "./scripts" };
+static const char* script_dirs[] = {
+        "./scripts",
+        "../local/share/CANopenTerm/scripts",
+        "../share/CANopenTerm/scripts",
+        "/usr/local/share/CANopenTerm/scripts",
+        "/usr/share/CANopenTerm/scripts"
+};
 
 static void set_nonblocking(int fd, int nonblocking);
 static void set_terminal_raw_mode(struct termios* orig_termios);
@@ -136,15 +142,8 @@ void run_script(const char* name, core_t* core)
     }
 
 #ifdef __linux__
-    int          i;
-    char         script_path[256] = { 0 };
-    const char*  script_dirs[]    = {
-        "./scripts",
-        "../local/share/CANopenTerm/scripts",
-        "../share/CANopenTerm/scripts",
-        "/usr/local/share/CANopenTerm/scripts",
-        "/usr/share/CANopenTerm/scripts"
-    };
+    int  i;
+    char script_path[256] = { 0 };
 
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
@@ -154,18 +153,20 @@ void run_script(const char* name, core_t* core)
             lua_pop(core->L, lua_gettop(core->L));
             return;
         }
-        if (SDL_FALSE == has_extension)
+        else
         {
-            SDL_snprintf(script_path, sizeof(script_path), "%s/%s.lua", script_dirs[i], name);
-            if (LUA_OK == luaL_dofile(core->L, script_path))
+            if (SDL_FALSE == has_extension)
             {
-                lua_pop(core->L, lua_gettop(core->L));
-                return;
+                SDL_snprintf(script_path, sizeof(script_path), "%s/%s.lua", script_dirs[i], name);
+                if (LUA_OK == luaL_dofile(core->L, script_path))
+                {
+                    lua_pop(core->L, lua_gettop(core->L));
+                    return;
+                }
             }
+            c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
         }
     }
-
-    c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
 #else
     char script_path[64] = { 0 };
 
