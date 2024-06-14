@@ -128,23 +128,40 @@ void list_scripts(void)
 
 void run_script(const char* name, core_t* core)
 {
-#ifdef __linux__
-    char script_path[256] = { 0 };
-    const char* script_dirs[] = { "/usr/local/share/CANopenTerm/scripts", "/usr/share/CANopenTerm/scripts", "./scripts" };
-    int i;
+    SDL_bool has_extension = SDL_strchr(name, '.') != NULL;
 
     if (NULL == core)
     {
         return;
     }
 
+#ifdef __linux__
+    int          i;
+    char         script_path[256] = { 0 };
+    const char*  script_dirs[]    = {
+        "./scripts",
+        "../local/share/CANopenTerm/scripts",
+        "../share/CANopenTerm/scripts",
+        "/usr/local/share/CANopenTerm/scripts",
+        "/usr/share/CANopenTerm/scripts"
+    };
+
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
-        snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
+        SDL_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
         if (LUA_OK == luaL_dofile(core->L, script_path))
         {
             lua_pop(core->L, lua_gettop(core->L));
             return;
+        }
+        if (SDL_FALSE == has_extension)
+        {
+            SDL_snprintf(script_path, sizeof(script_path), "%s/%s.lua", script_dirs[i], name);
+            if (LUA_OK == luaL_dofile(core->L, script_path))
+            {
+                lua_pop(core->L, lua_gettop(core->L));
+                return;
+            }
         }
     }
 
@@ -152,18 +169,22 @@ void run_script(const char* name, core_t* core)
 #else
     char script_path[64] = { 0 };
 
-    if (NULL == core)
-    {
-        return;
-    }
-
-    SDL_snprintf(script_path, 64, "scripts/%s", name);
+    SDL_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
     if (LUA_OK == luaL_dofile(core->L, script_path))
     {
         lua_pop(core->L, lua_gettop(core->L));
     }
     else
     {
+        if (SDL_FALSE == has_extension)
+        {
+            SDL_snprintf(script_path, sizeof(script_path), "scripts/%s.lua", name);
+            if (LUA_OK == luaL_dofile(core->L, script_path))
+            {
+                lua_pop(core->L, lua_gettop(core->L));
+                return;
+            }
+        }
         c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }
 #endif
@@ -171,16 +192,21 @@ void run_script(const char* name, core_t* core)
 
 int lua_delay_ms(lua_State * L)
 {
-    Uint32      delay_in_ms = (Uint32)luaL_checkinteger(L, 1);
+    Uint32      delay_in_ms = (Uint32)lua_tointeger(L, 1);
     SDL_bool    show_output = lua_toboolean(L, 2);
     const char* comment     = lua_tostring(L, 3);
+
+    if (0 == delay_in_ms)
+    {
+        delay_in_ms = 1000u;
+    }
 
     if (SDL_TRUE == show_output)
     {
         int  i;
         char buffer[34] = { 0 };
 
-        c_printf(DARK_CYAN, "Delay ");
+        c_printf(LIGHT_BLACK, "Delay ");
         c_printf(DEFAULT_COLOR, "   -       -       -         -       -       ");
 
         SDL_strlcpy(buffer, comment, 33);
