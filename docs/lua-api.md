@@ -148,6 +148,14 @@ dict_lookup (index, sub_index)
 
 ### can_write()
 
+### can_read()
+
+```lua
+can_read ()
+```
+
+**Returns** id, length and data (as string), data is nil on failure.
+
 ```lua
 can_write (can_id, data_length, [data_d0_d3], [data_d4_d7], [show_output], [comment])
 ```
@@ -165,14 +173,6 @@ can_write (can_id, data_length, [data_d0_d3], [data_d4_d7], [show_output], [comm
 > **comment** Comment to show in formatted output, default is `nil`.
 
 **Returns**: true on success, false on failure.
-
-### can_read()
-
-```lua
-can_read ()
-```
-
-**Returns** id, length and data (as string), data is nil on failure.
 
 ## Program flow
 
