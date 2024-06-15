@@ -599,6 +599,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
             {
                 switch (command_code)
                 {
+                    case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
+                    case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
                     case UPLOAD_SEGMENT_REQUEST_1:
                     case UPLOAD_SEGMENT_REQUEST_2:
                         sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
@@ -753,6 +755,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
             else if (NORMAL_SDO_WRITE == sdo_type)
             {
                 char* data_str = (char*)data;
+                data_str[SDL_strlen(data_str) - 1] = '\0'; /* Strip possible newline. */
                 c_printf(DEFAULT_COLOR, "%s", data_str);
             }
 
