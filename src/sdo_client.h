@@ -15,6 +15,14 @@
 #include "can.h"
 #include "core.h"
 
+#define DOWNLOAD_RESPONSE_1       0x20
+#define DOWNLOAD_RESPONSE_2       0x30
+#define UPLOAD_SEGMENT_REQUEST_1  0x60
+#define UPLOAD_SEGMENT_REQUEST_2  0x70
+#define UPLOAD_SEGMENT_CONTINUE_1 0x00
+#define UPLOAD_SEGMENT_CONTINUE_2 0x10
+#define ABORT_TRANSFER            0x80
+
 typedef enum
 {
     SDO_READ = 0,
@@ -33,19 +41,20 @@ typedef enum
 
 typedef enum
 {
-    READ_DICT_OBJECT         = 0x40, // Read Dictionary Obejct reply,  normal, no size indicated
-    READ_DICT_SIZE_INDICATED = 0x41, // Read Dictionary Object reply,  normal, size indicated
-    READ_DICT_NO_SIZE        = 0x42, // Read Dictionary Object reply,  expedited, no size indicated
-    READ_DICT_4_BYTE_SENT    = 0x43, // Read Dictionary Object reply,  expedited, 4 bytes sent
-    READ_DICT_3_BYTE_SENT    = 0x47, // Read Dictionary Object reply,  expedited, 3 bytes sent
-    READ_DICT_2_BYTE_SENT    = 0x4b, // Read Dictionary Object reply,  expedited, 2 bytes sent
-    READ_DICT_1_BYTE_SENT    = 0x4f, // Read Dictionary Object reply,  expedited, 1 byte sent
-    WRITE_DICT_OBJECT        = 0x60,
-    WRITE_DICT_4_BYTE_SENT   = 0x23, // Write Dictionary Object reply, expedited, 4 bytes sent
-    WRITE_DICT_3_BYTE_SENT   = 0x27, // Write Dictionary Object reply, expedited, 3 bytes sent
-    WRITE_DICT_2_BYTE_SENT   = 0x2b, // Write Dictionary Object reply, expedited, 2 bytes sent
-    WRITE_DICT_1_BYTE_SENT   = 0x2f, // Write Dictionary Object reply, expedited, 1 byte sent
-    SDO_ABORT                = 0x80
+    UPLOAD_RESPONSE_NORMAL_NO_SIZE      = 0x40, // Upload response, normal transfer, no size indicated
+    UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA = 0x41, // Upload response, normal transfer, size in data
+    UPLOAD_RESPONSE_EXPEDIDED_NO_SIZE   = 0x42, // Upload response, expedided transfer, no size indicated
+    UPLOAD_RESPONSE_EXPEDIDED_4_BYTE    = 0x43, // Upload response, expedided transfer, 4 byte data
+    UPLOAD_RESPONSE_EXPEDIDED_3_BYTE    = 0x47, // Upload response, expedided transfer, 3 byte data
+    UPLOAD_RESPONSE_EXPEDIDED_2_BYTE    = 0x4b, // Upload response, expedided transfer, 2 byte data
+    UPLOAD_RESPONSE_EXPEDIDED_1_BYTE    = 0x4f, // Upload response, expedided transfer, 1 byte data
+    DOWNLOAD_INIT_NORMAL_NO_SIZE        = 0x20, // Download initiate, normal transfer, no size indicated
+    DOWNLOAD_INIT_NORMAL_SIZE_IN_DATA   = 0x21, // Download initiate, normal transfer, size in data
+    DOWNLOAD_INIT_EXPEDIDED_NO_SIZE     = 0x22, // Download initiate, expedided transfer, no size indicated
+    DOWNLOAD_INIT_EXPEDITED_4_BYTE      = 0x23, // Download initiate, expedided transfer, 4 byte data
+    DOWNLOAD_INIT_EXPEDITED_3_BYTE      = 0x27, // Download initiate, expedided transfer, 3 byte data
+    DOWNLOAD_INIT_EXPEDITED_2_BYTE      = 0x2b, // Download initiate, expedided transfer, 2 byte data
+    DOWNLOAD_INIT_EXPEDITED_1_BYTE      = 0x2f, // Download initiate, expedided transfer, 1 byte data
 
 } sdo_command_code_t;
 
@@ -86,7 +95,7 @@ typedef enum
 } sdo_abort_code_t;
 
 Uint32 sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment);
-Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
+Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment);
 int    lua_sdo_read(lua_State* L);
 int    lua_sdo_write(lua_State* L);
 void   lua_register_sdo_commands(core_t* core);

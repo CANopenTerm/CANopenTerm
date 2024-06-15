@@ -58,7 +58,7 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
             char buffer[34] = { 0 };
 
             c_printf(DARK_CYAN, "NMT  ");
-            c_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", command);
+            c_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
             c_printf(LIGHT_GREEN, "SUCC    ");
 
             if (NULL == comment)
@@ -73,7 +73,25 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
             }
 
             c_printf(DARK_MAGENTA, "%s ", buffer);
-            c_printf(DEFAULT_COLOR, "-\n", command);
+
+            switch (command)
+            {
+                case 0x01:
+                    c_printf(DEFAULT_COLOR, "Start (go to Operational)\n");
+                    break;
+                case 0x02:
+                    c_printf(DEFAULT_COLOR, "Stop (go to Stopped)\n");
+                    break;
+                case 0x80:
+                    c_printf(DEFAULT_COLOR, "Go to Pre-operational\n");
+                    break;
+                case 0x81:
+                    c_printf(DEFAULT_COLOR, "Reset node (Application reset)\n");
+                    break;
+                case 0x82:
+                    c_printf(DEFAULT_COLOR, "Reset communication\n");
+                    break;
+            }
         }
     }
 

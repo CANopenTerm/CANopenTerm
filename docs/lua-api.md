@@ -130,6 +130,26 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
+### sdo_write_string()
+
+```lua
+sdo_write_string (node_id, index, sub_index, [data], [show_output], [comment])
+```
+
+> **node_id** CANopen Node-ID.
+
+> **index** Index.
+
+> **sub_index** Sub-Index.
+
+> **data** The string to be written.
+
+> **show_output** Show formatted output, default is `false`.
+
+> **comment** Comment to show in formatted output, default is `nil`.
+
+**Returns**: true on success, false on failure.
+
 ### dict_lookup()
 
 Read CANopenTerm from built-in object directory.
@@ -210,7 +230,7 @@ print_heading (heading)
 
 **Returns**: Nothing.
 
-### helper functions
+### Helper functions
 
 In addition to the integrated API, there are also a couple of helper functions that can be imported:
 

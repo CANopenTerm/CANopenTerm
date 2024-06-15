@@ -30,6 +30,7 @@
 static void convert_token_to_uint(char* token, Uint32* result);
 static void convert_token_to_uint64(char* token, Uint64* result);
 static void print_usage_information(SDL_bool show_all);
+static void strip_quotes(char* buffer);
 
 void parse_command(char* input, core_t* core)
 {
@@ -300,6 +301,7 @@ void parse_command(char* input, core_t* core)
         Uint32        sub_index;
         Uint32        sdo_data;
         Uint32        sdo_data_length;
+        char          buffer[0xff] = { 0 };
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -334,28 +336,37 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sub_index);
         }
 
-        token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
+        SDL_snprintf(buffer, 0xff, input_savptr);
+        buffer[SDL_strlen(buffer) - 1] = '\0';
+        if (('"' == buffer[0]) && ('"' == buffer[SDL_strlen(buffer) - 1]))
         {
-            print_usage_information(SDL_FALSE);
-            return;
+            strip_quotes(buffer);
+            sdo_write(&sdo_response, NORMAL_OUTPUT, NORMAL_SDO_WRITE, node_id, sdo_index, sub_index, SDL_strlen(buffer), (void*)&buffer, NULL);
         }
         else
         {
-            convert_token_to_uint(token, &sdo_data_length);
-        }
+            token = SDL_strtokr(input_savptr, delim, &input_savptr);
+            if (NULL == token)
+            {
+                print_usage_information(SDL_FALSE);
+                return;
+            }
+            else
+            {
+                convert_token_to_uint(token, &sdo_data_length);
+            }
 
-        token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
-        {
-            sdo_data = 0;
+            token = SDL_strtokr(input_savptr, delim, &input_savptr);
+            if (NULL == token)
+            {
+                sdo_data = 0;
+            }
+            else
+            {
+                convert_token_to_uint(token, &sdo_data);
+                sdo_write(&sdo_response, NORMAL_OUTPUT, EXPEDITED_SDO_WRITE, node_id, sdo_index, sub_index, sdo_data_length, (void*)&sdo_data, NULL);
+            }
         }
-        else
-        {
-            convert_token_to_uint(token, &sdo_data);
-        }
-
-        sdo_write(&sdo_response, NORMAL_OUTPUT, node_id, sdo_index, sub_index, sdo_data_length, (void*)&sdo_data, NULL);
     }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
@@ -414,16 +425,28 @@ static void print_usage_information(SDL_bool show_all)
 #ifndef __linux__
         table_print_row(" b ", "(command)",                                 "Set baud rate",  &table);
 #endif
-        table_print_row(" c ", " ",                                         "Clear output",   &table);
-        table_print_row(" l ", " ",                                         "List scripts",   &table);
-        table_print_row(" s ", "[script_name][.lua]",                       "Run script",     &table);
+        table_print_row(" c ", " ",                                         "Clear output", &table);
+        table_print_row(" l ", " ",                                         "List scripts", &table);
+        table_print_row(" s ", "[script_name][.lua]",                       "Run script",   &table);
     }
 
-    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",    &table);
-    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",       &table);
-    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",      &table);
-    table_print_row(" p ", "add [can_id] [event_time_ms] [length] [data]",  "Add TPDO",       &table);
-    table_print_row(" p ", "del [can_id]",                                  "Remove TPDO",    &table);
-    table_print_row(" q ", " ",                                             "Quit",           &table);
+    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);
+    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",    &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",   &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [\"data\"]",      "Write SDO",   &table);
+    table_print_row(" p ", "add [can_id] [event_time_ms] [length] [data]",  "Add TPDO",    &table);
+    table_print_row(" p ", "del [can_id]",                                  "Remove TPDO", &table);
+    table_print_row(" q ", " ",                                             "Quit",        &table);
     table_print_footer(&table);
+}
+
+static void strip_quotes(char* buffer)
+{
+    size_t length = SDL_strlen(buffer);
+
+    if (length > 1 && (buffer[0] == '"') && (buffer[length - 1] == '"'))
+    {
+        SDL_memmove(buffer, buffer + 1, length - 2);
+        buffer[length - 2] = '\0';
+    }
 }

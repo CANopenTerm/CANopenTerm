@@ -210,6 +210,11 @@ int lua_delay_ms(lua_State * L)
         c_printf(LIGHT_BLACK, "Delay ");
         c_printf(DEFAULT_COLOR, "   -       -       -         -       -       ");
 
+        if (NULL == comment)
+        {
+            comment = "-";
+        }
+
         SDL_strlcpy(buffer, comment, 33);
         for (i = SDL_strlen(buffer); i < 33; ++i)
         {

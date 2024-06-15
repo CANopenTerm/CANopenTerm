@@ -9,6 +9,7 @@
 
 #include "SDL.h"
 #include "lua.h"
+#include "lauxlib.h"
 #include "can.h"
 #include "core.h"
 #include "dict.h" 
@@ -34,10 +35,10 @@ Uint32 sdo_read(can_message_t* sdo_response,disp_mode_t disp_mode, Uint8 node_id
         comment);
 }
 
-Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
+Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
 {
     return sdo_send(
-        EXPEDITED_SDO_WRITE,
+        sdo_type,
         sdo_response,
         disp_mode,
         node_id,
@@ -79,11 +80,11 @@ int lua_sdo_read(lua_State* L)
 
     switch (status)
     {
-        case READ_DICT_OBJECT:
-        case READ_DICT_SIZE_INDICATED:
+        case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
+        case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
             lua_pushstring(L, (const char*)sdo_response.data);
             break;
-        case SDO_ABORT:
+        case ABORT_TRANSFER:
             lua_pushnil(L);
             break;
         default:
@@ -120,6 +121,7 @@ int lua_sdo_write(lua_State* L)
     status = sdo_write(
         &sdo_response,
         disp_mode,
+        EXPEDITED_SDO_WRITE,
         (Uint8)node_id,
         (Uint16)index,
         (Uint8)sub_index,
@@ -129,7 +131,59 @@ int lua_sdo_write(lua_State* L)
 
     switch (status)
     {
-        case SDO_ABORT:
+        case ABORT_TRANSFER:
+            lua_pushboolean(L, 0);
+            break;
+        default:
+            lua_pushboolean(L, 1);
+            break;
+    }
+
+    return 1;
+}
+
+int lua_sdo_write_string(lua_State* L)
+{
+    can_message_t sdo_response = { 0 };
+    disp_mode_t   disp_mode    = NO_OUTPUT;
+    int           status;
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+    const char*   data         = luaL_checkstring(L, 4);
+    Uint8         length       = 0;
+    SDL_bool      show_output  = lua_toboolean(L, 5);
+    const char*   comment      = lua_tostring(L, 6);
+
+    if (NULL != data)
+    {
+        length = SDL_strlen(data);
+    }
+    else
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    if (SDL_TRUE == show_output)
+    {
+        disp_mode = SCRIPT_OUTPUT;
+    }
+
+    status = sdo_write(
+        &sdo_response,
+        disp_mode,
+        NORMAL_SDO_WRITE,
+        (Uint8)node_id,
+        (Uint16)index,
+        (Uint8)sub_index,
+        length,
+        (void*)data,
+        comment);
+
+    switch (status)
+    {
+        case ABORT_TRANSFER:
             lua_pushboolean(L, 0);
             break;
         default:
@@ -147,19 +201,23 @@ void lua_register_sdo_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_sdo_write);
     lua_setglobal(core->L, "sdo_write");
+
+    lua_pushcfunction(core->L, lua_sdo_write_string);
+    lua_setglobal(core->L, "sdo_write_string");
 }
 
 static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment)
 {
     can_message_t msg_in            = { 0 };
     can_message_t msg_out           = { 0 };
-    Uint32        can_status        = 0;
-    Uint8         command_code      = 0x00;
+    SDL_bool      is_normal_sdo     = SDL_FALSE;
     SDL_bool      response_received = SDL_FALSE;
-    Uint64        timeout_time      = 0;
-    Uint64        time_a;
-    Uint32*       u32_data_ptr      = (Uint32*)data;
+    Uint32        can_status        = 0;
     Uint32        u32_value         = 0;
+    Uint32*       u32_data_ptr      = (Uint32*)data;
+    Uint64        time_a;
+    Uint64        timeout_time      = 0;
+    Uint8         command_code      = 0x00;
     char          reason[300]       = { 0 };
 
     if (node_id > 0x7f)
@@ -177,7 +235,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
         default:
         case SDO_READ:
             msg_out.length  = 8;
-            msg_out.data[0] = READ_DICT_OBJECT;
+            msg_out.data[0] = UPLOAD_RESPONSE_NORMAL_NO_SIZE;
             break;
         case EXPEDITED_SDO_WRITE:
         {
@@ -195,19 +253,26 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
             switch (length)
             {
                 case 1:
-                    msg_out.data[0] = WRITE_DICT_1_BYTE_SENT;
+                    msg_out.data[0] = DOWNLOAD_INIT_EXPEDITED_1_BYTE;
                     break;
                 case 2:
-                    msg_out.data[0] = WRITE_DICT_2_BYTE_SENT;
+                    msg_out.data[0] = DOWNLOAD_INIT_EXPEDITED_2_BYTE;
                     break;
                 case 3:
-                    msg_out.data[0] = WRITE_DICT_3_BYTE_SENT;
+                    msg_out.data[0] = DOWNLOAD_INIT_EXPEDITED_3_BYTE;
                     break;
                 case 4:
                 default:
-                    msg_out.data[0] = WRITE_DICT_4_BYTE_SENT;
+                    msg_out.data[0] = DOWNLOAD_INIT_EXPEDITED_4_BYTE;
                     break;
             }
+            break;
+        }
+        case NORMAL_SDO_WRITE:
+        {
+            msg_out.length  = 8;
+            msg_out.data[0] = DOWNLOAD_INIT_NORMAL_SIZE_IN_DATA;
+            msg_out.data[4] = length;
             break;
         }
     }
@@ -257,7 +322,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
     {
         SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
         print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-        return SDO_ABORT;
+        return ABORT_TRANSFER;
     }
     else
     {
@@ -266,31 +331,33 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 
         switch (command_code)
         {
-            case WRITE_DICT_OBJECT:
+            case UPLOAD_SEGMENT_REQUEST_1:
+            case UPLOAD_SEGMENT_REQUEST_2:
                 sdo_response->length = msg_out.length;
                 break;
-            case READ_DICT_NO_SIZE: /* Normal SDO. */
-            case READ_DICT_SIZE_INDICATED:
+            case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
+            case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
                 sdo_response->length = msg_in.data[4];
+                is_normal_sdo        = SDL_TRUE;
                 break;
-            case READ_DICT_4_BYTE_SENT: /* Expedided SDO. */
-            case WRITE_DICT_4_BYTE_SENT:
+            case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
+            case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
                 sdo_response->length = 4;
                 break;
-            case READ_DICT_3_BYTE_SENT:
-            case WRITE_DICT_3_BYTE_SENT:
+            case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
+            case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
                 sdo_response->length = 3;
                 break;
-            case READ_DICT_2_BYTE_SENT:
-            case WRITE_DICT_2_BYTE_SENT:
+            case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
+            case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
                 sdo_response->length = 2;
                 break;
-            case READ_DICT_1_BYTE_SENT:
-            case WRITE_DICT_1_BYTE_SENT:
+            case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
+            case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
                 sdo_response->length = 1;
                 break;
             default:
-            case SDO_ABORT: /* Error. */
+            case ABORT_TRANSFER: /* Error. */
                 abort_code = (abort_code & 0xffffff00) | msg_in.data[7];
                 abort_code = (abort_code & 0xffff00ff) | ((Uint32)msg_in.data[6] << 8);
                 abort_code = (abort_code & 0xff00ffff) | ((Uint32)msg_in.data[5] << 16);
@@ -299,22 +366,144 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 
                 SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
                 print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-                return SDO_ABORT;
+                return ABORT_TRANSFER;
         }
 
-        switch (command_code)
+        if ((SDO_READ == sdo_type) && (SDL_TRUE == is_normal_sdo))
         {
-            case READ_DICT_NO_SIZE: /* Normal SDO. */
-            case READ_DICT_SIZE_INDICATED:
+            Uint8 response_index = 0;
+            Uint8 cmd            = UPLOAD_SEGMENT_REQUEST_1;
+            Uint8 data_length    = sdo_response->length;
+            Uint8 remainder      = data_length % 7u;
+            Uint8 expected_msgs  = (data_length / 7u) + (remainder ? 1 : 0);
+            
+            msg_out.id      = 0x600 + node_id;
+            msg_out.length  = 8;
+            msg_out.data[0] = cmd;
+            
+            can_status = can_write(&msg_out, NO_OUTPUT, NULL);
+            if (0 != can_status)
             {
-                Uint8         sdo_response_index = 0;
-                Uint8         cmd                = 0x60;
-                Uint8         remainder          = sdo_response->length % 7u;
-                Uint8         expected_msgs      = (sdo_response->length / 7u) + (remainder ? 1 : 0);
+                /* Nothing to do here. */
+            }
+            
+            for (n = 0; n < expected_msgs; n += 1)
+            {
+                timeout_time      = 0;
+                time_a            = SDL_GetTicks64();
+                response_received = SDL_FALSE;
+            
+                while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+                {
+                    Uint64 time_b;
+                    Uint64 delta_time;
+            
+                    can_read(&msg_in);
+                    if ((0x580 + node_id) == msg_in.id)
+                    {
+                        int can_msg_index = 0;
+                        msg_out.data[0] = cmd;
 
-                msg_out.id      = 0x600 + node_id;
-                msg_out.length  = 8;
+                        if (0 == (msg_in.data[0] % 2))
+                        {
+                            if (UPLOAD_SEGMENT_REQUEST_1 == cmd)
+                            {
+                                cmd = UPLOAD_SEGMENT_REQUEST_2;
+                            }
+                            else
+                            {
+                                cmd = UPLOAD_SEGMENT_REQUEST_1;
+                            }
+
+                            msg_out.data[0] = cmd;
+
+                            can_status = can_write(&msg_out, NO_OUTPUT, NULL);
+                            if (0 != can_status)
+                            {
+                                /* Nothing to do here. */
+                            }
+                        }
+
+                        for (can_msg_index = 1; can_msg_index <= 7; can_msg_index += 1)
+                        {
+                            char printable_char;
+                            if (response_index >= data_length)
+                            {
+                                break;
+                            }
+                            else if (SDL_isprint(msg_in.data[can_msg_index]))
+                            {
+                                printable_char = msg_in.data[can_msg_index];
+                            }
+                            else
+                            {
+                                printable_char = '\0';
+                                break;
+                            }
+                            sdo_response->data[response_index] = printable_char;
+
+                            response_index += 1;
+                        }
+
+                        response_received = SDL_TRUE;
+                        continue;
+                    }
+
+                    time_b = time_a;
+                    time_a = SDL_GetTicks64();
+
+                    if (time_a > time_b)
+                    {
+                        delta_time = time_a - time_b;
+                    }
+                    else
+                    {
+                        delta_time = time_b - time_a;
+                    }
+                    timeout_time += delta_time;
+                }
+
+                if (timeout_time >= SDO_TIMEOUT_IN_MS)
+                {
+                    SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
+                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+                    return ABORT_TRANSFER;
+                }
+            }
+         }
+        else if (NORMAL_SDO_WRITE == sdo_type)
+        {
+            Uint8 cmd        = UPLOAD_SEGMENT_CONTINUE_1;
+            int   data_index = 0;
+
+            msg_out.id      = 0x600 + node_id;
+            msg_out.length  = 8;
+            msg_out.data[0] = cmd;
+
+            while (msg_out.data[0] != (cmd | 0x0b))
+            {
+                int i;
+
                 msg_out.data[0] = cmd;
+
+                for (i = 1; i <= 7; i += 1)
+                {
+                    char* data_str  = (char*)data;
+                    if ('\0' == data_str[data_index])
+                    {
+                        msg_out.data[0] = cmd | 0x0b; /* Data sent; mark last segment. */
+                        msg_out.data[i] = '\n';
+                    }
+                    else if ((cmd | 0x0b) == msg_out.data[0])
+                    {
+                        msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
+                    }
+                    else
+                    {
+                        msg_out.data[i]  = data_str[data_index];
+                    }
+                    data_index += 1;
+                }
 
                 can_status = can_write(&msg_out, NO_OUTPUT, NULL);
                 if (0 != can_status)
@@ -322,82 +511,49 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                     /* Nothing to do here. */
                 }
 
-                for (n = 0; n < expected_msgs; n += 1)
+                if ((cmd | 0x0b) == msg_out.data[0])
                 {
-                    timeout_time      = 0;
-                    time_a            = SDL_GetTicks64();
-                    response_received = SDL_FALSE;
+                    break;
+                }
 
-                    while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+                while (timeout_time < SDO_TIMEOUT_IN_MS)
+                {
+                    Uint64 time_b;
+                    Uint64 delta_time;
+
+                    can_read(&msg_in);
+                    if ((0x580 + node_id) == msg_in.id)
                     {
-                        Uint64 time_b;
-                        Uint64 delta_time;
+                        msg_out.data[0] = cmd;
+                        int can_msg_index = 0;
 
-                        can_read(&msg_in);
-                        if ((0x580 + node_id) == msg_in.id)
+                        switch (msg_in.data[0])
                         {
-                            msg_out.data[0]  = cmd;
-                            int can_msg_index = 0;
-
-                            if (0 == (msg_in.data[0] % 2))
-                            {
-                                if (0x60 == cmd)
-                                {
-                                    cmd = 0x70;
-                                }
-                                else
-                                {
-                                    cmd = 0x60;
-                                }
-
-                                msg_out.data[0] = cmd;
-
-                                can_status = can_write(&msg_out, NO_OUTPUT, NULL);
-                                if (0 != can_status)
-                                {
-                                    /* Nothing to do here. */
-                                }
-                            }
-
-                            for (can_msg_index = 1; can_msg_index < 8; can_msg_index += 1)
-                            {
-                                sdo_response->data[sdo_response_index] = msg_in.data[can_msg_index];
-                                sdo_response_index += 1;
-                            }
-
-                            response_received = SDL_TRUE;
-                            continue;
+                            case DOWNLOAD_RESPONSE_1:
+                                cmd = UPLOAD_SEGMENT_CONTINUE_2;
+                                break;
+                            case DOWNLOAD_RESPONSE_2:
+                                cmd = UPLOAD_SEGMENT_CONTINUE_1;
+                                break;
                         }
-
-                        time_b = time_a;
-                        time_a = SDL_GetTicks64();
-
-                        if (time_a > time_b)
-                        {
-                            delta_time = time_a - time_b;
-                        }
-                        else
-                        {
-                            delta_time = time_b - time_a;
-                        }
-                        timeout_time += delta_time;
-                    }
-
-                    if (timeout_time >= SDO_TIMEOUT_IN_MS)
-                    {
-                        SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
-                        print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-                        return SDO_ABORT;
+                        break;
                     }
                 }
-                break;
+
+                if (timeout_time >= SDO_TIMEOUT_IN_MS)
+                {
+                    SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
+                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+                    return ABORT_TRANSFER;
+                }
             }
-            default: /* Expedided SDO. */
-                for (n = 0; n < sdo_response->length;n += 1)
-                {
-                    sdo_response->data[4 + n] = msg_in.data[4 + n];
-                }
-                break;
+        }
+        else /* Write expedided SDO. */
+        {
+            for (n = 0; n < sdo_response->length; n += 1)
+            {
+                sdo_response->data[4 + n] = msg_in.data[4 + n];
+            }
         }
     }
 
@@ -413,22 +569,23 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 
             switch (command_code)
             {
-                case READ_DICT_NO_SIZE:
-                case READ_DICT_SIZE_INDICATED:
+                case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
+                case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
                     str_action = &str_read;
                     break;
-                case READ_DICT_4_BYTE_SENT:
-                case READ_DICT_3_BYTE_SENT:
-                case READ_DICT_2_BYTE_SENT:
-                case READ_DICT_1_BYTE_SENT:
+                case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
+                case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
+                case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
+                case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
                     output_data = (Uint32)sdo_response->data[4];
                     str_action = &str_read;
                     break;
-                case WRITE_DICT_OBJECT:
-                case WRITE_DICT_4_BYTE_SENT:
-                case WRITE_DICT_3_BYTE_SENT:
-                case WRITE_DICT_2_BYTE_SENT:
-                case WRITE_DICT_1_BYTE_SENT:
+                case UPLOAD_SEGMENT_REQUEST_1:
+                case UPLOAD_SEGMENT_REQUEST_2:
+                case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
+                case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
+                case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
+                case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
                     output_data = u32_value;
                     str_action = &str_written;
                     break;
@@ -439,27 +596,42 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                 c_log(LOG_INFO, "%s", description);
             }
 
-            switch (command_code)
+            if ((SDO_READ == sdo_type) || (EXPEDITED_SDO_WRITE == sdo_type))
             {
-                case READ_DICT_NO_SIZE:
-                case READ_DICT_SIZE_INDICATED:
-                    sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
-                    c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
-                        index,
-                        sub_index,
-                        sdo_response->length,
-                        *str_action,
-                        (char*)sdo_response->data);
-                    break;
-                default:
-                    c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %u (0x%x)",
-                        index,
-                        sub_index,
-                        sdo_response->length,
-                        *str_action,
-                        output_data,
-                        output_data);
-                    break;
+                switch (command_code)
+                {
+                    case UPLOAD_SEGMENT_REQUEST_1:
+                    case UPLOAD_SEGMENT_REQUEST_2:
+                        sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+                        c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
+                            index,
+                            sub_index,
+                            sdo_response->length,
+                            *str_action,
+                            (char*)sdo_response->data);
+                        break;
+                    default:
+                        c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %u (0x%x)",
+                            index,
+                            sub_index,
+                            sdo_response->length,
+                            *str_action,
+                            output_data,
+                            output_data);
+                        break;
+                }
+            }
+            else if (NORMAL_SDO_WRITE == sdo_type)
+            {
+                char* data_str = (char*)data;
+
+                sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
+                    index,
+                    sub_index,
+                    length,
+                    *str_action,
+                    data_str);
             }
             break;
         }
@@ -475,22 +647,23 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 
             switch (command_code)
             {
-                case READ_DICT_NO_SIZE:
-                case READ_DICT_SIZE_INDICATED:
+                case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
+                case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
                     str_action = &str_read;
                     break;
-                case READ_DICT_4_BYTE_SENT:
-                case READ_DICT_3_BYTE_SENT:
-                case READ_DICT_2_BYTE_SENT:
-                case READ_DICT_1_BYTE_SENT:
+                case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
+                case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
+                case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
+                case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
                     output_data = (Uint32)sdo_response->data[4];
                     str_action = &str_read;
                     break;
-                case WRITE_DICT_OBJECT:
-                case WRITE_DICT_4_BYTE_SENT:
-                case WRITE_DICT_3_BYTE_SENT:
-                case WRITE_DICT_2_BYTE_SENT:
-                case WRITE_DICT_1_BYTE_SENT:
+                case UPLOAD_SEGMENT_REQUEST_1:
+                case UPLOAD_SEGMENT_REQUEST_2:
+                case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
+                case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
+                case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
+                case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
                     output_data = u32_value;
                     str_action  = &str_written;
                     color       = LIGHT_BLUE;
@@ -515,8 +688,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 
             switch (command_code)
             {
-                case READ_DICT_NO_SIZE:
-                case READ_DICT_SIZE_INDICATED:
+                case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
+                case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
                     sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
                     break;
                 default:
@@ -528,52 +701,60 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
             c_printf(LIGHT_GREEN, "SUCC    ");
             c_printf(DARK_MAGENTA, "%s ", buffer);
 
-            switch (command_code)
+            if ((SDO_READ == sdo_type) || (EXPEDITED_SDO_WRITE == sdo_type))
             {
-                case READ_DICT_NO_SIZE:
-                case READ_DICT_SIZE_INDICATED:
-                    c_printf(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
-                    break;
-                case READ_DICT_4_BYTE_SENT:
-                case WRITE_DICT_4_BYTE_SENT:
-                    c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
-                    break;
-                case READ_DICT_3_BYTE_SENT:
-                case WRITE_DICT_3_BYTE_SENT:
-                    c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
-                    break;
-                case READ_DICT_2_BYTE_SENT:
-                case WRITE_DICT_2_BYTE_SENT:
-                    c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
-                    break;
-                case READ_DICT_1_BYTE_SENT:
-                case WRITE_DICT_1_BYTE_SENT:
-                    c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
-                    break;
-                case WRITE_DICT_OBJECT:
+                switch (command_code)
                 {
-                    switch (length)
+                    case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
+                    case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
+                        c_printf(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
+                        break;
+                    case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
+                    case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
+                        c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
+                        break;
+                    case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
+                    case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
+                        c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
+                        break;
+                    case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
+                    case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
+                        c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
+                        break;
+                    case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
+                    case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
+                        c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
+                        break;
+                    case UPLOAD_SEGMENT_REQUEST_1:
+                    case UPLOAD_SEGMENT_REQUEST_2:
                     {
-                        case 4:
-                            c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
-                            break;
-                        case 3:
-                            c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
-                            break;
-                        case 2:
-                            c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
-                            break;
-                        case 1:
-                            c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
-                            break;
-                        default:
-
-                            break;
+                        switch (length)
+                        {
+                            case 4:
+                                c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
+                                break;
+                            case 3:
+                                c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
+                                break;
+                            case 2:
+                                c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
+                                break;
+                            case 1:
+                                c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
                     }
-                    break;
+                    default:
+                        break;
                 }
-                default:
-                    break;
+            }
+            else if (NORMAL_SDO_WRITE == sdo_type)
+            {
+                char* data_str = (char*)data;
+                c_printf(DEFAULT_COLOR, "%s", data_str);
             }
 
             puts("");
