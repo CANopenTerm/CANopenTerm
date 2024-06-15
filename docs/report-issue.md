@@ -20,7 +20,7 @@ the dependency.
 
 ## Found a bug?
 
-Basic, non-security related bugs and general feature requests are also very welcome.  
+Basic, non-security related bugs and general feature requests are also very welcome.
 Please use the designated page on GitHub to report them:
 
 [CANopenTerm Issues](https://github.com/CANopenTerm/CANopenTerm/issues)
