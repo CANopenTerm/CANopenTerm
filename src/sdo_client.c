@@ -437,7 +437,6 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                             }
                             else
                             {
-                                printable_char = '\0';
                                 break;
                             }
                             sdo_response->data[response_index] = printable_char;
@@ -524,8 +523,8 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                     can_read(&msg_in);
                     if ((0x580 + node_id) == msg_in.id)
                     {
+                        int can_msg_index;
                         msg_out.data[0] = cmd;
-                        int can_msg_index = 0;
 
                         switch (msg_in.data[0])
                         {

@@ -357,11 +357,7 @@ void parse_command(char* input, core_t* core)
             }
 
             token = SDL_strtokr(input_savptr, delim, &input_savptr);
-            if (NULL == token)
-            {
-                sdo_data = 0;
-            }
-            else
+            if (token != NULL)
             {
                 convert_token_to_uint(token, &sdo_data);
                 sdo_write(&sdo_response, NORMAL_OUTPUT, EXPEDITED_SDO_WRITE, node_id, sdo_index, sub_index, sdo_data_length, (void*)&sdo_data, NULL);
