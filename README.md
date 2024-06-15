@@ -9,19 +9,18 @@
 ## Description
 
 Do you work in an R&D environment and are you responsible for
-developing or testing CANopen devices? Are you an application
+developing or testing CANopen nodes?  Are you an application
 engineer looking for a simple tool to communicate easily and
 efficiently on a CANopen network?
 
 Then you are in the right place!
 
 CANopenTerm is a versatile yet easy-to-use software tool for
-analysing and testing CANopen networks and devices using an
-interactive terminal. 
-addition to reading and writing **Service Data Objects**
-(**SDO**) and sending **Network Management Commands**
-(**NMT**), it is also possible to simulate asynchronous
-**Process Data Objects** (**PDO**).
+analysing and testing CANopen nodes using an interactive
+terminal.  addition to reading and writing
+**Service Data Objects** (**SDO**) and sending
+**Network Management Commands** (**NMT**), it is also possible
+to simulate asynchronous **Process Data Objects** (**PDO**).
 
 Complex, recurring tasks can be automated using scripts
 written in [Lua 5.4](https://www.lua.org/manual/5.4/) and a
