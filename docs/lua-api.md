@@ -174,7 +174,7 @@ dict_lookup (index, sub_index)
 can_read ()
 ```
 
-**Returns** id, length and data (as string), data is nil on failure.
+**Returns**: id, length and data (as string), data is nil on failure.
 
 ```lua
 can_write (can_id, data_length, [data_d0_d3], [data_d4_d7], [show_output], [comment])
