@@ -78,3 +78,13 @@ cd build
 cmake ..
 make
 ````
+
+### Yocto
+
+CANopenTerm also provides an experimental Yocto layer.  Before each release,
+it is tested on an embedded Linux distribution based on kirkstone.
+
+```bash
+bitbake-layers add-layer meta-canopenterm
+bitbake canopenterm
+````

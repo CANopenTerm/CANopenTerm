@@ -6,4 +6,6 @@ systems.
 
 ## Adding the layer to your build
 
-Run `bitbake-layers add-layer meta-canopenterm`.
+```bash
+bitbake-layers add-layer meta-canopenterm
+````
