@@ -20,6 +20,25 @@ CANopenTerm is an interactive terminal which can be used via a number of
 commands. You can get a detailed overview of all available command by
 entering `h`.
 
+### Run script from command-line
+
+It is possible to run a script from the command line.  However, on Linux,
+the CAN interface to be used must be set as first argument.
+
+The `.lua` file extension can be omitted.
+
+#### Linux
+
+```bash
+./CANopenTerm can0 hello
+```
+
+#### Windows
+
+```bash
+CANopenTerm.exe hello
+```
+
 ## Compiling
 
 First clone the repository:
