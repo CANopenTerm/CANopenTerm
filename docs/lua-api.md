@@ -235,7 +235,7 @@ print_heading (heading)
 In addition to the integrated API, there are also a couple of helper functions that can be imported:
 
 ```lua
-local canopen = require "canopen"
+local canopen = require "lua/canopen"
 
 local node_list, total_devices = canopen.find_devices(timeout_ms)
 local node_id = canopen.get_id_by_name("Device name")
