@@ -32,6 +32,24 @@ static void convert_token_to_uint64(char* token, Uint64* result);
 static void print_usage_information(SDL_bool show_all);
 static void strip_quotes(char* buffer);
 
+
+
+
+int is_numeric(const char* str)
+{
+    if (str == NULL || *str == '\0') {
+        return 0;
+    }
+    while (*str) {
+        if (!isdigit(*str)) {
+            return 0;
+        }
+        str++;
+    }
+    return 1;
+}
+
+
 void parse_command(char* input, core_t* core)
 {
     int   index;
@@ -293,77 +311,99 @@ void parse_command(char* input, core_t* core)
 
         sdo_read(&sdo_response, NORMAL_OUTPUT, node_id, sdo_index, sub_index, NULL);
     }
-    else if (0 == SDL_strncmp(token, "w", 1))
+
+    else if (SDL_strncmp(token, "w", 1) == 0)
     {
         can_message_t sdo_response = { 0 };
-        Uint32        node_id;
-        Uint32        sdo_index;
-        Uint32        sub_index;
-        Uint32        sdo_data;
-        Uint32        sdo_data_length;
-        char          buffer[0xff] = { 0 };
+        Uint32 node_id;
+        Uint32 sdo_index;
+        Uint32 sub_index;
+        Uint32 sdo_data_length = 0;
+        Uint32 sdo_data = 0;
+        sdo_type_t sdo_type = EXPEDITED_SDO_WRITE;
+        char buffer[256] = { 0 };  // Adjust buffer size as needed
 
+        // Parse node_id
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
-        {
+        if (token == NULL) {
             print_usage_information(SDL_FALSE);
             return;
         }
-        else
-        {
-            convert_token_to_uint(token, &node_id);
-        }
+        convert_token_to_uint(token, &node_id);
 
+        // Parse sdo_index
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
-        {
+        if (token == NULL) {
             print_usage_information(SDL_FALSE);
             return;
         }
-        else
-        {
-            convert_token_to_uint(token, &sdo_index);
-        }
+        convert_token_to_uint(token, &sdo_index);
 
+        // Parse sub_index
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
-        {
+        if (token == NULL) {
             print_usage_information(SDL_FALSE);
             return;
         }
-        else
-        {
-            convert_token_to_uint(token, &sub_index);
-        }
+        convert_token_to_uint(token, &sub_index);
 
-        SDL_snprintf(buffer, 0xff, input_savptr);
-        buffer[SDL_strlen(buffer) - 1] = '\0';
-        if (('"' == buffer[0]) && ('"' == buffer[SDL_strlen(buffer) - 1]))
-        {
-            strip_quotes(buffer);
-            sdo_write(&sdo_response, NORMAL_OUTPUT, NORMAL_SDO_WRITE, node_id, sdo_index, sub_index, SDL_strlen(buffer), (void*)&buffer, NULL);
-        }
-        else
-        {
-            token = SDL_strtokr(input_savptr, delim, &input_savptr);
-            if (NULL == token)
-            {
+        // Check if there's sdo_data_length
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (token != NULL) {
+            // Check if it's a numeric value
+            if (is_numeric(token)) {
+                convert_token_to_uint(token, &sdo_data_length);
+
+                // Check if there's sdo_data
+                token = SDL_strtokr(input_savptr, delim, &input_savptr);
+                if (token != NULL) {
+                    convert_token_to_uint(token, &sdo_data);
+                }
+
+                SDL_memcpy(buffer, &sdo_data, sizeof(Uint32));
+            }
+            else {
+                size_t len;
+                // It should be a quoted string
+                SDL_strlcpy(buffer, token, sizeof(buffer));
+                len  = SDL_strlen(buffer);
+
+                sdo_type = NORMAL_SDO_WRITE;
+
+                // Concatenate subsequent tokens until the end
+                token = SDL_strtokr(NULL, delim, &input_savptr);
+                while (token != NULL) {
+                    SDL_strlcat(buffer, " ", sizeof(buffer));
+                    SDL_strlcat(buffer, token, sizeof(buffer));
+                    len = SDL_strlen(buffer);
+                    token = SDL_strtokr(NULL, delim, &input_savptr);
+                }
+
+                // Remove quotes if present
+                if (buffer[0] == '"' && buffer[len - 1] == '"') {
+                    buffer[len - 1] = '\0';
+                    SDL_memmove(buffer, buffer + 1, len - 1);
+                }
+
+                sdo_data_length = SDL_strlen(buffer);
+            }
+
+            // Call sdo_write based on whether sdo_data_length is valid
+            if (sdo_data_length > 0) {
+                sdo_write(&sdo_response, NORMAL_OUTPUT, sdo_type, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
+            }
+            else {
                 print_usage_information(SDL_FALSE);
                 return;
             }
-            else
-            {
-                convert_token_to_uint(token, &sdo_data_length);
-            }
-
-            token = SDL_strtokr(input_savptr, delim, &input_savptr);
-            if (token != NULL)
-            {
-                convert_token_to_uint(token, &sdo_data);
-                sdo_write(&sdo_response, NORMAL_OUTPUT, EXPEDITED_SDO_WRITE, node_id, sdo_index, sub_index, sdo_data_length, (void*)&sdo_data, NULL);
-            }
         }
-    }
+        else {
+            print_usage_information(SDL_FALSE);
+            return;
+        }
+        }
+
+
     else if (0 == SDL_strncmp(token, "s", 1))
     {
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
@@ -381,8 +421,8 @@ void parse_command(char* input, core_t* core)
     {
         print_usage_information(SDL_FALSE);
     }
-}
 
+}
 static void convert_token_to_uint(char* token, Uint32* result)
 {
     if (('0' == token[0]) && ('x' == token[1]))
