@@ -30,7 +30,7 @@ on a CANopen network, allowing you to:
   Effortlessly add asynchronous Process Data Objects to mimic
   network traffic.
 
-## Key Features:
+## Key Features
 
 - **Lua 5.4 Interpreter**  
   Write scripts to automate tasks and leverage a custom API with
