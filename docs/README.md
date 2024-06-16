@@ -77,7 +77,7 @@ your R&D processes.
 
 ## Try It Yourself
 
-Ready to see what CANopenTerm can do for you?  Download it today and
-explore its full potential. Whether you're an R&D professional or an
-application engineer, CANopenTerm is designed to meet your needs and help
-you achieve your goals.
+Ready to see what CANopenTerm can do for you?  [Download](https://github.com/CANopenTerm/CANopenTerm/releases)
+it today and explore its full potential. Whether you're an R&D professional
+or an application engineer, CANopenTerm is designed to meet your needs and
+help you achieve your goals.
