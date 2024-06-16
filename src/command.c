@@ -27,28 +27,10 @@
 #  define CLEAR_CMD ""
 #endif
 
-static void convert_token_to_uint(char* token, Uint32* result);
-static void convert_token_to_uint64(char* token, Uint64* result);
-static void print_usage_information(SDL_bool show_all);
-static void strip_quotes(char* buffer);
-
-
-
-
-int is_numeric(const char* str)
-{
-    if (str == NULL || *str == '\0') {
-        return 0;
-    }
-    while (*str) {
-        if (!isdigit(*str)) {
-            return 0;
-        }
-        str++;
-    }
-    return 1;
-}
-
+static void     convert_token_to_uint(char* token, Uint32* result);
+static void     convert_token_to_uint64(char* token, Uint64* result);
+static void     print_usage_information(SDL_bool show_all);
+static SDL_bool is_numeric(const char* str);
 
 void parse_command(char* input, core_t* core)
 {
@@ -321,66 +303,68 @@ void parse_command(char* input, core_t* core)
         Uint32 sdo_data_length = 0;
         Uint32 sdo_data = 0;
         sdo_type_t sdo_type = EXPEDITED_SDO_WRITE;
-        char buffer[256] = { 0 };  // Adjust buffer size as needed
 
-        // Parse node_id
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (token == NULL) {
+        if (token == NULL)
+        {
             print_usage_information(SDL_FALSE);
             return;
         }
         convert_token_to_uint(token, &node_id);
 
-        // Parse sdo_index
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (token == NULL) {
+        if (token == NULL)
+        {
             print_usage_information(SDL_FALSE);
             return;
         }
         convert_token_to_uint(token, &sdo_index);
 
-        // Parse sub_index
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (token == NULL) {
+        if (token == NULL)
+        {
             print_usage_information(SDL_FALSE);
             return;
         }
         convert_token_to_uint(token, &sub_index);
 
-        // Check if there's sdo_data_length
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (token != NULL) {
-            // Check if it's a numeric value
-            if (is_numeric(token)) {
+        if (token != NULL)
+        {
+            char buffer[256] = { 0 };
+
+            if (is_numeric(token))
+            {
                 convert_token_to_uint(token, &sdo_data_length);
 
-                // Check if there's sdo_data
                 token = SDL_strtokr(input_savptr, delim, &input_savptr);
-                if (token != NULL) {
+                if (token != NULL)
+                {
                     convert_token_to_uint(token, &sdo_data);
                 }
 
                 SDL_memcpy(buffer, &sdo_data, sizeof(Uint32));
             }
-            else {
+            else
+            {
                 size_t len;
-                // It should be a quoted string
+
                 SDL_strlcpy(buffer, token, sizeof(buffer));
-                len  = SDL_strlen(buffer);
 
+                len      = SDL_strlen(buffer);
                 sdo_type = NORMAL_SDO_WRITE;
+                token     = SDL_strtokr(NULL, delim, &input_savptr);
 
-                // Concatenate subsequent tokens until the end
-                token = SDL_strtokr(NULL, delim, &input_savptr);
-                while (token != NULL) {
+                while (token != NULL) 
+                {
                     SDL_strlcat(buffer, " ", sizeof(buffer));
                     SDL_strlcat(buffer, token, sizeof(buffer));
                     len = SDL_strlen(buffer);
                     token = SDL_strtokr(NULL, delim, &input_savptr);
                 }
 
-                // Remove quotes if present
-                if (buffer[0] == '"' && buffer[len - 1] == '"') {
+                if (buffer[0] == '"' && buffer[len - 1] == '"')
+                {
                     buffer[len - 1] = '\0';
                     SDL_memmove(buffer, buffer + 1, len - 1);
                 }
@@ -388,11 +372,12 @@ void parse_command(char* input, core_t* core)
                 sdo_data_length = SDL_strlen(buffer);
             }
 
-            // Call sdo_write based on whether sdo_data_length is valid
-            if (sdo_data_length > 0) {
+            if (sdo_data_length > 0)
+            {
                 sdo_write(&sdo_response, NORMAL_OUTPUT, sdo_type, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
             }
-            else {
+            else
+            {
                 print_usage_information(SDL_FALSE);
                 return;
             }
@@ -401,9 +386,7 @@ void parse_command(char* input, core_t* core)
             print_usage_information(SDL_FALSE);
             return;
         }
-        }
-
-
+    }
     else if (0 == SDL_strncmp(token, "s", 1))
     {
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
@@ -476,13 +459,21 @@ static void print_usage_information(SDL_bool show_all)
     table_print_footer(&table);
 }
 
-static void strip_quotes(char* buffer)
+static SDL_bool is_numeric(const char* str)
 {
-    size_t length = SDL_strlen(buffer);
-
-    if (length > 1 && (buffer[0] == '"') && (buffer[length - 1] == '"'))
+    if ((NULL == str) || ('\0' == *str))
     {
-        SDL_memmove(buffer, buffer + 1, length - 2);
-        buffer[length - 2] = '\0';
+        return SDL_FALSE;
     }
+
+    while (*str)
+    {
+        if (!isdigit(*str))
+        {
+            return SDL_FALSE;
+        }
+        str += 1;
+    }
+
+    return SDL_TRUE;
 }
