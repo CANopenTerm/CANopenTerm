@@ -64,6 +64,20 @@ Thank you for your support!
 
 [![Donate](https://canopenterm.de/media/de-pp-logo-200px.png)](https://www.paypal.com/donate/?hosted_button_id=9K6YZYKPNUN9Q "Donate")
 
-## Media
+## Watch it in Action
+
+Experience the power of CANopenTerm firsthand with a live demonstration.
+Watch the tool seamlessly interact with CANopen networks, showcasing its
+capabilities in real-time.  From reading and writing SDOs to sending NMT
+messages and automating tasks with custom scripts, this demonstration will
+give you a glimpse of how CANopenTerm can simplify your workflow and enhance
+your R&D processes.
 
 [![CANopenTerm](https://canopenterm.de/media/CANopenTerm.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/CANopenTerm.gif?raw=true "CANopenTerm")
+
+## Try It Yourself
+
+Ready to see what CANopenTerm can do for you?  Download it today and
+explore its full potential. Whether you're an R&D professional or an
+application engineer, CANopenTerm is designed to meet your needs and help
+you achieve your goals.
