@@ -6,67 +6,64 @@
 [![CMake](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/cmake.yml/badge.svg)](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml)
 [![Microsoft C++ Code Analysis](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml)
 
-## Description
+## Discover CANopenTerm
 
-Do you work in an R&D environment and are you responsible for
-developing or testing CANopen nodes?  Are you an application
-engineer looking for a simple tool to communicate easily and
-efficiently on a CANopen network?
+**Are you an R&D professional or application engineer working
+with CANopen networks? Do you need a robust, easy-to-use tool
+for developing or testing CANopen nodes?**
 
-Then you are in the right place!
+Look no further!
 
-CANopenTerm is a versatile yet easy-to-use software tool for
-analysing and testing CANopen nodes using an interactive
-terminal.  addition to reading and writing
-**Service Data Objects** (**SDO**) and sending
-**Network Management Commands** (**NMT**), it is also possible
-to simulate asynchronous **Process Data Objects** (**PDO**).
+CANopenTerm is your go-to software for analyzing and testing
+CANopen nodes with ease.  Empower your R&D with CANopenTerm,
+the interactive terminal tool that simplifies communication
+on a CANopen network, allowing you to:
 
-Complex, recurring tasks can be automated using scripts
-written in [Lua 5.4](https://www.lua.org/manual/5.4/) and a
-[custom API](https://canopenterm.de/lua-api).
+- **Read and Write SDOs**  
+  Easily manage Service Data Objects with a user-friendly
+  interface and built-in object dictionary.
 
-In addition, CANopenTerm is completely free and has been
-released under the terms of a
-[permissive open source licence](https://github.com/CANopenTerm/CANopenTerm/blob/main/LICENSE.md).
+- **Send NMT Messages**  
+  Control network management with commands to one or all nodes.
 
-## Features
+- **Simulate PDOs**  
+  Effortlessly add asynchronous Process Data Objects to mimic
+  network traffic.
 
-- Service Data Objects (**SDO**)  
-  Write to nodes using expedited and segmented SDOs in a in a
-  user-friendly way.  
-  Built-in object dictionary.
+## Key Features:
 
- - Network Management (**NMT**)  
-   Send network management (**NMT**) messages to one or all
-   nodes.
+- **Lua 5.4 Interpreter**  
+  Write scripts to automate tasks and leverage a custom API with
+  a raw CAN interface.
 
-- Process Data Objects (**PDO**)  
-  To simulate periodic traffic on the network, asynchronous PDOs
-  can be easily added.
-
-- Lua 5.4 Interpreter  
-  Automate your workflow by writing Scripts in
-  [Lua 5.4](https://www.lua.org/manual/5.4/).  
-  [Custom API](https://canopenterm.de/lua-api) including a raw CAN interface.
-
-- Highly portable and cross-platform  
-  CANopenTerm is written entirely in ANSI C and has very few dependencies such
-  as [SDL2](https://github.com/libsdl-org/SDL/tree/SDL2) and
-  [Lua 5.4](https://www.lua.org/about.html).  
+- **Cross-Platform Compatibility**  
+  Written in ANSI C, CANopenTerm is highly portable with minimal
+  dependencies ([SDL2](https://github.com/libsdl-org/SDL/tree/SDL2),
+  [Lua 5.4](https://www.lua.org/about.html)). It supports
   [SocketCAN](https://www.kernel.org/doc/html/latest/networking/can.html)
-  support on Linux.  
-  [PEAK CAN](https://www.peak-system.com/) interface support
-  on Windows.  
+  on Linux and [PEAK CAN](https://www.peak-system.com/) on Windows.
 
-## Support
+- **Open Source and Free**  
+  Released under a permissive open-source license, CANopenTerm is
+  free for all to use.
 
-CANopenTerm is a free and open source project from which I do not make
-any money.  Do you still want to support the project? Then please
-consider making a small donation, which would be greatly appreciated!
+## Why Your Support Matters
+
+**CANopenTerm** is developed to provide a powerful tool for professionals
+at no cost.  However, maintaining and improving such a project requires
+resources.  Your donations can make a significant difference, enabling
+continued development and support.
+
+**Join Us in Advancing CANopen Development!**
+
+Your contribution, no matter how small, will be greatly appreciated and
+will help keep CANopenTerm thriving. Together, we can ensure this essential
+tool remains available and continues to evolve.
+
+Thank you for your support!
 
 [![Donate](https://canopenterm.de/media/de-pp-logo-200px.png)](https://www.paypal.com/donate/?hosted_button_id=9K6YZYKPNUN9Q "Donate")
 
-## Screenshot
+## Screenshots
 
 [![CANopenTerm screenshot](https://canopenterm.de/media/screenshot.png)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/screenshot.png?raw=true "CANopenTerm screenshot")
