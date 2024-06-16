@@ -64,6 +64,6 @@ Thank you for your support!
 
 [![Donate](https://canopenterm.de/media/de-pp-logo-200px.png)](https://www.paypal.com/donate/?hosted_button_id=9K6YZYKPNUN9Q "Donate")
 
-## Screenshots
+## Media
 
-[![CANopenTerm screenshot](https://canopenterm.de/media/screenshot.png)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/screenshot.png?raw=true "CANopenTerm screenshot")
+[![CANopenTerm](https://canopenterm.de/media/CANopenTerm.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/CANopenTerm.gif?raw=true "CANopenTerm")
