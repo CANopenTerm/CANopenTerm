@@ -174,7 +174,7 @@ dict_lookup (index, sub_index)
 can_read ()
 ```
 
-**Returns** id, length and data (as string), data is nil on failure.
+**Returns**: id, length and data (as string), data is nil on failure.
 
 ```lua
 can_write (can_id, data_length, [data_d0_d3], [data_d4_d7], [show_output], [comment])
@@ -235,7 +235,7 @@ print_heading (heading)
 In addition to the integrated API, there are also a couple of helper functions that can be imported:
 
 ```lua
-local canopen = require "canopen"
+local canopen = require "lua/canopen"
 
 local node_list, total_devices = canopen.find_devices(timeout_ms)
 local node_id = canopen.get_id_by_name("Device name")
