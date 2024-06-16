@@ -21,6 +21,8 @@
 static Uint32      sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
 static const char* lookup_abort_code(Uint32 abort_code);
 static void        print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment, disp_mode_t disp_mode);
+void               print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_normal_sdo, const char* comment);
+void               print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, disp_mode_t disp_mode, const char* comment);
 
 Uint32 sdo_read(can_message_t* sdo_response,disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
 {
@@ -556,215 +558,13 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
         }
     }
 
-    switch (disp_mode)
+    if (SDO_READ == sdo_type)
     {
-        case NORMAL_OUTPUT:
-        {
-            const  char*  description = dict_lookup(index, sub_index);
-            const  char*  str_read    = "read";
-            const  char*  str_written = "written";
-            const  char** str_action  = &str_read;
-            Uint32        output_data = 0;
-
-            switch (command_code)
-            {
-                case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
-                case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
-                    str_action = &str_read;
-                    break;
-                case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
-                case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
-                case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
-                case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
-                    output_data = (Uint32)sdo_response->data[4];
-                    str_action = &str_read;
-                    break;
-                case UPLOAD_SEGMENT_REQUEST_1:
-                case UPLOAD_SEGMENT_REQUEST_2:
-                case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
-                case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
-                case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
-                case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
-                    output_data = u32_value;
-                    str_action = &str_written;
-                    break;
-            }
-
-            if (NULL != description)
-            {
-                c_log(LOG_INFO, "%s", description);
-            }
-
-            if ((SDO_READ == sdo_type) || (EXPEDITED_SDO_WRITE == sdo_type))
-            {
-                switch (command_code)
-                {
-                    case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
-                    case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
-                    case UPLOAD_SEGMENT_REQUEST_1:
-                    case UPLOAD_SEGMENT_REQUEST_2:
-                        sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
-                        c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
-                            index,
-                            sub_index,
-                            sdo_response->length,
-                            *str_action,
-                            (char*)sdo_response->data);
-                        break;
-                    default:
-                        c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %u (0x%x)",
-                            index,
-                            sub_index,
-                            sdo_response->length,
-                            *str_action,
-                            output_data,
-                            output_data);
-                        break;
-                }
-            }
-            else if (NORMAL_SDO_WRITE == sdo_type)
-            {
-                char* data_str = (char*)data;
-
-                sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
-                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) %s: %s",
-                    index,
-                    sub_index,
-                    length,
-                    *str_action,
-                    data_str);
-            }
-            break;
-        }
-        case SCRIPT_OUTPUT:
-        {
-            int           i;
-            char          buffer[34]  = { 0 };
-            const  char*  str_read    = "Read    ";
-            const  char*  str_written = "Write   ";
-            const  char** str_action  = &str_read;
-            Uint32        output_data = 0;
-            color_t       color       = DARK_YELLOW;
-
-            switch (command_code)
-            {
-                case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
-                case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
-                    str_action = &str_read;
-                    break;
-                case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
-                case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
-                case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
-                case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
-                    output_data = (Uint32)sdo_response->data[4];
-                    str_action = &str_read;
-                    break;
-                case UPLOAD_SEGMENT_REQUEST_1:
-                case UPLOAD_SEGMENT_REQUEST_2:
-                case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
-                case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
-                case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
-                case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
-                    output_data = u32_value;
-                    str_action  = &str_written;
-                    color       = LIGHT_BLUE;
-                    break;
-            }
-
-            if (NULL == comment)
-            {
-                comment = dict_lookup(index, sub_index);
-            }
-
-            if (NULL == comment)
-            {
-                comment = "-";
-            }
-
-            SDL_strlcpy(buffer, comment, 33);
-            for (i = SDL_strlen(buffer); i < 33; ++i)
-            {
-                buffer[i] = ' ';
-            }
-
-            switch (command_code)
-            {
-                case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
-                case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
-                    sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
-                    break;
-                default:
-                    break;
-            }
-
-            c_printf(color, "%s", *str_action);
-            c_printf(DEFAULT_COLOR, " 0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, length);
-            c_printf(LIGHT_GREEN, "SUCC    ");
-            c_printf(DARK_MAGENTA, "%s ", buffer);
-
-            if ((SDO_READ == sdo_type) || (EXPEDITED_SDO_WRITE == sdo_type))
-            {
-                switch (command_code)
-                {
-                    case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
-                    case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
-                        c_printf(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
-                        break;
-                    case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
-                    case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
-                        c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
-                        break;
-                    case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
-                    case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
-                        c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
-                        break;
-                    case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
-                    case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
-                        c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
-                        break;
-                    case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
-                    case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
-                        c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
-                        break;
-                    case UPLOAD_SEGMENT_REQUEST_1:
-                    case UPLOAD_SEGMENT_REQUEST_2:
-                    {
-                        switch (length)
-                        {
-                            case 4:
-                                c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", output_data, output_data);
-                                break;
-                            case 3:
-                                c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", output_data, output_data);
-                                break;
-                            case 2:
-                                c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", output_data, output_data);
-                                break;
-                            case 1:
-                                c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", output_data, output_data);
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-            }
-            else if (NORMAL_SDO_WRITE == sdo_type)
-            {
-                char* data_str = (char*)data;
-                data_str[SDL_strlen(data_str) - 1] = '\0'; /* Strip possible newline. */
-                c_printf(DEFAULT_COLOR, "%s", data_str);
-            }
-
-            puts("");
-            break;
-        }
-        default:
-        case NO_OUTPUT:
-            break;
+        print_read_result(node_id, index, sub_index, sdo_response, disp_mode, is_normal_sdo, comment);
+    }
+    else
+    {
+        print_write_result(sdo_type, node_id, index, sub_index, sdo_response->length, data, disp_mode, comment);
     }
 
     return command_code;
@@ -914,6 +714,210 @@ static void print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, 
             break;
         }
         default:
+        case NO_OUTPUT:
+            break;
+    }
+}
+
+void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_normal_sdo, const char* comment)
+{
+    Uint32 u32_value = (Uint32)sdo_response->data[4];
+
+    switch (disp_mode)
+    {
+        case NORMAL_OUTPUT:
+        {
+            const char* description = dict_lookup(index, sub_index);
+
+            if (NULL != description)
+            {
+                c_log(LOG_INFO, "%s", description);
+            }
+
+            if (SDL_TRUE == is_normal_sdo)
+            {
+                sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %s",
+                    index,
+                    sub_index,
+                    sdo_response->length,
+                    (char*)sdo_response->data);
+            }
+            else
+            {
+                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %u (0x%x)",
+                    index,
+                    sub_index,
+                    sdo_response->length,
+                    u32_value,
+                    u32_value);
+            }
+            break;
+        }
+        case SCRIPT_OUTPUT:
+        {
+            int  i;
+            char buffer[34] = { 0 };
+
+            sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+
+            if (NULL == comment)
+            {
+                comment = dict_lookup(index, sub_index);
+            }
+
+            if (NULL == comment)
+            {
+                comment = "-";
+            }
+
+            SDL_strlcpy(buffer, comment, 33);
+            for (i = SDL_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
+
+            c_printf(DARK_YELLOW, "Read     ");
+            c_printf(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, sdo_response->length);
+            c_printf(LIGHT_GREEN, "SUCC    ");
+            c_printf(DARK_MAGENTA, "%s ", buffer);
+
+            if (SDL_FALSE == is_normal_sdo)
+            {
+                switch (sdo_response->length)
+                {
+                    case 4:
+                        c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", u32_value, u32_value);
+                        break;
+                    case 3:
+                        c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", u32_value, u32_value);
+                        break;
+                    case 2:
+                        c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", u32_value, u32_value);
+                        break;
+                    case 1:
+                        c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", u32_value, u32_value);
+                        break;
+                }
+            }
+            else
+            {
+                c_printf(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
+            }
+            puts("");
+            break;
+        }
+        default:
+        case NO_OUTPUT:
+            break;
+    }
+}
+
+void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, disp_mode_t disp_mode, const char* comment)
+{
+    Uint32  u32_value    = 0;
+    Uint32* u32_data_ptr = (Uint32*)data;
+    char*   data_str     = (char*)data;
+
+    if (NULL != u32_data_ptr)
+    {
+        u32_value = *u32_data_ptr;
+    }
+
+    if (NULL == data_str)
+    {
+        data_str = "";
+    }
+
+    switch (disp_mode)
+    {
+        case NORMAL_OUTPUT:
+        {
+            const char* description = dict_lookup(index, sub_index);
+        
+            if (NULL != description)
+            {
+                c_log(LOG_INFO, "%s", description);
+            }
+
+            if (EXPEDITED_SDO_WRITE == sdo_type)
+            {
+                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) written: %u (0x%x)",
+                    index,
+                    sub_index,
+                    length,
+                    u32_value,
+                    u32_value);
+            }
+            else if (NORMAL_SDO_WRITE)
+            {
+                data_str[CAN_MAX_DATA_LENGTH] = '\0';
+    
+                c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) written: %s",
+                    index,
+                    sub_index,
+                    length,
+                    data_str);
+            }
+            else
+            {
+                return;
+            }
+            break;
+        }
+        case SCRIPT_OUTPUT:
+        {
+            int  i;
+            char buffer[34] = { 0 }; 
+            
+            if (NULL == comment)
+            {
+                comment = dict_lookup(index, sub_index);
+            }
+
+            if (NULL == comment)
+            {
+                comment = "-";
+            }
+
+            SDL_strlcpy(buffer, comment, 33);
+            for (i = SDL_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
+
+            c_printf(DARK_BLUE, "Write    ");
+            c_printf(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, length);
+            c_printf(LIGHT_GREEN, "SUCC    ");
+            c_printf(DARK_MAGENTA, "%s ", buffer);
+
+            if (EXPEDITED_SDO_WRITE == sdo_type)
+            {
+                switch (length)
+                {
+                    case 4:
+                        c_printf(DEFAULT_COLOR, "0x%08X %u (U32)", u32_value, u32_value);
+                        break;
+                    case 3:
+                        c_printf(DEFAULT_COLOR, "0x%06X %u (U24)", u32_value, u32_value);
+                        break;
+                    case 2:
+                        c_printf(DEFAULT_COLOR, "0x%04X %u (U16)", u32_value, u32_value);
+                        break;
+                    case 1:
+                        c_printf(DEFAULT_COLOR, "0x%02X %u (U8)", u32_value, u32_value);
+                        break;
+                }
+            }
+            else
+            {
+                data_str[SDL_strlen(data_str) - 1] = '\0'; /* Strip possible newline. */
+                c_printf(DEFAULT_COLOR, "%s", data_str);
+            }
+            puts("");
+
+            break;
+        }
         case NO_OUTPUT:
             break;
     }
