@@ -15,7 +15,7 @@ while not key_is_hit() do
   local id, length, data = can_read()
 
   if data then
-    local current_time_ms = (os.time() * 1000 + os.clock() * 1000) - start_time_ms
+    local current_time_ms = math.floor( (os.time() * 1000 + os.clock() * 1000) - start_time_ms )
 
     io.write(string.format("%06d  %03X     %1d       ", current_time_ms, id, length))
 
