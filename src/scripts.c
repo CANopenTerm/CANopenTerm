@@ -44,6 +44,7 @@ static void reset_terminal_mode(struct termios* orig_termios);
 #include "scripts.h"
 
 static SDL_bool has_lua_extension(const char* filename);
+static size_t   safe_strcpy(char* dest, const char* src, size_t size);
 static void     strip_extension(char* filename);
 static SDL_bool script_already_listed(char** listed_scripts, int count, const char* script_name);
 
@@ -104,7 +105,7 @@ void list_scripts(void)
                 if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
                 {
                     char script_name[256];
-                    strncpy(script_name, ent->d_name, sizeof(script_name) - 1);
+                    safe_strcpy(script_name, ent->d_name, sizeof(script_name));
                     script_name[sizeof(script_name) - 1] = '\0';
                     strip_extension(script_name);
 
@@ -128,7 +129,7 @@ void list_scripts(void)
             if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
             {
                 char script_name[256];
-                strncpy(script_name, ent->d_name, sizeof(script_name) - 1);
+                safe_strcpy(script_name, ent->d_name, sizeof(script_name));
                 script_name[sizeof(script_name) - 1] = '\0';
                 strip_extension(script_name);
 
@@ -142,8 +143,6 @@ void list_scripts(void)
         closedir(dir);
     }
 #endif
-
-    // Free allocated memory
 
     for (i = 0; i < listed_count; i++)
     {
@@ -338,6 +337,20 @@ static SDL_bool has_lua_extension(const char* filename)
     {
         return SDL_FALSE;
     }
+}
+
+static size_t safe_strcpy(char* dest, const char* src, size_t size)
+{
+    size_t src_len = SDL_strlen(src);
+
+    if (size > 0)
+    {
+        size_t copy_len = (src_len >= size) ? (size - 1) : src_len;
+        SDL_memcpy(dest, src, copy_len);
+        dest[copy_len] = '\0';
+    }
+
+    return src_len;
 }
 
 static void strip_extension(char* filename)
