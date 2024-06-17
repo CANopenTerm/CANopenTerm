@@ -14,7 +14,7 @@ python do_display_banner() {
 addtask display_banner before do_build
 
 SRC_URI = "git://github.com/CANopenTerm/CANopenTerm.git;protocol=https;branch=main"
-SRCREV  = "d8bf08823407422c52c2a4c2192cc7135483fd9d"
+SRCREV  = "f173512ebb7a0bf3b76bd87762179d02ae8fe58c"
 
 S = "${WORKDIR}/git"
 
@@ -41,13 +41,14 @@ do_compile() {
 do_install () {
     install -d ${D}${bindir}
     install -d ${D}/usr/share/CANopenTerm/scripts
-    install -d ${D}/usr/local/share/lua/5.4
+    install -d ${D}/usr/local/share/lua/5.4/lua
     install -m 0644 ${S}/export/scripts/* ${D}/usr/share/CANopenTerm/scripts
-    install -m 0644 ${S}/export/lua/* ${D}/usr/local/share/lua/5.4
+    install -m 0644 ${S}/export/lua/* ${D}/usr/local/share/lua/5.4/lua
     install -m 0755 ${S}/export/CANopenTerm ${D}${bindir}
 }
 
 DEPENDS = "libsdl2 lua libsocketcan pkgconfig"
-FILES:${PN} = "/usr/bin/CANopenTerm /usr/share/CANopenTerm"
+
+FILES:${PN} = "/usr/bin/CANopenTerm /usr/share/CANopenTerm /usr/local/share/lua/5.4/lua"
 
 inherit pkgconfig
