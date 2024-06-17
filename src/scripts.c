@@ -22,17 +22,16 @@
 #include <stdlib.h>
 
 static const char* script_dirs[] = {
-        "./scripts",
-        "../local/share/CANopenTerm/scripts",
-        "../share/CANopenTerm/scripts",
-        "/usr/local/share/CANopenTerm/scripts",
-        "/usr/share/CANopenTerm/scripts"
+    "./scripts",
+    "../local/share/CANopenTerm/scripts",
+    "../share/CANopenTerm/scripts",
+    "/usr/local/share/CANopenTerm/scripts",
+    "/usr/share/CANopenTerm/scripts"
 };
 
 static void set_nonblocking(int fd, int nonblocking);
 static void set_terminal_raw_mode(struct termios* orig_termios);
 static void reset_terminal_mode(struct termios* orig_termios);
-
 #endif
 
 #include "SDL.h"
@@ -43,6 +42,10 @@ static void reset_terminal_mode(struct termios* orig_termios);
 #include "core.h"
 #include "printf.h"
 #include "scripts.h"
+
+static SDL_bool has_lua_extension(const char* filename);
+static void     strip_extension(char* filename);
+static SDL_bool script_already_listed(char** listed_scripts, int count, const char* script_name);
 
 void scripts_init(core_t* core)
 {
@@ -81,12 +84,15 @@ void scripts_deinit(core_t* core)
     }
 }
 
+
 void list_scripts(void)
 {
-    DIR* dir;
+    DIR*  dir;
+    char* listed_scripts[256]; // Array to keep track of listed scripts
+    int   listed_count = 0;
+    int   i;
 
 #ifdef __linux__
-    int i;
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
         dir = opendir(script_dirs[i]);
@@ -95,17 +101,20 @@ void list_scripts(void)
             struct dirent* ent;
             while (NULL != (ent = readdir(dir)))
             {
-                switch (ent->d_type)
+                if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
                 {
-                case DT_REG:
-                    printf("%s/%s\n", script_dirs[i], ent->d_name);
-                    break;
-                case DT_DIR:
-                case DT_LNK:
-                default:
-                    break;
+                    char script_name[256];
+                    strncpy(script_name, ent->d_name, sizeof(script_name) - 1);
+                    script_name[sizeof(script_name) - 1] = '\0';
+                    strip_extension(script_name);
+
+                    if (!script_already_listed(listed_scripts, listed_count, script_name))
+                    {
+                        listed_scripts[listed_count++] = SDL_strdup(script_name);
+                        printf("%s\n", script_name);
+                    }
                 }
-            }
+}
             closedir(dir);
         }
     }
@@ -116,20 +125,30 @@ void list_scripts(void)
         struct dirent* ent;
         while (NULL != (ent = readdir(dir)))
         {
-            switch (ent->d_type)
+            if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
             {
-            case DT_REG:
-                puts(ent->d_name);
-                break;
-            case DT_DIR:
-            case DT_LNK:
-            default:
-                break;
+                char script_name[256];
+                strncpy(script_name, ent->d_name, sizeof(script_name) - 1);
+                script_name[sizeof(script_name) - 1] = '\0';
+                strip_extension(script_name);
+
+                if (SDL_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
+                {
+                    listed_scripts[listed_count++] = strdup(script_name);
+                    printf("%s\n", script_name);
+                }
             }
         }
         closedir(dir);
     }
 #endif
+
+    // Free allocated memory
+
+    for (i = 0; i < listed_count; i++)
+    {
+        free(listed_scripts[i]);
+    }
 }
 
 void run_script(const char* name, core_t* core)
@@ -305,4 +324,43 @@ lua_print_heading(lua_State* L)
     c_printf(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 
     return 0;
+}
+
+static SDL_bool has_lua_extension(const char* filename)
+{
+    const char* dot = SDL_strrchr(filename, '.');
+
+    if (0 == (dot && strcmp(dot, ".lua")))
+    {
+        return SDL_TRUE;
+    }
+    else
+    {
+        return SDL_FALSE;
+    }
+}
+
+static void strip_extension(char* filename)
+{
+    char* dot = SDL_strrchr(filename, '.');
+
+    if (dot && dot != filename)
+    {
+        *dot = '\0';
+    }
+}
+
+static SDL_bool script_already_listed(char** listed_scripts, int count, const char* script_name)
+{
+    int i;
+
+    for (i = 0; i < count; i++)
+    {
+        if (0 == SDL_strcmp(listed_scripts[i], script_name))
+        {
+            return SDL_TRUE;
+        }
+    }
+
+    return SDL_FALSE;
 }
