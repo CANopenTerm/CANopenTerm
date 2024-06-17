@@ -87,7 +87,7 @@ void scripts_deinit(core_t* core)
 void list_scripts(void)
 {
     DIR*  dir;
-    char* listed_scripts[256]; // Array to keep track of listed scripts
+    char* listed_scripts[256];
     int   listed_count = 0;
     int   i;
 
@@ -200,7 +200,6 @@ void run_script(const char* name, core_t* core)
         c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }
 #else
-    char script_path[64] = { 0 };
 
     SDL_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
     if (LUA_OK == luaL_dofile(core->L, script_path))
