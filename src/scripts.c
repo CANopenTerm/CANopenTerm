@@ -23,10 +23,8 @@
 
 static const char* script_dirs[] = {
     "./scripts",
-    "../local/share/CANopenTerm/scripts",
-    "../share/CANopenTerm/scripts",
-    "/usr/local/share/CANopenTerm/scripts",
     "/usr/share/CANopenTerm/scripts"
+    "../share/CANopenTerm/scripts",
 };
 
 static void set_nonblocking(int fd, int nonblocking);
@@ -153,6 +151,13 @@ void list_scripts(void)
 void run_script(const char* name, core_t* core)
 {
     SDL_bool has_extension = SDL_strchr(name, '.') != NULL;
+#ifdef __linux__
+    int      i;
+    char     script_path[256] = { 0 };
+    SDL_bool script_found = SDL_FALSE;
+#else
+    char     script_path[64] = { 0 };
+#endif
 
     if (NULL == core)
     {
@@ -160,9 +165,6 @@ void run_script(const char* name, core_t* core)
     }
 
 #ifdef __linux__
-    int  i;
-    char script_path[256] = { 0 };
-
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
         SDL_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
@@ -182,8 +184,20 @@ void run_script(const char* name, core_t* core)
                     return;
                 }
             }
-            c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
+            if (SDL_FALSE == script_found && luaL_loadfile(core->L, script_path) != LUA_ERRFILE)
+            {
+                script_found = SDL_TRUE;
+            }
         }
+    }
+
+    if (SDL_FALSE == script_found)
+    {
+        c_log(LOG_WARNING, "Script '%s' not found in any directory", name);
+    }
+    else
+    {
+        c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }
 #else
     char script_path[64] = { 0 };
@@ -208,6 +222,7 @@ void run_script(const char* name, core_t* core)
     }
 #endif
 }
+
 
 int lua_delay_ms(lua_State * L)
 {
