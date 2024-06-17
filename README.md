@@ -72,3 +72,5 @@ The documentation can be found [here](https://canopenterm.de).
 
 This project is licensed under the "The MIT License".  See the file
 [LICENSE.md](LICENSE.md) for details.
+
+CANopen® is a trademark of the CAN in Automation User's Group

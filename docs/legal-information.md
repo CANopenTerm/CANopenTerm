@@ -16,6 +16,8 @@ oder generell gewerbsmäßig ausgerichteter Tätigkeit ist untersagt.
 Alle Inhalte dieser Seite unterliegen, sofern nicht anders angegeben,
 dem Urheberrecht.  Alle Rechte sind dem Autor vorbehalten.
 
+CANopen® is a trademark of the CAN in Automation User's Group
+
 ## Datenschutzerklärung
 
 ### Hosting
