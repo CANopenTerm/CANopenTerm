@@ -67,7 +67,7 @@ status_t core_init(core_t **core)
     return COT_OK;
 }
 
-status_t core_update(core_t *core)
+status_t core_update(core_t* core)
 {
     char command[64] = { 0 };
 
@@ -80,6 +80,13 @@ status_t core_update(core_t *core)
     if (NULL != fgets(command, 64, stdin))
     {
         parse_command(command, core);
+    }
+    else
+    {
+        if (0 != feof(stdin))
+        {
+            core->is_running = SDL_FALSE;
+        }
     }
 
     return COT_OK;
