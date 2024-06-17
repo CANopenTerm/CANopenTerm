@@ -24,7 +24,6 @@
 static const char* script_dirs[] = {
     "./scripts",
     "/usr/share/CANopenTerm/scripts",
-    "../share/CANopenTerm/scripts",
 };
 
 static void set_nonblocking(int fd, int nonblocking);
