@@ -23,7 +23,7 @@
 
 static const char* script_dirs[] = {
     "./scripts",
-    "/usr/share/CANopenTerm/scripts"
+    "/usr/share/CANopenTerm/scripts",
     "../share/CANopenTerm/scripts",
 };
 
