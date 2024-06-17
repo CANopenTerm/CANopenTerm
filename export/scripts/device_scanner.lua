@@ -22,10 +22,6 @@ for _, node_id in ipairs(available_nodes) do
   sdo_read(node_id, 0x1000, 0x00, true)
   sdo_read(node_id, 0x1009, 0x00, true)
   sdo_read(node_id, 0x100A, 0x00, true)
-  sdo_read(node_id, 0x1018, 0x01, true)
-  sdo_read(node_id, 0x1018, 0x02, true)
-  sdo_read(node_id, 0x1018, 0x03, true)
-  sdo_read(node_id, 0x1018, 0x04, true)  
 end
 
 print("")
