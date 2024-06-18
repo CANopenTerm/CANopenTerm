@@ -24,6 +24,7 @@
 #include <linux/can/raw.h>
 #include <linux/sockios.h>
 #include <net/if.h>
+#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -113,17 +114,35 @@ Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
 
 Uint32 can_read(can_message_t* message)
 {
-    int index;
+    int    index;
 #ifdef __linux__
     struct can_frame frame;
-    int nbytes = read(can_socket, &frame, sizeof(frame));
+    struct msghdr msg;
+    struct iovec iov;
+    char   ctrlmsg[CMSG_SPACE(sizeof(struct timeval))];
+    struct cmsghdr* cmsg;
+    struct timeval* tv;
+    int    nbytes;
+
+    iov.iov_base = &frame;
+    iov.iov_len = sizeof(frame);
+
+    msg.msg_name = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = &ctrlmsg;
+    msg.msg_controllen = sizeof(ctrlmsg);
+    msg.msg_flags = 0;
+
+    nbytes = recvmsg(can_socket, &msg, 0);
 
     if (nbytes < 0)
     {
-        return -1;
+        return nbytes;
     }
 
-    message->id     = frame.can_id;
+    message->id = frame.can_id;
     message->length = frame.can_dlc;
 
     for (index = 0; index < 8; index += 1)
@@ -131,16 +150,31 @@ Uint32 can_read(can_message_t* message)
         message->data[index] = frame.data[index];
     }
 
+    for (cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL; cmsg = CMSG_NXTHDR(&msg, cmsg))
+    {
+        if (cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SO_TIMESTAMP)
+        {
+            tv = (struct timeval*)CMSG_DATA(cmsg);
+            message->timestamp_us = tv->tv_sec * 1000000ULL + tv->tv_usec;
+            break;
+        }
+    }
+
     return 0;
 #else
-    Uint32 can_status;
-    TPCANMsg pcan_message = { 0 };
+    Uint32         can_status;
+    TPCANMsg       pcan_message   = { 0 };
+    TPCANTimestamp pcan_timestamp = { 0 };
 
-    can_status = CAN_Read(PCAN_USBBUS1, &pcan_message, NULL);
+    can_status = CAN_Read(PCAN_USBBUS1, &pcan_message, &pcan_timestamp);
 
-    message->id     = pcan_message.ID;
-    message->length = pcan_message.LEN;
-
+    message->id           = pcan_message.ID;
+    message->length       = pcan_message.LEN;
+    message->timestamp_us =
+        pcan_timestamp.micros
+        + (1000ULL * pcan_timestamp.millis)
+        + (0x100000000ULL * 1000ULL * pcan_timestamp.millis_overflow);
+        
     for (index = 0; index < 8; index += 1)
     {
         message->data[index] = pcan_message.DATA[index];
@@ -253,7 +287,8 @@ int lua_can_read(lua_State* L)
         SDL_memcpy((void*)&buffer, &message.data, message.length);
 
         lua_pushlstring(L, (const char*)buffer, length);
-        return 3;
+        lua_pushinteger(L, message.timestamp_us);
+        return 4;
     }
     else
     {
@@ -357,6 +392,7 @@ static int can_monitor(void* core_pt)
 #ifdef __linux__
             struct sockaddr_can addr;
             struct ifreq ifr;
+            int    enable_timestamp = 1;
 
             can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
             if (can_socket < 0)
@@ -364,6 +400,8 @@ static int can_monitor(void* core_pt)
                 c_log(LOG_ERROR, "Error while opening socket");
                 return 1;
             }
+
+            setsockopt(can_socket, SOL_SOCKET, SO_TIMESTAMP, &enable_timestamp, sizeof(enable_timestamp));
 
             strcpy(ifr.ifr_name, core->can_interface);
             if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0)
