@@ -8,7 +8,7 @@ License: Public domain
 
 local initial_timestamp_us
 
-print("Time       CAN-ID  Length  Data")
+print("Time         CAN-ID  Length  Data")
 
 while not key_is_hit() do
   local id, length, data, timestamp_us = can_read()
