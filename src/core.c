@@ -25,7 +25,7 @@
 
 status_t core_init(core_t **core)
 {
-    *core = (core_t*)calloc(1, sizeof(struct core));
+    *core = (core_t*)SDL_calloc(1, sizeof(struct core));
     if (NULL == *core)
     {
         return COT_ERROR;
@@ -102,5 +102,5 @@ void core_deinit(core_t *core)
     can_quit(core);
     scripts_deinit(core);
     SDL_Quit();
-    free(core);
+    SDL_free(core);
 }

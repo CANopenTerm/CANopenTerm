@@ -1,6 +1,5 @@
---[[
+--[[ PCAN CAN TRC file recorder
 
-Title:   CAN trace
 Author:  Michael Fitzmayer
 License: Public domain
 

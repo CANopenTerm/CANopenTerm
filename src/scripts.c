@@ -18,7 +18,6 @@
 #ifdef __linux__
 #include <stdio.h>
 #include <dirent.h>
-#include <string.h>
 #include <stdlib.h>
 
 static const char* script_dirs[] = {
@@ -31,6 +30,7 @@ static void set_terminal_raw_mode(struct termios* orig_termios);
 static void reset_terminal_mode(struct termios* orig_termios);
 #endif
 
+#include <string.h>
 #include "SDL.h"
 #include "lua.h"
 #include "lualib.h"
@@ -39,7 +39,9 @@ static void reset_terminal_mode(struct termios* orig_termios);
 #include "core.h"
 #include "printf.h"
 #include "scripts.h"
+#include "table.h"
 
+static char*    get_script_description(const char* script_path);
 static SDL_bool has_lua_extension(const char* filename);
 static size_t   safe_strcpy(char* dest, const char* src, size_t size);
 static void     strip_extension(char* filename);
@@ -82,13 +84,62 @@ void scripts_deinit(core_t* core)
     }
 }
 
+static char* get_script_description(const char* script_path)
+{
+    static char description[256] = { 0 };
+    FILE*      file              = fopen(script_path, "r");
+
+    if (NULL == file)
+    {
+        return NULL;
+    }
+
+    if (fgets(description, sizeof(description), file) != NULL)
+    {
+        char* desc_ptr;
+
+        description[strcspn(description, "\r\n")] = '\0';
+
+        desc_ptr = description;
+
+        while ((*desc_ptr == ' ') || (*desc_ptr == '\t'))
+        {
+            desc_ptr++;
+        }
+
+        if (SDL_strncmp(desc_ptr, "--[[", 4) == 0)
+        {
+            SDL_memmove(desc_ptr, desc_ptr + 4, SDL_strlen(desc_ptr) - 3);
+        }
+        else if (SDL_strncmp(desc_ptr, "--", 2) == 0)
+        {
+            SDL_memmove(desc_ptr, desc_ptr + 2, SDL_strlen(desc_ptr) - 1);
+        }
+
+        while ((*desc_ptr == ' ') || (*desc_ptr == '\t'))
+        {
+            desc_ptr++;
+        }
+
+        fclose(file);
+        return SDL_strdup(desc_ptr);
+    }
+
+    fclose(file);
+    return NULL;
+}
 
 void list_scripts(void)
 {
-    DIR*  dir;
-    char* listed_scripts[256];
-    int   listed_count = 0;
-    int   i;
+    DIR*    dir;
+    char*   listed_scripts[256];
+    int     listed_count = 0;
+    int     i;
+    table_t table = { DARK_CYAN, DARK_WHITE, 3, 10, 40 };
+
+    table_print_header(&table);
+    table_print_row("No.", "Identifier", "Description", &table);
+    table_print_divider(&table);
 
 #ifdef __linux__
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
@@ -97,43 +148,82 @@ void list_scripts(void)
         if (NULL != dir)
         {
             struct dirent* ent;
-            while (NULL != (ent = readdir(dir)))
+
+            while ((ent = readdir(dir)) != NULL)
             {
                 if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
                 {
-                    char script_name[256];
+                    char script_name[256] = { 0 };
+
                     safe_strcpy(script_name, ent->d_name, sizeof(script_name));
                     script_name[sizeof(script_name) - 1] = '\0';
                     strip_extension(script_name);
 
-                    if (!script_already_listed(listed_scripts, listed_count, script_name))
+                    if (SDL_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                     {
+                        char  buf[4]           = { 0 };
+                        char* script_no        = SDL_itoa(listed_count, buf, 10);
+                        char  script_path[512] = { 0 };
+                        char* description;
+
                         listed_scripts[listed_count++] = SDL_strdup(script_name);
-                        printf("%s\n", script_name);
+
+                        SDL_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], ent->d_name);
+
+                        description = get_script_description(script_path);
+
+                        if (description != NULL)
+                        {
+                            table_print_row(script_no, script_name, description, &table);
+                            SDL_free(description);
+                        }
+                        else
+                        {
+                            table_print_row(script_no, script_name, "-", &table);
+                        }
                     }
                 }
-}
+            }
             closedir(dir);
         }
     }
 #else
     dir = opendir("./scripts");
-    if (NULL != dir)
+
+    if (dir != NULL)
     {
         struct dirent* ent;
-        while (NULL != (ent = readdir(dir)))
+        while ((ent = readdir(dir)) != NULL)
         {
             if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
             {
-                char script_name[256];
+                char script_name[256] = { 0 };
+
                 safe_strcpy(script_name, ent->d_name, sizeof(script_name));
                 script_name[sizeof(script_name) - 1] = '\0';
                 strip_extension(script_name);
 
                 if (SDL_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                 {
-                    listed_scripts[listed_count++] = strdup(script_name);
-                    printf("%s\n", script_name);
+                    char  buf[4]           = { 0 };
+                    char* script_no        = SDL_itoa(listed_count, buf, 10);
+                    char  script_path[512] = { 0 };
+                    char* description;
+
+                    listed_scripts[listed_count++] = SDL_strdup(script_name);
+
+                    snprintf(script_path, sizeof(script_path), "./scripts/%s", ent->d_name);
+
+                    description = get_script_description(script_path);
+                    if (description != NULL)
+                    {
+                        table_print_row(script_no, script_name, description, &table);
+                        SDL_free(description);
+                    }
+                    else
+                    {
+                        table_print_row(script_no, script_name, "-", &table);
+                    }
                 }
             }
         }
@@ -143,8 +233,10 @@ void list_scripts(void)
 
     for (i = 0; i < listed_count; i++)
     {
-        free(listed_scripts[i]);
+        SDL_free(listed_scripts[i]);
     }
+
+    table_print_footer(&table);
 }
 
 void run_script(const char* name, core_t* core)

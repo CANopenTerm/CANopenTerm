@@ -1,6 +1,5 @@
---[[
+--[[ PCAN CAN TRC file player
 
-Title:   CAN trace player
 Author:  Michael Fitzmayer
 License: Public domain
 
@@ -9,10 +8,21 @@ License: Public domain
 function list_trc_files()
     local files = {}
     local i = 1
-    for file in io.popen('dir /b /a-d *.trc'):lines() do
-        files[i] = file
-        i = i + 1
+    local command = 'dir /b /a-d *.trc 2>nul'
+
+    if os.getenv("OS") == "Windows_NT" then
+        for file in io.popen(command):lines() do
+            files[i] = file
+            i = i + 1
+        end
+    else
+        command = 'ls -1 *.trc 2>/dev/null'
+        for file in io.popen(command):lines() do
+            files[i] = file
+            i = i + 1
+        end
     end
+
     return files
 end
 

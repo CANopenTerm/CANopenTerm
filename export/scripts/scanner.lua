@@ -1,6 +1,5 @@
---[[
+--[[ CANopen node scanner
 
-Title:   Device scanner
 Author:  Michael Fitzmayer
 License: Public domain
 
