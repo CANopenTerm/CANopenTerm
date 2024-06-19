@@ -7,14 +7,14 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=10e84ea70e8c3a1fbc462f5424806474"
 
 python do_display_banner() {
-    bb.plain("CANopenTerm 0.6.0");
+    bb.plain("CANopenTerm 0.7.0");
     bb.plain("Copyright (c) 2024, Michael Fitzmayer");
 }
 
 addtask display_banner before do_build
 
 SRC_URI = "git://github.com/CANopenTerm/CANopenTerm.git;protocol=https;branch=main"
-SRCREV  = "c7106c973f633630a9f0bd66e929ed7c34bf15aa"
+SRCREV  = "b10da5c40befcef7eb539ddfdeff8160a35cd09d"
 
 S = "${WORKDIR}/git"
 
