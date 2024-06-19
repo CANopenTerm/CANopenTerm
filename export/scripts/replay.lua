@@ -162,11 +162,13 @@ else
         print(num_loops)
 
         for loop = 1, num_loops + 1 do
-            local trc_data = parse_pcan_trc(base_name)
+            local trc_data   = parse_pcan_trc(base_name)
             local start_time = os.clock()
+            local quit       = false
 
             for _, message in ipairs(trc_data) do
                 if key_is_hit() then
+                  quit = true
                   break
                 end
 
@@ -187,6 +189,9 @@ else
                     print("Invalid message format or nil value detected.")
                     print("message: ", message)
                 end
+            end
+            if quit == true then
+              break
             end
         end
     else
