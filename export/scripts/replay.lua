@@ -136,7 +136,7 @@ else
                     delay_ms(delay)
                 end
 
-                can_write(message.can_id, message.dlc, data_d0_d3, data_d4_d7)
+                can_write(tonumber(message.can_id, 16), message.dlc, data_d0_d3, data_d4_d7)
                 print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
                     format_float(message.time_offset), message.msg_type, message.can_id, message.dlc, message.data_bytes))
             else
