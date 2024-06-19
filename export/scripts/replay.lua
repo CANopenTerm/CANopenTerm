@@ -126,43 +126,69 @@ function round(x)
     return math.floor(x + 0.5)
 end
 
+function select_loop_count()
+    io.write("\nHow often should the playback be looped? (or 'q' to quit): ")
+    local choice = io.read()
+
+    if choice == 'q' then
+        return nil
+    else
+        choice = tonumber(choice)
+
+        if choice >= 0 then
+          return choice
+        else
+          print("Invalid number of loops. Please provide a non-negative integer.")
+          select_loop_count()
+        end
+    end
+end
+
 local files = list_trc_files()
 if #files == 0 then
     print("No .trc files found in the current directory.")
 else
-    local chosen_file = choose_file(files)
+    local num_loops   = select_loop_count()
+    local chosen_file = nil
+
+    if num_loops then
+      chosen_file = choose_file(files)
+    end
+
     if chosen_file then
         local base_name = chosen_file:match("[^/\\]+$") or chosen_file
 
         print("Chosen file: " .. base_name)
+        print(num_loops)
 
-        local trc_data = parse_pcan_trc(base_name)
-        local start_time = os.clock()
+        for loop = 1, num_loops + 1 do
+            local trc_data = parse_pcan_trc(base_name)
+            local start_time = os.clock()
 
-        for _, message in ipairs(trc_data) do
-            if key_is_hit() then
-              break
-            end
-
-            if message and message.time_offset and message.msg_type and message.can_id and message.dlc and message.data_bytes then
-                local current_time           = os.clock()
-                local elapsed_time           = (current_time - start_time) * 1000
-                local delay                  = math.floor(message.time_offset - elapsed_time)
-                local data_d0_d3, data_d4_d7 = convert_data_bytes(message.data_bytes)
-
-                if delay > 0 then
-                    delay_ms(delay)
+            for _, message in ipairs(trc_data) do
+                if key_is_hit() then
+                  break
                 end
 
-                can_write(tonumber(message.can_id, 16), message.dlc, data_d0_d3, data_d4_d7)
-                print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
-                    format_float(message.time_offset), message.msg_type, message.can_id, message.dlc, message.data_bytes))
-            else
-                print("Invalid message format or nil value detected.")
-                print("message: ", message)
+                if message and message.time_offset and message.msg_type and message.can_id and message.dlc and message.data_bytes then
+                    local current_time           = os.clock()
+                    local elapsed_time           = (current_time - start_time) * 1000
+                    local delay                  = math.floor(message.time_offset - elapsed_time)
+                    local data_d0_d3, data_d4_d7 = convert_data_bytes(message.data_bytes)
+
+                    if delay > 0 then
+                        delay_ms(delay)
+                    end
+
+                    can_write(tonumber(message.can_id, 16), message.dlc, data_d0_d3, data_d4_d7)
+                    print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
+                        format_float(message.time_offset), message.msg_type, message.can_id, message.dlc, message.data_bytes))
+                else
+                    print("Invalid message format or nil value detected.")
+                    print("message: ", message)
+                end
             end
         end
-
     else
         print("Exiting script.")
     end
