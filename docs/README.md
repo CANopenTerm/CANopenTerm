@@ -30,6 +30,12 @@ on a CANopen network, allowing you to:
   Effortlessly add asynchronous Process Data Objects to mimic
   network traffic.
 
+- **Automate your Workflow**  
+  Use Lua scripts to automate your workflow.  A variety of
+  scripts included, such as a
+  [PEAK CAN trace](https://www.peak-system.com/produktcd/Pdf/English/PEAK_CAN_TRC_File_Format.pdf)
+  record and playback script.
+
 ## Key Features
 
 - **Lua 5.4 Interpreter**  
