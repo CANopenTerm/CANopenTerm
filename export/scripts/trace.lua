@@ -8,15 +8,13 @@ License: Public domain
 
 local initial_timestamp_us
 local trace_filename
-local message_number = 1  -- Initialize message_number
+local message_number = 1
 
--- Function to generate a unique trace filename
 local function generate_trace_filename()
     local timestamp = os.date("%Y%m%d_%H%M%S")
     return string.format("trace_%s.trc", timestamp)
 end
 
--- Function to write the .trc file header
 local function write_trc_header(start_time)
     local header = string.format(";$FILEVERSION=1.1\n;$STARTTIME=%.6f\n;\n", start_time)
     header = header .. string.format(";   Start time: %s\n", os.date("%d/%m/%Y %H:%M:%S.0"))
@@ -35,7 +33,6 @@ local function write_trc_header(start_time)
     file:close()
 end
 
--- Function to write each CAN message to the .trc file
 local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, message_number)
     local file = assert(io.open(trace_filename, "a"))
 
@@ -52,10 +49,8 @@ local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, 
     file:close()
 end
 
--- Main program
 print("\nTime         CAN-ID  Length  Data")
 
--- Generate trace filename
 trace_filename = generate_trace_filename()
 
 while not key_is_hit() do
