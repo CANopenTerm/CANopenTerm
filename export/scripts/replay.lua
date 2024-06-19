@@ -71,10 +71,23 @@ function parse_pcan_trc(file_path)
         error("Could not open file: " .. file_path)
     end
 
-    local function parse_line(line)
-        local pattern = "^%s*%d+%)%s*([%d%.]+)%s+(%w+)%s+(%x+)%s+(%d)%s+(.+)$"
+    -- Read the first line to determine the file version
+    local first_line = file:read("*line")
+    local file_version = first_line:match("^;%$FILEVERSION=(%d%.%d)")
+
+    if not file_version then
+        error("Unknown file version: " .. first_line)
+    end
+
+    -- Define patterns for each version
+    local patterns = {
+        ["1.1"] = "^%s*%d+%)%s*([%d%.]+)%s+(%w+)%s+(%x+)%s+(%d)%s+(.+)$",
+        ["1.3"] = "^%s*%d+%)%s*([%d%.]+)%s+%d%s+(%w+)%s+(%x+)%s+%-%s+(%d)%s+(.+)$"
+    }
+
+    local function parse_line(line, pattern)
         local time_offset, msg_type, can_id, dlc, data_bytes = line:match(pattern)
-        
+
         if time_offset and msg_type and can_id and dlc and data_bytes then
             return {
                 time_offset = tonumber(time_offset),
@@ -88,10 +101,15 @@ function parse_pcan_trc(file_path)
         end
     end
 
+    local pattern = patterns[file_version]
+
+    if not pattern then
+        error("Unsupported file version: " .. file_version)
+    end
+
     for line in file:lines() do
-        -- Skip comment lines
         if not line:match("^;") then
-            local message = parse_line(line)
+            local message = parse_line(line, pattern)
             if message then
                 table.insert(trc_data, message)
             else
