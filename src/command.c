@@ -46,6 +46,10 @@ void parse_command(char* input, core_t* core)
     {
         return;
     }
+    else if ((input[1] != ' ') && (input[1] != '\0'))
+    {
+        run_script(token, core);
+    }
 #ifndef __linux__
     else if (0 == SDL_strncmp(token, "b", 1))
     {
@@ -293,7 +297,6 @@ void parse_command(char* input, core_t* core)
 
         sdo_read(&sdo_response, NORMAL_OUTPUT, node_id, sdo_index, sub_index, NULL);
     }
-
     else if (SDL_strncmp(token, "w", 1) == 0)
     {
         can_message_t sdo_response = { 0 };
@@ -446,7 +449,7 @@ static void print_usage_information(SDL_bool show_all)
 #endif
         table_print_row(" c ", " ",                                         "Clear output", &table);
         table_print_row(" l ", " ",                                         "List scripts", &table);
-        table_print_row(" s ", "[script_identifier](.lua)",                 "Run script",   &table);
+        table_print_row("(s)", "[script_identifier](.lua)",                 "Run script",   &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);
