@@ -21,7 +21,7 @@
 static Uint32      sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
 static const char* lookup_abort_code(Uint32 abort_code);
 static void        print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment, disp_mode_t disp_mode);
-void               print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_normal_sdo, const char* comment);
+void               print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_segmented, const char* comment);
 void               print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, disp_mode_t disp_mode, const char* comment);
 
 Uint32 sdo_read(can_message_t* sdo_response,disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
@@ -123,7 +123,7 @@ int lua_sdo_write(lua_State* L)
     status = sdo_write(
         &sdo_response,
         disp_mode,
-        EXPEDITED_SDO_WRITE,
+        SDO_WRITE_EXPEDITED,
         (Uint8)node_id,
         (Uint16)index,
         (Uint8)sub_index,
@@ -175,7 +175,7 @@ int lua_sdo_write_string(lua_State* L)
     status = sdo_write(
         &sdo_response,
         disp_mode,
-        NORMAL_SDO_WRITE,
+        SDO_WRITE_SEGMENTED,
         (Uint8)node_id,
         (Uint16)index,
         (Uint8)sub_index,
@@ -212,7 +212,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 {
     can_message_t msg_in            = { 0 };
     can_message_t msg_out           = { 0 };
-    SDL_bool      is_normal_sdo     = SDL_FALSE;
+    SDL_bool      is_segmented      = SDL_FALSE;
     SDL_bool      response_received = SDL_FALSE;
     Uint32        can_status        = 0;
     Uint32        u32_value         = 0;
@@ -232,9 +232,9 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
     msg_out.data[2] = (Uint8)((index & 0xff00) >> 8);
     msg_out.data[3] = sub_index;
 
-    if ((NORMAL_SDO_WRITE == sdo_type) && (length <= 4))
+    if ((SDO_WRITE_SEGMENTED == sdo_type) && (length <= 4))
     {
-        sdo_type = EXPEDITED_SDO_WRITE;
+        sdo_type = SDO_WRITE_EXPEDITED;
     }
 
     switch (sdo_type)
@@ -244,7 +244,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
             msg_out.length  = 8;
             msg_out.data[0] = UPLOAD_RESPONSE_NORMAL_NO_SIZE;
             break;
-        case EXPEDITED_SDO_WRITE:
+        case SDO_WRITE_EXPEDITED:
         {
             if (NULL != u32_data_ptr)
             {
@@ -275,7 +275,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
             }
             break;
         }
-        case NORMAL_SDO_WRITE:
+        case SDO_WRITE_SEGMENTED:
         {
             msg_out.length  = 8;
             msg_out.data[0] = DOWNLOAD_INIT_NORMAL_SIZE_IN_DATA;
@@ -345,7 +345,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
             case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
             case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
                 sdo_response->length = msg_in.data[4];
-                is_normal_sdo        = SDL_TRUE;
+                is_segmented         = SDL_TRUE;
                 break;
             case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
             case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
@@ -376,7 +376,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                 return ABORT_TRANSFER;
         }
 
-        if ((SDO_READ == sdo_type) && (SDL_TRUE == is_normal_sdo))
+        if ((SDO_READ == sdo_type) && (SDL_TRUE == is_segmented))
         {
             Uint8 response_index = 0;
             Uint8 cmd            = UPLOAD_SEGMENT_REQUEST_1;
@@ -477,7 +477,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                 }
             }
          }
-        else if (NORMAL_SDO_WRITE == sdo_type)
+        else if (SDO_WRITE_SEGMENTED == sdo_type)
         {
             Uint8 cmd        = UPLOAD_SEGMENT_CONTINUE_1;
             int   data_index = 0;
@@ -495,12 +495,15 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
                 for (i = 1; i <= 7; i += 1)
                 {
                     char* data_str = (char*)data;
+#if 0
                     if ('\0' == data_str[data_index])
                     {
                         msg_out.data[0] = cmd | 0x01; /* Data sent; mark last segment. */
                         msg_out.data[i] = 0x00;
                     }
-                    else if ((cmd | 0x01) == msg_out.data[0])
+                    else
+#endif
+                    if ((cmd | 0x01) == msg_out.data[0])
                     {
                         msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
                     }
@@ -586,7 +589,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
 
     if (SDO_READ == sdo_type)
     {
-        print_read_result(node_id, index, sub_index, sdo_response, disp_mode, is_normal_sdo, comment);
+        print_read_result(node_id, index, sub_index, sdo_response, disp_mode, is_segmented, comment);
     }
     else
     {
@@ -685,8 +688,8 @@ static void print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, 
                 case SDO_READ:
                     c_log(LOG_ERROR, "Index %x, Sub-index %x: 0 byte(s) read error: %s", index, sub_index, reason);
                     break;
-                case EXPEDITED_SDO_WRITE:
-                case NORMAL_SDO_WRITE:
+                case SDO_WRITE_EXPEDITED:
+                case SDO_WRITE_SEGMENTED:
                     c_log(LOG_ERROR, "Index %x, Sub-index %x: 0 byte(s) write error: %s", index, sub_index, reason);
                     break;
                 default:
@@ -707,8 +710,8 @@ static void print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, 
                     c_printf(color, "Read ");
                     c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
                     break;
-                case EXPEDITED_SDO_WRITE:
-                case NORMAL_SDO_WRITE:
+                case SDO_WRITE_EXPEDITED:
+                case SDO_WRITE_SEGMENTED:
                     color = LIGHT_BLUE;
                     c_printf(color, "Write");
                     c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -        ", node_id, index, sub_index);
@@ -745,7 +748,7 @@ static void print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, 
     }
 }
 
-void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_normal_sdo, const char* comment)
+void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_segmented, const char* comment)
 {
     Uint32 u32_value = (Uint32)sdo_response->data[4];
 
@@ -760,7 +763,7 @@ void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message
                 c_log(LOG_INFO, "%s", description);
             }
 
-            if (SDL_TRUE == is_normal_sdo)
+            if (SDL_TRUE == is_segmented)
             {
                 sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
                 c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %s",
@@ -808,7 +811,7 @@ void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message
             c_printf(LIGHT_GREEN, "SUCC    ");
             c_printf(DARK_MAGENTA, "%s ", buffer);
 
-            if (SDL_FALSE == is_normal_sdo)
+            if (SDL_FALSE == is_segmented)
             {
                 switch (sdo_response->length)
                 {
@@ -866,7 +869,7 @@ void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 
                 c_log(LOG_INFO, "%s", description);
             }
 
-            if (EXPEDITED_SDO_WRITE == sdo_type)
+            if (SDO_WRITE_EXPEDITED == sdo_type)
             {
                 c_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) written: %u (0x%x)",
                     index,
@@ -875,7 +878,7 @@ void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 
                     u32_value,
                     u32_value);
             }
-            else if (NORMAL_SDO_WRITE)
+            else if (SDO_WRITE_SEGMENTED)
             {
                 data_str[CAN_MAX_DATA_LENGTH] = '\0';
     
@@ -917,7 +920,7 @@ void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 
             c_printf(LIGHT_GREEN, "SUCC    ");
             c_printf(DARK_MAGENTA, "%s ", buffer);
 
-            if (EXPEDITED_SDO_WRITE == sdo_type)
+            if (SDO_WRITE_EXPEDITED == sdo_type)
             {
                 switch (length)
                 {

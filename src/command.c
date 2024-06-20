@@ -302,7 +302,7 @@ void parse_command(char* input, core_t* core)
         Uint32 sub_index;
         Uint32 sdo_data_length = 0;
         Uint32 sdo_data = 0;
-        sdo_type_t sdo_type = EXPEDITED_SDO_WRITE;
+        sdo_type_t sdo_type = SDO_WRITE_EXPEDITED;
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (token == NULL)
@@ -352,7 +352,7 @@ void parse_command(char* input, core_t* core)
                 SDL_strlcpy(buffer, token, sizeof(buffer));
 
                 len      = SDL_strlen(buffer);
-                sdo_type = NORMAL_SDO_WRITE;
+                sdo_type = SDO_WRITE_SEGMENTED;
                 token     = SDL_strtokr(NULL, delim, &input_savptr);
 
                 while (token != NULL) 

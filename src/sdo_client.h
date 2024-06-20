@@ -26,8 +26,9 @@
 typedef enum
 {
     SDO_READ = 0,
-    EXPEDITED_SDO_WRITE,
-    NORMAL_SDO_WRITE
+    SDO_WRITE_BLOCK,
+    SDO_WRITE_EXPEDITED,
+    SDO_WRITE_SEGMENTED
 
 } sdo_type_t;
 
