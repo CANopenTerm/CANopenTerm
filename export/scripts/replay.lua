@@ -5,46 +5,7 @@ License: Public domain
 
 --]]
 
-function list_trc_files()
-    local files = {}
-    local i = 1
-    local command = 'dir /b /a-d *.trc 2>nul'
-
-    if os.getenv("OS") == "Windows_NT" then
-        for file in io.popen(command):lines() do
-            files[i] = file
-            i = i + 1
-        end
-    else
-        command = 'ls -1 *.trc 2>/dev/null'
-        for file in io.popen(command):lines() do
-            files[i] = file
-            i = i + 1
-        end
-    end
-
-    return files
-end
-
-function choose_file(files)
-    print("")
-    for i, file in ipairs(files) do
-        print(i .. ". " .. file)
-    end
-    io.write("\nEnter the number of the file you want to choose (or 'q' to quit): ")
-    local choice = io.read()
-    if choice == 'q' then
-        return nil
-    else
-        choice = tonumber(choice)
-        if choice and choice >= 1 and choice <= #files then
-            return files[choice]
-        else
-            print("Invalid choice. Please enter a number between 1 and " .. #files .. " or 'q' to quit.")
-            return choose_file(files)
-        end
-    end
-end
+local utils = require "lua/utils"
 
 local function convert_data_bytes(data_bytes)
     local bytes = {}
@@ -154,57 +115,51 @@ function select_loop_count()
     end
 end
 
-local files = list_trc_files()
-if #files == 0 then
-    print("No .trc files found in the current directory.")
-else
-    local num_loops   = select_loop_count()
-    local chosen_file = nil
 
-    if num_loops then
-      chosen_file = choose_file(files)
-    end
+local num_loops = select_loop_count()
+local trc_file  = nil
 
-    if chosen_file then
-        local base_name = chosen_file:match("[^/\\]+$") or chosen_file
+if num_loops then
+  trc_file = utils.get_file_by_selection("Enter the number of the file you want to choose", "trc")
+  if trc_file == nil then
+    print("Exiting.")
+    return
+  end
+end
 
-        print("Chosen file: " .. base_name)
-        print(num_loops)
+local base_name = trc_file:match("[^/\\]+$") or trc_file
 
-        for loop = 1, num_loops + 1 do
-            local trc_data   = parse_pcan_trc(base_name)
-            local start_time = os.clock()
-            local quit       = false
+for loop = 1, num_loops + 1 do
+    local trc_data   = parse_pcan_trc(base_name)
+    local start_time = os.clock()
+    local quit       = false
 
-            for _, message in ipairs(trc_data) do
-                if key_is_hit() then
-                  quit = true
-                  break
-                end
-
-                if message and message.time_offset and message.msg_type and message.can_id and message.dlc and message.data_bytes then
-                    local current_time           = os.clock()
-                    local elapsed_time           = (current_time - start_time) * 1000
-                    local delay                  = math.floor(message.time_offset - elapsed_time)
-                    local data_d0_d3, data_d4_d7 = convert_data_bytes(message.data_bytes)
-
-                    if delay > 0 then
-                        delay_ms(delay)
-                    end
-
-                    can_write(tonumber(message.can_id, 16), message.dlc, data_d0_d3, data_d4_d7)
-                    print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
-                        format_float(message.time_offset), message.msg_type, message.can_id, message.dlc, message.data_bytes))
-                else
-                    print("Invalid message format or nil value detected.")
-                    print("message: ", message)
-                end
-            end
-            if quit == true then
-              break
-            end
+    for _, message in ipairs(trc_data) do
+        if key_is_hit() then
+          quit = true
+          break
         end
-    else
-        print("Exiting script.")
+
+        if message and message.time_offset and message.msg_type and message.can_id and message.dlc and message.data_bytes then
+            local current_time           = os.clock()
+            local elapsed_time           = (current_time - start_time) * 1000
+            local delay                  = math.floor(message.time_offset - elapsed_time)
+            local data_d0_d3, data_d4_d7 = convert_data_bytes(message.data_bytes)
+
+            if delay > 0 then
+                delay_ms(delay)
+            end
+
+            can_write(tonumber(message.can_id, 16), message.dlc, data_d0_d3, data_d4_d7)
+            print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
+                format_float(message.time_offset), message.msg_type, message.can_id, message.dlc, message.data_bytes))
+        else
+            print("Invalid message format or nil value detected.")
+            print("message: ", message)
+        end
+    end
+    if quit == true then
+      break
     end
 end
+
