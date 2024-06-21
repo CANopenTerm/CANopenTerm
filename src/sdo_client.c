@@ -556,14 +556,7 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
             for (i = 1; i <= 7; i += 1)
             {
                 char* data_str = (char*)data;
-#if 0
-                if ('\0' == data_str[data_index])
-                {
-                    msg_out.data[0] = cmd | 0x01; /* Data sent; mark last segment. */
-                    msg_out.data[i] = 0x00;
-                }
-                else
-#endif
+
                 if ((cmd | 0x01) == msg_out.data[0])
                 {
                     msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
