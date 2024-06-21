@@ -121,6 +121,7 @@ local function bitwise_and(a, b)
 end
 
 return {
+  get_file_list         = get_file_list,
   get_file_by_selection = get_file_by_selection,
   read_word             = read_word,
   read_long             = read_long,
