@@ -6,6 +6,61 @@ License: Public domain
 
 --]]
 
+local function get_file_list(extension)
+  local files = {}
+  local i = 1
+  local command = 'dir /b /a-d *.'.. extension ..' 2>nul'
+
+  if os.getenv("OS") == "Windows_NT" then
+    for file in io.popen(command):lines() do
+      files[i] = file
+      i = i + 1
+    end
+  else
+    command = 'ls -1 *.os 2>/dev/null'
+    for file in io.popen(command):lines() do
+      files[i] = file
+      i = i + 1
+    end
+  end
+
+  if #files == 0 then
+    print("No ." .. extension .. " files found.")
+    return nil
+  end
+
+  return files
+end
+
+local function get_file_by_selection(prompt, extension)
+  print("")
+
+  local files = get_file_list(extension)
+
+  if files == nil then
+    return nil
+  end
+
+  for i, file in ipairs(files) do
+    print(i .. ". " .. file)
+  end
+
+  io.write("\n" .. prompt .. " (or 'q' to quit): ")
+  local choice = io.read()
+
+  if choice == 'q' then
+    return nil
+  else
+    choice = tonumber(choice)
+    if choice and choice >= 1 and choice <= #files then
+      return files[choice]
+    else
+      print("Invalid choice. Please enter a number between 1 and " .. #files .. " or 'q' to quit.")
+      return get_file_by_selection(prompt, file_extension)
+    end
+  end
+end
+
 local function read_word(file)
     local bytes = file:read(2)
     if not bytes or #bytes < 2 then
@@ -66,11 +121,12 @@ local function bitwise_and(a, b)
 end
 
 return {
-  read_word   = read_word,
-  read_long   = read_long,
-  read_ulong  = read_ulong,
-  read_byte   = read_byte,
-  left_shift  = left_shift,
-  is_bit_set  = is_bit_set,
-  bitwise_and = bitwise_and
+  get_file_by_selection = get_file_by_selection,
+  read_word             = read_word,
+  read_long             = read_long,
+  read_ulong            = read_ulong,
+  read_byte             = read_byte,
+  left_shift            = left_shift,
+  is_bit_set            = is_bit_set,
+  bitwise_and           = bitwise_and
 }

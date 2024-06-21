@@ -49,6 +49,35 @@ local function get_id_by_name(name)
   return 0
 end
 
+local function get_id_by_selection(prompt)
+  print("")
+
+  local available_nodes, total_devices = find_devices(1000)
+  if total_devices == 0 then
+    print("No devices found.")
+    return nil
+  end
+
+  for i, node in ipairs(available_nodes) do
+    print(i .. ". " .. sdo_read(node, 0x1008, 0))
+  end
+
+  io.write("\n" .. prompt .." (or 'q' to quit): ")
+  local choice = io.read()
+
+  if choice == 'q' then
+    return nil
+  else
+    choice = tonumber(choice)
+    if choice and choice >= 1 and choice <= #available_nodes then
+      return available_nodes[choice]
+    else
+      print("Invalid choice. Please enter a number between 1 and " .. #available_nodes .. " or 'q' to quit.")
+      return get_id_by_selection(prompt)
+    end
+  end
+end
+
 local function node_reset(node_id)
   nmt_send_command(node_id, 0x81) -- Reset
   delay_ms(100)
@@ -69,4 +98,9 @@ local function node_reset(node_id)
   end
 end
 
-return { find_devices = find_devices, get_id_by_name = get_id_by_name, node_reset = node_reset }
+return {
+  find_devices        = find_devices,
+  get_id_by_name      = get_id_by_name,
+  get_id_by_selection = get_id_by_selection,
+  node_reset          = node_reset
+}
