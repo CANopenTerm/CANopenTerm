@@ -139,7 +139,7 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 Write file (block transfer).
 
 ```lua
-sdo_write_file (node_id, index, sub_index, filename, [show_progress])
+sdo_write_file (node_id, index, sub_index, filename)
 ```
 
 > **node_id** CANopen Node-ID.
@@ -149,8 +149,6 @@ sdo_write_file (node_id, index, sub_index, filename, [show_progress])
 > **sub_index** Sub-Index.
 
 > **data** The string to be written.
-
-> **show_progress** Show progress bar, default is `false`.
 
 **Returns**: true on success, false on failure.
 

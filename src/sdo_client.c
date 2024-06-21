@@ -154,8 +154,6 @@ int lua_sdo_write_file(lua_State* L)
     int           index         = luaL_checkinteger(L, 2);
     int           sub_index     = luaL_checkinteger(L, 3);
     const char*   filename      = luaL_checkstring(L, 4);
-    Uint32        length        = 0;
-    SDL_bool      show_progress = lua_toboolean(L, 5);
     FILE*         file;
     size_t        file_size;
     void*         data;
@@ -879,7 +877,20 @@ static void print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, 
     }
 }
 
-void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_segmented, const char* comment)
+static void print_progress_bar(size_t bytes_sent, size_t length)
+{
+    static int prev_percentage = -1;
+    int percentage = (int)((bytes_sent * 100) / length);
+
+    if (percentage != prev_percentage)
+    {
+        printf("Progress: %d%%\r", percentage);
+        fflush(stdout);
+        prev_percentage = percentage;
+    }
+}
+
+static void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_segmented, const char* comment)
 {
     Uint32 u32_value = (Uint32)sdo_response->data[4];
 
@@ -1084,7 +1095,6 @@ void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 
 
 static int wait_for_response(Uint8 node_id, can_message_t* msg_in)
 {
-    char     reason[300]       = { 0 };
     Uint64   time_a            = SDL_GetTicks64();
     Uint64   timeout_time      = 0;
     SDL_bool response_received = SDL_FALSE;
@@ -1117,6 +1127,7 @@ static int wait_for_response(Uint8 node_id, can_message_t* msg_in)
 
     if (timeout_time >= SDO_TIMEOUT_IN_MS)
     {
+        char reason[300] = { 0 };
         SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
         return 1;
     }
