@@ -49,4 +49,24 @@ local function get_id_by_name(name)
   return 0
 end
 
-return { find_devices = find_devices, get_id_by_name = get_id_by_name }
+local function node_reset(node_id)
+  nmt_send_command(node_id, 0x81) -- Reset
+  delay_ms(100)
+  
+  while true do
+    local can_id, data_len, data = can_read()
+    if can_id ~= nil then
+      if can_id == 0x700 + node_id then
+        if 0x7F == data:byte(1) then
+          break
+        end
+      end
+    end
+    
+    if key_is_hit() then
+      break;
+    end
+  end
+end
+
+return { find_devices = find_devices, get_id_by_name = get_id_by_name, node_reset = node_reset }
