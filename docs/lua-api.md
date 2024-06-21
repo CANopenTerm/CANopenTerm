@@ -148,7 +148,7 @@ sdo_write_file (node_id, index, sub_index, filename)
 
 > **sub_index** Sub-Index.
 
-> **data** The string to be written.
+> **filename** The name of the file to be sent.
 
 **Returns**: true on success, false on failure.
 
