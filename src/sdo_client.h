@@ -15,13 +15,15 @@
 #include "can.h"
 #include "core.h"
 
-#define DOWNLOAD_RESPONSE_1       0x20
-#define DOWNLOAD_RESPONSE_2       0x30
-#define UPLOAD_SEGMENT_REQUEST_1  0x60
-#define UPLOAD_SEGMENT_REQUEST_2  0x70
-#define UPLOAD_SEGMENT_CONTINUE_1 0x00
-#define UPLOAD_SEGMENT_CONTINUE_2 0x10
-#define ABORT_TRANSFER            0x80
+#define DOWNLOAD_RESPONSE_1            0x20
+#define DOWNLOAD_RESPONSE_2            0x30
+#define UPLOAD_SEGMENT_REQUEST_1       0x60
+#define UPLOAD_SEGMENT_REQUEST_2       0x70
+#define UPLOAD_SEGMENT_CONTINUE_1      0x00
+#define UPLOAD_SEGMENT_CONTINUE_2      0x10
+#define BLOCK_DOWNLOAD_RESPONSE_NO_CRC 0xa0
+#define BLOCK_DOWNLOAD_RESPONSE_CRC    0xa4
+#define ABORT_TRANSFER                 0x80
 
 typedef enum
 {
@@ -42,20 +44,24 @@ typedef enum
 
 typedef enum
 {
-    UPLOAD_RESPONSE_NORMAL_NO_SIZE      = 0x40, // Upload response, normal transfer, no size indicated
-    UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA = 0x41, // Upload response, normal transfer, size in data
-    UPLOAD_RESPONSE_EXPEDIDED_NO_SIZE   = 0x42, // Upload response, expedided transfer, no size indicated
-    UPLOAD_RESPONSE_EXPEDIDED_4_BYTE    = 0x43, // Upload response, expedided transfer, 4 byte data
-    UPLOAD_RESPONSE_EXPEDIDED_3_BYTE    = 0x47, // Upload response, expedided transfer, 3 byte data
-    UPLOAD_RESPONSE_EXPEDIDED_2_BYTE    = 0x4b, // Upload response, expedided transfer, 2 byte data
-    UPLOAD_RESPONSE_EXPEDIDED_1_BYTE    = 0x4f, // Upload response, expedided transfer, 1 byte data
-    DOWNLOAD_INIT_NORMAL_NO_SIZE        = 0x20, // Download initiate, normal transfer, no size indicated
-    DOWNLOAD_INIT_NORMAL_SIZE_IN_DATA   = 0x21, // Download initiate, normal transfer, size in data
-    DOWNLOAD_INIT_EXPEDIDED_NO_SIZE     = 0x22, // Download initiate, expedided transfer, no size indicated
-    DOWNLOAD_INIT_EXPEDITED_4_BYTE      = 0x23, // Download initiate, expedided transfer, 4 byte data
-    DOWNLOAD_INIT_EXPEDITED_3_BYTE      = 0x27, // Download initiate, expedided transfer, 3 byte data
-    DOWNLOAD_INIT_EXPEDITED_2_BYTE      = 0x2b, // Download initiate, expedided transfer, 2 byte data
-    DOWNLOAD_INIT_EXPEDITED_1_BYTE      = 0x2f, // Download initiate, expedided transfer, 1 byte data
+    UPLOAD_RESPONSE_SEGMENT_NO_SIZE       = 0x40, // Upload response, segment transfer, no size indicated
+    UPLOAD_RESPONSE_SEGMENT_SIZE_IN_DATA  = 0x41, // Upload response, segment transfer, size in data
+    UPLOAD_RESPONSE_EXPEDIDED_NO_SIZE     = 0x42, // Upload response, expedided transfer, no size indicated
+    UPLOAD_RESPONSE_EXPEDIDED_4_BYTE      = 0x43, // Upload response, expedided transfer, 4 byte data
+    UPLOAD_RESPONSE_EXPEDIDED_3_BYTE      = 0x47, // Upload response, expedided transfer, 3 byte data
+    UPLOAD_RESPONSE_EXPEDIDED_2_BYTE      = 0x4b, // Upload response, expedided transfer, 2 byte data
+    UPLOAD_RESPONSE_EXPEDIDED_1_BYTE      = 0x4f, // Upload response, expedided transfer, 1 byte data
+    DOWNLOAD_INIT_SEGMENT_NO_SIZE         = 0x20, // Download initiate, segment transfer, no size indicated
+    DOWNLOAD_INIT_SEGMENT_SIZE_IN_DATA    = 0x21, // Download initiate, segment transfer, size in data
+    DOWNLOAD_INIT_EXPEDIDED_NO_SIZE       = 0x22, // Download initiate, expedided transfer, no size indicated
+    DOWNLOAD_INIT_EXPEDITED_4_BYTE        = 0x23, // Download initiate, expedided transfer, 4 byte data
+    DOWNLOAD_INIT_EXPEDITED_3_BYTE        = 0x27, // Download initiate, expedided transfer, 3 byte data
+    DOWNLOAD_INIT_EXPEDITED_2_BYTE        = 0x2b, // Download initiate, expedided transfer, 2 byte data
+    DOWNLOAD_INIT_EXPEDITED_1_BYTE        = 0x2f, // Download initiate, expedided transfer, 1 byte data
+    UPLOAD_INIT_BLOCK_NO_CRC_NO_SIZE      = 0xc0, // Upload initiate, block transfer, no CRC, no size indicated
+    UPLOAD_INIT_BLOCK_NO_CRC_SIZE_IN_DATA = 0xc2, // Upload initiate, block transfer, no CRC, size in data
+    UPLOAD_INIT_BLOCK_CRC_NO_SIZE         = 0xc4, // Upload initiate, block transfer, CRC, no size indicated
+    UPLOAD_INIT_BLOCK_CRC_SIZE_IN_DATA    = 0xC6  // Upload initiate, block transfer, CRC, size in data
 
 } sdo_command_code_t;
 
@@ -96,7 +102,7 @@ typedef enum
 } sdo_abort_code_t;
 
 Uint32 sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment);
-Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment);
+Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment);
 int    lua_sdo_read(lua_State* L);
 int    lua_sdo_write(lua_State* L);
 void   lua_register_sdo_commands(core_t* core);

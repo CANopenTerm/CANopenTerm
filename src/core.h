@@ -25,7 +25,7 @@ typedef enum status
 typedef enum disp_mode
 {
     NO_OUTPUT = 0,
-    NORMAL_OUTPUT,
+    TERM_OUTPUT,
     SCRIPT_OUTPUT
 
 } disp_mode_t;

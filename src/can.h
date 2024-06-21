@@ -19,7 +19,7 @@
 typedef struct can_message
 {
     Uint16 id;
-    Uint8  length;
+    Uint32 length;
     Uint8  data[CAN_MAX_DATA_LENGTH + 1];
     Uint64 timestamp_us;
 

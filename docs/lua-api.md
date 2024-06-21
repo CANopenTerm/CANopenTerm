@@ -91,6 +91,8 @@ pdo_del (can_id)
 
 ### sdo_read()
 
+Read SDO (expedided or segmented).
+
 ```lua
 sdo_read (node_id, index, sub_index, [show_output], [comment])
 ```
@@ -109,6 +111,8 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 **Returns**: number or string, nil on failure.
 
 ### sdo_write()
+
+Write expedided SDO.
 
 ```lua
 sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
@@ -130,7 +134,29 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
+### sdo_write_file()
+
+Write file (block transfer).
+
+```lua
+sdo_write_file (node_id, index, sub_index, filename, [show_progress])
+```
+
+> **node_id** CANopen Node-ID.
+
+> **index** Index.
+
+> **sub_index** Sub-Index.
+
+> **data** The string to be written.
+
+> **show_progress** Show progress bar, default is `false`.
+
+**Returns**: true on success, false on failure.
+
 ### sdo_write_string()
+
+Write string (segmented transfer).
 
 ```lua
 sdo_write_string (node_id, index, sub_index, [data], [show_output], [comment])

@@ -139,7 +139,7 @@ void parse_command(char* input, core_t* core)
                 convert_token_to_uint(token, &command);
             }
         }
-        nmt_send_command((Uint16)node_id, (Uint8)command, NORMAL_OUTPUT, NULL);
+        nmt_send_command((Uint16)node_id, (Uint8)command, TERM_OUTPUT, NULL);
     }
     else if (0 == SDL_strncmp(token, "l", 1))
     {
@@ -218,7 +218,7 @@ void parse_command(char* input, core_t* core)
             }
             else
             {
-                pdo_add((Uint16)can_id, event_time_ms, length, data, NORMAL_OUTPUT);
+                pdo_add((Uint16)can_id, event_time_ms, length, data, TERM_OUTPUT);
             }
         }
         else if (0 == SDL_strncmp(token, "del", 3))
@@ -247,7 +247,7 @@ void parse_command(char* input, core_t* core)
             }
             else
             {
-                pdo_del((Uint16)can_id, NORMAL_OUTPUT);
+                pdo_del((Uint16)can_id, TERM_OUTPUT);
             }
         }
         else
@@ -295,7 +295,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sub_index);
         }
 
-        sdo_read(&sdo_response, NORMAL_OUTPUT, node_id, sdo_index, sub_index, NULL);
+        sdo_read(&sdo_response, TERM_OUTPUT, node_id, sdo_index, sub_index, NULL);
     }
     else if (SDL_strncmp(token, "w", 1) == 0)
     {
@@ -377,7 +377,7 @@ void parse_command(char* input, core_t* core)
 
             if (sdo_data_length > 0)
             {
-                sdo_write(&sdo_response, NORMAL_OUTPUT, sdo_type, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
+                sdo_write(&sdo_response, TERM_OUTPUT, sdo_type, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
             }
             else
             {

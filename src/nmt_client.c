@@ -170,7 +170,7 @@ static void print_error(nmt_command_t command, Uint32 can_status, disp_mode_t di
 {
     switch (disp_mode)
     {
-        case NORMAL_OUTPUT:
+        case TERM_OUTPUT:
         {        
             c_log(LOG_ERROR, "NMT 0x%02X error: %s", command, can_get_error_message(can_status));
             break;

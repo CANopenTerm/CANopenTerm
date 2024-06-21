@@ -18,15 +18,16 @@
 
 #define SDO_TIMEOUT_IN_MS 100
 
-static Uint32      sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment);
+static Uint32      sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void *data, const char* comment);
 static const char* lookup_abort_code(Uint32 abort_code);
 static void        print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment, disp_mode_t disp_mode);
-void               print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_segmented, const char* comment);
-void               print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, disp_mode_t disp_mode, const char* comment);
+static void        print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_segmented, const char* comment);
+static void        print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
+static int         wait_for_response(Uint8 node_id, can_message_t* msg_in);
 
 Uint32 sdo_read(can_message_t* sdo_response,disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
 {
-    return sdo_send(
+    return sdo_request(
         SDO_READ,
         sdo_response,
         disp_mode,
@@ -37,9 +38,9 @@ Uint32 sdo_read(can_message_t* sdo_response,disp_mode_t disp_mode, Uint8 node_id
         comment);
 }
 
-Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void *data, const char* comment)
+Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void *data, const char* comment)
 {
-    return sdo_send(
+    return sdo_request(
         sdo_type,
         sdo_response,
         disp_mode,
@@ -82,8 +83,8 @@ int lua_sdo_read(lua_State* L)
 
     switch (status)
     {
-        case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
-        case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
+        case UPLOAD_RESPONSE_SEGMENT_NO_SIZE:
+        case UPLOAD_RESPONSE_SEGMENT_SIZE_IN_DATA:
             lua_pushstring(L, (const char*)sdo_response.data);
             break;
         case ABORT_TRANSFER:
@@ -127,7 +128,7 @@ int lua_sdo_write(lua_State* L)
         (Uint8)node_id,
         (Uint16)index,
         (Uint8)sub_index,
-        (Uint8)length,
+        (Uint32)length,
         (void*)&data,
         comment);
 
@@ -144,6 +145,81 @@ int lua_sdo_write(lua_State* L)
     return 1;
 }
 
+int lua_sdo_write_file(lua_State* L)
+{
+    can_message_t sdo_response  = { 0 };
+    disp_mode_t   disp_mode     = NO_OUTPUT;
+    int           status;
+    int           node_id       = luaL_checkinteger(L, 1);
+    int           index         = luaL_checkinteger(L, 2);
+    int           sub_index     = luaL_checkinteger(L, 3);
+    const char*   filename      = luaL_checkstring(L, 4);
+    Uint32        length        = 0;
+    SDL_bool      show_progress = lua_toboolean(L, 5);
+    FILE*         file;
+    size_t        file_size;
+    void*         data;
+
+    if (NULL == filename)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+    
+    file = fopen(filename, "rb");
+    if (NULL == file)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    fseek(file, 0, SEEK_END);
+    file_size = ftell(file);
+    rewind(file);
+
+    data = SDL_calloc(file_size, sizeof(char));
+    if (NULL == data)
+    {
+        fclose(file);
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    if (fread(data, 1, file_size, file) != file_size)
+    {
+        SDL_free(data);
+        fclose(file);
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    status = sdo_write(
+        &sdo_response,
+        disp_mode,
+        SDO_WRITE_BLOCK,
+        (Uint8)node_id,
+        (Uint16)index,
+        (Uint8)sub_index,
+        file_size,
+        (void*)data,
+        NULL);
+
+    switch (status)
+    {
+        case ABORT_TRANSFER:
+            lua_pushboolean(L, 0);
+            break;
+        default:
+            lua_pushboolean(L, 1);
+            break;
+    }
+
+    SDL_free(data);
+    fclose(file);
+
+    return 1;
+}
+
 int lua_sdo_write_string(lua_State* L)
 {
     can_message_t sdo_response = { 0 };
@@ -153,7 +229,7 @@ int lua_sdo_write_string(lua_State* L)
     int           index        = luaL_checkinteger(L, 2);
     int           sub_index    = luaL_checkinteger(L, 3);
     const char*   data         = luaL_checkstring(L, 4);
-    Uint8         length       = 0;
+    Uint32        length       = 0;
     SDL_bool      show_output  = lua_toboolean(L, 5);
     const char*   comment      = lua_tostring(L, 6);
 
@@ -204,23 +280,26 @@ void lua_register_sdo_commands(core_t* core)
     lua_pushcfunction(core->L, lua_sdo_write);
     lua_setglobal(core->L, "sdo_write");
 
+    lua_pushcfunction(core->L, lua_sdo_write_file);
+    lua_setglobal(core->L, "sdo_write_file");
+
     lua_pushcfunction(core->L, lua_sdo_write_string);
     lua_setglobal(core->L, "sdo_write_string");
 }
 
-static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, const char* comment)
+static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment)
 {
     can_message_t msg_in            = { 0 };
     can_message_t msg_out           = { 0 };
     SDL_bool      is_segmented      = SDL_FALSE;
-    SDL_bool      response_received = SDL_FALSE;
     Uint32        can_status        = 0;
     Uint32        u32_value         = 0;
     Uint32*       u32_data_ptr      = (Uint32*)data;
-    Uint64        time_a;
-    Uint64        timeout_time      = 0;
     Uint8         command_code      = 0x00;
+    Uint8         block_size        = 0;
     char          reason[300]       = { 0 };
+    Uint32        abort_code        = 0;
+    int           n;
 
     if (node_id > 0x7f)
     {
@@ -242,7 +321,7 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
         default:
         case SDO_READ:
             msg_out.length  = 8;
-            msg_out.data[0] = UPLOAD_RESPONSE_NORMAL_NO_SIZE;
+            msg_out.data[0] = UPLOAD_RESPONSE_SEGMENT_NO_SIZE;
             break;
         case SDO_WRITE_EXPEDITED:
         {
@@ -278,8 +357,18 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
         case SDO_WRITE_SEGMENTED:
         {
             msg_out.length  = 8;
-            msg_out.data[0] = DOWNLOAD_INIT_NORMAL_SIZE_IN_DATA;
+            msg_out.data[0] = DOWNLOAD_INIT_SEGMENT_SIZE_IN_DATA;
             msg_out.data[4] = length;
+            break;
+        }
+        case SDO_WRITE_BLOCK:
+        {
+            msg_out.length  = 8;
+            msg_out.data[0] = UPLOAD_INIT_BLOCK_NO_CRC_SIZE_IN_DATA;
+            msg_out.data[4] = (length >> 0)  & 0xff;
+            msg_out.data[5] = (length >> 8)  & 0xff;
+            msg_out.data[6] = (length >> 16) & 0xff;
+            msg_out.data[7] = (length >> 24) & 0xff;
             break;
         }
     }
@@ -290,300 +379,349 @@ static Uint32 sdo_send(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mo
         /* Nothing to do here. */
     }
 
-    time_a = SDL_GetTicks64();
-    while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+    msg_in.data[1] = 0x00;
+    msg_in.data[2] = 0x00;
+
+    while (((index & 0x00ff) != msg_in.data[1]) || (((index & 0xff00) >> 8) != msg_in.data[2]))
     {
-        Uint64 time_b;
-        Uint64 delta_time;
-    
-        can_read(&msg_in);
-        if ((0x580 + node_id) == msg_in.id)
+        if (0 != wait_for_response(node_id, &msg_in))
         {
-            if ((index & 0x00ff) == msg_in.data[1])
-            {
-                if (((index & 0xff00) >> 8) == msg_in.data[2])
-                {
-                    response_received = SDL_TRUE;
-                    continue;
-                }
-            }
+            print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+            return ABORT_TRANSFER;
         }
-    
-        time_b = time_a;
-        time_a = SDL_GetTicks64();
-    
-        if (time_a > time_b)
-        {
-            delta_time = time_a - time_b;
-        }
-        else
-        {
-            delta_time = time_b - time_a;
-        }
-        timeout_time += delta_time;
     }
 
     command_code = msg_in.data[0];
 
-    if (timeout_time >= SDO_TIMEOUT_IN_MS)
+    switch (command_code)
     {
-        SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
-        print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-        return ABORT_TRANSFER;
+        case BLOCK_DOWNLOAD_RESPONSE_NO_CRC:
+        case BLOCK_DOWNLOAD_RESPONSE_CRC:
+            block_size = msg_in.data[4];
+            break;
+        case UPLOAD_SEGMENT_REQUEST_1:
+        case UPLOAD_SEGMENT_REQUEST_2:
+            sdo_response->length = msg_out.length;
+            break;
+        case UPLOAD_RESPONSE_SEGMENT_NO_SIZE:
+        case UPLOAD_RESPONSE_SEGMENT_SIZE_IN_DATA:
+            sdo_response->length = msg_in.data[4];
+            is_segmented         = SDL_TRUE;
+            break;
+        case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
+        case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
+            sdo_response->length = 4;
+            break;
+        case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
+        case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
+            sdo_response->length = 3;
+            break;
+        case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
+        case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
+            sdo_response->length = 2;
+            break;
+        case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
+        case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
+            sdo_response->length = 1;
+            break;
+        default:
+        case ABORT_TRANSFER: /* Error. */
+            abort_code = (abort_code & 0xffffff00) | msg_in.data[7];
+            abort_code = (abort_code & 0xffff00ff) | ((Uint32)msg_in.data[6] << 8);
+            abort_code = (abort_code & 0xff00ffff) | ((Uint32)msg_in.data[5] << 16);
+            abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
+            abort_code = SDL_SwapBE32(abort_code);
+
+            SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
+            print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+            return ABORT_TRANSFER;
     }
-    else
+
+    if ((SDO_READ == sdo_type) && (SDL_TRUE == is_segmented))
     {
-        Uint32 abort_code = 0;
-        int    n;
-
-        switch (command_code)
+        Uint8  response_index = 0;
+        Uint8  cmd            = UPLOAD_SEGMENT_REQUEST_1;
+        Uint32 data_length    = sdo_response->length;
+        Uint8  remainder      = data_length % 7u;
+        Uint8  expected_msgs  = (data_length / 7u) + (remainder ? 1 : 0);
+        
+        msg_out.id      = 0x600 + node_id;
+        msg_out.length  = 8;
+        msg_out.data[0] = cmd;
+        
+        can_status = can_write(&msg_out, NO_OUTPUT, NULL);
+        if (0 != can_status)
         {
-            case UPLOAD_SEGMENT_REQUEST_1:
-            case UPLOAD_SEGMENT_REQUEST_2:
-                sdo_response->length = msg_out.length;
-                break;
-            case UPLOAD_RESPONSE_NORMAL_NO_SIZE:
-            case UPLOAD_RESPONSE_NORMAL_SIZE_IN_DATA:
-                sdo_response->length = msg_in.data[4];
-                is_segmented         = SDL_TRUE;
-                break;
-            case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
-            case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
-                sdo_response->length = 4;
-                break;
-            case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
-            case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
-                sdo_response->length = 3;
-                break;
-            case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
-            case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
-                sdo_response->length = 2;
-                break;
-            case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
-            case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
-                sdo_response->length = 1;
-                break;
-            default:
-            case ABORT_TRANSFER: /* Error. */
-                abort_code = (abort_code & 0xffffff00) | msg_in.data[7];
-                abort_code = (abort_code & 0xffff00ff) | ((Uint32)msg_in.data[6] << 8);
-                abort_code = (abort_code & 0xff00ffff) | ((Uint32)msg_in.data[5] << 16);
-                abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
-                abort_code = SDL_SwapBE32(abort_code);
+            /* Nothing to do here. */
+        }
+        
+        for (n = 0; n < expected_msgs; n += 1)
+        {
+            Uint64   timeout_time      = 0;
+            Uint64   time_a            = SDL_GetTicks64();
+            SDL_bool response_received = SDL_FALSE;
+        
+            while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+            {
+                Uint64 time_b;
+                Uint64 delta_time;
+        
+                can_read(&msg_in);
+                if ((0x580 + node_id) == msg_in.id)
+                {
+                    int can_msg_index = 0;
+                    msg_out.data[0] = cmd;
 
-                SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
+                    if (0 == (msg_in.data[0] % 2))
+                    {
+                        if (UPLOAD_SEGMENT_REQUEST_1 == cmd)
+                        {
+                            cmd = UPLOAD_SEGMENT_REQUEST_2;
+                        }
+                        else
+                        {
+                            cmd = UPLOAD_SEGMENT_REQUEST_1;
+                        }
+
+                        msg_out.data[0] = cmd;
+
+                        can_status = can_write(&msg_out, NO_OUTPUT, NULL);
+                        if (0 != can_status)
+                        {
+                            /* Nothing to do here. */
+                        }
+                    }
+
+                    for (can_msg_index = 1; can_msg_index <= 7; can_msg_index += 1)
+                    {
+                        char printable_char;
+                        if (response_index >= data_length)
+                        {
+                            break;
+                        }
+                        else if (SDL_isprint(msg_in.data[can_msg_index]))
+                        {
+                            printable_char = msg_in.data[can_msg_index];
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        sdo_response->data[response_index] = printable_char;
+
+                        response_index += 1;
+                    }
+
+                    response_received = SDL_TRUE;
+                    continue;
+                }
+
+                time_b = time_a;
+                time_a = SDL_GetTicks64();
+
+                if (time_a > time_b)
+                {
+                    delta_time = time_a - time_b;
+                }
+                else
+                {
+                    delta_time = time_b - time_a;
+                }
+                timeout_time += delta_time;
+            }
+
+            if (timeout_time >= SDO_TIMEOUT_IN_MS)
+            {
+                SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
                 print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
                 return ABORT_TRANSFER;
+            }
         }
+    }
+    else if (SDO_WRITE_SEGMENTED == sdo_type)
+    {
+        Uint8 cmd        = UPLOAD_SEGMENT_CONTINUE_1;
+        int   data_index = 0;
 
-        if ((SDO_READ == sdo_type) && (SDL_TRUE == is_segmented))
+        msg_out.id       = 0x600 + node_id;
+        msg_out.length   = 8;
+        msg_out.data[0]  = cmd;
+
+        while (msg_out.data[0] != (cmd | 0x01))
         {
-            Uint8 response_index = 0;
-            Uint8 cmd            = UPLOAD_SEGMENT_REQUEST_1;
-            Uint8 data_length    = sdo_response->length;
-            Uint8 remainder      = data_length % 7u;
-            Uint8 expected_msgs  = (data_length / 7u) + (remainder ? 1 : 0);
-            
-            msg_out.id      = 0x600 + node_id;
-            msg_out.length  = 8;
+            int i;
+        
             msg_out.data[0] = cmd;
-            
+
+            for (i = 1; i <= 7; i += 1)
+            {
+                char* data_str = (char*)data;
+#if 0
+                if ('\0' == data_str[data_index])
+                {
+                    msg_out.data[0] = cmd | 0x01; /* Data sent; mark last segment. */
+                    msg_out.data[i] = 0x00;
+                }
+                else
+#endif
+                if ((cmd | 0x01) == msg_out.data[0])
+                {
+                    msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
+                }
+                else
+                {
+                    msg_out.data[i] = data_str[data_index];
+                }
+                data_index += 1;
+            }
+        
+            if (7u == length) /* Segmented transfer, single segment. */
+            {
+                msg_out.data[0] = (cmd | 0x01);
+            }
+
             can_status = can_write(&msg_out, NO_OUTPUT, NULL);
             if (0 != can_status)
             {
                 /* Nothing to do here. */
             }
-            
-            for (n = 0; n < expected_msgs; n += 1)
+        
+            if ((cmd | 0x01) == msg_out.data[0])
             {
-                timeout_time      = 0;
-                time_a            = SDL_GetTicks64();
-                response_received = SDL_FALSE;
-            
-                while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
-                {
-                    Uint64 time_b;
-                    Uint64 delta_time;
-            
-                    can_read(&msg_in);
-                    if ((0x580 + node_id) == msg_in.id)
-                    {
-                        int can_msg_index = 0;
-                        msg_out.data[0] = cmd;
-
-                        if (0 == (msg_in.data[0] % 2))
-                        {
-                            if (UPLOAD_SEGMENT_REQUEST_1 == cmd)
-                            {
-                                cmd = UPLOAD_SEGMENT_REQUEST_2;
-                            }
-                            else
-                            {
-                                cmd = UPLOAD_SEGMENT_REQUEST_1;
-                            }
-
-                            msg_out.data[0] = cmd;
-
-                            can_status = can_write(&msg_out, NO_OUTPUT, NULL);
-                            if (0 != can_status)
-                            {
-                                /* Nothing to do here. */
-                            }
-                        }
-
-                        for (can_msg_index = 1; can_msg_index <= 7; can_msg_index += 1)
-                        {
-                            char printable_char;
-                            if (response_index >= data_length)
-                            {
-                                break;
-                            }
-                            else if (SDL_isprint(msg_in.data[can_msg_index]))
-                            {
-                                printable_char = msg_in.data[can_msg_index];
-                            }
-                            else
-                            {
-                                break;
-                            }
-                            sdo_response->data[response_index] = printable_char;
-
-                            response_index += 1;
-                        }
-
-                        response_received = SDL_TRUE;
-                        continue;
-                    }
-
-                    time_b = time_a;
-                    time_a = SDL_GetTicks64();
-
-                    if (time_a > time_b)
-                    {
-                        delta_time = time_a - time_b;
-                    }
-                    else
-                    {
-                        delta_time = time_b - time_a;
-                    }
-                    timeout_time += delta_time;
-                }
-
-                if (timeout_time >= SDO_TIMEOUT_IN_MS)
-                {
-                    SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
-                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-                    return ABORT_TRANSFER;
-                }
+                break;
             }
-         }
-        else if (SDO_WRITE_SEGMENTED == sdo_type)
-        {
-            Uint8 cmd        = UPLOAD_SEGMENT_CONTINUE_1;
-            int   data_index = 0;
-
-            msg_out.id       = 0x600 + node_id;
-            msg_out.length   = 8;
-            msg_out.data[0]  = cmd;
-
-            while (msg_out.data[0] != (cmd | 0x01))
+        
+            if (0 == wait_for_response(node_id, &msg_in))
             {
-                int i;
-            
                 msg_out.data[0] = cmd;
 
-                for (i = 1; i <= 7; i += 1)
+                switch (msg_in.data[0])
                 {
-                    char* data_str = (char*)data;
-#if 0
-                    if ('\0' == data_str[data_index])
-                    {
-                        msg_out.data[0] = cmd | 0x01; /* Data sent; mark last segment. */
-                        msg_out.data[i] = 0x00;
-                    }
-                    else
-#endif
-                    if ((cmd | 0x01) == msg_out.data[0])
-                    {
-                        msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
-                    }
-                    else
-                    {
-                        msg_out.data[i] = data_str[data_index];
-                    }
-                    data_index += 1;
-                }
-            
-                if (7u == length) /* Segmented transfer, single segment. */
-                {
-                    msg_out.data[0] = (cmd | 0x01);
-                }
-
-                can_status = can_write(&msg_out, NO_OUTPUT, NULL);
-                if (0 != can_status)
-                {
-                    /* Nothing to do here. */
-                }
-            
-                if ((cmd | 0x01) == msg_out.data[0])
-                {
-                    break;
-                }
-            
-                timeout_time = 0;
-                time_a = SDL_GetTicks64();
-            
-                while (timeout_time < SDO_TIMEOUT_IN_MS)
-                {
-                    Uint64 time_b;
-                    Uint64 delta_time;
-            
-                    can_read(&msg_in);
-                    if ((0x580 + node_id) == msg_in.id)
-                    {
-                        int can_msg_index;
-                        msg_out.data[0] = cmd;
-            
-                        switch (msg_in.data[0])
-                        {
-                            case DOWNLOAD_RESPONSE_1:
-                                cmd = UPLOAD_SEGMENT_CONTINUE_2;
-                                break;
-                            case DOWNLOAD_RESPONSE_2:
-                                cmd = UPLOAD_SEGMENT_CONTINUE_1;
-                                break;
-                        }
+                    case DOWNLOAD_RESPONSE_1:
+                        cmd = UPLOAD_SEGMENT_CONTINUE_2;
                         break;
-                    }
-            
-                    time_b = time_a;
-                    time_a = SDL_GetTicks64();
-            
-                    if (time_a > time_b)
-                    {
-                        delta_time = time_a - time_b;
-                    }
-                    else
-                    {
-                        delta_time = time_b - time_a;
-                    }
-                    timeout_time += delta_time;
+                    case DOWNLOAD_RESPONSE_2:
+                        cmd = UPLOAD_SEGMENT_CONTINUE_1;
+                        break;
                 }
-            
-                if (timeout_time >= SDO_TIMEOUT_IN_MS)
-                {
-                    SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
-                    print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
-                    return ABORT_TRANSFER;
-                }
+            }
+            else
+            {
+                print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
             }
         }
-        else /* Write expedided SDO. */
+    }
+    else if (SDO_WRITE_BLOCK == sdo_type)
+    {
+        Uint8  i;
+        char*  byte_data      = (char*)data;
+        size_t bytes_sent     = 0;
+        Uint8  segment_number = 1;
+
+        while (bytes_sent < length)
         {
-            for (n = 0; n < sdo_response->length; n += 1)
+            msg_out.data[0] = segment_number;
+
+            for (i = 0; i < 7 && (bytes_sent + i) < length; ++i)
             {
-                sdo_response->data[4 + n] = msg_in.data[4 + n];
+                msg_out.data[i + 1] = byte_data[bytes_sent + i];
             }
+
+            // Mark last segment of last block.
+            if ((bytes_sent + 7) >= length)
+            {
+                msg_out.data[0] |= 0x80;
+            }
+
+            can_status = can_write(&msg_out, NO_OUTPUT, NULL);
+            if (0 != can_status)
+            {
+                /* Nothing to do here. */
+            }
+
+            bytes_sent += 7;
+            segment_number += 1;
+
+            if (block_size < segment_number)
+            {
+                msg_in.data[0] = 0x00;
+                msg_in.data[1] = 0x00;
+                msg_in.data[2] = 0x00;
+
+                while ((0xA2 != msg_in.data[0]) || (block_size != msg_in.data[1]))
+                {
+                    if (0 != wait_for_response(node_id, &msg_in))
+                    {
+                        print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+                        return ABORT_TRANSFER;
+                    }
+                }
+
+                // Adjust block_size based on receiver's response.
+                if (msg_in.data[2] < block_size)
+                {
+                    block_size = msg_in.data[2];
+                }
+                segment_number = 1;
+            }
+        }
+
+        // Handle the final segment.
+        Uint8 remaining_bytes = length - bytes_sent;
+        Uint8 final_segment_header;
+
+        switch (remaining_bytes)
+        {
+            case 7: final_segment_header  = 0xC1; break;
+            case 6: final_segment_header  = 0xC5; break;
+            case 5: final_segment_header  = 0xC9; break;
+            case 4: final_segment_header  = 0xCD; break;
+            case 3: final_segment_header  = 0xD1; break;
+            case 2: final_segment_header  = 0xD5; break;
+            case 1: final_segment_header  = 0xD9; break;
+            default: final_segment_header = 0xDD; break;
+        }
+
+        msg_out.data[0] = final_segment_header;
+
+        for (i = 0; i < 7; ++i)
+        {
+            if (i < remaining_bytes)
+            {
+                msg_out.data[i + 1] = byte_data[bytes_sent + i];
+            }
+            else
+            {
+                msg_out.data[i + 1] = 0x00;
+            }
+        }
+
+        can_status = can_write(&msg_out, NO_OUTPUT, NULL);
+        if (0 != can_status)
+        {
+            /* Nothing to do here. */
+        }
+
+        while (1)
+        {
+            if (0 != wait_for_response(node_id, &msg_in))
+            {
+                print_error(reason, sdo_type, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
+            }
+
+            if (msg_in.data[0] == 0xA1)
+            {
+                break;
+            }
+        }
+    }
+    else /* Read expedided SDO. */
+    {
+        for (n = 0; n < sdo_response->length; n += 1)
+        {
+            sdo_response->data[4 + n] = msg_in.data[4 + n];
         }
     }
 
@@ -674,7 +812,7 @@ static void print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, 
 {
     switch (disp_mode)
     {
-        case NORMAL_OUTPUT:
+        case TERM_OUTPUT:
         {
             const  char* description = dict_lookup(index, sub_index);
 
@@ -754,7 +892,7 @@ void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message
 
     switch (disp_mode)
     {
-        case NORMAL_OUTPUT:
+        case TERM_OUTPUT:
         {
             const char* description = dict_lookup(index, sub_index);
 
@@ -842,7 +980,7 @@ void print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message
     }
 }
 
-void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint8 length, void* data, disp_mode_t disp_mode, const char* comment)
+void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, disp_mode_t disp_mode, const char* comment)
 {
     Uint32  u32_value    = 0;
     Uint32* u32_data_ptr = (Uint32*)data;
@@ -860,7 +998,7 @@ void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 
 
     switch (disp_mode)
     {
-        case NORMAL_OUTPUT:
+        case TERM_OUTPUT:
         {
             const char* description = dict_lookup(index, sub_index);
         
@@ -949,4 +1087,46 @@ void print_write_result(sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 
         case NO_OUTPUT:
             break;
     }
+}
+
+static int wait_for_response(Uint8 node_id, can_message_t* msg_in)
+{
+    char     reason[300]       = { 0 };
+    Uint64   time_a            = SDL_GetTicks64();
+    Uint64   timeout_time      = 0;
+    SDL_bool response_received = SDL_FALSE;
+
+    while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+    {
+        Uint64 time_b;
+        Uint64 delta_time;
+
+        can_read(msg_in);
+        if ((0x580 + node_id) == msg_in->id)
+        {
+            response_received = SDL_TRUE;
+            continue;
+        }
+
+        time_b = time_a;
+        time_a = SDL_GetTicks64();
+
+        if (time_a > time_b)
+        {
+            delta_time = time_a - time_b;
+        }
+        else
+        {
+            delta_time = time_b - time_a;
+        }
+        timeout_time += delta_time;
+    }
+
+    if (timeout_time >= SDO_TIMEOUT_IN_MS)
+    {
+        SDL_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
+        return 1;
+    }
+
+    return 0;
 }
