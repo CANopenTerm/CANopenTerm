@@ -16,9 +16,13 @@
 #include "printf.h"
 #include "sdo_client.h"
 
-#define SDO_TIMEOUT_IN_MS 100
+#define SEGMENT_DATA_SIZE     7u
+#define MAX_SDO_RESPONSE_SIZE 8u
+#define CAN_BASE_ID           0x600
+#define SDO_TIMEOUT_IN_MS     100u
 
 static Uint32      sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void *data, const char* comment);
+static void        limit_node_id(Uint8* node_id);
 static const char* lookup_abort_code(Uint32 abort_code);
 static void        print_error(const char* reason, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment, disp_mode_t disp_mode);
 static void        print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, SDL_bool is_segmented, const char* comment);
@@ -63,10 +67,7 @@ int lua_sdo_read(lua_State* L)
     SDL_bool      show_output  = lua_toboolean(L, 4);
     const char*   comment      = lua_tostring(L, 5);
 
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
+    limit_node_id((Uint8*) & node_id);
 
     if (SDL_TRUE == show_output)
     {
@@ -111,10 +112,7 @@ int lua_sdo_write(lua_State* L)
     SDL_bool      show_output  = lua_toboolean(L, 6);
     const char*   comment      = lua_tostring(L, 7);
 
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
+    limit_node_id((Uint8*)&node_id);
 
     if (SDL_TRUE == show_output)
     {
@@ -287,24 +285,21 @@ void lua_register_sdo_commands(core_t* core)
 
 static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment)
 {
-    can_message_t msg_in            = { 0 };
-    can_message_t msg_out           = { 0 };
-    SDL_bool      is_segmented      = SDL_FALSE;
-    Uint32        can_status        = 0;
-    Uint32        u32_value         = 0;
-    Uint32*       u32_data_ptr      = (Uint32*)data;
-    Uint8         command_code      = 0x00;
-    Uint8         block_size        = 0;
-    char          reason[300]       = { 0 };
-    Uint32        abort_code        = 0;
+    can_message_t msg_in       = { 0 };
+    can_message_t msg_out      = { 0 };
+    SDL_bool      is_segmented = SDL_FALSE;
+    Uint32        can_status   = 0;
+    Uint32        u32_value    = 0;
+    Uint32*       u32_data_ptr = (Uint32*)data;
+    Uint8         command_code = 0x00;
+    Uint8         block_size   = 0;
+    char          reason[300]  = { 0 };
+    Uint32        abort_code   = 0;
     int           n;
 
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
+    limit_node_id(&node_id);
 
-    msg_out.id = 0x600 + node_id;
+    msg_out.id      = CAN_BASE_ID + node_id;
     msg_out.data[1] = (Uint8)(index & 0x00ff);
     msg_out.data[2] = (Uint8)((index & 0xff00) >> 8);
     msg_out.data[3] = sub_index;
@@ -326,6 +321,11 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
             if (NULL != u32_data_ptr)
             {
                 u32_value = *u32_data_ptr;
+            }
+            else
+            {
+                print_error("NULL data pointer", sdo_type, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
             }
 
             msg_out.length  = 4 + length;
@@ -356,7 +356,10 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
         {
             msg_out.length  = 8;
             msg_out.data[0] = DOWNLOAD_INIT_SEGMENT_SIZE_IN_DATA;
-            msg_out.data[4] = length;
+            msg_out.data[4] = (Uint8)(length & 0x000000ff);
+            msg_out.data[5] = (Uint8)((length & 0x0000ff00) >> 8);
+            msg_out.data[6] = (Uint8)((length & 0x00ff0000) >> 16);
+            msg_out.data[7] = (Uint8)((length & 0xff000000) >> 24);
             break;
         }
         case SDO_WRITE_BLOCK:
@@ -374,12 +377,11 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
     can_status = can_write(&msg_out, NO_OUTPUT, NULL);
     if (0 != can_status)
     {
-        /* Nothing to do here. */
+        print_error(can_get_error_message(can_status), sdo_type, node_id, index, sub_index, comment, disp_mode);
+        return ABORT_TRANSFER;
     }
 
-    msg_in.data[1] = 0x00;
-    msg_in.data[2] = 0x00;
-
+    SDL_memset(&msg_in, 0, sizeof(msg_in));
     while (((index & 0x00ff) != msg_in.data[1]) || (((index & 0xff00) >> 8) != msg_in.data[2]))
     {
         if (0 != wait_for_response(node_id, &msg_in))
@@ -424,7 +426,7 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
             break;
         default:
         case ABORT_TRANSFER: /* Error. */
-            abort_code = (abort_code & 0xffffff00) | msg_in.data[7];
+            abort_code = (abort_code & 0xffffff00) | msg_in.data[SEGMENT_DATA_SIZE];
             abort_code = (abort_code & 0xffff00ff) | ((Uint32)msg_in.data[6] << 8);
             abort_code = (abort_code & 0xff00ffff) | ((Uint32)msg_in.data[5] << 16);
             abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
@@ -440,17 +442,18 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
         Uint8  response_index = 0;
         Uint8  cmd            = UPLOAD_SEGMENT_REQUEST_1;
         Uint32 data_length    = sdo_response->length;
-        Uint8  remainder      = data_length % 7u;
-        Uint8  expected_msgs  = (data_length / 7u) + (remainder ? 1 : 0);
+        Uint8  remainder      = data_length % SEGMENT_DATA_SIZE;
+        Uint8  expected_msgs  = (data_length / SEGMENT_DATA_SIZE) + (remainder ? 1 : 0);
         
-        msg_out.id      = 0x600 + node_id;
+        msg_out.id      = CAN_BASE_ID + node_id;
         msg_out.length  = 8;
         msg_out.data[0] = cmd;
         
         can_status = can_write(&msg_out, NO_OUTPUT, NULL);
         if (0 != can_status)
         {
-            /* Nothing to do here. */
+            print_error(can_get_error_message(can_status), sdo_type, node_id, index, sub_index, comment, disp_mode);
+            return ABORT_TRANSFER;
         }
         
         for (n = 0; n < expected_msgs; n += 1)
@@ -486,11 +489,12 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
                         can_status = can_write(&msg_out, NO_OUTPUT, NULL);
                         if (0 != can_status)
                         {
-                            /* Nothing to do here. */
+                            print_error(can_get_error_message(can_status), sdo_type, node_id, index, sub_index, comment, disp_mode);
+                            return ABORT_TRANSFER;
                         }
                     }
 
-                    for (can_msg_index = 1; can_msg_index <= 7; can_msg_index += 1)
+                    for (can_msg_index = 1; can_msg_index <= SEGMENT_DATA_SIZE; can_msg_index += 1)
                     {
                         char printable_char;
                         if (response_index >= data_length)
@@ -538,54 +542,57 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
     }
     else if (SDO_WRITE_SEGMENTED == sdo_type)
     {
-        Uint8 cmd        = UPLOAD_SEGMENT_CONTINUE_1;
-        int   data_index = 0;
-
-        msg_out.id       = 0x600 + node_id;
-        msg_out.length   = 8;
-        msg_out.data[0]  = cmd;
-
+        Uint8 cmd            = UPLOAD_SEGMENT_CONTINUE_1;
+        int data_index       = 0;
+        int remaining_length = length;
+    
+        msg_out.id      = CAN_BASE_ID + node_id;
+        msg_out.length  = 8;
+        msg_out.data[0] = cmd;
+    
         while (msg_out.data[0] != (cmd | 0x01))
         {
             int i;
-        
+    
             msg_out.data[0] = cmd;
-
+    
             for (i = 1; i <= 7; i += 1)
             {
                 char* data_str = (char*)data;
-
-                if ((cmd | 0x01) == msg_out.data[0])
+    
+                if (remaining_length == 0 || (cmd | 0x01) == msg_out.data[0])
                 {
                     msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
                 }
                 else
                 {
-                    msg_out.data[i] = data_str[data_index];
+                    msg_out.data[i]   = data_str[data_index];
+                    data_index       += 1;
+                    remaining_length -= 1;
                 }
-                data_index += 1;
             }
-        
-            if (7u == length) /* Segmented transfer, single segment. */
+    
+            if (remaining_length == 0) /* No more data left to send. */
             {
                 msg_out.data[0] = (cmd | 0x01);
             }
-
+    
             can_status = can_write(&msg_out, NO_OUTPUT, NULL);
             if (0 != can_status)
             {
-                /* Nothing to do here. */
+                print_error(can_get_error_message(can_status), sdo_type, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
             }
-        
+    
             if ((cmd | 0x01) == msg_out.data[0])
             {
                 break;
             }
-        
+    
             if (0 == wait_for_response(node_id, &msg_in))
             {
                 msg_out.data[0] = cmd;
-
+    
                 switch (msg_in.data[0])
                 {
                     case DOWNLOAD_RESPONSE_1:
@@ -614,13 +621,13 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
         {
             msg_out.data[0] = segment_number;
 
-            for (i = 0; i < 7 && (bytes_sent + i) < length; ++i)
+            for (i = 0; i < SEGMENT_DATA_SIZE && (bytes_sent + i) < length; ++i)
             {
                 msg_out.data[i + 1] = byte_data[bytes_sent + i];
             }
 
-            // Mark last segment of last block.
-            if ((bytes_sent + 7) >= length)
+            /* Mark last segment of last block. */
+            if ((bytes_sent + SEGMENT_DATA_SIZE) >= length)
             {
                 msg_out.data[0] |= 0x80;
             }
@@ -628,10 +635,11 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
             can_status = can_write(&msg_out, NO_OUTPUT, NULL);
             if (0 != can_status)
             {
-                /* Nothing to do here. */
+                print_error(can_get_error_message(can_status), sdo_type, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
             }
 
-            bytes_sent += 7;
+            bytes_sent     += SEGMENT_DATA_SIZE;
             segment_number += 1;
 
             if (block_size < segment_number)
@@ -649,7 +657,7 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
                     }
                 }
 
-                // Adjust block_size based on receiver's response.
+                /* Adjust block_size based on receiver's response. */
                 if (msg_in.data[2] < block_size)
                 {
                     block_size = msg_in.data[2];
@@ -658,7 +666,7 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
             }
         }
 
-        // Handle the final segment.
+        /* Handle the final segment. */
         Uint8 remaining_bytes = length - bytes_sent;
         Uint8 final_segment_header;
 
@@ -676,7 +684,7 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
 
         msg_out.data[0] = final_segment_header;
 
-        for (i = 0; i < 7; ++i)
+        for (i = 0; i < SEGMENT_DATA_SIZE; ++i)
         {
             if (i < remaining_bytes)
             {
@@ -726,6 +734,18 @@ static Uint32 sdo_request(sdo_type_t sdo_type, can_message_t* sdo_response, disp
     }
 
     return command_code;
+}
+
+static void limit_node_id(Uint8* node_id)
+{
+    if (*node_id < 0x01)
+    {
+        *node_id = 0x01;
+    }
+    else if (*node_id > 0x7f)
+    {
+        *node_id = 0x7f;
+    }
 }
 
 static const char* lookup_abort_code(Uint32 abort_code)
