@@ -954,7 +954,6 @@ static void print_error(const char* reason, sdo_state_t sdo_state, Uint8 node_id
             }
             break;
         }
-
         case SCRIPT_OUTPUT:
         {
             int     i;
