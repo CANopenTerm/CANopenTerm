@@ -300,12 +300,12 @@ void parse_command(char* input, core_t* core)
     else if (SDL_strncmp(token, "w", 1) == 0)
     {
         can_message_t sdo_response = { 0 };
-        Uint32 node_id;
-        Uint32 sdo_index;
-        Uint32 sub_index;
-        Uint32 sdo_data_length = 0;
-        Uint32 sdo_data = 0;
-        sdo_type_t sdo_type = SDO_WRITE_EXPEDITED;
+        Uint32        node_id;
+        Uint32        sdo_index;
+        Uint32        sub_index;
+        Uint32        sdo_data_length = 0;
+        Uint32        sdo_data  = 0;
+        sdo_state_t   sdo_state = IS_WRITE_EXPEDIDED;
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (token == NULL)
@@ -354,8 +354,8 @@ void parse_command(char* input, core_t* core)
 
                 SDL_strlcpy(buffer, token, sizeof(buffer));
 
-                len      = SDL_strlen(buffer);
-                sdo_type = SDO_WRITE_SEGMENTED;
+                len       = SDL_strlen(buffer);
+                sdo_state = IS_WRITE_SEGMENTED;
                 token     = SDL_strtokr(NULL, delim, &input_savptr);
 
                 while (token != NULL) 
@@ -377,7 +377,14 @@ void parse_command(char* input, core_t* core)
 
             if (sdo_data_length > 0)
             {
-                sdo_write(&sdo_response, TERM_OUTPUT, sdo_type, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
+                if (IS_WRITE_EXPEDIDED == sdo_state)
+                {
+                    sdo_write(&sdo_response, TERM_OUTPUT, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
+                }
+                else
+                {
+                    sdo_write_segmented(&sdo_response, TERM_OUTPUT, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
+                }
             }
             else
             {

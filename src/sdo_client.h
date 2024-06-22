@@ -23,16 +23,18 @@
 #define UPLOAD_SEGMENT_CONTINUE_2      0x10
 #define BLOCK_DOWNLOAD_RESPONSE_NO_CRC 0xa0
 #define BLOCK_DOWNLOAD_RESPONSE_CRC    0xa4
-#define ABORT_TRANSFER                 0x80
 
 typedef enum
 {
-    SDO_READ = 0,
-    SDO_WRITE_BLOCK,
-    SDO_WRITE_EXPEDITED,
-    SDO_WRITE_SEGMENTED
+    IS_READ_EXPEDIDED = 0,
+    IS_READ_SEGMENTED,
+    IS_READ_BLOCK,
+    IS_WRITE_EXPEDIDED,
+    IS_WRITE_SEGMENTED,
+    IS_WRITE_BLOCK,
+    ABORT_TRANSFER = 0x80
 
-} sdo_type_t;
+} sdo_state_t;
 
 typedef enum
 {
@@ -101,10 +103,14 @@ typedef enum
 
 } sdo_abort_code_t;
 
-Uint32 sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment);
-Uint32 sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, sdo_type_t sdo_type, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment);
-int    lua_sdo_read(lua_State* L);
-int    lua_sdo_write(lua_State* L);
-void   lua_register_sdo_commands(core_t* core);
+sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment);
+sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment);
+sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* filename, const char* comment);
+sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment);
+int         lua_sdo_read(lua_State* L);
+int         lua_sdo_write(lua_State* L);
+int         lua_sdo_write_file(lua_State* L);
+int         lua_sdo_write_string(lua_State* L);
+void        lua_register_sdo_commands(core_t* core);
 
 #endif /* SDO_CLIENT_H */
