@@ -69,7 +69,7 @@ status_t core_init(core_t **core)
 
 status_t core_update(core_t* core)
 {
-    char command[64] = { 0 };
+    char command[COMMAND_BUFFER_SIZE] = { 0 };
 
     if (NULL == core)
     {
@@ -77,7 +77,7 @@ status_t core_update(core_t* core)
     }
 
     c_print_prompt();
-    if (NULL != fgets(command, 64, stdin))
+    if (NULL != fgets(command, COMMAND_BUFFER_SIZE - 1, stdin))
     {
         parse_command(command, core);
     }

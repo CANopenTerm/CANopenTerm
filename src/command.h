@@ -12,6 +12,8 @@
 
 #include "core.h"
 
+#define COMMAND_BUFFER_SIZE 1024
+
 void parse_command(char* input, core_t* core);
 
 #endif /* COMMAND_H */
