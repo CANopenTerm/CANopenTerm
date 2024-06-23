@@ -324,7 +324,7 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
     void*         data           = NULL;
     char*         byte_data      = NULL;
     FILE*         file           = NULL;
-    size_t        file_size      = 0;
+    long          file_size      = 0;
     size_t        bytes_sent     = 0;
     Uint32        abort_code     = 0;
     Uint32        can_status     = 0;
@@ -358,7 +358,7 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
     }
     rewind(file);
 
-    data = SDL_calloc(file_size, sizeof(char));
+    data = SDL_calloc((size_t)file_size, sizeof(char));
     if (NULL == data)
     {
         fclose(file);

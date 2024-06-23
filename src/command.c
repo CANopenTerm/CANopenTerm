@@ -279,8 +279,6 @@ void parse_command(char* input, core_t* core)
         Uint32        sdo_data_length = 0;
         Uint32        sdo_data        = 0;
         sdo_state_t   sdo_state       = IS_WRITE_EXPEDITED;
-        char          buffer[256]     = { 0 };
-        size_t        len;
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (token == NULL)
@@ -309,6 +307,8 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (token != NULL)
         {
+            char buffer[256] = { 0 };
+
             if (is_numeric(token))
             {
                 convert_token_to_uint(token, &sdo_data_length);
@@ -323,6 +323,8 @@ void parse_command(char* input, core_t* core)
             }
             else
             {
+                size_t len;
+
                 SDL_strlcpy(buffer, token, sizeof(buffer));
                 len = SDL_strlen(buffer);
                 sdo_state = IS_WRITE_SEGMENTED;
