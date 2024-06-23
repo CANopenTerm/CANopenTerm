@@ -36,11 +36,13 @@ status_t core_init(core_t **core)
     SetConsoleTitle("CANopenTerm");
 #endif
 
-    c_printf(DARK_WHITE, "CANopenTerm %u.%u.%u\r\n",
+    c_printf(LIGHT_YELLOW,  "<");
+    c_printf(LIGHT_GREEN,   ">");
+    c_printf(DEFAULT_COLOR, " CANopenTerm v%u.%u.%u\r\n",
              VERSION_MAJOR,
              VERSION_MINOR,
              VERSION_BUILD);
-    c_printf(DARK_WHITE, "Copyright (c) 2024, Michael Fitzmayer.\r\n\r\n");
+    c_printf(DEFAULT_COLOR, "Copyright (c) 2024, Michael Fitzmayer.\r\n\r\n");
 
     // Initialise SDL.
     if (0 != SDL_InitSubSystem(SDL_INIT_TIMER))
