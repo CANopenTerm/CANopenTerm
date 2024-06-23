@@ -9,7 +9,7 @@ endif()
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # SDL2
-set(SDL2_VERSION "2.30.3")
+set(SDL2_VERSION "2.30.4")
 
 if(WIN32)
   set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
@@ -23,7 +23,7 @@ if(WIN32)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=2878b4b1fbe9e4b22a317ad52c9d751c70e8df62
+    URL_HASH SHA1=cbc125e68b0172f48dc5e15aad0c3a470c2a646a
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -50,7 +50,7 @@ if(UNIX)
 
   ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=8c675495a695ddcf418943db4a0163dc8f211484
+    URL_HASH SHA1=1779d75a8ffaec0c1be818d0adc9ca27866d348e
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -69,7 +69,6 @@ endif(UNIX)
 
 # PCAN-Basic API
 set(PCAN_VERSION_WINDOWS "4.9.0.942")
-set(PCAN_VERSION_LINUX   "4.8.0.5")
 
 if(WIN32)
   set(PCAN_PLATFORM  "x64")
