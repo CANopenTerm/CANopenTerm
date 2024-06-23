@@ -22,10 +22,7 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
     Uint32        can_status  = 0;
     can_message_t can_message = { 0 };
 
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
+    limit_node_id(&node_id);
 
     can_message.id      = 0x000;
     can_message.length  = 2;
@@ -106,10 +103,7 @@ int lua_nmt_send_command(lua_State* L)
     SDL_bool    show_output = lua_toboolean(L, 3);
     const char* comment     = lua_tostring(L, 4);
 
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
-    }
+    limit_node_id(&node_id);
 
     if (SDL_TRUE == show_output)
     {
@@ -126,11 +120,6 @@ int lua_nmt_send_command(lua_State* L)
             break;
         default:
             return 0;
-    }
-
-    if (node_id > 0x7f)
-    {
-        node_id = 0x00 + (node_id % 0x7f);
     }
 
     if (0 == nmt_send_command(node_id, command, disp_mode, comment))

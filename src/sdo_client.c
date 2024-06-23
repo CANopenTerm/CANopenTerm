@@ -21,7 +21,6 @@
 #define CAN_BASE_ID           0x600
 #define SDO_TIMEOUT_IN_MS     100u
 
-static void        limit_node_id(Uint8* node_id);
 static const char* lookup_abort_code(Uint32 abort_code);
 static void        print_error(const char* reason, sdo_state_t sdo_state, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment, disp_mode_t disp_mode);
 static void        print_read_result(Uint8 node_id, Uint16 index, Uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
@@ -860,18 +859,6 @@ void lua_register_sdo_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_sdo_write_string);
     lua_setglobal(core->L, "sdo_write_string");
-}
-
-static void limit_node_id(Uint8* node_id)
-{
-    if (*node_id < 0x01)
-    {
-        *node_id = 0x01;
-    }
-    else if (*node_id > 0x7f)
-    {
-        *node_id = 0x7f;
-    }
 }
 
 static const char* lookup_abort_code(Uint32 abort_code)

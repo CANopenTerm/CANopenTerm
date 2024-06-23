@@ -199,6 +199,18 @@ void can_set_baud_rate(Uint8 command, core_t* core)
     }
 }
 
+void limit_node_id(Uint8* node_id)
+{
+    if (*node_id < 0x01)
+    {
+        *node_id = 0x01;
+    }
+    else if (*node_id > 0x7f)
+    {
+        *node_id = 0x7f;
+    }
+}
+
 int lua_can_write(lua_State* L)
 {
     int           can_id      = luaL_checkinteger(L, 1);
