@@ -30,21 +30,22 @@ static int         wait_for_response(Uint8 node_id, can_message_t* msg_in);
 
 sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
 {
-    can_message_t msg_in       = { 0 };
-    can_message_t msg_out      = { 0 };
-    char          reason[300]  = { 0 };
-    sdo_state_t   sdo_state    = IS_READ_EXPEDIDED;
-    Uint32        abort_code   = 0;
-    Uint32        can_status   = 0;
+    can_message_t msg_in = { 0 };
+    can_message_t msg_out = { 0 };
+    char          reason[300] = { 0 };
+    sdo_state_t   sdo_state = IS_READ_EXPEDIDED;
+    Uint32        abort_code = 0;
+    Uint32        can_status = 0;
+    int           n;
 
     limit_node_id(&node_id);
 
-    msg_out.id = CAN_BASE_ID + node_id;
+    msg_out.id      = CAN_BASE_ID + node_id;
+    msg_out.data[0] = UPLOAD_RESPONSE_SEGMENT_NO_SIZE;
     msg_out.data[1] = (Uint8)(index & 0x00ff);
     msg_out.data[2] = (Uint8)((index & 0xff00) >> 8);
     msg_out.data[3] = sub_index;
     msg_out.length  = 8;
-    msg_out.data[0] = UPLOAD_RESPONSE_SEGMENT_NO_SIZE;
 
     can_status = can_write(&msg_out, NO_OUTPUT, NULL);
     if (0 != can_status)
@@ -68,7 +69,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 n
         case UPLOAD_RESPONSE_SEGMENT_NO_SIZE:
         case UPLOAD_RESPONSE_SEGMENT_SIZE_IN_DATA:
             sdo_response->length = msg_in.data[4];
-            sdo_state            = IS_READ_SEGMENTED;
+            sdo_state = IS_READ_SEGMENTED;
             break;
         case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
         case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
@@ -101,12 +102,16 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 n
 
     if (IS_READ_SEGMENTED == sdo_state)
     {
-        int    n;
-        Uint8  cmd = UPLOAD_SEGMENT_REQUEST_1;
-        Uint8  response_index = 0;
-        Uint32 data_length    = sdo_response->length;
-        Uint8  remainder      = data_length % SEGMENT_DATA_SIZE;
-        Uint8  expected_msgs  = (data_length / SEGMENT_DATA_SIZE) + (remainder ? 1 : 0);
+        Uint8    cmd            = UPLOAD_SEGMENT_REQUEST_1;
+        Uint8    response_index = 0;
+        Uint32   data_length    = sdo_response->length;
+        Uint8    remainder      = data_length % SEGMENT_DATA_SIZE;
+        Uint8    expected_msgs  = (data_length / SEGMENT_DATA_SIZE) + (remainder ? 1 : 0);
+        Uint64   timeout_time;
+        Uint64   time_a;
+        Uint64   time_b;
+        Uint64   delta_time;
+        SDL_bool response_received;
 
         msg_out.id      = CAN_BASE_ID + node_id;
         msg_out.length  = 8;
@@ -121,20 +126,17 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 n
 
         for (n = 0; n < expected_msgs; n += 1)
         {
-            Uint64   timeout_time = 0;
-            Uint64   time_a = SDL_GetTicks64();
-            SDL_bool response_received = SDL_FALSE;
+            timeout_time      = 0;
+            time_a            = SDL_GetTicks64();
+            response_received = SDL_FALSE;
 
             while ((SDL_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
             {
-                Uint64 time_b;
-                Uint64 delta_time;
-
                 can_read(&msg_in);
                 if ((0x580 + node_id) == msg_in.id)
                 {
                     int can_msg_index = 0;
-                    msg_out.data[0] = cmd;
+                    msg_out.data[0]   = cmd;
 
                     if (0 == (msg_in.data[0] % 2))
                     {
@@ -205,10 +207,17 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 n
     }
     else /* Expedided SDO. */
     {
-        int n;
         for (n = 0; n < sdo_response->length; n += 1)
         {
-            sdo_response->data[4 + n] = msg_in.data[4 + n];
+            if (4 + n < sizeof(sdo_response->data))
+            {
+                sdo_response->data[4 + n] = msg_in.data[4 + n];
+            }
+            else
+            {
+                print_error("Buffer overflow", IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
+            }
         }
     }
 
@@ -235,7 +244,7 @@ sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 
     }
     else
     {
-        print_error("NULL data pointer", IS_WRITE_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+        print_error("NULL data pointer", IS_WRITE_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
         return ABORT_TRANSFER;
     }
 
@@ -269,7 +278,7 @@ sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 
     can_status = can_write(&msg_out, NO_OUTPUT, NULL);
     if (0 != can_status)
     {
-        print_error(can_get_error_message(can_status), IS_WRITE_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+        print_error(can_get_error_message(can_status), IS_WRITE_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
         return ABORT_TRANSFER;
     }
 
@@ -278,7 +287,7 @@ sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 
     {
         if (0 != wait_for_response(node_id, &msg_in))
         {
-            print_error(reason, IS_WRITE_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+            print_error(reason, IS_WRITE_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
         }
     }
@@ -298,30 +307,32 @@ sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 
             abort_code = SDL_SwapBE32(abort_code);
 
             SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
-            print_error(reason, IS_WRITE_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+            print_error(reason, IS_WRITE_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
     }
 
-    print_write_result(IS_WRITE_EXPEDIDED, node_id, index, sub_index, length, data, disp_mode, comment);
+    print_write_result(IS_WRITE_EXPEDITED, node_id, index, sub_index, length, data, disp_mode, comment);
 
-    return IS_WRITE_EXPEDIDED;
+    return IS_WRITE_EXPEDITED;
 }
 
 sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* filename, const char* comment)
 {
-    can_message_t msg_in      = { 0 };
-    can_message_t msg_out     = { 0 };
-    char          reason[300] = { 0 };
-    void*         data;
-    char*         byte_data;
-    FILE*         file;
-    size_t        file_size;
-    size_t        bytes_sent  = 0;
-    Uint32        abort_code  = 0;
-    Uint32        can_status  = 0;
-    Uint8         block_size  = 0;
-    Uint8  i;
-    Uint8  segment_number = 1;
+    can_message_t msg_in         = { 0 };
+    can_message_t msg_out        = { 0 };
+    char          reason[300]    = { 0 };
+    void*         data           = NULL;
+    char*         byte_data      = NULL;
+    FILE*         file           = NULL;
+    size_t        file_size      = 0;
+    size_t        bytes_sent     = 0;
+    Uint32        abort_code     = 0;
+    Uint32        can_status     = 0;
+    Uint8         block_size     = 0;
+    Uint8         segment_number = 1;
+    Uint8         i;
+    Uint8         remaining_bytes;
+    Uint8         final_segment_header;
 
     if (NULL == filename)
     {
@@ -334,8 +345,17 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
         return ABORT_TRANSFER;
     }
 
-    fseek(file, 0, SEEK_END);
+    if (fseek(file, 0, SEEK_END) != 0)
+    {
+        fclose(file);
+        return ABORT_TRANSFER;
+    }
     file_size = ftell(file);
+    if (file_size == -1L)
+    {
+        fclose(file);
+        return ABORT_TRANSFER;
+    }
     rewind(file);
 
     data = SDL_calloc(file_size, sizeof(char));
@@ -359,10 +379,10 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
     msg_out.data[1] = (Uint8)(index & 0x00ff);
     msg_out.data[2] = (Uint8)((index & 0xff00) >> 8);
     msg_out.data[3] = sub_index;
-    msg_out.data[4] = (file_size >> 0) & 0xff;
-    msg_out.data[5] = (file_size >> 8) & 0xff;
-    msg_out.data[6] = (file_size >> 16) & 0xff;
-    msg_out.data[7] = (file_size >> 24) & 0xff;
+    msg_out.data[4] = (Uint8)(file_size & 0xff);
+    msg_out.data[5] = (Uint8)((file_size >> 8) & 0xff);
+    msg_out.data[6] = (Uint8)((file_size >> 16) & 0xff);
+    msg_out.data[7] = (Uint8)((file_size >> 24) & 0xff);
     msg_out.length  = 8;
 
     can_status = can_write(&msg_out, NO_OUTPUT, NULL);
@@ -399,7 +419,7 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
             abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
             abort_code = SDL_SwapBE32(abort_code);
 
-            SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
+            SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code(abort_code));
             print_error(reason, IS_WRITE_BLOCK, node_id, index, sub_index, comment, disp_mode);
             SDL_free(data);
             fclose(file);
@@ -462,8 +482,7 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
     }
 
     /* Handle the final segment. */
-    Uint8 remaining_bytes = file_size - bytes_sent;
-    Uint8 final_segment_header;
+    remaining_bytes = file_size - bytes_sent;
 
     switch (remaining_bytes)
     {
@@ -495,6 +514,8 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
     if (0 != can_status)
     {
         print_error(can_get_error_message(can_status), IS_WRITE_BLOCK, node_id, index, sub_index, comment, disp_mode);
+        SDL_free(data);
+        fclose(file);
         return ABORT_TRANSFER;
     }
 
@@ -508,7 +529,7 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
             return ABORT_TRANSFER;
         }
 
-        if (msg_in.data[0] == 0xA1)
+        if (0xA1 == msg_in.data[0])
         {
             break;
         }
@@ -529,6 +550,7 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
     Uint32        abort_code       = 0;
     Uint32        can_status       = 0;
     Uint8         cmd              = UPLOAD_SEGMENT_CONTINUE_1;
+    int           i;
 
     if (length <= 4)
     {
@@ -579,22 +601,20 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
             abort_code = (abort_code & 0x00ffffff) | ((Uint32)msg_in.data[4] << 24);
             abort_code = SDL_SwapBE32(abort_code);
 
-            SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
+            SDL_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code(abort_code));
             print_error(reason, IS_WRITE_SEGMENTED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
     }
 
-    msg_out.id      = CAN_BASE_ID + node_id;
-    msg_out.length  = 8;
+    msg_out.id = CAN_BASE_ID + node_id;
+    msg_out.length = 8;
     msg_out.data[0] = cmd;
 
     while (msg_out.data[0] != (cmd | 0x01))
     {
-        int i;
-
         msg_out.data[0] = cmd;
 
-        for (i = 1; i <= 7; i += 1)
+        for (i = 1; i <= 7; i++)
         {
             char* data_str = (char*)data;
 
@@ -605,8 +625,8 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
             else
             {
                 msg_out.data[i] = data_str[data_index];
-                data_index += 1;
-                remaining_length -= 1;
+                data_index++;
+                remaining_length--;
             }
         }
 
@@ -944,7 +964,7 @@ static void print_error(const char* reason, sdo_state_t sdo_state, Uint8 node_id
                 case IS_READ_SEGMENTED:
                     c_log(LOG_ERROR, "Index %x, Sub-index %x: 0 byte(s) read error: %s", index, sub_index, reason);
                     break;
-                case IS_WRITE_EXPEDIDED:
+                case IS_WRITE_EXPEDITED:
                 case IS_WRITE_SEGMENTED:
                     c_log(LOG_ERROR, "Index %x, Sub-index %x: 0 byte(s) write error: %s", index, sub_index, reason);
                     break;
@@ -965,7 +985,7 @@ static void print_error(const char* reason, sdo_state_t sdo_state, Uint8 node_id
                     c_printf(color, "Read ");
                     c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
                     break;
-                case IS_WRITE_EXPEDIDED:
+                case IS_WRITE_EXPEDITED:
                 case IS_WRITE_SEGMENTED:
                     color = LIGHT_BLUE;
                     c_printf(color, "Write");
@@ -1140,7 +1160,7 @@ void print_write_result(sdo_state_t sdo_state, Uint8 node_id, Uint16 index, Uint
                 c_log(LOG_INFO, "%s", description);
             }
 
-            if (IS_WRITE_EXPEDIDED == sdo_state)
+            if (IS_WRITE_EXPEDITED == sdo_state)
             {
                 char str[5] = { 0 };
 
@@ -1218,7 +1238,7 @@ void print_write_result(sdo_state_t sdo_state, Uint8 node_id, Uint16 index, Uint
             c_printf(LIGHT_GREEN, "SUCC    ");
             c_printf(DARK_MAGENTA, "%s ", buffer);
 
-            if (IS_WRITE_EXPEDIDED == sdo_state)
+            if (IS_WRITE_EXPEDITED == sdo_state)
             {
                 switch (length)
                 {

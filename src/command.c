@@ -34,11 +34,12 @@ static SDL_bool is_numeric(const char* str);
 
 void parse_command(char* input, core_t* core)
 {
-    int   index;
-    char* delim        = " \n";
-    char* context;
-    char* token        = NULL;
-    char* input_savptr = input;
+    int    index;
+    char*  delim        = " \n";
+    char*  context;
+    char*  token        = NULL;
+    char*  input_savptr = input;
+    Uint32 command;
 
     token = SDL_strtokr(input_savptr, delim, &input_savptr);
 
@@ -49,32 +50,28 @@ void parse_command(char* input, core_t* core)
     else if ((input[1] != ' ') && (input[1] != '\0'))
     {
         run_script(token, core);
+        return;
     }
 #ifndef __linux__
     else if (0 == SDL_strncmp(token, "b", 1))
     {
-        Uint32 command;
-
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             can_print_baud_rate_help(core);
             return;
         }
-        else
-        {
-            convert_token_to_uint(token, &command);
-        }
+
+        convert_token_to_uint(token, &command);
 
         if (command > 13)
         {
             can_print_baud_rate_help(core);
             return;
         }
-        else
-        {
-            can_set_baud_rate(command, core);
-        }
+
+        can_set_baud_rate(command, core);
+        return;
     }
 #endif
     else if (0 == SDL_strncmp(token, "c", 1))
@@ -96,6 +93,7 @@ void parse_command(char* input, core_t* core)
     {
         Uint32 node_id;
         Uint32 command;
+        size_t token_len;
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -103,10 +101,8 @@ void parse_command(char* input, core_t* core)
             print_usage_information(SDL_FALSE);
             return;
         }
-        else
-        {
-            convert_token_to_uint(token, &node_id);
-        }
+
+        convert_token_to_uint(token, &node_id);
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -114,31 +110,30 @@ void parse_command(char* input, core_t* core)
             nmt_print_help();
             return;
         }
+
+        token_len = SDL_strlen(token);
+
+        if (0 == SDL_strncmp(token, "op", token_len))
+        {
+            command = NMT_OPERATIONAL;
+        }
+        else if (0 == SDL_strncmp(token, "stop", token_len))
+        {
+            command = NMT_STOP;
+        }
+        else if (0 == SDL_strncmp(token, "preop", token_len))
+        {
+            command = NMT_PRE_OPERATIONAL;
+        }
+        else if (0 == SDL_strncmp(token, "reset", token_len))
+        {
+            command = NMT_RESET_NODE;
+        }
         else
         {
-            size_t token_len = SDL_strlen(token);
-
-            if (0 == SDL_strncmp(token, "op", token_len))
-            {
-                command = NMT_OPERATIONAL;
-            }
-            else if (0 == SDL_strncmp(token, "stop", token_len))
-            {
-                command = NMT_STOP;
-            }
-            else if (0 == SDL_strncmp(token, "preop", token_len))
-            {
-                command = NMT_PRE_OPERATIONAL;
-            }
-            else if (0 == SDL_strncmp(token, "reset", token_len))
-            {
-                command = NMT_RESET_NODE;
-            }
-            else
-            {
-                convert_token_to_uint(token, &command);
-            }
+            convert_token_to_uint(token, &command);
         }
+
         nmt_send_command((Uint16)node_id, (Uint8)command, TERM_OUTPUT, NULL);
     }
     else if (0 == SDL_strncmp(token, "l", 1))
@@ -167,10 +162,8 @@ void parse_command(char* input, core_t* core)
                 print_usage_information(SDL_FALSE);
                 return;
             }
-            else
-            {
-                convert_token_to_uint(token, &can_id);
-            }
+
+            convert_token_to_uint(token, &can_id);
 
             token = SDL_strtokr(input_savptr, delim, &input_savptr);
             if (NULL == token)
@@ -178,10 +171,8 @@ void parse_command(char* input, core_t* core)
                 print_usage_information(SDL_FALSE);
                 return;
             }
-            else
-            {
-                convert_token_to_uint(token, &event_time_ms);
-            }
+
+            convert_token_to_uint(token, &event_time_ms);
 
             token = SDL_strtokr(input_savptr, delim, &input_savptr);
             if (NULL == token)
@@ -189,10 +180,8 @@ void parse_command(char* input, core_t* core)
                 print_usage_information(SDL_FALSE);
                 return;
             }
-            else
-            {
-                convert_token_to_uint(token, &length);
-            }
+
+            convert_token_to_uint(token, &length);
 
             token = SDL_strtokr(input_savptr, delim, &input_savptr);
             if (NULL == token)
@@ -200,10 +189,8 @@ void parse_command(char* input, core_t* core)
                 print_usage_information(SDL_FALSE);
                 return;
             }
-            else
-            {
-                convert_token_to_uint64(token, &data);
-            }
+
+            convert_token_to_uint64(token, &data);
 
             if (SDL_FALSE == pdo_is_id_valid(can_id))
             {
@@ -216,10 +203,8 @@ void parse_command(char* input, core_t* core)
                 c_log(LOG_WARNING, "Could not add PDO: CAN not initialised");
                 return;
             }
-            else
-            {
-                pdo_add((Uint16)can_id, event_time_ms, length, data, TERM_OUTPUT);
-            }
+
+            pdo_add((Uint16)can_id, event_time_ms, length, data, TERM_OUTPUT);
         }
         else if (0 == SDL_strncmp(token, "del", 3))
         {
@@ -229,10 +214,8 @@ void parse_command(char* input, core_t* core)
                 print_usage_information(SDL_FALSE);
                 return;
             }
-            else
-            {
-                convert_token_to_uint(token, &can_id);
-            }
+
+            convert_token_to_uint(token, &can_id);
 
             if (SDL_FALSE == pdo_is_id_valid(can_id))
             {
@@ -245,10 +228,8 @@ void parse_command(char* input, core_t* core)
                 c_log(LOG_WARNING, "Could not delete PDO: CAN not initialised");
                 return;
             }
-            else
-            {
-                pdo_del((Uint16)can_id, TERM_OUTPUT);
-            }
+
+            pdo_del((Uint16)can_id, TERM_OUTPUT);
         }
         else
         {
@@ -261,7 +242,7 @@ void parse_command(char* input, core_t* core)
         can_message_t sdo_response = { 0 };
         Uint32        node_id;
         Uint32        sdo_index;
-        Uint32        sub_index;
+        Uint32        sub_index    = 0;
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -269,10 +250,8 @@ void parse_command(char* input, core_t* core)
             print_usage_information(SDL_FALSE);
             return;
         }
-        else
-        {
-            convert_token_to_uint(token, &node_id);
-        }
+
+        convert_token_to_uint(token, &node_id);
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -280,32 +259,28 @@ void parse_command(char* input, core_t* core)
             print_usage_information(SDL_FALSE);
             return;
         }
-        else
-        {
-            convert_token_to_uint(token, &sdo_index);
-        }
+
+        convert_token_to_uint(token, &sdo_index);
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
-        {
-            sub_index = 0;
-        }
-        else
+        if (NULL != token)
         {
             convert_token_to_uint(token, &sub_index);
         }
 
         sdo_read(&sdo_response, TERM_OUTPUT, node_id, sdo_index, sub_index, NULL);
     }
-    else if (SDL_strncmp(token, "w", 1) == 0)
+    else if (0 == SDL_strncmp(token, "w", 1))
     {
-        can_message_t sdo_response = { 0 };
+        can_message_t sdo_response    = { 0 };
         Uint32        node_id;
         Uint32        sdo_index;
         Uint32        sub_index;
         Uint32        sdo_data_length = 0;
-        Uint32        sdo_data  = 0;
-        sdo_state_t   sdo_state = IS_WRITE_EXPEDIDED;
+        Uint32        sdo_data        = 0;
+        sdo_state_t   sdo_state       = IS_WRITE_EXPEDITED;
+        char          buffer[256]     = { 0 };
+        size_t        len;
 
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (token == NULL)
@@ -334,8 +309,6 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (token != NULL)
         {
-            char buffer[256] = { 0 };
-
             if (is_numeric(token))
             {
                 convert_token_to_uint(token, &sdo_data_length);
@@ -350,15 +323,12 @@ void parse_command(char* input, core_t* core)
             }
             else
             {
-                size_t len;
-
                 SDL_strlcpy(buffer, token, sizeof(buffer));
-
-                len       = SDL_strlen(buffer);
+                len = SDL_strlen(buffer);
                 sdo_state = IS_WRITE_SEGMENTED;
-                token     = SDL_strtokr(NULL, delim, &input_savptr);
+                token = SDL_strtokr(NULL, delim, &input_savptr);
 
-                while (token != NULL) 
+                while (token != NULL)
                 {
                     SDL_strlcat(buffer, " ", sizeof(buffer));
                     SDL_strlcat(buffer, token, sizeof(buffer));
@@ -377,7 +347,7 @@ void parse_command(char* input, core_t* core)
 
             if (sdo_data_length > 0)
             {
-                if (IS_WRITE_EXPEDIDED == sdo_state)
+                if (IS_WRITE_EXPEDITED == sdo_state)
                 {
                     sdo_write(&sdo_response, TERM_OUTPUT, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
                 }
@@ -392,7 +362,8 @@ void parse_command(char* input, core_t* core)
                 return;
             }
         }
-        else {
+        else
+        {
             print_usage_information(SDL_FALSE);
             return;
         }
@@ -405,17 +376,15 @@ void parse_command(char* input, core_t* core)
             print_usage_information(SDL_FALSE);
             return;
         }
-        else
-        {
-            run_script(token, core);
-        }
+        run_script(token, core);
     }
     else
     {
         print_usage_information(SDL_FALSE);
     }
-
 }
+
+
 static void convert_token_to_uint(char* token, Uint32* result)
 {
     if (('0' == token[0]) && ('x' == token[1]))
