@@ -103,7 +103,7 @@ int lua_nmt_send_command(lua_State* L)
     SDL_bool    show_output = lua_toboolean(L, 3);
     const char* comment     = lua_tostring(L, 4);
 
-    limit_node_id(&node_id);
+    limit_node_id((Uint8*)&node_id);
 
     if (SDL_TRUE == show_output)
     {
