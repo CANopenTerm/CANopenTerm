@@ -260,7 +260,9 @@ In addition to the integrated API, there are also a couple of helper functions t
 
 ```lua
 local canopen = require "lua/canopen"
+local utils   = require "lua/utils"
 
 local node_list, total_devices = canopen.find_devices(timeout_ms)
-local node_id = canopen.get_id_by_name("Device name")
+local node_id   = canopen.get_id_by_name("Device name")
+local hex_files = utils.get_file_list("hex")
 ```
