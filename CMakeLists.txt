@@ -213,7 +213,9 @@ if(UNIX)
     lua
     dl
     m
-    pthread)
+    pthread
+    readline
+    history)
 endif(UNIX)
 
 if(UNIX AND EXISTS "/proc/cpuinfo")

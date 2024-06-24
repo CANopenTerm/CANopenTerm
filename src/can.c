@@ -19,6 +19,8 @@
 #endif
 
 #ifdef __linux__
+#include <errno.h>
+#include <fcntl.h>
 #include <libsocketcan.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
@@ -87,6 +89,7 @@ Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
 
 #ifdef __linux__
     struct can_frame frame;
+    size_t num_bytes;
     frame.can_id = message->id;
     frame.can_dlc = message->length;
 
@@ -95,7 +98,18 @@ Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
         frame.data[index] = message->data[index];
     }
 
-    return write(can_socket, &frame, sizeof(frame));
+    num_bytes = write(can_socket, &frame, sizeof(frame));
+
+    SDL_Delay(1);
+
+    if (-1 == num_bytes)
+    {
+        return errno;
+    }
+    else
+    {
+        return 0;
+    }
 #else
     TPCANMsg pcan_message = { 0 };
 
@@ -136,7 +150,6 @@ Uint32 can_read(can_message_t* message)
     msg.msg_flags = 0;
 
     nbytes = recvmsg(can_socket, &msg, 0);
-
     if (nbytes < 0)
     {
         return nbytes;
@@ -404,6 +417,7 @@ static int can_monitor(void* core_pt)
 #ifdef __linux__
             struct sockaddr_can addr;
             struct ifreq ifr;
+            int    buffer_size = 1024 * 1024; /* 1MB */
             int    enable_timestamp = 1;
 
             can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
@@ -413,6 +427,7 @@ static int can_monitor(void* core_pt)
                 return 1;
             }
 
+            setsockopt(can_socket, SOL_SOCKET, SO_SNDBUF, &buffer_size, sizeof(buffer_size));
             setsockopt(can_socket, SOL_SOCKET, SO_TIMESTAMP, &enable_timestamp, sizeof(enable_timestamp));
 
             strcpy(ifr.ifr_name, core->can_interface);
@@ -507,8 +522,9 @@ static int can_monitor(void* core_pt)
 
 #ifdef __linux__
 
-// Temporarily disabled because until a different solution is found.
-// Continously reading CAN frames, leads to a SDO timeout.
+/* Temporarily disabled because until a different solution is found.
+ * Continously reading CAN frames, leads to a SDO timeout.
+ */
 #if 0
         struct can_frame frame;
         int nbytes = read(can_socket, &frame, sizeof(frame));
@@ -539,6 +555,40 @@ static int can_monitor(void* core_pt)
 
     return 0;
 }
+
+#ifdef __linux__
+void can_clear_socket_buffer(void)
+{
+    struct can_frame frame;
+    int    result;
+    
+    /* Set the socket to non-blocking mode. */
+    int flags = fcntl(can_socket, F_GETFL, 0);
+    fcntl(can_socket, F_SETFL, flags | O_NONBLOCK);
+
+    /* Read all messages from the socket */
+    while (1)
+    {
+        result = read(can_socket, &frame, sizeof(frame));
+        if (-1 == result)
+        {
+            if ((EWOULDBLOCK == errno) || (EAGAIN == errno))
+            {
+                /* No more messages to read. */
+                break;
+            }
+            else
+            {
+                perror("Error reading CAN frame.");
+                break;
+            }
+        }
+    }
+
+    /* Restore the socket to blocking mode */
+    fcntl(can_socket, F_SETFL, flags & ~O_NONBLOCK);
+}
+#endif
 
 static void print_error(Uint16 can_id, const char* reason, disp_mode_t disp_mode)
 {

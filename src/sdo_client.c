@@ -605,8 +605,8 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
             return ABORT_TRANSFER;
     }
 
-    msg_out.id = CAN_BASE_ID + node_id;
-    msg_out.length = 8;
+    msg_out.id      = CAN_BASE_ID + node_id;
+    msg_out.length  = 8;
     msg_out.data[0] = cmd;
 
     while (msg_out.data[0] != (cmd | 0x01))
@@ -617,7 +617,7 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
         {
             char* data_str = (char*)data;
 
-            if (remaining_length == 0 || (cmd | 0x01) == msg_out.data[0])
+            if ((0 == remaining_length) || ((cmd | 0x01) == msg_out.data[0]))
             {
                 msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
             }
@@ -629,7 +629,7 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
             }
         }
 
-        if (remaining_length == 0) /* No more data left to send. */
+        if (0 == remaining_length) /* No more data left to send. */
         {
             msg_out.data[0] = (cmd | 0x01);
         }

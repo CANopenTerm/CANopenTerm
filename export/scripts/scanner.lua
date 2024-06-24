@@ -12,7 +12,7 @@ local available_nodes, total_devices = canopen.find_devices(1000)
 print(string.format("\nFound %d device(s)", total_devices))
 
 for _, node_id in ipairs(available_nodes) do
-  local device_name = sdo_read(node_id, 0x1008, 0x00)
+  local device_name = sdo_read(node_id, 0x4555, 0x05)
   if nil == device_name then
     device_name = "Unknown device"
   end

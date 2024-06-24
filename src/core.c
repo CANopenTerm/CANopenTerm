@@ -11,6 +11,10 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
+#ifdef __linux__
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif
 
 #include "can.h"
 #include "command.h"
@@ -44,14 +48,14 @@ status_t core_init(core_t **core)
              VERSION_BUILD);
     c_printf(DEFAULT_COLOR, "Copyright (c) 2024, Michael Fitzmayer.\r\n\r\n");
 
-    // Initialise SDL.
+    /* Initialise SDL. */
     if (0 != SDL_InitSubSystem(SDL_INIT_TIMER))
     {
         c_log(LOG_ERROR, "Unable to initialise SDL timer sub-system: %s", SDL_GetError());
         return COT_ERROR;
     }
 
-    // Initialise Lua.
+    /* Initialise Lua. */
     scripts_init((*core));
     if (NULL != (*core)->L)
     {
@@ -62,7 +66,7 @@ status_t core_init(core_t **core)
         lua_register_sdo_commands((*core));
     }
 
-    // Initialise CAN.
+    /* Initialise CAN. */
     can_init((*core));
 
     (*core)->is_running = SDL_TRUE;
@@ -71,13 +75,18 @@ status_t core_init(core_t **core)
 
 status_t core_update(core_t* core)
 {
+#ifdef _WIN32
     char command[COMMAND_BUFFER_SIZE] = { 0 };
+#elif defined __linux__
+    char* command;
+#endif
 
     if (NULL == core)
     {
         return COT_OK;
     }
 
+#ifdef _WIN32
     c_print_prompt();
     if (NULL != fgets(command, COMMAND_BUFFER_SIZE - 1, stdin))
     {
@@ -90,6 +99,15 @@ status_t core_update(core_t* core)
             core->is_running = SDL_FALSE;
         }
     }
+#elif defined __linux__
+    command = readline(": ");
+    if (command != NULL)
+    {
+        add_history(command);
+        parse_command(command, core);
+    }
+    free(command);
+#endif
 
     return COT_OK;
 }

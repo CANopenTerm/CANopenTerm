@@ -9,19 +9,17 @@ License: Public domain
 local function get_file_list(extension)
   local files = {}
   local i = 1
-  local command = 'dir /b /a-d *.'.. extension ..' 2>nul'
+  local command
 
   if os.getenv("OS") == "Windows_NT" then
-    for file in io.popen(command):lines() do
-      files[i] = file
-      i = i + 1
-    end
+    command = 'dir /b /a-d *.' .. extension .. ' 2>nul'
   else
-    command = 'ls -1 *.os 2>/dev/null'
-    for file in io.popen(command):lines() do
-      files[i] = file
-      i = i + 1
-    end
+    command = 'ls -1 *.' .. extension .. ' 2>/dev/null'
+  end
+
+  for file in io.popen(command):lines() do
+    files[i] = file
+    i = i + 1
   end
 
   if #files == 0 then

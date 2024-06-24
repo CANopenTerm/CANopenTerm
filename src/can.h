@@ -39,4 +39,8 @@ const char* can_get_error_message(Uint32 can_status);
 void        can_print_baud_rate_help(core_t* core);
 SDL_bool    is_can_initialised(core_t* core);
 
+#ifdef __linux__
+void can_clear_socket_buffer(void);
+#endif
+
 #endif /* CAN_H */

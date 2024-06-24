@@ -115,6 +115,13 @@ function select_loop_count()
     end
 end
 
+function get_time()
+    if os.getenv("OS") == "Windows_NT" then
+        return os.clock()
+    else
+        return os.time()
+    end
+end
 
 local num_loops = select_loop_count()
 local trc_file  = nil
@@ -131,7 +138,7 @@ local base_name = trc_file:match("[^/\\]+$") or trc_file
 
 for loop = 1, num_loops + 1 do
     local trc_data   = parse_pcan_trc(base_name)
-    local start_time = os.clock()
+    local start_time = get_time()
     local quit       = false
 
     for _, message in ipairs(trc_data) do
@@ -141,9 +148,9 @@ for loop = 1, num_loops + 1 do
         end
 
         if message and message.time_offset and message.msg_type and message.can_id and message.dlc and message.data_bytes then
-            local current_time           = os.clock()
-            local elapsed_time           = (current_time - start_time) * 1000
-            local delay                  = math.floor(message.time_offset - elapsed_time)
+            local current_time = get_time()
+            local elapsed_time = (current_time - start_time) * 1000
+            local delay = math.floor(message.time_offset - elapsed_time)
             local data_d0_d3, data_d4_d7 = convert_data_bytes(message.data_bytes)
 
             if delay > 0 then
@@ -162,4 +169,3 @@ for loop = 1, num_loops + 1 do
       break
     end
 end
-
