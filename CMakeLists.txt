@@ -195,9 +195,12 @@ if(UNIT_TESTING)
 endif(UNIT_TESTING)
 
 add_dependencies(
+  core
+  SDL2_devel)
+
+add_dependencies(
   ${PROJECT_NAME}
   core
-  SDL2_devel
   Lua_devel)
 
 if(WIN32)
