@@ -126,12 +126,15 @@ end
 local num_loops = select_loop_count()
 local trc_file  = nil
 
-if num_loops then
-  trc_file = utils.get_file_by_selection("Enter the number of the file you want to choose", "trc")
-  if trc_file == nil then
-    print("Exiting.")
-    return
-  end
+if num_loops == nil then
+  print("Exiting.")
+  return
+end
+
+trc_file = utils.get_file_by_selection("Enter the number of the file you want to choose", "trc")
+if trc_file == nil then
+  print("Exiting.")
+  return
 end
 
 local base_name = trc_file:match("[^/\\]+$") or trc_file
