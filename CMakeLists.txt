@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(CANopenTerm C)
 
+option(UNIT_TESTING "Build with CMocka unit tests" True)
+
 set(CMAKE_C_STANDARD 90)
 if (POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
@@ -155,6 +157,10 @@ if(WIN32)
   set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 endif()
 
+if(UNIT_TESTING)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/unit_tests.cmake)
+endif(UNIT_TESTING)
+
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   SYSTEM ${SDL2_INCLUDE_DIR}
@@ -169,7 +175,6 @@ set(project_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/dict.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/printf.c
@@ -180,13 +185,18 @@ set(project_sources
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
+add_library(
+  core
+  STATIC
+  ${project_sources})
+
 add_executable(
   ${PROJECT_NAME}
-  ${GUI_TYPE}
-  ${project_sources})
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c)
 
 add_dependencies(
   ${PROJECT_NAME}
+  core
   SDL2_devel
   Lua_devel)
 
@@ -199,6 +209,7 @@ endif(WIN32)
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
+    core
     ${SDL2_LIBRARY}
     ${SDL2MAIN_LIBRARY}
     ${PCAN_LIBRARY}
@@ -208,6 +219,7 @@ endif(WIN32)
 if(UNIX)
   target_link_libraries(
     ${PROJECT_NAME}
+    core
     ${SDL2_LIBRARY}
     ${SDL2MAIN_LIBRARY}
     lua

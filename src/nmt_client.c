@@ -39,8 +39,8 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
         case NMT_RESET_COMM:
             break;
         default:
-            nmt_print_help();
-            return can_status;
+            nmt_print_help(disp_mode);
+            return 1;
     }
 
     can_status = can_write(&can_message, NO_OUTPUT, NULL);
@@ -145,8 +145,13 @@ void lua_register_nmt_command(core_t* core)
     lua_setglobal(core->L, "nmt_send_command");
 }
 
-void nmt_print_help(void)
+void nmt_print_help(disp_mode_t disp_mode)
 {
+    if (NO_OUTPUT == disp_mode)
+    {
+        return;
+    }
+
     table_t table = { DARK_CYAN, DARK_WHITE, 4, 5, 30 };
 
     table_print_header(&table);

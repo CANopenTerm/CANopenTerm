@@ -107,7 +107,7 @@ void parse_command(char* input, core_t* core)
         token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            nmt_print_help();
+            nmt_print_help(TERM_OUTPUT);
             return;
         }
 
@@ -427,7 +427,7 @@ static void print_usage_information(SDL_bool show_all)
 #endif
         table_print_row(" c ", " ",                                         "Clear output", &table);
         table_print_row(" l ", " ",                                         "List scripts", &table);
-        table_print_row("(s)", "[identifier](.lua)",                        "Run script",   &table);
+        table_print_row("(s)", "[script_identifier](.lua)",                 "Run script",   &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);
