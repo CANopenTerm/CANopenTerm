@@ -7,14 +7,14 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=10e84ea70e8c3a1fbc462f5424806474"
 
 python do_display_banner() {
-    bb.plain("CANopenTerm 0.7.0");
+    bb.plain("CANopenTerm 1.0.0");
     bb.plain("Copyright (c) 2024, Michael Fitzmayer");
 }
 
 addtask display_banner before do_build
 
 SRC_URI = "git://github.com/CANopenTerm/CANopenTerm.git;protocol=https;branch=main"
-SRCREV  = "3f63855c34065c7a1b34068fe82c777dfd944056"
+SRCREV  = "a51943898b9350e21dfad825895a0d8d59835d45"
 
 S = "${WORKDIR}/git"
 
@@ -33,7 +33,7 @@ do_compile() {
     ${S}/src/sdo_client.c \
     ${S}/src/table.c \
     -DUSE_LIBSOCKETCAN \
-    $(pkg-config --cflags --libs --static sdl2 lua) \
+    $(pkg-config --cflags --libs --static sdl2 lua readline) \
     -L${D}${libdir} \
     -o ${S}/export/CANopenTerm
 }
@@ -41,14 +41,14 @@ do_compile() {
 do_install () {
     install -d ${D}${bindir}
     install -d ${D}/usr/share/CANopenTerm/scripts
-    install -d ${D}/usr/local/share/lua/5.4/lua
+    install -d ${D}/usr/share/lua/5.4/lua
     install -m 0644 ${S}/export/scripts/* ${D}/usr/share/CANopenTerm/scripts
-    install -m 0644 ${S}/export/lua/* ${D}/usr/local/share/lua/5.4/lua
+    install -m 0644 ${S}/export/lua/* ${D}/usr/share/lua/5.4/lua
     install -m 0755 ${S}/export/CANopenTerm ${D}${bindir}
 }
 
-DEPENDS = "libsdl2 lua libsocketcan pkgconfig"
+DEPENDS = "libsdl2 lua readline libsocketcan pkgconfig"
 
-FILES:${PN} = "/usr/bin/CANopenTerm /usr/share/CANopenTerm /usr/local/share/lua/5.4/lua"
+FILES:${PN} = "/usr/bin/CANopenTerm /usr/share/CANopenTerm /usr/share/lua/5.4/lua"
 
 inherit pkgconfig
