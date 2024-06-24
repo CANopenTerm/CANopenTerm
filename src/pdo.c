@@ -89,16 +89,22 @@ int lua_pdo_add(lua_State* L)
     Uint32      data_d0_d3    = lua_tointeger(L, 4);
     Uint32      data_d4_d7    = lua_tointeger(L, 5);
     SDL_bool    show_output   = lua_toboolean(L, 6);
+    SDL_bool    success;
     const char* comment       = lua_tostring(L, 7);
     disp_mode_t disp_mode     = NO_OUTPUT;
-    Uint64 data               = ((Uint64)data_d0_d3 << 32) | data_d4_d7;
+    Uint64      data          = ((Uint64)data_d0_d3 << 32) | data_d4_d7;
+
+    if (SDL_TRUE == show_output)
+    {
+        disp_mode = SCRIPT_OUTPUT;
+    }
+
+    success = pdo_add(can_id, event_time_ms, length, data, disp_mode);
 
     if (SDL_TRUE == show_output)
     {
         int  i;
         char buffer[34] = { 0 };
- 
-        disp_mode = SCRIPT_OUTPUT;
 
         if (NULL == comment)
         {
@@ -111,14 +117,17 @@ int lua_pdo_add(lua_State* L)
             buffer[i] = ' ';
         }
 
-        c_printf(LIGHT_BLACK, "PDO  ");
-        c_printf(DEFAULT_COLOR, "    0x%02X   -       -         -       ", can_id);
-        c_printf(LIGHT_GREEN, "SUCC    ");
-        c_printf(DEFAULT_COLOR, "%s ", buffer);
-        c_printf(DEFAULT_COLOR, "0x%08X%08X, %ums\n", data_d0_d3, data_d4_d7, event_time_ms);
+        if (SDL_TRUE == success)
+        {
+            c_printf(LIGHT_BLACK, "PDO  ");
+            c_printf(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
+            c_printf(LIGHT_GREEN, "SUCC    ");
+            c_printf(DARK_MAGENTA, "%s ", buffer);
+            c_printf(DEFAULT_COLOR, "0x%08X%08X, %ums\n", data_d0_d3, data_d4_d7, event_time_ms);
+        }
     }
 
-    lua_pushboolean(L, pdo_add(can_id, event_time_ms, length, data, disp_mode));
+    lua_pushboolean(L, success);
 
     return 1;
 }
@@ -241,7 +250,7 @@ static void print_error(const char* reason, disp_mode_t disp_mode, Uint16 can_id
     }
 
     c_printf(LIGHT_BLACK, "PDO ");
-    c_printf(DEFAULT_COLOR, "     0x%02X   -       -         -       ", can_id);
+    c_printf(DEFAULT_COLOR, "     0x%03X   -       -         -       ", can_id);
     c_printf(LIGHT_RED, "FAIL    ");
     c_printf(DEFAULT_COLOR, "%s\n", reason);
 }

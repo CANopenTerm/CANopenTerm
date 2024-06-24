@@ -976,7 +976,7 @@ static void print_error(const char* reason, sdo_state_t sdo_state, Uint8 node_id
                 case IS_WRITE_SEGMENTED:
                     color = LIGHT_BLUE;
                     c_printf(color, "Write");
-                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -        ", node_id, index, sub_index);
+                    c_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
                     break;
                 default:
                     break;

@@ -15,7 +15,7 @@
 #include "printf.h"
 #include "table.h"
 
-static void print_error(nmt_command_t command, Uint32 can_status, disp_mode_t disp_mode);
+static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
 
 Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
 {
@@ -45,7 +45,7 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
     can_status = can_write(&can_message, NO_OUTPUT, NULL);
     if (0 != can_status)
     {
-        print_error(command, can_status, disp_mode);
+        print_error(can_get_error_message(can_status), command, disp_mode);
     }
     else
     {
@@ -97,6 +97,7 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
 
 int lua_nmt_send_command(lua_State* L)
 {
+    Uint32      status;
     disp_mode_t disp_mode   = NO_OUTPUT;
     int         node_id     = luaL_checkinteger(L, 1);
     int         command     = luaL_checkinteger(L, 2);
@@ -117,18 +118,21 @@ int lua_nmt_send_command(lua_State* L)
         case NMT_PRE_OPERATIONAL:
         case NMT_RESET_NODE:
         case NMT_RESET_COMM:
+            status = nmt_send_command(node_id, command, disp_mode, comment);
+            if (0 == status)
+            {
+                lua_pushboolean(L, 1);
+            }
+            else
+            {
+                print_error(can_get_error_message(status), command, disp_mode);
+                lua_pushboolean(L, 0);
+            }
             break;
         default:
-            return 0;
-    }
-
-    if (0 == nmt_send_command(node_id, command, disp_mode, comment))
-    {
-        lua_pushboolean(L, 1);
-    }
-    else
-    {
-        lua_pushboolean(L, 0);
+            print_error("Unknown NMT command", command, disp_mode);
+            lua_pushboolean(L, 0);
+            break;
     }
 
     return 1;
@@ -155,21 +159,21 @@ void nmt_print_help(void)
     table_print_footer(&table);
 }
 
-static void print_error(nmt_command_t command, Uint32 can_status, disp_mode_t disp_mode)
+static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode)
 {
     switch (disp_mode)
     {
         case TERM_OUTPUT:
         {        
-            c_log(LOG_ERROR, "NMT 0x%02X error: %s", command, can_get_error_message(can_status));
+            c_log(LOG_ERROR, "NMT 0x%02X error: %s", command, reason);
             break;
         }
         case SCRIPT_OUTPUT:
         {
             c_printf(LIGHT_BLACK, "NMT  ");
-            c_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", command);
+            c_printf(DEFAULT_COLOR, "    -       -       -         -       ");
             c_printf(LIGHT_RED, "FAIL    ");
-            c_printf(DEFAULT_COLOR, "%s\n", can_get_error_message(can_status));
+            c_printf(DARK_MAGENTA, "0x%02X %s\n", command, reason);
             break;
         }
         default:
