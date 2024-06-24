@@ -1,6 +1,6 @@
 - [CANopenTerm](/)
 - [Getting started](getting-started.md)
-- [Download](https://github.com/CANopenTerm/CANopenTerm/releases)
+- [Download](https://github.com/CANopenTerm/CANopenTerm/releases/latest)
 - [Lua API](lua-api.md)
 - [Our GitHub site](https://github.com/CANopenTerm/CANopenTerm)
 - [Report issue](report-issue.md)

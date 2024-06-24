@@ -10,7 +10,7 @@ hardware-independently.
 ## Download
 
 A pre-compiled Windows version of CANopenTerm can be found on the
-[Releases page on GitHub](https://github.com/CANopenTerm/CANopenTerm/releases).
+[Releases page on GitHub](https://github.com/CANopenTerm/CANopenTerm/releases/latest).
 
 ## Usage
 
