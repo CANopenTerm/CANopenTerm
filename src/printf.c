@@ -193,7 +193,9 @@ void c_printf(const color_t color, const char* format, ...)
 
 void c_print_prompt(void)
 {
+#ifdef _WIN32
     c_printf(LIGHT_WHITE, "\r: ");
+#endif
 }
 
 void c_log(const log_level_t level, const char* format, ...)

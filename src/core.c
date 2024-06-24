@@ -86,8 +86,8 @@ status_t core_update(core_t* core)
         return COT_OK;
     }
 
-#ifdef _WIN32
     c_print_prompt();
+#ifdef _WIN32
     if (NULL != fgets(command, COMMAND_BUFFER_SIZE - 1, stdin))
     {
         parse_command(command, core);
