@@ -89,8 +89,9 @@ Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
 
 #ifdef __linux__
     struct can_frame frame;
-    size_t num_bytes;
-    frame.can_id = message->id;
+    long   num_bytes;
+
+    frame.can_id  = message->id;
     frame.can_dlc = message->length;
 
     for (index = 0; index < 8; index += 1)
@@ -560,16 +561,17 @@ static int can_monitor(void* core_pt)
 void can_clear_socket_buffer(void)
 {
     struct can_frame frame;
-    int    result;
     
     /* Set the socket to non-blocking mode. */
     int flags = fcntl(can_socket, F_GETFL, 0);
+
     fcntl(can_socket, F_SETFL, flags | O_NONBLOCK);
 
     /* Read all messages from the socket */
     while (1)
     {
-        result = read(can_socket, &frame, sizeof(frame));
+        int result = read(can_socket, &frame, sizeof(frame));
+
         if (-1 == result)
         {
             if ((EWOULDBLOCK == errno) || (EAGAIN == errno))
