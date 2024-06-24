@@ -10,6 +10,7 @@
 #include "SDL.h"
 #include "core.h"
 #include "lua.h"
+#include "lauxlib.h"
 #include "dict.h"
 
 static const dict_entry_t dictionary[] =

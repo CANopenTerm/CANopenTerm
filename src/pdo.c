@@ -9,6 +9,7 @@
 
 #include "SDL.h"
 #include "lua.h"
+#include "lauxlib.h"
 #include "can.h"
 #include "pdo.h"
 #include "printf.h"

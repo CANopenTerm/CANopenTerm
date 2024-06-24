@@ -420,7 +420,7 @@ static void reset_terminal_mode(struct termios* orig_termios)
 }
 #endif
 
-lua_print_heading(lua_State* L)
+int lua_print_heading(lua_State* L)
 {
     const char* heading = lua_tostring(L, 1);
 
