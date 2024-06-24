@@ -29,12 +29,12 @@ static int         wait_for_response(Uint8 node_id, can_message_t* msg_in);
 
 sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment)
 {
-    can_message_t msg_in = { 0 };
-    can_message_t msg_out = { 0 };
+    can_message_t msg_in      = { 0 };
+    can_message_t msg_out     = { 0 };
     char          reason[300] = { 0 };
-    sdo_state_t   sdo_state = IS_READ_EXPEDIDED;
-    Uint32        abort_code = 0;
-    Uint32        can_status = 0;
+    sdo_state_t   sdo_state   = IS_READ_EXPEDIDED;
+    Uint32        abort_code  = 0;
+    Uint32        can_status  = 0;
     int           n;
 
     limit_node_id(&node_id);
