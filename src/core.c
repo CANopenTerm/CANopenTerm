@@ -42,7 +42,7 @@ status_t core_init(core_t **core)
 
     c_printf(LIGHT_YELLOW,  "<");
     c_printf(LIGHT_GREEN,   ">");
-    c_printf(DEFAULT_COLOR, " CANopenTerm v%u.%u.%u\r\n",
+    c_printf(DEFAULT_COLOR, " CANopenTerm %u.%u.%u\r\n",
              VERSION_MAJOR,
              VERSION_MINOR,
              VERSION_BUILD);
