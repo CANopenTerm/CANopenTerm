@@ -157,10 +157,6 @@ if(WIN32)
   set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 endif()
 
-if(UNIT_TESTING)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/unit_tests.cmake)
-endif(UNIT_TESTING)
-
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   SYSTEM ${SDL2_INCLUDE_DIR}
@@ -193,6 +189,10 @@ add_library(
 add_executable(
   ${PROJECT_NAME}
   ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c)
+
+if(UNIT_TESTING)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/unit_tests.cmake)
+endif(UNIT_TESTING)
 
 add_dependencies(
   ${PROJECT_NAME}
