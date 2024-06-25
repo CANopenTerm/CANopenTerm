@@ -23,14 +23,14 @@ entering `h`.
 ### Run script from command-line
 
 It is possible to run a script from the command line.  However, on Linux,
-the CAN interface to be used must be set as first argument.
+the CAN interface can be set as second argument (Default: `can0`).
 
 The `.lua` file extension can be omitted.
 
 #### Linux
 
 ```bash
-./CANopenTerm can0 hello
+./CANopenTerm hello can1
 ```
 
 #### Windows

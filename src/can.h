@@ -30,6 +30,7 @@ void        can_deinit(core_t* core);
 void        can_quit(core_t* core);
 uint32      can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment);
 uint32      can_read(can_message_t* message);
+void        can_print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode);
 void        can_set_baud_rate(uint8 command, core_t* core);
 void        limit_node_id(uint8* node_id);
 int         lua_can_write(lua_State* L);
@@ -38,9 +39,5 @@ void        lua_register_can_commands(core_t* core);
 const char* can_get_error_message(uint32 can_status);
 void        can_print_baud_rate_help(core_t* core);
 bool_t      is_can_initialised(core_t* core);
-
-#ifdef __linux__
-void can_clear_socket_buffer(void);
-#endif
 
 #endif /* CAN_H */

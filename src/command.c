@@ -17,14 +17,6 @@
 #include "sdo_client.h"
 #include "table.h"
 
-#ifdef _WIN32
-#  define CLEAR_CMD "cls"
-#elif defined(unix) || defined(__unix__) || defined(__unix)
-#  define CLEAR_CMD "clear"
-#else
-#  define CLEAR_CMD ""
-#endif
-
 static void   convert_token_to_uint(char* token, uint32* result);
 static void   convert_token_to_uint64(char* token, uint64* result);
 static void   print_usage_information(bool_t show_all);
@@ -50,7 +42,7 @@ void parse_command(char* input, core_t* core)
         run_script(token, core);
         return;
     }
-#ifndef __linux__
+#ifdef DISABLE_BAUDRATE_SELECTION
     else if (0 == os_strncmp(token, "b", 1))
     {
         token = os_strtokr(input_savptr, delim, &input_savptr);
@@ -420,7 +412,7 @@ static void print_usage_information(bool_t show_all)
 
     if (IS_TRUE == show_all)
     {
-#ifndef __linux__
+#ifdef DISABLE_BAUDRATE_SELECTION
         table_print_row(" b ", "(command)",                                 "Set baud rate",  &table);
 #endif
         table_print_row(" c ", " ",                                         "Clear output", &table);

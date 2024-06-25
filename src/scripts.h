@@ -10,6 +10,7 @@
 #ifndef SCRIPTS_H
 #define SCRIPTS_H
 
+#include "lua.h"
 #include "core.h"
 
 void scripts_init(core_t* core);

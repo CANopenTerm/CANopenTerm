@@ -7,9 +7,6 @@
  *
  **/
 
-#ifdef __linux__
-#include <string.h>
-#endif
 #include <stdlib.h>
 #include "core.h"
 #include "os.h"
@@ -18,7 +15,6 @@
 int main(int argc, char* argv[])
 {
     int      status      = EXIT_SUCCESS;
-    int      script_arg  = 1;
     core_t*  core        = NULL;
 
     if (core_init(&core) != ALL_OK)
@@ -26,21 +22,18 @@ int main(int argc, char* argv[])
         status = EXIT_FAILURE;
     }
 
-#ifdef __linux__
-    if ((argc > 1) && (argv[1] != NULL))
+    if ((argc > 2) && (argv[2] != NULL))
     {
         os_strlcpy(core->can_interface, argv[1], sizeof(core->can_interface));
     }
     else
     {
-        os_strlcpy(core->can_interface, "can0", sizeof(core->can_interface));
+        os_strlcpy(core->can_interface, DEFAULT_CAN_INTERFACE, sizeof(core->can_interface));
     }
-    script_arg = 2;
-#endif
 
-    if ((argc > script_arg) && (argv[script_arg] != NULL))
+    if ((argc > 1) && (argv[1] != NULL))
     {
-        run_script(argv[script_arg], core);
+        run_script(argv[1], core);
         core->is_running = IS_FALSE;
     }
 

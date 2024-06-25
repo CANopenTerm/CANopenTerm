@@ -45,7 +45,11 @@
 #define uint32 Uint32
 #define uint64 Uint64
 
+#define CLEAR_CMD "clear"
 
+#define DEFAULT_CAN_INTERFACE "can0"
+
+#define DISABLE_BAUDRATE_SELECTION
 #define OS_LAYER_DEFINED
 
 #endif /* OS_LINUX_H */

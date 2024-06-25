@@ -181,13 +181,16 @@ set(core_sources
 
 if (WIN32)
 set(os_sources
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_windows.c)
-
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/can_windows.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_windows.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/scripts_windows.c)
 endif(WIN32)
 
 if (UNIX)
 set(os_sources
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_linux.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/can_linux.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_linux.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/scripts_linux.c)
 endif(UNIX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)

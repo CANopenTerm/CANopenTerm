@@ -72,6 +72,10 @@ typedef enum status
 #define IS_FALSE 0
 #endif
 
+#ifndef CLEAR_CMD
+#define CLEAR_CMD ""
+#endif
+
 #ifndef OS_LAYER_DEFINED
 /* Error: No OS-layer defined. */
 #endif

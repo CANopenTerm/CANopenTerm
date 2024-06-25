@@ -49,6 +49,10 @@
 #define IS_TRUE  SDL_TRUE
 #define IS_FALSE SDL_FALSE
 
+#define CLEAR_CMD "cls"
+
+#define DEFAULT_CAN_INTERFACE ""
+
 #define OS_LAYER_DEFINED
 
 #endif /* OS_WINDOWS_H */
