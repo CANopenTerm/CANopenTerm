@@ -20,10 +20,9 @@
 
 extern char*  get_script_description(const char* script_path);
 extern bool_t has_lua_extension(const char* filename);
+extern size_t safe_strcpy(char* dest, const char* src, size_t size);
 extern bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
 extern void   strip_extension(char* filename);
-
-static size_t safe_strcpy(char* dest, const char* src, size_t size);
 
 void list_scripts(void)
 {
@@ -132,18 +131,4 @@ int lua_key_is_hit(lua_State * L)
     }
 
     return 1;
-}
-
-static size_t safe_strcpy(char* dest, const char* src, size_t size)
-{
-    size_t src_len = os_strlen(src);
-
-    if (size > 0)
-    {
-        size_t copy_len = (src_len >= size) ? (size - 1) : src_len;
-        os_memcpy(dest, src, copy_len);
-        dest[copy_len] = '\0';
-    }
-
-    return src_len;
 }

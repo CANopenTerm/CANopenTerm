@@ -46,7 +46,7 @@ target_link_libraries(
   core
   ${CMocka_LIBRARY}
   ${SDL2_LIBRARY}
-  lua
+  ${LUA_LIBRARY}
   dl
   m
   pthread

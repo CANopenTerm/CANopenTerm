@@ -32,7 +32,9 @@ do_compile() {
     ${S}/src/sdo_client.c \
     ${S}/src/table.c \
     ${S}/src/os/os.c \
+    ${S}/src/os/can_linux.c \
     ${S}/src/os/os_linux.c \
+    ${S}/src/os/scripts_linux.c \
     -DUSE_LIBSOCKETCAN \
     -I${S}/src/os \
     $(pkg-config --cflags --libs --static sdl2 lua readline) \

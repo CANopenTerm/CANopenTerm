@@ -165,6 +165,20 @@ int lua_print_heading(lua_State* L)
     return 0;
 }
 
+size_t safe_strcpy(char* dest, const char* src, size_t size)
+{
+    size_t src_len = os_strlen(src);
+
+    if (size > 0)
+    {
+        size_t copy_len = (src_len >= size) ? (size - 1) : src_len;
+        os_memcpy(dest, src, copy_len);
+        dest[copy_len] = '\0';
+    }
+
+    return src_len;
+}
+
 bool_t script_already_listed(char** listed_scripts, int count, const char* script_name)
 {
     int i;
