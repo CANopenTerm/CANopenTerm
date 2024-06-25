@@ -10,7 +10,6 @@
 #ifndef SDO_CLIENT_H
 #define SDO_CLIENT_H
 
-#include "SDL.h"
 #include "lua.h"
 #include "can.h"
 #include "core.h"
@@ -103,10 +102,10 @@ typedef enum
 
 } sdo_abort_code_t;
 
-sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* comment);
-sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment);
-sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, const char* filename, const char* comment);
-sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mode, Uint8 node_id, Uint16 index, Uint8 sub_index, Uint32 length, void* data, const char* comment);
+sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, const char* comment);
+sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment);
+sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, const char* filename, const char* comment);
+sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment);
 int         lua_sdo_read(lua_State* L);
 int         lua_sdo_write(lua_State* L);
 int         lua_sdo_write_file(lua_State* L);

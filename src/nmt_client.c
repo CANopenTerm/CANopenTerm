@@ -7,20 +7,18 @@
  *
  **/
 
-#include "SDL.h"
 #include "lua.h"
 #include "lauxlib.h"
 #include "can.h"
 #include "core.h"
 #include "nmt_client.h"
-#include "printf.h"
 #include "table.h"
 
 static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
 
-Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
+uint32 nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
 {
-    Uint32        can_status  = 0;
+    uint32        can_status  = 0;
     can_message_t can_message = { 0 };
 
     limit_node_id(&node_id);
@@ -40,54 +38,54 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
             break;
         default:
             nmt_print_help(disp_mode);
-            return 1;
+            return NMT_UNKNOWN_COMMAND;
     }
 
-    can_status = can_write(&can_message, NO_OUTPUT, NULL);
+    can_status = can_write(&can_message, SILENT, NULL);
     if (0 != can_status)
     {
         print_error(can_get_error_message(can_status), command, disp_mode);
     }
     else
     {
-        if (SCRIPT_OUTPUT == disp_mode)
+        if (SCRIPT_MODE == disp_mode)
         {
             int  i;
             char buffer[34] = { 0 };
 
-            c_printf(DARK_CYAN, "NMT  ");
-            c_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
-            c_printf(LIGHT_GREEN, "SUCC    ");
+            os_printf(DARK_CYAN, "NMT  ");
+            os_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
+            os_printf(LIGHT_GREEN, "SUCC    ");
 
             if (NULL == comment)
             {
                 comment = "-";
             }
 
-            SDL_strlcpy(buffer, comment, 33);
-            for (i = SDL_strlen(buffer); i < 33; ++i)
+            os_strlcpy(buffer, comment, 33);
+            for (i = os_strlen(buffer); i < 33; ++i)
             {
                 buffer[i] = ' ';
             }
 
-            c_printf(DARK_MAGENTA, "%s ", buffer);
+            os_printf(DARK_MAGENTA, "%s ", buffer);
 
             switch (command)
             {
                 case 0x01:
-                    c_printf(DEFAULT_COLOR, "Start (go to Operational)\n");
+                    os_printf(DEFAULT_COLOR, "Start (go to Operational)\n");
                     break;
                 case 0x02:
-                    c_printf(DEFAULT_COLOR, "Stop (go to Stopped)\n");
+                    os_printf(DEFAULT_COLOR, "Stop (go to Stopped)\n");
                     break;
                 case 0x80:
-                    c_printf(DEFAULT_COLOR, "Go to Pre-operational\n");
+                    os_printf(DEFAULT_COLOR, "Go to Pre-operational\n");
                     break;
                 case 0x81:
-                    c_printf(DEFAULT_COLOR, "Reset node (Application reset)\n");
+                    os_printf(DEFAULT_COLOR, "Reset node (Application reset)\n");
                     break;
                 case 0x82:
-                    c_printf(DEFAULT_COLOR, "Reset communication\n");
+                    os_printf(DEFAULT_COLOR, "Reset communication\n");
                     break;
             }
         }
@@ -98,18 +96,18 @@ Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_m
 
 int lua_nmt_send_command(lua_State* L)
 {
-    Uint32      status;
-    disp_mode_t disp_mode   = NO_OUTPUT;
+    uint32      status;
+    disp_mode_t disp_mode   = SILENT;
     int         node_id     = luaL_checkinteger(L, 1);
     int         command     = luaL_checkinteger(L, 2);
-    SDL_bool    show_output = lua_toboolean(L, 3);
+    bool_t      show_output = lua_toboolean(L, 3);
     const char* comment     = lua_tostring(L, 4);
 
-    limit_node_id((Uint8*)&node_id);
+    limit_node_id((uint8*)&node_id);
 
-    if (SDL_TRUE == show_output)
+    if (IS_TRUE == show_output)
     {
-        disp_mode = SCRIPT_OUTPUT;
+        disp_mode = SCRIPT_MODE;
     }
 
     switch (command)
@@ -147,7 +145,7 @@ void lua_register_nmt_command(core_t* core)
 
 void nmt_print_help(disp_mode_t disp_mode)
 {
-    if (NO_OUTPUT == disp_mode)
+    if (SILENT == disp_mode)
     {
         return;
     }
@@ -169,21 +167,21 @@ static void print_error(const char* reason, nmt_command_t command, disp_mode_t d
 {
     switch (disp_mode)
     {
-        case TERM_OUTPUT:
+        case TERM_MODE:
         {        
-            c_log(LOG_ERROR, "NMT 0x%02X error: %s", command, reason);
+            os_log(LOG_ERROR, "NMT 0x%02X error: %s", command, reason);
             break;
         }
-        case SCRIPT_OUTPUT:
+        case SCRIPT_MODE:
         {
-            c_printf(LIGHT_BLACK, "NMT  ");
-            c_printf(DEFAULT_COLOR, "    -       -       -         -       ");
-            c_printf(LIGHT_RED, "FAIL    ");
-            c_printf(DARK_MAGENTA, "0x%02X %s\n", command, reason);
+            os_printf(LIGHT_BLACK, "NMT  ");
+            os_printf(DEFAULT_COLOR, "    -       -       -         -       ");
+            os_printf(LIGHT_RED, "FAIL    ");
+            os_printf(DARK_MAGENTA, "0x%02X %s\n", command, reason);
             break;
         }
         default:
-        case NO_OUTPUT:
+        case SILENT:
             break;
     }
 }

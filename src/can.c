@@ -7,12 +7,10 @@
  *
  **/
 
-#include "SDL.h"
 #include "lua.h"
 #include "lauxlib.h"
 #include "can.h"
 #include "core.h"
-#include "printf.h"
 #include "table.h"
 
 #ifdef _WIN32
@@ -40,7 +38,7 @@ static int can_socket;
 static int  can_monitor(void* core);
 static char err_message[100] = { 0 };
 
-static void print_error(Uint16 can_id, const char* reason, disp_mode_t disp_mode);
+static void print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode);
 
 void can_init(core_t* core)
 {
@@ -49,7 +47,7 @@ void can_init(core_t* core)
         return;
     }
 
-    core->can_monitor_th = SDL_CreateThread(can_monitor, "CAN monitor thread", (void*)core);
+    core->can_monitor_th = os_create_thread(can_monitor, "CAN monitor thread", (void*)core);
 }
 
 void can_deinit(core_t* core)
@@ -60,7 +58,7 @@ void can_deinit(core_t* core)
     }
 
     core->can_status = 0;
-    core->is_can_initialised = SDL_FALSE;
+    core->is_can_initialised = IS_FALSE;
 
 #ifdef __linux__
     close(can_socket);
@@ -76,15 +74,15 @@ void can_quit(core_t* core)
         return;
     }
 
-    if (SDL_TRUE == is_can_initialised(core))
+    if (IS_TRUE == is_can_initialised(core))
     {
         can_deinit(core);
     }
 
-    SDL_DetachThread(core->can_monitor_th);
+    os_detach_thread(core->can_monitor_th);
 }
 
-Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
+uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
     int index;
 
@@ -102,7 +100,7 @@ Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
 
     num_bytes = write(can_socket, &frame, sizeof(frame));
 
-    SDL_Delay(1);
+    os_delay(1);
 
     if (-1 == num_bytes)
     {
@@ -124,11 +122,11 @@ Uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
         pcan_message.DATA[index] = message->data[index];
     }
 
-    return (Uint32)CAN_Write(PCAN_USBBUS1, &pcan_message);
+    return (uint32)CAN_Write(PCAN_USBBUS1, &pcan_message);
 #endif
 }
 
-Uint32 can_read(can_message_t* message)
+uint32 can_read(can_message_t* message)
 {
     int    index;
 #ifdef __linux__
@@ -177,7 +175,7 @@ Uint32 can_read(can_message_t* message)
 
     return 0;
 #else
-    Uint32         can_status;
+    uint32         can_status;
     TPCANMsg       pcan_message   = { 0 };
     TPCANTimestamp pcan_timestamp = { 0 };
 
@@ -199,7 +197,7 @@ Uint32 can_read(can_message_t* message)
 #endif
 }
 
-void can_set_baud_rate(Uint8 command, core_t* core)
+void can_set_baud_rate(uint8 command, core_t* core)
 {
     if (NULL == core)
     {
@@ -208,13 +206,13 @@ void can_set_baud_rate(Uint8 command, core_t* core)
 
     core->baud_rate = command;
 
-    if (SDL_TRUE == is_can_initialised(core))
+    if (IS_TRUE == is_can_initialised(core))
     {
         can_deinit(core);
     }
 }
 
-void limit_node_id(Uint8* node_id)
+void limit_node_id(uint8* node_id)
 {
     if (*node_id < 0x01)
     {
@@ -230,13 +228,13 @@ int lua_can_write(lua_State* L)
 {
     int           can_id      = luaL_checkinteger(L, 1);
     int           length      = luaL_checkinteger(L, 2);
-    Uint32        can_status;
-    Uint32        data_d0_d3  = lua_tointeger(L, 3);
-    Uint32        data_d4_d7  = lua_tointeger(L, 4);
-    SDL_bool      show_output = lua_toboolean(L, 5);
+    uint32        can_status;
+    uint32        data_d0_d3  = lua_tointeger(L, 3);
+    uint32        data_d4_d7  = lua_tointeger(L, 4);
+    bool_t        show_output = lua_toboolean(L, 5);
     const char*   comment     = lua_tostring(L, 6);
     can_message_t message     = { 0 };
-    disp_mode_t   disp_mode   = NO_OUTPUT;
+    disp_mode_t   disp_mode   = SILENT;
 
     message.id      = can_id;
     message.length  = length;
@@ -249,16 +247,16 @@ int lua_can_write(lua_State* L)
     message.data[5] = ((data_d4_d7 >> 16) & 0xff);
     message.data[4] = ((data_d4_d7 >> 24) & 0xff);
 
-    if (SDL_TRUE == show_output)
+    if (IS_TRUE == show_output)
     {
-        disp_mode = SCRIPT_OUTPUT;
+        disp_mode = SCRIPT_MODE;
     }
 
     can_status = can_write(&message, disp_mode, comment);
 
     if (0 == can_status)
     {
-        if (SCRIPT_OUTPUT == disp_mode)
+        if (SCRIPT_MODE == disp_mode)
         {
             int  i;
             char buffer[34] = { 0 };
@@ -268,17 +266,17 @@ int lua_can_write(lua_State* L)
                 comment = "-";
             }
 
-            SDL_strlcpy(buffer, comment, 33);
-            for (i = SDL_strlen(buffer); i < 33; ++i)
+            os_strlcpy(buffer, comment, 33);
+            for (i = os_strlen(buffer); i < 33; ++i)
             {
                 buffer[i] = ' ';
             }
 
-            c_printf(LIGHT_BLACK, "CAN ");
-            c_printf(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
-            c_printf(LIGHT_GREEN, "SUCC    ");
-            c_printf(DARK_MAGENTA, "%s ", buffer);
-            c_printf(DEFAULT_COLOR, "Write: 0x%08X%08X\n", data_d0_d3, data_d4_d7);
+            os_printf(LIGHT_BLACK, "CAN ");
+            os_printf(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
+            os_printf(LIGHT_GREEN, "SUCC    ");
+            os_printf(DARK_MAGENTA, "%s ", buffer);
+            os_printf(DEFAULT_COLOR, "Write: 0x%08X%08X\n", data_d0_d3, data_d4_d7);
         }
         lua_pushboolean(L, 1);
     }
@@ -295,8 +293,8 @@ int lua_can_read(lua_State* L)
 {
     can_message_t message   = { 0 };
     char          buffer[9] = { 0 };
-    Uint32        status;
-    Uint32        length;
+    uint32        status;
+    uint32        length;
 
     status = can_read(&message);
     if (0 == status)
@@ -311,7 +309,7 @@ int lua_can_read(lua_State* L)
         lua_pushinteger(L, message.id);
         lua_pushinteger(L, length);
 
-        SDL_memcpy((void*)&buffer, &message.data, message.length);
+        os_memcpy((void*)&buffer, &message.data, message.length);
 
         lua_pushlstring(L, (const char*)buffer, length);
         lua_pushinteger(L, message.timestamp_us);
@@ -332,7 +330,7 @@ void lua_register_can_commands(core_t* core)
     lua_setglobal(core->L, "can_read");
 }
 
-const char* can_get_error_message(Uint32 can_status)
+const char* can_get_error_message(uint32 can_status)
 {
 #ifdef _WIN32
     if (PCAN_ERROR_OK != can_status)
@@ -362,11 +360,11 @@ void can_print_baud_rate_help(core_t* core)
     {
         if (status_index == index)
         {
-            SDL_snprintf(status[index], 7, "Active");
+            os_snprintf(status[index], 7, "Active");
         }
         else
         {
-            SDL_snprintf(status[index], 2, " ");
+            os_snprintf(status[index], 2, " ");
         }
     }
 
@@ -390,11 +388,11 @@ void can_print_baud_rate_help(core_t* core)
     table_print_footer(&table);
 }
 
-SDL_bool is_can_initialised(core_t* core)
+bool_t is_can_initialised(core_t* core)
 {
     if (NULL == core)
     {
-        return SDL_FALSE;
+        return IS_FALSE;
     }
 
     return core->is_can_initialised;
@@ -412,9 +410,9 @@ static int can_monitor(void* core_pt)
 
     core->baud_rate = 3;
 
-    while (SDL_TRUE == core->is_running)
+    while (IS_TRUE == core->is_running)
     {
-        while (SDL_FALSE == is_can_initialised(core))
+        while (IS_FALSE == is_can_initialised(core))
         {
 #ifdef __linux__
             struct sockaddr_can addr;
@@ -425,7 +423,7 @@ static int can_monitor(void* core_pt)
             can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
             if (can_socket < 0)
             {
-                c_log(LOG_ERROR, "Error while opening socket");
+                os_log(LOG_ERROR, "Error while opening socket");
                 return 1;
             }
 
@@ -435,9 +433,9 @@ static int can_monitor(void* core_pt)
             strcpy(ifr.ifr_name, core->can_interface);
             if (ioctl(can_socket, SIOCGIFINDEX, &ifr) < 0)
             {
-                c_log(LOG_ERROR, "Invalid CAN interface: %s", core->can_interface);
+                os_log(LOG_ERROR, "Invalid CAN interface: %s", core->can_interface);
                 close(can_socket);
-                core->is_can_initialised = SDL_FALSE;
+                core->is_can_initialised = IS_FALSE;
                 return 1;
             }
 
@@ -446,13 +444,13 @@ static int can_monitor(void* core_pt)
 
             if (bind(can_socket, (struct sockaddr*)&addr, sizeof(addr)) < 0)
             {
-                c_log(LOG_ERROR, "Error in socket bind");
+                os_log(LOG_ERROR, "Error in socket bind");
                 return 1;
             }
 
-            core->is_can_initialised = SDL_TRUE;
-            c_log(LOG_SUCCESS, "CAN successfully initialised");
-            c_print_prompt();
+            core->is_can_initialised = IS_TRUE;
+            os_log(LOG_SUCCESS, "CAN successfully initialised");
+            os_print_prompt();
 #else
             TPCANBaudrate baud_rate;
 
@@ -513,12 +511,12 @@ static int can_monitor(void* core_pt)
 
             if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
             {
-                c_log(LOG_SUCCESS, "CAN successfully initialised");
-                core->is_can_initialised = SDL_TRUE;
-                c_print_prompt();
+                os_log(LOG_SUCCESS, "CAN successfully initialised");
+                core->is_can_initialised = IS_TRUE;
+                os_print_prompt();
             }
 #endif
-            SDL_Delay(1);
+            os_delay(1);
             continue;
         }
 
@@ -534,9 +532,9 @@ static int can_monitor(void* core_pt)
         if (nbytes < 0)
         {
             core->can_status = 0;
-            core->is_can_initialised = SDL_FALSE;
-            c_log(LOG_WARNING, "CAN de-initialised: Error in CAN read?");
-            c_print_prompt();
+            core->is_can_initialised = IS_FALSE;
+            os_log(LOG_WARNING, "CAN de-initialised: Error in CAN read?");
+            os_print_prompt();
         }
 #endif
 #else
@@ -545,14 +543,14 @@ static int can_monitor(void* core_pt)
         if (PCAN_ERROR_ILLHW == core->can_status)
         {
             core->can_status = 0;
-            core->is_can_initialised = SDL_FALSE;
+            core->is_can_initialised = IS_FALSE;
 
             CAN_Uninitialize(PCAN_USBBUS1);
-            c_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
-            c_print_prompt();
+            os_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
+            os_print_prompt();
         }
 #endif
-        SDL_Delay(1);
+        os_delay(1);
     }
 
     return 0;
@@ -593,22 +591,23 @@ void can_clear_socket_buffer(void)
 }
 #endif
 
-static void print_error(Uint16 can_id, const char* reason, disp_mode_t disp_mode)
+static void print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode)
 {
-    if (SCRIPT_OUTPUT != disp_mode)
+    if (SCRIPT_MODE != disp_mode)
     {
         return;
     }
 
-    c_printf(LIGHT_BLACK, "CAN ");
-    c_printf(DEFAULT_COLOR, "     0x%02X   -       -         -       ", can_id);
-    c_printf(LIGHT_RED, "FAIL    ");
+    os_printf(LIGHT_BLACK, "CAN ");
+    os_printf(DEFAULT_COLOR, "     0x%02X   -       -         -       ", can_id);
+    os_printf(LIGHT_RED, "FAIL    ");
+
     if (NULL != reason)
     {
-        c_printf(DEFAULT_COLOR, "%s\n", reason);
+        os_printf(DEFAULT_COLOR, "%s\n", reason);
     }
     else
     {
-        c_printf(DEFAULT_COLOR, "-\n");
+        os_printf(DEFAULT_COLOR, "-\n");
     }
 }

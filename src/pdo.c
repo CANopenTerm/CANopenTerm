@@ -7,27 +7,26 @@
  *
  **/
 
-#include "SDL.h"
 #include "lua.h"
 #include "lauxlib.h"
 #include "can.h"
+#include "os.h"
 #include "pdo.h"
-#include "printf.h"
 #include "table.h"
 
 static pdo_t pdo[PDO_MAX];
 
-static Uint32 pdo_send_callback(Uint32 interval, void *param);
-static void   print_error(const char* reason, disp_mode_t disp_mode, Uint16 can_id);
+static uint32 pdo_send_callback(uint32 interval, void *param);
+static void   print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id);
 
-SDL_bool pdo_add(Uint16 can_id, Uint32 event_time_ms, Uint8 length, Uint64 data, disp_mode_t disp_mode)
+bool_t pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, disp_mode_t disp_mode)
 {
     int i;
 
-    if (SDL_FALSE == pdo_is_id_valid(can_id))
+    if (IS_FALSE == pdo_is_id_valid(can_id))
     {
         print_error("Could not add PDO: Invalid TPDO CAN-ID", disp_mode, can_id);
-        return SDL_FALSE;
+        return IS_FALSE;
     }
 
     if (length > 8)
@@ -35,7 +34,7 @@ SDL_bool pdo_add(Uint16 can_id, Uint32 event_time_ms, Uint8 length, Uint64 data,
         length = 8;
     }
 
-    if (SDL_FALSE == pdo_del(can_id, disp_mode))
+    if (IS_FALSE == pdo_del(can_id, disp_mode))
     {
         /* Nothing to do here. */
     }
@@ -47,23 +46,23 @@ SDL_bool pdo_add(Uint16 can_id, Uint32 event_time_ms, Uint8 length, Uint64 data,
             pdo[i].can_id = can_id;
             pdo[i].length = length;
             pdo[i].data   = data;
-            pdo[i].id     = SDL_AddTimer(event_time_ms, pdo_send_callback, &pdo[i]);
-            return SDL_TRUE;
+            pdo[i].id     = os_add_timer(event_time_ms, pdo_send_callback, &pdo[i]);
+            return IS_TRUE;
         }
     }
 
     print_error("Could not add PDO: No empty slot available", disp_mode, can_id);
-    return SDL_FALSE;
+    return IS_FALSE;
 }
 
-SDL_bool pdo_del(Uint16 can_id, disp_mode_t disp_mode)
+bool_t pdo_del(uint16 can_id, disp_mode_t disp_mode)
 {
     int i;
 
-    if (SDL_FALSE == pdo_is_id_valid(can_id))
+    if (IS_FALSE == pdo_is_id_valid(can_id))
     {
         print_error("Could not delete PDO: Invalid TPDO CAN-ID", disp_mode, can_id);
-        return SDL_FALSE;
+        return IS_FALSE;
     }
 
     for (i = 0; i < PDO_MAX; i += 1)
@@ -74,12 +73,12 @@ SDL_bool pdo_del(Uint16 can_id, disp_mode_t disp_mode)
             pdo[i].length = 0;
             pdo[i].data   = 0;
 
-            SDL_RemoveTimer(pdo[i].id);
+            os_remove_timer(pdo[i].id);
             break;
         }
     }
 
-    return SDL_TRUE;
+    return IS_TRUE;
 }
 
 int lua_pdo_add(lua_State* L)
@@ -87,22 +86,22 @@ int lua_pdo_add(lua_State* L)
     int         can_id        = luaL_checkinteger(L, 1);
     int         event_time_ms = luaL_checkinteger(L, 2);
     int         length        = luaL_checkinteger(L, 3);
-    Uint32      data_d0_d3    = lua_tointeger(L, 4);
-    Uint32      data_d4_d7    = lua_tointeger(L, 5);
-    SDL_bool    show_output   = lua_toboolean(L, 6);
-    SDL_bool    success;
+    uint32      data_d0_d3    = lua_tointeger(L, 4);
+    uint32      data_d4_d7    = lua_tointeger(L, 5);
+    bool_t      show_output   = lua_toboolean(L, 6);
+    bool_t      success;
     const char* comment       = lua_tostring(L, 7);
-    disp_mode_t disp_mode     = NO_OUTPUT;
-    Uint64      data          = ((Uint64)data_d0_d3 << 32) | data_d4_d7;
+    disp_mode_t disp_mode     = SILENT;
+    uint64      data          = ((uint64)data_d0_d3 << 32) | data_d4_d7;
 
-    if (SDL_TRUE == show_output)
+    if (IS_TRUE == show_output)
     {
-        disp_mode = SCRIPT_OUTPUT;
+        disp_mode = SCRIPT_MODE;
     }
 
     success = pdo_add(can_id, event_time_ms, length, data, disp_mode);
 
-    if (SDL_TRUE == show_output)
+    if (IS_TRUE == show_output)
     {
         int  i;
         char buffer[34] = { 0 };
@@ -112,19 +111,19 @@ int lua_pdo_add(lua_State* L)
             comment = "-";
         }
 
-        SDL_strlcpy(buffer, comment, 33);
-        for (i = SDL_strlen(buffer); i < 33; ++i)
+        os_strlcpy(buffer, comment, 33);
+        for (i = os_strlen(buffer); i < 33; ++i)
         {
             buffer[i] = ' ';
         }
 
-        if (SDL_TRUE == success)
+        if (IS_TRUE == success)
         {
-            c_printf(LIGHT_BLACK, "PDO  ");
-            c_printf(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
-            c_printf(LIGHT_GREEN, "SUCC    ");
-            c_printf(DARK_MAGENTA, "%s ", buffer);
-            c_printf(DEFAULT_COLOR, "0x%08X%08X, %ums\n", data_d0_d3, data_d4_d7, event_time_ms);
+            os_printf(LIGHT_BLACK, "PDO  ");
+            os_printf(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
+            os_printf(LIGHT_GREEN, "SUCC    ");
+            os_printf(DARK_MAGENTA, "%s ", buffer);
+            os_printf(DEFAULT_COLOR, "0x%08X%08X, %ums\n", data_d0_d3, data_d4_d7, event_time_ms);
         }
     }
 
@@ -136,33 +135,33 @@ int lua_pdo_add(lua_State* L)
 int lua_pdo_del(lua_State* L)
 {
     int         can_id      = luaL_checkinteger(L, 1);
-    SDL_bool    show_output = lua_toboolean(L, 2);
+    bool_t      show_output = lua_toboolean(L, 2);
     const char* comment     = lua_tostring(L, 3);
-    disp_mode_t disp_mode   = NO_OUTPUT;
+    disp_mode_t disp_mode   = SILENT;
 
-    if (SDL_TRUE == show_output)
+    if (IS_TRUE == show_output)
     {
         int  i;
         char buffer[34] = { 0 };
 
-        disp_mode = SCRIPT_OUTPUT;
+        disp_mode = SCRIPT_MODE;
 
         if (NULL == comment)
         {
             comment = "-";
         }
 
-        SDL_strlcpy(buffer, comment, 33);
-        for (i = SDL_strlen(buffer); i < 33; ++i)
+        os_strlcpy(buffer, comment, 33);
+        for (i = os_strlen(buffer); i < 33; ++i)
         {
             buffer[i] = ' ';
         }
 
-        c_printf(LIGHT_BLACK, "PDO  ");
-        c_printf(DEFAULT_COLOR, "    0x%02X   -       -         -       ", can_id);
-        c_printf(LIGHT_GREEN, "SUCC    ");
-        c_printf(DEFAULT_COLOR, "%s ", buffer);
-        c_printf(DEFAULT_COLOR, "Delete\n");
+        os_printf(LIGHT_BLACK, "PDO  ");
+        os_printf(DEFAULT_COLOR, "    0x%02X   -       -         -       ", can_id);
+        os_printf(LIGHT_GREEN, "SUCC    ");
+        os_printf(DEFAULT_COLOR, "%s ", buffer);
+        os_printf(DEFAULT_COLOR, "Delete\n");
     }
 
     lua_pushboolean(L, pdo_del(can_id, disp_mode));
@@ -178,7 +177,7 @@ void lua_register_pdo_commands(core_t* core)
     lua_setglobal(core->L, "pdo_del");
 }
 
-static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
+static uint32 pdo_send_callback(uint32 interval, void *pdo_pt)
 {
     int           i;
     int           offset  = 0;
@@ -194,7 +193,7 @@ static Uint32 pdo_send_callback(Uint32 interval, void *pdo_pt)
         offset += 8;
     }
 
-    can_write(&message, NO_OUTPUT, NULL);
+    can_write(&message, SILENT, NULL);
 
     return interval;
 }
@@ -214,7 +213,7 @@ void pdo_print_help(void)
     table_print_footer(&table);
 }
 
-SDL_bool pdo_is_id_valid(Uint16 can_id)
+bool_t pdo_is_id_valid(uint16 can_id)
 {
     /* Node-ID (0x000 - 0x07f)
      * TPDO 1  (0x181 - 0x1ff)
@@ -224,7 +223,7 @@ SDL_bool pdo_is_id_valid(Uint16 can_id)
      */
     if ((can_id >= 0x00) && (can_id <= 0x7f))
     {
-        return SDL_TRUE;
+        return IS_TRUE;
     }
     else if ((can_id >= 0x180) && (can_id <= 0x4ff))
     {
@@ -234,24 +233,24 @@ SDL_bool pdo_is_id_valid(Uint16 can_id)
             case 0x280:
             case 0x380:
             case 0x480:
-                return SDL_FALSE;
+                return IS_FALSE;
             default:
-                return SDL_TRUE;
+                return IS_TRUE;
         }
     }
 
-    return SDL_FALSE;
+    return IS_FALSE;
 }
 
-static void print_error(const char* reason, disp_mode_t disp_mode, Uint16 can_id)
+static void print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id)
 {
-    if (SCRIPT_OUTPUT != disp_mode)
+    if (SCRIPT_MODE != disp_mode)
     {
         return;
     }
 
-    c_printf(LIGHT_BLACK, "PDO ");
-    c_printf(DEFAULT_COLOR, "     0x%03X   -       -         -       ", can_id);
-    c_printf(LIGHT_RED, "FAIL    ");
-    c_printf(DEFAULT_COLOR, "%s\n", reason);
+    os_printf(LIGHT_BLACK, "PDO ");
+    os_printf(DEFAULT_COLOR, "     0x%03X   -       -         -       ", can_id);
+    os_printf(LIGHT_RED, "FAIL    ");
+    os_printf(DEFAULT_COLOR, "%s\n", reason);
 }

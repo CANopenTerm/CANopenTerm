@@ -28,11 +28,13 @@ do_compile() {
     ${S}/src/main.c \
     ${S}/src/nmt_client.c \
     ${S}/src/pdo.c \
-    ${S}/src/printf.c \
     ${S}/src/scripts.c \
     ${S}/src/sdo_client.c \
     ${S}/src/table.c \
+    ${S}/src/os/os.c \
+    ${S}/src/os/os_linux.c \
     -DUSE_LIBSOCKETCAN \
+    -I${S}/src/os \
     $(pkg-config --cflags --libs --static sdl2 lua readline) \
     -L${D}${libdir} \
     -o ${S}/export/CANopenTerm

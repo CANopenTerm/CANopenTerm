@@ -10,42 +10,29 @@
 #ifndef CORE_H
 #define CORE_H
 
-#include "SDL.h"
 #include "lua.h"
-
-typedef enum status
-{
-    COT_OK = 0,
-    COT_WARNING,
-    COT_ERROR,
-    COT_QUIT
-
-} status_t;
+#include "os.h"
 
 typedef enum disp_mode
 {
-    NO_OUTPUT = 0,
-    TERM_OUTPUT,
-    SCRIPT_OUTPUT
+    SILENT = 0,
+    TERM_MODE,
+    SCRIPT_MODE
 
 } disp_mode_t;
 
 typedef struct core
 {
-    SDL_Window        *window;
-    SDL_Renderer      *renderer;
-    SDL_Thread        *can_monitor_th;
-    lua_State         *L;
-    struct nk_context *ctx;
-    Uint8              baud_rate;
-    Uint32             can_status;
-    Uint8              node_id;
-    SDL_bool           is_can_initialised;
-    SDL_bool           is_running;
-    SDL_bool           is_script_running;
-#ifdef __linux__
-    char can_interface[32];
-#endif
+    os_thread* can_monitor_th;
+    lua_State* L;
+    uint8      baud_rate;
+    uint32     can_status;
+    uint8      node_id;
+    bool_t     is_can_initialised;
+    bool_t     is_running;
+    bool_t     is_script_running;
+    char       can_interface[32];
+
 } core_t;
 
 status_t core_init(core_t **core);

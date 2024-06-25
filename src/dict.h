@@ -10,21 +10,21 @@
 #ifndef DICT_H
 #define DICT_H
 
-#include "SDL.h"
+#include "os.h"
 #include "core.h"
 #include "lua.h"
 
 typedef struct dict_entry
 {
-    Uint16      index_start;
-    Uint16      index_end;
-    Uint8       sub_index_start;
-    Uint8       sub_index_end;
+    uint16      index_start;
+    uint16      index_end;
+    uint8       sub_index_start;
+    uint8       sub_index_end;
     const char* description;
 
 } dict_entry_t;
 
-const char* dict_lookup(Uint16 index, Uint8 sub_index);
+const char* dict_lookup(uint16 index, uint8 sub_index);
 int         lua_dict_lookup(lua_State* L);
 void        lua_register_dict_commands(core_t* core);
 

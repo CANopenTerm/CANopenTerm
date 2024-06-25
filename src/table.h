@@ -10,16 +10,15 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include "SDL.h"
-#include "printf.h"
+#include "os.h"
 
 typedef struct table
 {
     color_t frame_color;
     color_t text_color;
-    Uint8   column_a_width;
-    Uint8   column_b_width;
-    Uint8   column_c_width;
+    uint8   column_a_width;
+    uint8   column_b_width;
+    uint8   column_c_width;
 
 } table_t;
 

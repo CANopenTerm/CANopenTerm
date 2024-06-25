@@ -7,7 +7,7 @@
  *
  **/
 
-#include "SDL.h"
+#include "os.h"
 #include "core.h"
 #include "lua.h"
 #include "lauxlib.h"
@@ -204,16 +204,16 @@ static const dict_entry_t dictionary[] =
     { 0xC000, 0xFFFF, 0x00, 0xFF, "Reserved" }
 };
 
-const char* dict_lookup(Uint16 index, Uint8 sub_index)
+const char* dict_lookup(uint16 index, uint8 sub_index)
 {
     size_t i;
 
     for (i = 0; i < sizeof(dictionary) / sizeof(dict_entry_t); ++i)
     {
-        Uint16 index_start     = dictionary[i].index_start;
-        Uint16 index_end       = dictionary[i].index_end;
-        Uint8  sub_index_start = dictionary[i].sub_index_start;
-        Uint8  sub_index_end   = dictionary[i].sub_index_end;
+        uint16 index_start     = dictionary[i].index_start;
+        uint16 index_end       = dictionary[i].index_end;
+        uint8  sub_index_start = dictionary[i].sub_index_start;
+        uint8  sub_index_end   = dictionary[i].sub_index_end;
 
         if (sub_index_end < sub_index_start)
         {

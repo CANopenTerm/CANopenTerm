@@ -155,10 +155,11 @@ if(WIN32)
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dirent_devel.cmake" ${DIRENT_PATH}/CMakeLists.txt)
 
   set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
-endif()
+endif(WIN32)
 
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os
   SYSTEM ${SDL2_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
@@ -166,25 +167,39 @@ include_directories(
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
 
-set(project_sources
+set(core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/pdo.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/printf.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/sdo_client.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/table.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/table.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
+if (WIN32)
+set(os_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_windows.c)
+
+endif(WIN32)
+
+if (UNIX)
+set(os_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_linux.c)
+endif(UNIX)
+
+if(WIN32)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
+endif(WIN32)
 
 add_library(
   core
   STATIC
-  ${project_sources})
+  ${core_sources}
+  ${os_sources})
 
 add_executable(
   ${PROJECT_NAME}

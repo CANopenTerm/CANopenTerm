@@ -49,7 +49,9 @@ target_link_libraries(
   lua
   dl
   m
-  pthread)
+  pthread
+  readline
+  history)
 
 target_link_options(
   run_unit_tests

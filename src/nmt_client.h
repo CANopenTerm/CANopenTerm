@@ -10,9 +10,9 @@
 #ifndef NMT_CLIENT_H
 #define NMT_CLIENT_H
 
-#include "SDL.h"
 #include "lua.h"
 #include "core.h"
+#include "os.h"
 
 typedef enum
 {
@@ -24,7 +24,7 @@ typedef enum
 
 } nmt_command_t;
 
-Uint32 nmt_send_command(Uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment);
+uint32 nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment);
 int    lua_nmt_send_command(lua_State* L);
 void   lua_register_nmt_command(core_t* core);
 void   nmt_print_help(disp_mode_t disp_mode);

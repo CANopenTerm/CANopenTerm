@@ -7,7 +7,6 @@
  *
  **/
 
-#include <SDL.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
@@ -16,8 +15,9 @@
 #include "can.h"
 #include "core.h"
 #include "nmt_client.h"
+#include "os.h"
 
-Uint32 __wrap_can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
+uint32 __wrap_can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
     (void)message;
     (void)disp_mode;
@@ -28,12 +28,12 @@ Uint32 __wrap_can_write(can_message_t* message, disp_mode_t disp_mode, const cha
 
 static void test_nmt_send_command(void **state)
 {
-    assert_true(nmt_send_command(0x20, NMT_OPERATIONAL,     NO_OUTPUT, NULL) == 0);
-    assert_true(nmt_send_command(0x20, NMT_STOP,            NO_OUTPUT, NULL) == 0);
-    assert_true(nmt_send_command(0x20, NMT_PRE_OPERATIONAL, NO_OUTPUT, NULL) == 0);
-    assert_true(nmt_send_command(0x20, NMT_RESET_NODE,      NO_OUTPUT, NULL) == 0);
-    assert_true(nmt_send_command(0x20, NMT_RESET_COMM,      NO_OUTPUT, NULL) == 0);
-    assert_true(nmt_send_command(0x20, 0x03,                NO_OUTPUT, NULL) == 1);
+    assert_true(nmt_send_command(0x20, NMT_OPERATIONAL,     SILENT, NULL) == ALL_OK);
+    assert_true(nmt_send_command(0x20, NMT_STOP,            SILENT, NULL) == ALL_OK);
+    assert_true(nmt_send_command(0x20, NMT_PRE_OPERATIONAL, SILENT, NULL) == ALL_OK);
+    assert_true(nmt_send_command(0x20, NMT_RESET_NODE,      SILENT, NULL) == ALL_OK);
+    assert_true(nmt_send_command(0x20, NMT_RESET_COMM,      SILENT, NULL) == ALL_OK);
+    assert_true(nmt_send_command(0x20, 0x03,                SILENT, NULL) == NMT_UNKNOWN_COMMAND);
 }
 
 int main(void)

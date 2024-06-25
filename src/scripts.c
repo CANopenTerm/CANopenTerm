@@ -31,21 +31,19 @@ static void reset_terminal_mode(struct termios* orig_termios);
 #endif
 
 #include <string.h>
-#include "SDL.h"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 #include "dirent.h"
 #include "core.h"
-#include "printf.h"
 #include "scripts.h"
 #include "table.h"
 
-static char*    get_script_description(const char* script_path);
-static SDL_bool has_lua_extension(const char* filename);
-static size_t   safe_strcpy(char* dest, const char* src, size_t size);
-static void     strip_extension(char* filename);
-static SDL_bool script_already_listed(char** listed_scripts, int count, const char* script_name);
+static char*  get_script_description(const char* script_path);
+static bool_t has_lua_extension(const char* filename);
+static size_t safe_strcpy(char* dest, const char* src, size_t size);
+static void   strip_extension(char* filename);
+static bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
 
 void scripts_init(core_t* core)
 {
@@ -87,7 +85,7 @@ void scripts_deinit(core_t* core)
 static char* get_script_description(const char* script_path)
 {
     static char description[256] = { 0 };
-    FILE*      file              = fopen(script_path, "r");
+    FILE*       file             = fopen(script_path, "r");
 
     if (NULL == file)
     {
@@ -107,13 +105,13 @@ static char* get_script_description(const char* script_path)
             desc_ptr++;
         }
 
-        if (SDL_strncmp(desc_ptr, "--[[", 4) == 0)
+        if (os_strncmp(desc_ptr, "--[[", 4) == 0)
         {
-            SDL_memmove(desc_ptr, desc_ptr + 4, SDL_strlen(desc_ptr) - 3);
+            os_memmove(desc_ptr, desc_ptr + 4, os_strlen(desc_ptr) - 3);
         }
-        else if (SDL_strncmp(desc_ptr, "--", 2) == 0)
+        else if (os_strncmp(desc_ptr, "--", 2) == 0)
         {
-            SDL_memmove(desc_ptr, desc_ptr + 2, SDL_strlen(desc_ptr) - 1);
+            os_memmove(desc_ptr, desc_ptr + 2, os_strlen(desc_ptr) - 1);
         }
 
         while ((*desc_ptr == ' ') || (*desc_ptr == '\t'))
@@ -122,7 +120,7 @@ static char* get_script_description(const char* script_path)
         }
 
         fclose(file);
-        return SDL_strdup(desc_ptr);
+        return os_strdup(desc_ptr);
     }
 
     fclose(file);
@@ -159,23 +157,23 @@ void list_scripts(void)
                     script_name[sizeof(script_name) - 1] = '\0';
                     strip_extension(script_name);
 
-                    if (SDL_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
+                    if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                     {
                         char  buf[4]           = { 0 };
-                        char* script_no        = SDL_itoa(listed_count, buf, 10);
+                        char* script_no        = os_itoa(listed_count, buf, 10);
                         char  script_path[512] = { 0 };
                         char* description;
 
-                        listed_scripts[listed_count++] = SDL_strdup(script_name);
+                        listed_scripts[listed_count++] = os_strdup(script_name);
 
-                        SDL_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], ent->d_name);
+                        os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], ent->d_name);
 
                         description = get_script_description(script_path);
 
                         if (description != NULL)
                         {
                             table_print_row(script_no, script_name, description, &table);
-                            SDL_free(description);
+                            os_free(description);
                         }
                         else
                         {
@@ -203,14 +201,14 @@ void list_scripts(void)
                 script_name[sizeof(script_name) - 1] = '\0';
                 strip_extension(script_name);
 
-                if (SDL_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
+                if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                 {
                     char  buf[4]           = { 0 };
-                    char* script_no        = SDL_itoa(listed_count, buf, 10);
+                    char* script_no        = os_itoa(listed_count, buf, 10);
                     char  script_path[512] = { 0 };
                     char* description;
 
-                    listed_scripts[listed_count++] = SDL_strdup(script_name);
+                    listed_scripts[listed_count++] = os_strdup(script_name);
 
                     snprintf(script_path, sizeof(script_path), "./scripts/%s", ent->d_name);
 
@@ -218,7 +216,7 @@ void list_scripts(void)
                     if (description != NULL)
                     {
                         table_print_row(script_no, script_name, description, &table);
-                        SDL_free(description);
+                        os_free(description);
                     }
                     else
                     {
@@ -233,7 +231,7 @@ void list_scripts(void)
 
     for (i = 0; i < listed_count; i++)
     {
-        SDL_free(listed_scripts[i]);
+        os_free(listed_scripts[i]);
     }
 
     table_print_footer(&table);
@@ -241,11 +239,11 @@ void list_scripts(void)
 
 void run_script(const char* name, core_t* core)
 {
-    SDL_bool has_extension = SDL_strchr(name, '.') != NULL;
+    bool_t   has_extension = os_strchr(name, '.') != NULL;
 #ifdef __linux__
     int      i;
     char     script_path[256] = { 0 };
-    SDL_bool script_found = SDL_FALSE;
+    bool_t   script_found = IS_FALSE;
 #else
     char     script_path[64] = { 0 };
 #endif
@@ -258,7 +256,7 @@ void run_script(const char* name, core_t* core)
 #ifdef __linux__
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
-        SDL_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
+        os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
         if (LUA_OK == luaL_dofile(core->L, script_path))
         {
             lua_pop(core->L, lua_gettop(core->L));
@@ -266,49 +264,49 @@ void run_script(const char* name, core_t* core)
         }
         else
         {
-            if (SDL_FALSE == has_extension)
+            if (IS_FALSE == has_extension)
             {
-                SDL_snprintf(script_path, sizeof(script_path), "%s/%s.lua", script_dirs[i], name);
+                os_snprintf(script_path, sizeof(script_path), "%s/%s.lua", script_dirs[i], name);
                 if (LUA_OK == luaL_dofile(core->L, script_path))
                 {
                     lua_pop(core->L, lua_gettop(core->L));
                     return;
                 }
             }
-            if (SDL_FALSE == script_found && luaL_loadfile(core->L, script_path) != LUA_ERRFILE)
+            if (IS_FALSE == script_found && luaL_loadfile(core->L, script_path) != LUA_ERRFILE)
             {
-                script_found = SDL_TRUE;
+                script_found = IS_TRUE;
             }
         }
     }
 
-    if (SDL_FALSE == script_found)
+    if (IS_FALSE == script_found)
     {
-        c_log(LOG_WARNING, "Script '%s' not found in any directory", name);
+        os_log(LOG_WARNING, "Script '%s' not found in any directory", name);
     }
     else
     {
-        c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
+        os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }
 #else
 
-    SDL_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
+    os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
     if (LUA_OK == luaL_dofile(core->L, script_path))
     {
         lua_pop(core->L, lua_gettop(core->L));
     }
     else
     {
-        if (SDL_FALSE == has_extension)
+        if (IS_FALSE == has_extension)
         {
-            SDL_snprintf(script_path, sizeof(script_path), "scripts/%s.lua", name);
+            os_snprintf(script_path, sizeof(script_path), "scripts/%s.lua", name);
             if (LUA_OK == luaL_dofile(core->L, script_path))
             {
                 lua_pop(core->L, lua_gettop(core->L));
                 return;
             }
         }
-        c_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
+        os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }
 #endif
 }
@@ -316,8 +314,8 @@ void run_script(const char* name, core_t* core)
 
 int lua_delay_ms(lua_State * L)
 {
-    Uint32      delay_in_ms = (Uint32)lua_tointeger(L, 1);
-    SDL_bool    show_output = lua_toboolean(L, 2);
+    uint32      delay_in_ms = (uint32)lua_tointeger(L, 1);
+    bool_t      show_output = lua_toboolean(L, 2);
     const char* comment     = lua_tostring(L, 3);
 
     if (0 == delay_in_ms)
@@ -325,30 +323,30 @@ int lua_delay_ms(lua_State * L)
         delay_in_ms = 1000u;
     }
 
-    if (SDL_TRUE == show_output)
+    if (IS_TRUE == show_output)
     {
         int  i;
         char buffer[34] = { 0 };
 
-        c_printf(LIGHT_BLACK, "Delay ");
-        c_printf(DEFAULT_COLOR, "   -       -       -         -       -       ");
+        os_log(LIGHT_BLACK, "Delay ");
+        os_log(DEFAULT_COLOR, "   -       -       -         -       -       ");
 
         if (NULL == comment)
         {
             comment = "-";
         }
 
-        SDL_strlcpy(buffer, comment, 33);
-        for (i = SDL_strlen(buffer); i < 33; ++i)
+        os_strlcpy(buffer, comment, 33);
+        for (i = os_strlen(buffer); i < 33; ++i)
         {
             buffer[i] = ' ';
         }
 
-        c_printf(DARK_MAGENTA, "%s ", buffer);
-        c_printf(DEFAULT_COLOR, "%ums\n", delay_in_ms);
+        os_log(DARK_MAGENTA, "%s ", buffer);
+        os_log(DEFAULT_COLOR, "%ums\n", delay_in_ms);
     }
 
-    SDL_Delay(delay_in_ms);
+    os_delay(delay_in_ms);
     return 1;
 }
 
@@ -424,34 +422,34 @@ int lua_print_heading(lua_State* L)
 {
     const char* heading = lua_tostring(L, 1);
 
-    c_printf(LIGHT_YELLOW, "\n%s\n", heading);
-    c_printf(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
+    os_log(LIGHT_YELLOW, "\n%s\n", heading);
+    os_log(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 
     return 0;
 }
 
-static SDL_bool has_lua_extension(const char* filename)
+static bool_t has_lua_extension(const char* filename)
 {
-    const char* dot = SDL_strrchr(filename, '.');
+    const char* dot = os_strrchr(filename, '.');
 
     if (0 == (dot && strcmp(dot, ".lua")))
     {
-        return SDL_TRUE;
+        return IS_TRUE;
     }
     else
     {
-        return SDL_FALSE;
+        return IS_FALSE;
     }
 }
 
 static size_t safe_strcpy(char* dest, const char* src, size_t size)
 {
-    size_t src_len = SDL_strlen(src);
+    size_t src_len = os_strlen(src);
 
     if (size > 0)
     {
         size_t copy_len = (src_len >= size) ? (size - 1) : src_len;
-        SDL_memcpy(dest, src, copy_len);
+        os_memcpy(dest, src, copy_len);
         dest[copy_len] = '\0';
     }
 
@@ -460,7 +458,7 @@ static size_t safe_strcpy(char* dest, const char* src, size_t size)
 
 static void strip_extension(char* filename)
 {
-    char* dot = SDL_strrchr(filename, '.');
+    char* dot = os_strrchr(filename, '.');
 
     if (dot && dot != filename)
     {
@@ -468,17 +466,17 @@ static void strip_extension(char* filename)
     }
 }
 
-static SDL_bool script_already_listed(char** listed_scripts, int count, const char* script_name)
+static bool_t script_already_listed(char** listed_scripts, int count, const char* script_name)
 {
     int i;
 
     for (i = 0; i < count; i++)
     {
-        if (0 == SDL_strcmp(listed_scripts[i], script_name))
+        if (0 == os_strcmp(listed_scripts[i], script_name))
         {
-            return SDL_TRUE;
+            return IS_TRUE;
         }
     }
 
-    return SDL_FALSE;
+    return IS_FALSE;
 }

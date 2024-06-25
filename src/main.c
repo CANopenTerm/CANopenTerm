@@ -12,12 +12,8 @@
 #endif
 #include <stdlib.h>
 #include "core.h"
+#include "os.h"
 #include "scripts.h"
-#include "SDL.h"
-#include "SDL_main.h"
-
-static size_t safe_strnlen(const char* s, size_t maxlen);
-static size_t strlcpy(char* dst, const char* src, size_t dstsize);
 
 int main(int argc, char* argv[])
 {
@@ -25,7 +21,7 @@ int main(int argc, char* argv[])
     int      script_arg  = 1;
     core_t*  core        = NULL;
 
-    if (COT_OK != core_init(&core))
+    if (core_init(&core) != ALL_OK)
     {
         status = EXIT_FAILURE;
     }
@@ -33,11 +29,11 @@ int main(int argc, char* argv[])
 #ifdef __linux__
     if ((argc > 1) && (argv[1] != NULL))
     {
-        strlcpy(core->can_interface, argv[1], sizeof(core->can_interface));
+        os_strlcpy(core->can_interface, argv[1], sizeof(core->can_interface));
     }
     else
     {
-        strlcpy(core->can_interface, "can0", sizeof(core->can_interface));
+        os_strlcpy(core->can_interface, "can0", sizeof(core->can_interface));
     }
     script_arg = 2;
 #endif
@@ -45,17 +41,20 @@ int main(int argc, char* argv[])
     if ((argc > script_arg) && (argv[script_arg] != NULL))
     {
         run_script(argv[script_arg], core);
-        core->is_running = SDL_FALSE;
+        core->is_running = IS_FALSE;
     }
 
-    while (SDL_TRUE == core->is_running)
+    while (IS_TRUE == core->is_running)
     {
         switch (core_update(core))
         {
-            case COT_QUIT:
-                core->is_running = SDL_FALSE;
+            case CORE_QUIT:
+                core->is_running = IS_FALSE;
                 break;
-            case COT_ERROR:
+            case OS_CONSOLE_INIT_ERROR:
+            case OS_INIT_ERROR:
+            case OS_MEMORY_ALLOCATION_ERROR:
+            case SCRIPT_INIT_ERROR:
                 status = EXIT_FAILURE;
                 break;
             default:
@@ -67,31 +66,3 @@ int main(int argc, char* argv[])
     return status;
 }
 
-static size_t safe_strnlen(const char* s, size_t maxlen)
-{
-    size_t len;
-
-    for (len = 0; len < maxlen; len += 1)
-    {
-        if ('\0' == s[len])
-        {
-            break;
-        }
-    }
-
-    return len;
-}
-
-static size_t strlcpy(char* dst, const char* src, size_t dstsize)
-{
-    size_t srclen = safe_strnlen(src, 5);
-    size_t copylen = (srclen >= dstsize) ? dstsize - 1 : srclen;
-
-    if (dstsize > 0)
-    {
-        memcpy(dst, src, copylen);
-        dst[copylen] = '\0';
-    }
-
-    return srclen; // Return the length of the source string
-}
