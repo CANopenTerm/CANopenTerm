@@ -3,8 +3,8 @@
 # CANopenTerm
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://app.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![CMake](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/cmake.yml/badge.svg)](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml)
-[![Microsoft C++ Code Analysis](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml)
+[![Linux Build & Unit Tests](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/mupfdev/CANopenTerm/actions/workflows/cmake.yml)
+[![Windows Build & Code Analysis](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml)
 
 ## Discover CANopenTerm
 
