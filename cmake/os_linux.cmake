@@ -19,10 +19,6 @@ ExternalProject_Add(Lua_devel
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Lua_devel.cmake" ${LUA_PATH}/CMakeLists.txt)
 
-set(LUA_INCLUDE_DIR ${LUA_PATH})
-link_directories(${LUA_PATH})
-find_library(LUA_LIBRARY NAMES lua PATHS ${LUA_PATH})
-
 # SDL2
 set(SDL2_VERSION  "2.30.4")
 set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION})

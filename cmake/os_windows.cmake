@@ -2,6 +2,7 @@
 set(LUA_VERSION   "5.4.6")
 set(LUA_DEVEL_PKG v${LUA_VERSION}.zip)
 set(LUA_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION}_${PLATFORM})
+set(LUA_LIBRARY   ${LUA_PATH}/lua.lib)
 
 ExternalProject_Add(Lua_devel
   URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
@@ -10,6 +11,7 @@ ExternalProject_Add(Lua_devel
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
   SOURCE_DIR ${LUA_PATH}/
+  BUILD_BYPRODUCTS ${LUA_LIBRARY}
 
   BUILD_IN_SOURCE 1
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
