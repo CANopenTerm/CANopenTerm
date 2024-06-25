@@ -4,7 +4,6 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://app.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Linux Build & Unit Tests](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/unit-tests.yml)
-[![Windows Build & Code Analysis](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/msvc.yml)
 
 ## Discover CANopenTerm
 
