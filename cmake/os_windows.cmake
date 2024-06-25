@@ -1,8 +1,9 @@
 # Lua
-set(LUA_VERSION   "5.4.6")
-set(LUA_DEVEL_PKG v${LUA_VERSION}.zip)
-set(LUA_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION}_${PLATFORM})
-set(LUA_LIBRARY   ${LUA_PATH}/lua.lib)
+set(LUA_VERSION     "5.4.6")
+set(LUA_DEVEL_PKG   v${LUA_VERSION}.zip)
+set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION}_${PLATFORM})
+set(LUA_INCLUDE_DIR ${LUA_PATH})
+set(LUA_LIBRARY     ${LUA_PATH}_build/lua.lib)
 
 ExternalProject_Add(Lua_devel
   URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
@@ -11,17 +12,13 @@ ExternalProject_Add(Lua_devel
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
   SOURCE_DIR ${LUA_PATH}/
+  BINARY_DIR ${LUA_PATH}_build/
   BUILD_BYPRODUCTS ${LUA_LIBRARY}
 
-  BUILD_IN_SOURCE 1
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Lua_devel.cmake" ${LUA_PATH}/CMakeLists.txt)
-
-set(LUA_INCLUDE_DIR ${LUA_PATH})
-link_directories(${LUA_PATH})
-find_library(LUA_LIBRARY NAMES lua PATHS ${LUA_PATH})
 
 # SDL2
 set(SDL2_VERSION "2.30.4")

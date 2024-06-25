@@ -1,8 +1,9 @@
 # Lua
-set(LUA_VERSION   "5.4.6")
-set(LUA_DEVEL_PKG v${LUA_VERSION}.zip)
-set(LUA_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION}_${PLATFORM})
-set(LUA_LIBRARY   ${LUA_PATH}/liblua.a)
+set(LUA_VERSION     "5.4.6")
+set(LUA_DEVEL_PKG   v${LUA_VERSION}.zip)
+set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-${LUA_VERSION}_${PLATFORM})
+set(LUA_INCLUDE_DIR ${LUA_PATH})
+set(LUA_LIBRARY     ${LUA_PATH}/liblua.a)
 
 ExternalProject_Add(Lua_devel
   URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
