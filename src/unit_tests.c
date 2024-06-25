@@ -33,7 +33,7 @@ static void test_nmt_send_command(void **state)
     assert_true(nmt_send_command(0x20, NMT_PRE_OPERATIONAL, NO_OUTPUT, NULL) == 0);
     assert_true(nmt_send_command(0x20, NMT_RESET_NODE,      NO_OUTPUT, NULL) == 0);
     assert_true(nmt_send_command(0x20, NMT_RESET_COMM,      NO_OUTPUT, NULL) == 0);
-    assert_true(nmt_send_command(0x20, 0x03,                NO_OUTPUT, NULL) == 1);
+    assert_true(nmt_send_command(0x20, 0x03,                NO_OUTPUT, NULL) == 0);
 }
 
 int main(void)
