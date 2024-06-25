@@ -61,11 +61,6 @@ if(EXISTS "/proc/cpuinfo")
   endif()
 endif()
 
-set(os_sources
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/can_linux.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_linux.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/scripts_linux.c)
-
 set(PALTFORM_DEPS PCAN_devel)
 set(PLATFORM_LIBS
   dl

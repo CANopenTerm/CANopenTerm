@@ -109,10 +109,5 @@ ExternalProject_Add(dirent_devel
 
 set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 
-set(os_sources
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/can_windows.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_windows.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/scripts_windows.c)
-
 set(PALTFORM_DEPS PCAN_devel)
 set(PLATFORM_LIBS ${PCAN_LIBRARY})

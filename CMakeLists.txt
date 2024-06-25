@@ -51,6 +51,11 @@ set(core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/table.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c)
 
+set(os_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/can_${PLATFORM}.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_${PLATFORM}.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/scripts_${PLATFORM}.c)
+
 add_library(
   core
   STATIC
