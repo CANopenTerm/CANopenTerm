@@ -36,6 +36,7 @@ do_compile() {
     ${S}/src/os/os_linux.c \
     ${S}/src/os/scripts_linux.c \
     -DUSE_LIBSOCKETCAN \
+    -I${S}/src/core \
     -I${S}/src/os \
     $(pkg-config --cflags --libs --static sdl2 lua readline) \
     -L${D}${libdir} \
