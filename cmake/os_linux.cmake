@@ -18,7 +18,7 @@ ExternalProject_Add(Lua_devel
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Lua_devel.cmake" ${LUA_PATH}/CMakeLists.txt)
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL2
 set(SDL2_VERSION  "2.30.4")

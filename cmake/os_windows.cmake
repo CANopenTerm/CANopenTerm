@@ -18,7 +18,7 @@ ExternalProject_Add(Lua_devel
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Lua_devel.cmake" ${LUA_PATH}/CMakeLists.txt)
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL2
 set(SDL2_VERSION "2.30.4")
@@ -48,7 +48,7 @@ ExternalProject_Add(SDL2_devel
     ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/SDL2_devel.cmake" ${SDL2_PATH}/CMakeLists.txt)
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_sdl2.cmake" ${SDL2_PATH}/CMakeLists.txt)
 
 set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
 set(SDL2_LIBRARY     ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib)
@@ -83,7 +83,7 @@ ExternalProject_Add(PCAN_devel
   ${PCAN_PATH}/${PCAN_PLATFORM}/PCANBasic.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PCAN_devel.cmake" ${PCAN_PATH}/CMakeLists.txt)
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_pcan.cmake" ${PCAN_PATH}/CMakeLists.txt)
 
 set(PCAN_INCLUDE_DIR ${PCAN_PATH}/Include)
 set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
@@ -105,7 +105,7 @@ ExternalProject_Add(dirent_devel
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
   PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dirent_devel.cmake" ${DIRENT_PATH}/CMakeLists.txt)
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_dirent.cmake" ${DIRENT_PATH}/CMakeLists.txt)
 
 set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 
