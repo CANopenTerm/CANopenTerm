@@ -32,7 +32,10 @@ ExternalProject_Add(CMocka_devel
 
 add_executable(
   run_unit_tests
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/unit_tests.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/run_unit_tests.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dict.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_nmt_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_wrapper.c)
 
 add_dependencies(
   run_unit_tests
