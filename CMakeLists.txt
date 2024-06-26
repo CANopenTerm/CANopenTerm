@@ -42,20 +42,20 @@ include_directories(
 
 set(core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can_${PLATFORM}.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts_${PLATFORM}.c)
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c)
 
 set(os_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/can_${PLATFORM}.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_${PLATFORM}.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/scripts_${PLATFORM}.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_${PLATFORM}.c)
 
 add_library(
   core
