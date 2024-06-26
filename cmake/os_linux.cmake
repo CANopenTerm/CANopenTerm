@@ -61,7 +61,6 @@ if(EXISTS "/proc/cpuinfo")
   endif()
 endif()
 
-set(PALTFORM_DEPS PCAN_devel)
 set(PLATFORM_LIBS
   dl
   m

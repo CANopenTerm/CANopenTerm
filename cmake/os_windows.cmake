@@ -109,7 +109,8 @@ ExternalProject_Add(dirent_devel
 
 set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 
-set(PALTFORM_DEPS PCAN_devel)
+add_dependencies(${PROJECT_NAME} PCAN_devel)
+
 set(PLATFORM_LIBS ${PCAN_LIBRARY})
 
 include_directories(

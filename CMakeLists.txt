@@ -57,12 +57,6 @@ add_library(
   ${core_sources}
   ${os_sources})
 
-if(PLATFORM_DEPS)
-  add_dependencies(
-    ${PROJECT_NAME}
-    ${PLATFORM_DEPS})
-endif(PLATFORM_DEPS)
-
 add_dependencies(
   core
   SDL2_devel
