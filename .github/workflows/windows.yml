@@ -16,9 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: x64
       - name: Build
         run: |
           cmake -G "Ninja" -B build
           cmake --build build
-        with:
-          arch: x64
