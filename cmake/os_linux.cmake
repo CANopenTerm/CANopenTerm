@@ -69,6 +69,6 @@ set(PLATFORM_LIBS
   readline
   history)
 
-  include_directories(
+include_directories(
   SYSTEM ${SDL2_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR})
