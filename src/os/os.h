@@ -66,6 +66,10 @@ typedef enum status
 
 } status_t;
 
+#ifndef os_strlcpy
+size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
+#endif
+
 #ifndef IS_TRUE
 #define IS_TRUE 1
 #endif

@@ -9,7 +9,7 @@
 
 #include "os.h"
 
-#ifndef os_strnlen
+#ifndef os_strlcpy
 static size_t safe_strnlen(const char* s, size_t maxlen);
 
 size_t os_strlcpy(char* dst, const char* src, size_t dstsize)

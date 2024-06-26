@@ -27,7 +27,6 @@
 #define os_strcmp    SDL_strcmp
 #define os_strdup    SDL_strdup
 #define os_strlcat   SDL_strlcat
-#define os_strlcpy   SDL_strlcpy
 #define os_strlen    SDL_strlen
 #define os_strncmp   SDL_strncmp
 #define os_strncmp   SDL_strncmp
