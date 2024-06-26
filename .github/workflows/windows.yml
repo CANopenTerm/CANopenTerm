@@ -1,0 +1,24 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: TheMrMilchmann/setup-msvc-dev@v3
+      - name: Build
+        run: |
+          cmake -G "Ninja" -B build
+          cmake --build build
+        with:
+          arch: x64
