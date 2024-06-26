@@ -40,7 +40,6 @@ static void   reset_terminal_mode(struct termios* orig_termios);
 
 void list_scripts(void)
 {
-    DIR*    dir;
     char*   listed_scripts[256];
     int     listed_count = 0;
     int     i;
@@ -52,7 +51,7 @@ void list_scripts(void)
 
     for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
-        dir = opendir(script_dirs[i]);
+        DIR* dir = opendir(script_dirs[i]);
         if (NULL != dir)
         {
             struct dirent* ent;
