@@ -54,6 +54,16 @@ Windows](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-stu
 installed.  Simply open the cloned repository via `File -> Open ->
 Folder`.  All required dependencies are fetched at compile time.
 
+#### Troubleshooting
+
+To compile the CMocka unit tests on Windows, the **Developer Mode**
+must be activated.  CMocka wants to create a symbolic link, which
+is not possible on Windows without the required permissions.
+
+On Windows 11 you can find it as follows:
+
+`Windows Settings -> Update & Security -> For developers`
+
 ### Linux
 
 CANopenTerm can also be compiled on Linux with the included CMake

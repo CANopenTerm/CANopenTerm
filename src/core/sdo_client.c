@@ -968,20 +968,20 @@ static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id
             switch (sdo_state)
             {
                 case IS_READ_EXPEDIDED:
-                    os_printf(color, "Read ");
-                    os_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
+                    os_print(color, "Read ");
+                    os_print(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
                     break;
                 case IS_WRITE_EXPEDITED:
                 case IS_WRITE_SEGMENTED:
                     color = LIGHT_BLUE;
-                    os_printf(color, "Write");
-                    os_printf(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
+                    os_print(color, "Write");
+                    os_print(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
                     break;
                 default:
                     break;
             }
 
-            os_printf(LIGHT_RED, "FAIL    ");
+            os_print(LIGHT_RED, "FAIL    ");
 
             if (NULL == comment)
             {
@@ -999,8 +999,8 @@ static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id
                 buffer[i] = ' ';
             }
 
-            os_printf(DARK_MAGENTA, "%s ", buffer);
-            os_printf(DEFAULT_COLOR, "%s\n", reason);
+            os_print(DARK_MAGENTA, "%s ", buffer);
+            os_print(DEFAULT_COLOR, "%s\n", reason);
             break;
         }
         default:
@@ -1083,32 +1083,32 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
                 buffer[i] = ' ';
             }
 
-            os_printf(DARK_YELLOW, "Read     ");
-            os_printf(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, sdo_response->length);
-            os_printf(LIGHT_GREEN, "SUCC    ");
-            os_printf(DARK_MAGENTA, "%s ", buffer);
+            os_print(DARK_YELLOW, "Read     ");
+            os_print(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, sdo_response->length);
+            os_print(LIGHT_GREEN, "SUCC    ");
+            os_print(DARK_MAGENTA, "%s ", buffer);
 
             if (IS_READ_EXPEDIDED == sdo_state)
             {
                 switch (sdo_response->length)
                 {
                     case 4:
-                        os_printf(DEFAULT_COLOR, "0x%08X %u (U32)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%08X %u (U32)", u32_value, u32_value);
                         break;
                     case 3:
-                        os_printf(DEFAULT_COLOR, "0x%06X %u (U24)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%06X %u (U24)", u32_value, u32_value);
                         break;
                     case 2:
-                        os_printf(DEFAULT_COLOR, "0x%04X %u (U16)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%04X %u (U16)", u32_value, u32_value);
                         break;
                     case 1:
-                        os_printf(DEFAULT_COLOR, "0x%02X %u (U8)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%02X %u (U8)", u32_value, u32_value);
                         break;
                 }
             }
             else /* Read segmented SDO. */
             {
-                os_printf(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
+                os_print(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
             }
             puts("");
             break;
@@ -1219,32 +1219,32 @@ void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint
                 buffer[i] = ' ';
             }
 
-            os_printf(DARK_BLUE, "Write    ");
-            os_printf(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, length);
-            os_printf(LIGHT_GREEN, "SUCC    ");
-            os_printf(DARK_MAGENTA, "%s ", buffer);
+            os_print(DARK_BLUE, "Write    ");
+            os_print(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", node_id, index, sub_index, length);
+            os_print(LIGHT_GREEN, "SUCC    ");
+            os_print(DARK_MAGENTA, "%s ", buffer);
 
             if (IS_WRITE_EXPEDITED == sdo_state)
             {
                 switch (length)
                 {
                     case 4:
-                        os_printf(DEFAULT_COLOR, "0x%08X %u (U32)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%08X %u (U32)", u32_value, u32_value);
                         break;
                     case 3:
-                        os_printf(DEFAULT_COLOR, "0x%06X %u (U24)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%06X %u (U24)", u32_value, u32_value);
                         break;
                     case 2:
-                        os_printf(DEFAULT_COLOR, "0x%04X %u (U16)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%04X %u (U16)", u32_value, u32_value);
                         break;
                     case 1:
-                        os_printf(DEFAULT_COLOR, "0x%02X %u (U8)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%02X %u (U8)", u32_value, u32_value);
                         break;
                 }
             }
             else
             {
-                os_printf(DEFAULT_COLOR, "%s", data_str);
+                os_print(DEFAULT_COLOR, "%s", data_str);
             }
             puts("");
 

@@ -123,22 +123,22 @@ void os_log(const log_level_t level, const char* format, ...)
         case LOG_DEFAULT:
             break;
         case LOG_INFO:
-            os_printf(DARK_WHITE, "[INFO]    ");
+            os_print(DARK_WHITE, "[INFO]    ");
             break;
         case LOG_SUCCESS:
-            os_printf(LIGHT_GREEN, "[SUCCESS] ");
+            os_print(LIGHT_GREEN, "[SUCCESS] ");
             break;
         case LOG_WARNING:
-            os_printf(DARK_YELLOW, "[WARNING] ");
+            os_print(DARK_YELLOW, "[WARNING] ");
             break;
         case LOG_ERROR:
-            os_printf(LIGHT_RED, "[ERROR]   ");
+            os_print(LIGHT_RED, "[ERROR]   ");
             break;
     }
-    os_printf(DARK_WHITE, "%s\r\n", buffer);
+    os_print(DARK_WHITE, "%s\r\n", buffer);
 }
 
-void os_printf(const color_t color, const char* format, ...)
+void os_print(const color_t color, const char* format, ...)
 {
     char    buffer[1024];
     va_list varg;
@@ -220,7 +220,7 @@ void os_printf(const color_t color, const char* format, ...)
 
 void os_print_prompt(void)
 {
-    os_printf(LIGHT_WHITE, "\r: ");
+    os_print(LIGHT_WHITE, "\r: ");
 }
 
 bool_t os_remove_timer(os_timer_id id)

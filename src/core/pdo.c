@@ -119,11 +119,11 @@ int lua_pdo_add(lua_State* L)
 
         if (IS_TRUE == success)
         {
-            os_printf(LIGHT_BLACK, "PDO  ");
-            os_printf(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
-            os_printf(LIGHT_GREEN, "SUCC    ");
-            os_printf(DARK_MAGENTA, "%s ", buffer);
-            os_printf(DEFAULT_COLOR, "0x%08X%08X, %ums\n", data_d0_d3, data_d4_d7, event_time_ms);
+            os_print(LIGHT_BLACK, "PDO  ");
+            os_print(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
+            os_print(LIGHT_GREEN, "SUCC    ");
+            os_print(DARK_MAGENTA, "%s ", buffer);
+            os_print(DEFAULT_COLOR, "0x%08X%08X, %ums\n", data_d0_d3, data_d4_d7, event_time_ms);
         }
     }
 
@@ -157,11 +157,11 @@ int lua_pdo_del(lua_State* L)
             buffer[i] = ' ';
         }
 
-        os_printf(LIGHT_BLACK, "PDO  ");
-        os_printf(DEFAULT_COLOR, "    0x%02X   -       -         -       ", can_id);
-        os_printf(LIGHT_GREEN, "SUCC    ");
-        os_printf(DEFAULT_COLOR, "%s ", buffer);
-        os_printf(DEFAULT_COLOR, "Delete\n");
+        os_print(LIGHT_BLACK, "PDO  ");
+        os_print(DEFAULT_COLOR, "    0x%02X   -       -         -       ", can_id);
+        os_print(LIGHT_GREEN, "SUCC    ");
+        os_print(DEFAULT_COLOR, "%s ", buffer);
+        os_print(DEFAULT_COLOR, "Delete\n");
     }
 
     lua_pushboolean(L, pdo_del(can_id, disp_mode));
@@ -249,8 +249,8 @@ static void print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id
         return;
     }
 
-    os_printf(LIGHT_BLACK, "PDO ");
-    os_printf(DEFAULT_COLOR, "     0x%03X   -       -         -       ", can_id);
-    os_printf(LIGHT_RED, "FAIL    ");
-    os_printf(DEFAULT_COLOR, "%s\n", reason);
+    os_print(LIGHT_BLACK, "PDO ");
+    os_print(DEFAULT_COLOR, "     0x%03X   -       -         -       ", can_id);
+    os_print(LIGHT_RED, "FAIL    ");
+    os_print(DEFAULT_COLOR, "%s\n", reason);
 }

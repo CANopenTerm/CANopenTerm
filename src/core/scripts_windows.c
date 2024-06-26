@@ -118,9 +118,9 @@ void run_script(const char* name, core_t* core)
 
 int lua_key_is_hit(lua_State * L)
 {
-    if (0 != kbhit())
+    if (0 != _kbhit())
     {
-        char key = getch();
+        char key = _getch();
         (void)key;
 
         lua_pushboolean(L, 1);

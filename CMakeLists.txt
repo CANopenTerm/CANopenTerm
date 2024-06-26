@@ -4,7 +4,7 @@ project(CANopenTerm C)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
-option(BUILD_TESTS "Build CMocka unit tests" True)
+option(BUILD_TESTS "Build CMocka unit tests" False)
 
 set(CMAKE_C_STANDARD 90)
 if (POLICY CMP0135)
@@ -71,11 +71,8 @@ target_link_libraries(
   core
   ${SDL2_LIBRARY}
   ${SDL2MAIN_LIBRARY}
-  ${LUA_LIBRARY})
-
-if(PLATFORM_LIBS)
-  target_link_libraries(${PROJECT_NAME} ${PLATFORM_LIBS})
-endif(PLATFORM_LIBS)
+  ${LUA_LIBRARY}
+  ${PLATFORM_LIBS})
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
   set(COMPILE_OPTIONS

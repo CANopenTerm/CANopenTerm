@@ -133,8 +133,8 @@ int lua_delay_ms(lua_State * L)
         int  i;
         char buffer[34] = { 0 };
 
-        os_log(LIGHT_BLACK, "Delay ");
-        os_log(DEFAULT_COLOR, "   -       -       -         -       -       ");
+        os_print(LIGHT_BLACK, "Delay ");
+        os_print(DEFAULT_COLOR, "   -       -       -         -       -       ");
 
         if (NULL == comment)
         {
@@ -147,8 +147,8 @@ int lua_delay_ms(lua_State * L)
             buffer[i] = ' ';
         }
 
-        os_log(DARK_MAGENTA, "%s ", buffer);
-        os_log(DEFAULT_COLOR, "%ums\n", delay_in_ms);
+        os_print(DARK_MAGENTA, "%s ", buffer);
+        os_print(DEFAULT_COLOR, "%ums\n", delay_in_ms);
     }
 
     os_delay(delay_in_ms);
@@ -159,8 +159,8 @@ int lua_print_heading(lua_State* L)
 {
     const char* heading = lua_tostring(L, 1);
 
-    os_log(LIGHT_YELLOW, "\n%s\n", heading);
-    os_log(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
+    os_print(LIGHT_YELLOW, "\n%s\n", heading);
+    os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 
     return 0;
 }

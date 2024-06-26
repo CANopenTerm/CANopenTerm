@@ -15,6 +15,7 @@
 
 #define os_calloc    SDL_calloc
 #define os_free      SDL_free
+#define os_isdigit   SDL_isdigit
 #define os_isprint   SDL_isprint
 #define os_itoa      SDL_itoa
 #define os_memcpy    SDL_memcpy
@@ -25,6 +26,7 @@
 #define os_strcmp    SDL_strcmp
 #define os_strdup    SDL_strdup
 #define os_strlcat   SDL_strlcat
+#define os_strlcpy   SDL_strlcpy
 #define os_strlen    SDL_strlen
 #define os_strncmp   SDL_strncmp
 #define os_strncmp   SDL_strncmp

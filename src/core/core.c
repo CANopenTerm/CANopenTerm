@@ -34,10 +34,10 @@ status_t core_init(core_t **core)
         return status;
     }
 
-    os_printf(LIGHT_YELLOW,  "<");
-    os_printf(LIGHT_GREEN,   ">");
-    os_printf(DEFAULT_COLOR, " CANopenTerm %u.%u.%u\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD);
-    os_printf(DEFAULT_COLOR, "Copyright (c) 2024, Michael Fitzmayer.\r\n\r\n");
+    os_print(LIGHT_YELLOW,  "<");
+    os_print(LIGHT_GREEN,   ">");
+    os_print(DEFAULT_COLOR, " CANopenTerm %u.%u.%u\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD);
+    os_print(DEFAULT_COLOR, "Copyright (c) 2024, Michael Fitzmayer.\r\n\r\n");
 
     status = os_init();
     if (status != ALL_OK)

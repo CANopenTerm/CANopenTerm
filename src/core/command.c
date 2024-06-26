@@ -439,7 +439,7 @@ static bool_t is_numeric(const char* str)
 
     while (*str)
     {
-        if (!isdigit(*str))
+        if (0 != os_isdigit(*str))
         {
             return IS_FALSE;
         }

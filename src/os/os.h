@@ -55,6 +55,8 @@ typedef enum log_level
 typedef enum status
 {
     ALL_OK = 0,
+    CAN_READ_ERROR,
+    CAN_WRITE_ERROR,
     CORE_QUIT,
     NMT_UNKNOWN_COMMAND,
     OS_CONSOLE_INIT_ERROR,
@@ -90,7 +92,7 @@ status_t    os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
 uint64      os_get_ticks(void);
 status_t    os_init(void);
 void        os_log(const log_level_t level, const char* format, ...);
-void        os_printf(const color_t color, const char* format, ...);
+void        os_print(const color_t color, const char* format, ...);
 void        os_print_prompt(void);
 bool_t      os_remove_timer(os_timer_id id);
 uint32      os_swap_be_32(uint32 n);

@@ -61,12 +61,7 @@ if(EXISTS "/proc/cpuinfo")
   endif()
 endif()
 
-set(PLATFORM_LIBS
-  dl
-  m
-  pthread
-  readline
-  history)
+set(PLATFORM_LIBS dl m pthread readline history)
 
 include_directories(
   SYSTEM ${SDL2_INCLUDE_DIR}

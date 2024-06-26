@@ -1,13 +1,17 @@
-if(NOT UNIX)
-    return()
-endif()
-
+# CMocka
 set(CMocka_VERSION     "1.1.7")
 set(CMocka_DEVEL_PKG   cmocka-${CMocka_VERSION}.tar.xz)
 set(CMocka_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps/cmocka-${CMocka_VERSION})
 set(CMocka_BUILD_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/deps/cmocka-${CMocka_VERSION}_build)
-set(CMocka_LIBRARY     ${CMocka_BUILD_PATH}/src/libcmocka.a)  
 set(CMocka_INCLUDE_DIR ${CMocka_PATH}/include)
+
+if(UNIX)
+  set(CMocka_LIBRARY ${CMocka_BUILD_PATH}/src/libcmocka.a)  
+endif(UNIX)
+
+if(WIN32)
+  set(CMocka_LIBRARY ${CMocka_BUILD_PATH}/src/cmocka.lib)  
+endif(WIN32)
 
 ExternalProject_Add(CMocka_devel
   URL https://cmocka.org/files/1.1/${CMocka_DEVEL_PKG}
@@ -49,12 +53,9 @@ target_link_libraries(
   core
   ${CMocka_LIBRARY}
   ${SDL2_LIBRARY}
+  ${SDL2MAIN_LIBRARY}
   ${LUA_LIBRARY}
-  dl
-  m
-  pthread
-  readline
-  history)
+  ${PLATFORM_LIBS})
 
 target_link_options(
   run_unit_tests

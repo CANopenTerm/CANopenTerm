@@ -16,8 +16,9 @@
 
 static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
 
-uint32 nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
+status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
 {
+    status_t      status      = ALL_OK;
     uint32        can_status  = 0;
     can_message_t can_message = { 0 };
 
@@ -38,60 +39,65 @@ uint32 nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_m
             break;
         default:
             nmt_print_help(disp_mode);
-            return NMT_UNKNOWN_COMMAND;
+            status = NMT_UNKNOWN_COMMAND;
+            break;
     }
 
-    can_status = can_write(&can_message, SILENT, NULL);
-    if (0 != can_status)
+    if (ALL_OK == status)
     {
-        print_error(can_get_error_message(can_status), command, disp_mode);
-    }
-    else
-    {
-        if (SCRIPT_MODE == disp_mode)
+        can_status = can_write(&can_message, SILENT, NULL);
+        if (0 != can_status)
         {
-            int  i;
-            char buffer[34] = { 0 };
-
-            os_printf(DARK_CYAN, "NMT  ");
-            os_printf(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
-            os_printf(LIGHT_GREEN, "SUCC    ");
-
-            if (NULL == comment)
+            print_error(can_get_error_message(can_status), command, disp_mode);
+            status = CAN_WRITE_ERROR;
+        }
+        else
+        {
+            if (SCRIPT_MODE == disp_mode)
             {
-                comment = "-";
-            }
+                int  i;
+                char buffer[34] = { 0 };
 
-            os_strlcpy(buffer, comment, 33);
-            for (i = os_strlen(buffer); i < 33; ++i)
-            {
-                buffer[i] = ' ';
-            }
+                os_print(DARK_CYAN, "NMT  ");
+                os_print(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
+                os_print(LIGHT_GREEN, "SUCC    ");
 
-            os_printf(DARK_MAGENTA, "%s ", buffer);
+                if (NULL == comment)
+                {
+                    comment = "-";
+                }
 
-            switch (command)
-            {
-                case 0x01:
-                    os_printf(DEFAULT_COLOR, "Start (go to Operational)\n");
-                    break;
-                case 0x02:
-                    os_printf(DEFAULT_COLOR, "Stop (go to Stopped)\n");
-                    break;
-                case 0x80:
-                    os_printf(DEFAULT_COLOR, "Go to Pre-operational\n");
-                    break;
-                case 0x81:
-                    os_printf(DEFAULT_COLOR, "Reset node (Application reset)\n");
-                    break;
-                case 0x82:
-                    os_printf(DEFAULT_COLOR, "Reset communication\n");
-                    break;
+                os_strlcpy(buffer, comment, 33);
+                for (i = os_strlen(buffer); i < 33; ++i)
+                {
+                    buffer[i] = ' ';
+                }
+
+                os_print(DARK_MAGENTA, "%s ", buffer);
+
+                switch (command)
+                {
+                    case 0x01:
+                        os_print(DEFAULT_COLOR, "Start (go to Operational)\n");
+                        break;
+                    case 0x02:
+                        os_print(DEFAULT_COLOR, "Stop (go to Stopped)\n");
+                        break;
+                    case 0x80:
+                        os_print(DEFAULT_COLOR, "Go to Pre-operational\n");
+                        break;
+                    case 0x81:
+                        os_print(DEFAULT_COLOR, "Reset node (Application reset)\n");
+                        break;
+                    case 0x82:
+                        os_print(DEFAULT_COLOR, "Reset communication\n");
+                        break;
+                }
             }
         }
     }
 
-    return can_status;
+    return status;
 }
 
 int lua_nmt_send_command(lua_State* L)
@@ -174,10 +180,10 @@ static void print_error(const char* reason, nmt_command_t command, disp_mode_t d
         }
         case SCRIPT_MODE:
         {
-            os_printf(LIGHT_BLACK, "NMT  ");
-            os_printf(DEFAULT_COLOR, "    -       -       -         -       ");
-            os_printf(LIGHT_RED, "FAIL    ");
-            os_printf(DARK_MAGENTA, "0x%02X %s\n", command, reason);
+            os_print(LIGHT_BLACK, "NMT  ");
+            os_print(DEFAULT_COLOR, "    -       -       -         -       ");
+            os_print(LIGHT_RED, "FAIL    ");
+            os_print(DARK_MAGENTA, "0x%02X %s\n", command, reason);
             break;
         }
         default:

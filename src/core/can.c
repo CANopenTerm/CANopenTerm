@@ -77,11 +77,11 @@ int lua_can_write(lua_State* L)
                 buffer[i] = ' ';
             }
 
-            os_printf(LIGHT_BLACK, "CAN ");
-            os_printf(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
-            os_printf(LIGHT_GREEN, "SUCC    ");
-            os_printf(DARK_MAGENTA, "%s ", buffer);
-            os_printf(DEFAULT_COLOR, "Write: 0x%08X%08X\n", data_d0_d3, data_d4_d7);
+            os_print(LIGHT_BLACK, "CAN ");
+            os_print(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
+            os_print(LIGHT_GREEN, "SUCC    ");
+            os_print(DARK_MAGENTA, "%s ", buffer);
+            os_print(DEFAULT_COLOR, "Write: 0x%08X%08X\n", data_d0_d3, data_d4_d7);
         }
         lua_pushboolean(L, 1);
     }
@@ -152,17 +152,17 @@ void can_print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode)
         return;
     }
 
-    os_printf(LIGHT_BLACK, "CAN ");
-    os_printf(DEFAULT_COLOR, "     0x%02X   -       -         -       ", can_id);
-    os_printf(LIGHT_RED, "FAIL    ");
+    os_print(LIGHT_BLACK, "CAN ");
+    os_print(DEFAULT_COLOR, "     0x%02X   -       -         -       ", can_id);
+    os_print(LIGHT_RED, "FAIL    ");
 
     if (NULL != reason)
     {
-        os_printf(DEFAULT_COLOR, "%s\n", reason);
+        os_print(DEFAULT_COLOR, "%s\n", reason);
     }
     else
     {
-        os_printf(DEFAULT_COLOR, "-\n");
+        os_print(DEFAULT_COLOR, "-\n");
     }
 }
 

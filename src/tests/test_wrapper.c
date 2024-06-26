@@ -12,9 +12,15 @@
 
 uint32 __wrap_can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
-    (void)message;
+    uint32 status = 0;
+
     (void)disp_mode;
     (void)comment;
 
-    return 0;
+    if (NULL == message)
+    {
+        status = 1;
+    }
+
+    return status;
 }
