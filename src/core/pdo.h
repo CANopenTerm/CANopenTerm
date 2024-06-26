@@ -12,7 +12,7 @@
 
 #include "lua.h"
 
-#define PDO_MAX 0x1f8 // TPDO1 - TPDO4
+#define PDO_MAX 0x1f8 /* TPDO1 - TPDO4 */
 
 typedef struct pdo
 {
