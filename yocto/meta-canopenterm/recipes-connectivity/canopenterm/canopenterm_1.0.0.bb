@@ -21,16 +21,16 @@ S = "${WORKDIR}/git"
 do_compile() {
     ${CC} \
     ${CFLAGS} ${LDFLAGS} \
-    ${S}/src/can.c \
-    ${S}/src/command.c \
-    ${S}/src/core.c \
-    ${S}/src/dict.c \
     ${S}/src/main.c \
-    ${S}/src/nmt_client.c \
-    ${S}/src/pdo.c \
-    ${S}/src/scripts.c \
-    ${S}/src/sdo_client.c \
-    ${S}/src/table.c \
+    ${S}/src/core/can.c \
+    ${S}/src/core/command.c \
+    ${S}/src/core/core.c \
+    ${S}/src/core/dict.c \
+    ${S}/src/core/nmt_client.c \
+    ${S}/src/core/pdo.c \
+    ${S}/src/core/scripts.c \
+    ${S}/src/core/sdo_client.c \
+    ${S}/src/core/table.c \
     ${S}/src/os/os.c \
     ${S}/src/os/can_linux.c \
     ${S}/src/os/os_linux.c \

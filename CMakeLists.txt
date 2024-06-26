@@ -4,7 +4,7 @@ project(CANopenTerm C)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
-option(UNIT_TESTING "Build with CMocka unit tests" True)
+option(BUILD_TESTS "Build CMocka unit tests" True)
 
 set(CMAKE_C_STANDARD 90)
 if (POLICY CMP0135)
@@ -25,9 +25,9 @@ endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/os_${PLATFORM}.cmake)
 
-if(UNIT_TESTING)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/unit_tests.cmake)
-endif(UNIT_TESTING)
+if(BUILD_TESTS)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tests.cmake)
+endif(BUILD_TESTS)
 
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -40,18 +40,18 @@ include_directories(
   SYSTEM ${DIRENT_INCLUDE_DIR})
 
 set(core_sources
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/can.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/command.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/dict.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/nmt_client.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/pdo.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/scripts.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/sdo_client.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/table.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/command.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/core.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dict.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c)
 
 set(os_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/os/can_${PLATFORM}.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_${PLATFORM}.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/os/scripts_${PLATFORM}.c)
