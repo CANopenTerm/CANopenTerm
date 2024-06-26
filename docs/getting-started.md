@@ -60,7 +60,7 @@ To compile the CMocka unit tests on Windows, the **Developer Mode**
 must be activated.  CMocka wants to create a symbolic link, which
 is not possible on Windows without the required permissions.
 
-On Windows 11 you can find it as follows:
+On Windows 11 you can enable it in the Windows Settings:
 
 `Windows Settings -> Update & Security -> For developers`
 
