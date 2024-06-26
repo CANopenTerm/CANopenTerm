@@ -3,7 +3,8 @@
 [![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://app.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Linux Build & Unit Tests](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/unit-tests.yml)
+[![Linux Build & Unit Tests](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/linux.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/linux.yml)
+[![Windows Build](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml)
 
 ## Discover CANopenTerm
 
