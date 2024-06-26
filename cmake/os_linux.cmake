@@ -68,3 +68,7 @@ set(PLATFORM_LIBS
   pthread
   readline
   history)
+
+  include_directories(
+  SYSTEM ${SDL2_INCLUDE_DIR}
+  SYSTEM ${LUA_INCLUDE_DIR})
