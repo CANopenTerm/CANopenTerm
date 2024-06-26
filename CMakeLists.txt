@@ -49,7 +49,7 @@ set(core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts_${PLATFORM}.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts_${PLATFORM}.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c)
 

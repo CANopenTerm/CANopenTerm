@@ -23,18 +23,18 @@ do_compile() {
     ${CFLAGS} ${LDFLAGS} \
     ${S}/src/main.c \
     ${S}/src/core/can.c \
+    ${S}/src/core/can_linux.c \
     ${S}/src/core/command.c \
     ${S}/src/core/core.c \
     ${S}/src/core/dict.c \
     ${S}/src/core/nmt_client.c \
     ${S}/src/core/pdo.c \
     ${S}/src/core/scripts.c \
+    ${S}/src/core/scripts_linux.c \
     ${S}/src/core/sdo_client.c \
     ${S}/src/core/table.c \
     ${S}/src/os/os.c \
-    ${S}/src/os/can_linux.c \
     ${S}/src/os/os_linux.c \
-    ${S}/src/os/scripts_linux.c \
     -DUSE_LIBSOCKETCAN \
     -I${S}/src/core \
     -I${S}/src/os \
