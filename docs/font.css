@@ -1,0 +1,12 @@
+@font-face {
+    font-family: BauhausITC;
+    src: url("fonts/ITC_Bauhaus_Medium.otf") format("opentype");
+}
+
+h1 {
+    font-family: 'BauhausITC';
+}
+
+h2 {
+    font-family: 'BauhausITC';
+}
