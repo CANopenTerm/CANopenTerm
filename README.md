@@ -30,6 +30,11 @@ on a CANopen network, allowing you to:
   Effortlessly add asynchronous Process Data Objects to mimic
   network traffic.
 
+- **Versatile Raw CAN Interface**  
+  Unlock the full potential of your CAN network with CANopenTerm's
+  versatile raw CAN interface.  For all your non-CANopen needs,
+  this robust feature offers unparalleled flexibility and control.
+
 - **Automate your Workflow**  
   Use Lua scripts to automate your workflow.  A variety of
   scripts included, such as a
@@ -39,8 +44,7 @@ on a CANopen network, allowing you to:
 ## Key Features
 
 - **Lua 5.4 Interpreter**  
-  Write scripts to automate tasks and leverage a custom API with
-  a raw CAN interface.
+  Write scripts to automate tasks and leverage a custom API.
 
 - **Cross-Platform Compatibility**  
   Written in ANSI C, CANopenTerm is highly portable with minimal
