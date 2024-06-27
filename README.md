@@ -46,12 +46,14 @@ on a CANopen network, allowing you to:
 - **Lua 5.4 Interpreter**  
   Write scripts to automate tasks and leverage a custom API.
 
-- **Cross-Platform Compatibility**  
-  Written in ANSI C, CANopenTerm is highly portable with minimal
-  dependencies ([SDL2](https://github.com/libsdl-org/SDL/tree/SDL2),
-  [Lua 5.4](https://www.lua.org/about.html)). It supports
-  [SocketCAN](https://www.kernel.org/doc/html/latest/networking/can.html)
-  on Linux and [PEAK CAN](https://www.peak-system.com/) on Windows.
+- **Robust and Portable Source Code**  
+  CANopenTerm's source code is written entirely in ANSI C, ensuring
+  robust performance and high portability with minimal dependencies.
+  The quality of the code is constantly monitored through static code
+  analysis and an ever-growing number of unit tests, guaranteeing
+  reliability and maintainability. Additionally, the OS abstraction
+  layer makes it easy to port the program to other platforms, further
+  enhancing its versatility.
 
 - **Open Source and Free**  
   Released under a permissive open-source license, CANopenTerm is
