@@ -70,6 +70,126 @@ typedef enum status
 size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
+#ifndef os_calloc
+#error  os_calloc() not defined
+#endif
+
+#ifndef os_free
+#error  os_free() not defined
+#endif
+
+#ifndef os_isdigit
+#error  os_isdigit() not defined
+#endif
+
+#ifndef os_isprint
+#error  os_isprint() not defined
+#endif
+
+#ifndef os_itoa
+#error  os_itoa() not defined
+#endif
+
+#ifndef os_memcpy
+#error  os_memcpy() not defined
+#endif
+
+#ifndef os_memmove
+#error  os_memmove() not defined
+#endif
+
+#ifndef os_memset
+#error  os_memset() not defined
+#endif
+
+#ifndef os_snprintf
+#error  os_snprintf() not defined
+#endif
+
+#ifndef os_strchr
+#error  os_strchr() not defined
+#endif
+
+#ifndef os_strcmp
+#error  os_strcmp() not defined
+#endif
+
+#ifndef os_strdup
+#error  os_strdump() not defined
+#endif
+
+#ifndef os_strlcat
+#error  os_strlcat() not defined
+#endif
+
+#ifndef os_strlen
+#error  os_strlen() not defined
+#endif
+
+#ifndef os_strncmp
+#error  os_strncmp() not defined
+#endif
+
+#ifndef os_strncmp
+#error  os_strncmp() not defined
+#endif
+
+#ifndef os_strrchr
+#error  os_strrchr() not defined
+#endif
+
+#ifndef os_strtokr
+#error  os_strtokr() not defined
+#endif
+
+#ifndef os_strtol
+#error  os_strtol() not defined
+#endif
+
+#ifndef os_strtoull
+#error  os_strtoull() not defined
+#endif
+
+#ifndef os_vsnprintf
+#error  os_vsnprintf() not defined
+#endif
+
+#ifndef os_thread
+#error  os_thread not defined
+#endif
+
+#ifndef os_thread_func
+#error  os_thread_func not defined
+#endif
+
+#ifndef os_timer_cb
+#error  os_timer_cb not defined
+#endif
+
+#ifndef os_timer_id
+#error  os_timer_id not defined
+#endif
+
+#ifndef bool_t
+#define bool_t int
+#endif
+
+#ifndef uint8
+#define uint8 char
+#endif
+
+#ifndef uint16
+#error  uint16 not defined
+#endif
+
+#ifndef uint32
+#error  uint32 not defined
+#endif
+
+#ifndef uint64
+#error  uint64 not defined
+#endif
+
 #ifndef IS_TRUE
 #define IS_TRUE 1
 #endif
@@ -83,7 +203,7 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef OS_LAYER_DEFINED
-/* Error: No OS-layer defined. */
+#error No OS - layer defined.
 #endif
 
 os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param);
