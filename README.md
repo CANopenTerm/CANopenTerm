@@ -44,16 +44,16 @@ on a CANopen network, allowing you to:
 ## Key Features
 
 - **Lua 5.4 Interpreter**  
-  Write scripts to automate tasks and leverage a custom API.
+  Write scripts to automate tasks and leverage a [custom API](/lua-api).
 
 - **Robust and Portable Source Code**  
-  CANopenTerm's source code is written entirely in ANSI C, ensuring
-  robust performance and high portability with minimal dependencies.
-  The quality of the code is constantly monitored through static code
-  analysis and an ever-growing number of unit tests, guaranteeing
-  reliability and maintainability. Additionally, the OS abstraction
-  layer makes it easy to port the program to other platforms, further
-  enhancing its versatility.
+  - CANopenTerm's source code is written entirely in ANSI C, ensuring
+    robust performance and high portability with minimal dependencies.
+  - The quality of the code is constantly monitored through static code
+    analysis and an ever-growing number of unit tests, guaranteeing
+    reliability and maintainability.
+  - The OS abstraction layer makes it easy to port the program to other
+    platforms, further enhancing its versatility.
 
 - **Open Source and Free**  
   Released under a permissive open-source license, CANopenTerm is
