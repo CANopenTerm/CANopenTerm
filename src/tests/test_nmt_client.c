@@ -14,6 +14,7 @@
 #include "cmocka.h"
 #include "nmt_client.h"
 #include "os.h"
+#include "test_nmt_client.h"
 
 void test_nmt_send_command(void** state)
 {
@@ -23,4 +24,9 @@ void test_nmt_send_command(void** state)
     assert_true(nmt_send_command(0x20, NMT_RESET_NODE,      SILENT, NULL) == ALL_OK);
     assert_true(nmt_send_command(0x20, NMT_RESET_COMM,      SILENT, NULL) == ALL_OK);
     assert_true(nmt_send_command(0x20, 0x03,                SILENT, NULL) == NMT_UNKNOWN_COMMAND);
+}
+
+void test_nmt_print_help(void** state)
+{
+    assert_true(nmt_print_help(SILENT) == NOTHING_TO_DO);
 }

@@ -20,11 +20,81 @@
 #define CAN_BASE_ID           0x600
 #define SDO_TIMEOUT_IN_MS     100u
 
-static const char* lookup_abort_code(uint32 abort_code);
-static void        print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode);
-static void        print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
-static void        print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
-static int         wait_for_response(uint8 node_id, can_message_t* msg_in);
+static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode);
+static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
+static void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
+static int  wait_for_response(uint8 node_id, can_message_t* msg_in);
+
+const char* sdo_lookup_abort_code(uint32 abort_code)
+{
+    switch (abort_code)
+    {
+        case ABORT_TOGGLE_BIT_NOT_ALTERED:
+            return "Toggle bit not altered";
+        case ABORT_SDO_PROTOCOL_TIMED_OUT:
+            return "SDO protocol timed out";
+        case ABORT_CMD_SPECIFIER_INVALID_UNKNOWN:
+            return "Client/server command specifier not valid or unknown";
+        case ABORT_INVALID_BLOCK_SIZE:
+            return "Invalid block size";
+        case ABORT_INVALID_SEQUENCE_NUMBER:
+            return "Invalid sequence number";
+        case ABORT_CRC_ERROR:
+            return "CRC error";
+        case ABORT_OUT_OF_MEMORY:
+            return "Out of memory";
+        case ABORT_UNSUPPORTED_ACCESS:
+            return "Unsupported access to an object";
+        case ABORT_ATTEMPT_TO_READ_WRITE_ONLY:
+            return "Attempt to read a write only object";
+        case ABORT_ATTEMPT_TO_WRITE_READ_ONLY:
+            return "Attempt to write a read only object";
+        case ABORT_OBJECT_DOES_NOT_EXIST:
+            return "Object does not exist in the object dictionary";
+        case ABORT_OBJECT_CANNOT_BE_MAPPED:
+            return "Object cannot be mapped to the PDO";
+        case ABORT_WOULD_EXCEED_PDO_LENGTH:
+            return "Number, length of the object would exceed PDO length";
+        case ABORT_GENERAL_INCOMPATIBILITY_REASON:
+            return "General parameter incompatibility reason";
+        case ABORT_GENERAL_INTERNAL_INCOMPATIBILITY:
+            return "General internal incompatibility in the device";
+        case ABORT_ACCESS_FAILED_DUE_HARDWARE_ERROR:
+            return "Access failed due to an hardware error";
+        case ABORT_DATA_TYPE_DOES_NOT_MATCH:
+            return "Data type does not match, length does not match";
+        case ABORT_DATA_TYPE_LENGTH_TOO_HIGH:
+            return "Data type does not match, length too high";
+        case ABORT_DATA_TYPE_LENGTH_TOO_LOW:
+            return "Data type does not match, length too low";
+        case ABORT_SUB_INDEX_DOES_NOT_EXIST:
+            return "Sub-index does not exist";
+        case ABORT_INVALID_VALUE_FOR_PARAMETER:
+            return "Invalid value for parameter";
+        case ABORT_VALUE_FOR_PARAMETER_TOO_HIGH:
+            return "Value for parameter written too high";
+        case ABORT_VALUE_FOR_PARAMETER_TOO_LOW:
+            return "Value for parameter written too low";
+        case ABORT_MAX_VALUE_LESS_THAN_MIN_VALUE:
+            return "Maximum value is less than minimum value";
+        case ABORT_RESOURCE_NOT_AVAILABLE:
+            return "Resource not available: SDO connection";
+        case ABORT_GENERAL_ERROR:
+            return "General error";
+        case ABORT_DATA_CANNOT_BE_TRANSFERRED:
+            return "Data cannot be transferred";
+        case ABORT_DATA_CANNOT_TRANSFERRED_LOCAL_CTRL:
+            return "Data cannot be transferred or stored to the application because of local control";
+        case ABORT_DATA_CANNOT_TRANSFERRED_DEV_STATE:
+            return "Data cannot be transferred because of the present device state";
+        case ABORT_NO_OBJECT_DICTIONARY_PRESENT:
+            return "Object dictionary dynamic generation fails or no object dictionary present";
+        case ABORT_NO_DATA_AVAILABLE:
+            return "No data available";
+        default:
+            return "Unknown abort code";
+    }
+}
 
 sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, const char* comment)
 {
@@ -93,7 +163,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
             abort_code = (abort_code & 0x00ffffff) | ((uint32)msg_in.data[4] << 24);
             abort_code = os_swap_be_32(abort_code);
 
-            os_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
+            os_snprintf(reason, 300, "0x%08x: %s", abort_code, sdo_lookup_abort_code((abort_code)));
             print_error(reason, IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
     }
@@ -304,7 +374,7 @@ sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 
             abort_code = (abort_code & 0x00ffffff) | ((uint32)msg_in.data[4] << 24);
             abort_code = os_swap_be_32(abort_code);
 
-            os_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code((abort_code)));
+            os_snprintf(reason, 300, "0x%08x: %s", abort_code, sdo_lookup_abort_code((abort_code)));
             print_error(reason, IS_WRITE_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
     }
@@ -417,7 +487,7 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
             abort_code = (abort_code & 0x00ffffff) | ((uint32)msg_in.data[4] << 24);
             abort_code = os_swap_be_32(abort_code);
 
-            os_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code(abort_code));
+            os_snprintf(reason, 300, "0x%08x: %s", abort_code, sdo_lookup_abort_code(abort_code));
             print_error(reason, IS_WRITE_BLOCK, node_id, index, sub_index, comment, disp_mode);
             os_free(data);
             fclose(file);
@@ -599,7 +669,7 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
             abort_code = (abort_code & 0x00ffffff) | ((uint32)msg_in.data[4] << 24);
             abort_code = os_swap_be_32(abort_code);
 
-            os_snprintf(reason, 300, "0x%08x: %s", abort_code, lookup_abort_code(abort_code));
+            os_snprintf(reason, 300, "0x%08x: %s", abort_code, sdo_lookup_abort_code(abort_code));
             print_error(reason, IS_WRITE_SEGMENTED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
     }
@@ -858,77 +928,6 @@ void lua_register_sdo_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_sdo_write_string);
     lua_setglobal(core->L, "sdo_write_string");
-}
-
-static const char* lookup_abort_code(uint32 abort_code)
-{
-    switch (abort_code)
-    {
-        case ABORT_TOGGLE_BIT_NOT_ALTERED:
-            return "Toggle bit not altered";
-        case ABORT_SDO_PROTOCOL_TIMED_OUT:
-            return "SDO protocol timed out";
-        case ABORT_CMD_SPECIFIER_INVALID_UNKNOWN:
-            return "Client/server command specifier not valid or unknown";
-        case ABORT_INVALID_BLOCK_SIZE:
-            return "Invalid block size";
-        case ABORT_INVALID_SEQUENCE_NUMBER:
-            return "Invalid sequence number";
-        case ABORT_CRC_ERROR:
-            return "CRC error";
-        case ABORT_OUT_OF_MEMORY:
-            return "Out of memory";
-        case ABORT_UNSUPPORTED_ACCESS:
-            return "Unsupported access to an object";
-        case ABORT_ATTEMPT_TO_READ_WRITE_ONLY:
-            return "Attempt to read a write only object";
-        case ABORT_ATTEMPT_TO_WRITE_READ_ONLY:
-            return "Attempt to write a read only object";
-        case ABORT_OBJECT_DOES_NOT_EXIST:
-            return "Object does not exist in the object dictionary";
-        case ABORT_OBJECT_CANNOT_BE_MAPPED:
-            return "Object cannot be mapped to the PDO";
-        case ABORT_WOULD_EXCEED_PDO_LENGTH:
-            return "Number, length of the object would exceed PDO length";
-        case ABORT_GENERAL_INCOMPATIBILITY_REASON:
-            return "General parameter incompatibility reason";
-        case ABORT_GENERAL_INTERNAL_INCOMPATIBILITY:
-            return "General internal incompatibility in the device";
-        case ABORT_ACCESS_FAILED_DUE_HARDWARE_ERROR:
-            return "Access failed due to an hardware error";
-        case ABORT_DATA_TYPE_DOES_NOT_MATCH:
-            return "Data type does not match, length does not match";
-        case ABORT_DATA_TYPE_LENGTH_TOO_HIGH:
-            return "Data type does not match, length too high";
-        case ABORT_DATA_TYPE_LENGTH_TOO_LOW:
-            return "Data type does not match, length too low";
-        case ABORT_SUB_INDEX_DOES_NOT_EXIST:
-            return "Sub-index does not exist";
-        case ABORT_INVALID_VALUE_FOR_PARAMETER:
-            return "Invalid value for parameter";
-        case ABORT_VALUE_FOR_PARAMETER_TOO_HIGH:
-            return "Value for parameter written too high";
-        case ABORT_VALUE_FOR_PARAMETER_TOO_LOW:
-            return "Value for parameter written too low";
-        case ABORT_MAX_VALUE_LESS_THAN_MIN_VALUE:
-            return "Maximum value is less than minimum value";
-        case ABORT_RESOURCE_NOT_AVAILABLE:
-            return "Resource not available: SDO connection";
-        case ABORT_GENERAL_ERROR:
-            return "General error";
-        case ABORT_DATA_CANNOT_BE_TRANSFERRED:
-            return "Data cannot be transferred";
-        case ABORT_DATA_CANNOT_TRANSFERRED_LOCAL_CTRL:
-            return "Data cannot be transferred or stored to the application because of local control";
-        case ABORT_DATA_CANNOT_TRANSFERRED_DEV_STATE:
-            return "Data cannot be transferred because of the present device state";
-        case ABORT_NO_OBJECT_DICTIONARY_PRESENT:
-            return "Object dictionary dynamic generation fails or no object dictionary present";
-        case ABORT_NO_DATA_AVAILABLE:
-            return "No data available";
-        default:
-            return "Unknown abort code";
-    }
 }
 
 static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode)

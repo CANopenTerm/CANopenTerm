@@ -39,6 +39,7 @@ add_executable(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/run_unit_tests.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_nmt_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_sdo_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_wrapper.c)
 
 add_dependencies(

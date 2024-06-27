@@ -14,8 +14,8 @@
 
 int main(int argc, char* argv[])
 {
-    int      status      = EXIT_SUCCESS;
-    core_t*  core        = NULL;
+    int      status = EXIT_SUCCESS;
+    core_t*  core   = NULL;
 
     if (core_init(&core) != ALL_OK)
     {
@@ -58,4 +58,3 @@ int main(int argc, char* argv[])
     core_deinit(core);
     return status;
 }
-

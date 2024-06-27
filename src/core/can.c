@@ -19,11 +19,7 @@ static char err_message[100] = { 0 };
 
 void limit_node_id(uint8* node_id)
 {
-    if (*node_id < 0x01)
-    {
-        *node_id = 0x01;
-    }
-    else if (*node_id > 0x7f)
+    if (*node_id > 0x7f)
     {
         *node_id = 0x7f;
     }

@@ -149,24 +149,30 @@ void lua_register_nmt_command(core_t* core)
     lua_setglobal(core->L, "nmt_send_command");
 }
 
-void nmt_print_help(disp_mode_t disp_mode)
+status_t nmt_print_help(disp_mode_t disp_mode)
 {
+    status_t status = ALL_OK;
+
     if (SILENT == disp_mode)
     {
-        return;
+        status = NOTHING_TO_DO;
+    }
+    else
+    {
+        table_t table = { DARK_CYAN, DARK_WHITE, 4, 5, 30 };
+
+        table_print_header(&table);
+        table_print_row("CMD", "Alias", "Description", &table);
+        table_print_divider(&table);
+        table_print_row("0x01", "op",    "Start (go to Operational)",      &table);
+        table_print_row("0x02", "stop",  "Stop (go to Stopped)",           &table);
+        table_print_row("0x80", "preop", "Go to Pre-operational",          &table);
+        table_print_row("0x81", "reset", "Reset node (Application reset)", &table);
+        table_print_row("0x82", " ",     "Reset communication",            &table);
+        table_print_footer(&table);
     }
 
-    table_t table = { DARK_CYAN, DARK_WHITE, 4, 5, 30 };
-
-    table_print_header(&table);
-    table_print_row("CMD", "Alias", "Description", &table);
-    table_print_divider(&table);
-    table_print_row("0x01", "op",    "Start (go to Operational)",      &table);
-    table_print_row("0x02", "stop",  "Stop (go to Stopped)",           &table);
-    table_print_row("0x80", "preop", "Go to Pre-operational",          &table);
-    table_print_row("0x81", "reset", "Reset node (Application reset)", &table);
-    table_print_row("0x82", " ",     "Reset communication",            &table);
-    table_print_footer(&table);
+    return status;
 }
 
 static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode)

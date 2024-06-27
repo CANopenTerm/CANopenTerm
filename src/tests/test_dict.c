@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include "cmocka.h"
 #include "dict.h"
+#include "test_dict.h"
 
 void test_dict_lookup(void** state)
 {
@@ -38,6 +39,7 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x0015, 0x00), "DEFTYPE INTEGER64");
     assert_string_equal(dict_lookup(0x0016, 0x00), "DEFTYPE UNSIGNED24");
     assert_string_equal(dict_lookup(0x0017, 0x00), "Reserved");
+    assert_string_equal(dict_lookup(0x0017, 0xFF), "Reserved");
     assert_string_equal(dict_lookup(0x0018, 0x00), "DEFTYPE UNSIGNED40");
     assert_string_equal(dict_lookup(0x0019, 0x00), "DEFTYPE UNSIGNED48");
     assert_string_equal(dict_lookup(0x001A, 0x00), "DEFTYPE UNSIGNED56");
@@ -52,6 +54,7 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x0020, 0x06), "PDO communication parameter record, SYNC start value");
     assert_string_equal(dict_lookup(0x0021, 0x00), "PDO mapping parameter record specification, Number of mapped objects in PDO");
     assert_string_equal(dict_lookup(0x0021, 0x01), "PDO mapping parameter record specification, Object to be mapped");
+    assert_string_equal(dict_lookup(0x0021, 0x40), "PDO mapping parameter record specification, Object to be mapped");
     assert_string_equal(dict_lookup(0x0022, 0x00), "SDO parameter record specification, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x0022, 0x01), "SDO parameter record specification, COB-ID client -> server");
     assert_string_equal(dict_lookup(0x0022, 0x02), "SDO parameter record specification, COB-ID server -> client");
@@ -70,31 +73,51 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x0025, 0x02), "OS Command record specification, Status");
     assert_string_equal(dict_lookup(0x0025, 0x03), "OS Command record specification, Reply");
     assert_string_equal(dict_lookup(0x0026, 0x00), "Reserved");
+    assert_string_equal(dict_lookup(0x003F, 0xFF), "Reserved");
     assert_string_equal(dict_lookup(0x0040, 0x00), "Manufacturer-specific Complex Data types");
+    assert_string_equal(dict_lookup(0x005F, 0xFF), "Manufacturer-specific Complex Data types");
     assert_string_equal(dict_lookup(0x0060, 0x00), "Device profile specific Standard Data types 1st logical device");
+    assert_string_equal(dict_lookup(0x007F, 0xFF), "Device profile specific Standard Data types 1st logical device");
     assert_string_equal(dict_lookup(0x0080, 0x00), "Device profile specific Complex Data types 1st logical device");
+    assert_string_equal(dict_lookup(0x009F, 0xFF), "Device profile specific Complex Data types 1st logical device");
     assert_string_equal(dict_lookup(0x00A0, 0x00), "Device profile specific Standard Data types 2nd logical device");
+    assert_string_equal(dict_lookup(0x00BF, 0xFF), "Device profile specific Standard Data types 2nd logical device");
     assert_string_equal(dict_lookup(0x00C0, 0x00), "Device profile specific Complex Data types 2nd logical device");
+    assert_string_equal(dict_lookup(0x00DF, 0xFF), "Device profile specific Complex Data types 2nd logical device");
     assert_string_equal(dict_lookup(0x00E0, 0x00), "Device profile specific Standard Data types 3th logical device");
     assert_string_equal(dict_lookup(0x0100, 0x00), "Device profile specific Complex Data types 3th logical device");
+    assert_string_equal(dict_lookup(0x00FF, 0xFF), "Device profile specific Standard Data types 3th logical device");
+    assert_string_equal(dict_lookup(0x011F, 0xFF), "Device profile specific Complex Data types 3th logical device");
     assert_string_equal(dict_lookup(0x0120, 0x00), "Device profile specific Standard Data types 4th logical device");
+    assert_string_equal(dict_lookup(0x013F, 0xFF), "Device profile specific Standard Data types 4th logical device");
     assert_string_equal(dict_lookup(0x0140, 0x00), "Device profile specific Complex Data types 4th logical device");
+    assert_string_equal(dict_lookup(0x015F, 0xFF), "Device profile specific Complex Data types 4th logical device");
     assert_string_equal(dict_lookup(0x0160, 0x00), "Device profile specific Standard Data types 5th logical device");
+    assert_string_equal(dict_lookup(0x017F, 0xFF), "Device profile specific Standard Data types 5th logical device");
     assert_string_equal(dict_lookup(0x0180, 0x00), "Device profile specific Complex Data types 5th logical device");
+    assert_string_equal(dict_lookup(0x019F, 0xFF), "Device profile specific Complex Data types 5th logical device");
     assert_string_equal(dict_lookup(0x01A0, 0x00), "Device profile specific Standard Data types 6th logical device");
+    assert_string_equal(dict_lookup(0x01BF, 0xFF), "Device profile specific Standard Data types 6th logical device");
     assert_string_equal(dict_lookup(0x01C0, 0x00), "Device profile specific Complex Data types 6th logical device");
+    assert_string_equal(dict_lookup(0x01DF, 0xFF), "Device profile specific Complex Data types 6th logical device");
     assert_string_equal(dict_lookup(0x01E0, 0x00), "Device profile specific Standard Data types 7th logical device");
+    assert_string_equal(dict_lookup(0x01FF, 0xFF), "Device profile specific Standard Data types 7th logical device");
     assert_string_equal(dict_lookup(0x0200, 0x00), "Device profile specific Complex Data types 7th logical device");
+    assert_string_equal(dict_lookup(0x021F, 0xFF), "Device profile specific Complex Data types 7th logical device");
     assert_string_equal(dict_lookup(0x0220, 0x00), "Device profile specific Standard Data types 8th logical device");
+    assert_string_equal(dict_lookup(0x023F, 0xFF), "Device profile specific Standard Data types 8th logical device");
     assert_string_equal(dict_lookup(0x0240, 0x00), "Device profile specific Complex Data types 8th logical device");
+    assert_string_equal(dict_lookup(0x025F, 0xFF), "Device profile specific Complex Data types 8th logical device");
     assert_string_equal(dict_lookup(0x0260, 0x00), "Reserved");
+    assert_string_equal(dict_lookup(0x03FF, 0xFF), "Reserved");
     assert_string_equal(dict_lookup(0x0400, 0x00), "Reserved");
+    assert_string_equal(dict_lookup(0x0FFF, 0xFF), "Reserved");
     assert_string_equal(dict_lookup(0x1000, 0x00), "Device type");
     assert_string_equal(dict_lookup(0x1001, 0x00), "Error register");
     assert_string_equal(dict_lookup(0x1002, 0x00), "Manufacturer status register");
     assert_string_equal(dict_lookup(0x1003, 0x00), "Pre-defined error field, Number of errors");
     assert_string_equal(dict_lookup(0x1003, 0x01), "Pre-defined error field, Standard error field");
-    assert_string_equal(dict_lookup(0x1003, 0x02), "Pre-defined error field, Standard error field");
+    assert_string_equal(dict_lookup(0x1003, 0xFE), "Pre-defined error field, Standard error field");
     assert_string_equal(dict_lookup(0x1005, 0x00), "COB-ID SYNC");
     assert_string_equal(dict_lookup(0x1006, 0x00), "Communication cycle period");
     assert_string_equal(dict_lookup(0x1007, 0x00), "Synchronous window length");
@@ -108,19 +131,24 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x1010, 0x02), "Store parameters, Communication related parameters (1000h to 1FFFh)");
     assert_string_equal(dict_lookup(0x1010, 0x03), "Store parameters, Application related parameters (6000h to 9FFFh)");
     assert_string_equal(dict_lookup(0x1010, 0x04), "Store parameters, Manufacturer related parameters");
+    assert_string_equal(dict_lookup(0x1010, 0x7F), "Store parameters, Manufacturer related parameters");
     assert_string_equal(dict_lookup(0x1010, 0x80), "Store parameters, reserved");
+    assert_string_equal(dict_lookup(0x1010, 0xFE), "Store parameters, reserved");
     assert_string_equal(dict_lookup(0x1011, 0x00), "Restore parameters, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1011, 0x01), "Restore parameters, All parameters that may be restored");
     assert_string_equal(dict_lookup(0x1011, 0x02), "Restore parameters, Communication related parameters (1000h to 1FFFh)");
     assert_string_equal(dict_lookup(0x1011, 0x03), "Restore parameters, Application related parameters (6000h to 9FFFh)");
     assert_string_equal(dict_lookup(0x1011, 0x04), "Store parameters, Manufacturer related parameters");
+    assert_string_equal(dict_lookup(0x1011, 0x7F), "Store parameters, Manufacturer related parameters");
     assert_string_equal(dict_lookup(0x1011, 0x80), "Store parameters, reserved");
+    assert_string_equal(dict_lookup(0x1011, 0xFE), "Store parameters, reserved");
     assert_string_equal(dict_lookup(0x1012, 0x00), "COB-ID time stamp message");
     assert_string_equal(dict_lookup(0x1013, 0x00), "High resolution time stamp");
     assert_string_equal(dict_lookup(0x1014, 0x00), "COB-ID EMCY");
     assert_string_equal(dict_lookup(0x1015, 0x00), "Inhibit time EMCY");
     assert_string_equal(dict_lookup(0x1016, 0x00), "Consumer heartbeat time, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1016, 0x01), "Consumer heartbeat time");
+    assert_string_equal(dict_lookup(0x1016, 0x7F), "Consumer heartbeat time");
     assert_string_equal(dict_lookup(0x1017, 0x00), "Producer heartbeat time");
     assert_string_equal(dict_lookup(0x1018, 0x00), "Identity object, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1018, 0x01), "Identity object, Vendor-ID");
@@ -134,7 +162,9 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x1021, 0x00), "Store EDS");
     assert_string_equal(dict_lookup(0x1022, 0x00), "Store format, /ISO10646/, not compressed");
     assert_string_equal(dict_lookup(0x1022, 0x01), "Store format, reserved");
+    assert_string_equal(dict_lookup(0x1022, 0x7F), "Store format, reserved");
     assert_string_equal(dict_lookup(0x1022, 0x80), "Store format, manufacturer-specific");
+    assert_string_equal(dict_lookup(0x1022, 0xFF), "Store format, manufacturer-specific");
     assert_string_equal(dict_lookup(0x1023, 0x00), "OS command, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1023, 0x01), "OS command, Command");
     assert_string_equal(dict_lookup(0x1023, 0x02), "OS command, Status");
@@ -151,12 +181,15 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x1027, 0x00), "Module list, Number of connected modules");
     assert_string_equal(dict_lookup(0x1027, 0x01), "Module list, Module 1");
     assert_string_equal(dict_lookup(0x1027, 0x02), "Module list, Module");
+    assert_string_equal(dict_lookup(0x1027, 0xFE), "Module list, Module");
     assert_string_equal(dict_lookup(0x1028, 0x00), "Emergency consumer object, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1028, 0x01), "Emergency consumer object, Emergency consumer 1");
     assert_string_equal(dict_lookup(0x1028, 0x02), "Emergency consumer object, Emergency consumer");
+    assert_string_equal(dict_lookup(0x1028, 0x7F), "Emergency consumer object, Emergency consumer");
     assert_string_equal(dict_lookup(0x1029, 0x00), "Error behavior object, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1029, 0x01), "Error behavior object, Communication error");
     assert_string_equal(dict_lookup(0x1029, 0x02), "Error behavior object, Profile- or manufacturer-specific error");
+    assert_string_equal(dict_lookup(0x1029, 0xFE), "Error behavior object, Profile- or manufacturer-specific error");
     assert_string_equal(dict_lookup(0x1200, 0x00), "SDO server parameter, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1200, 0x01), "SDO server parameter, COB-ID client -> server (rx)");
     assert_string_equal(dict_lookup(0x1200, 0x02), "SDO server parameter, COB-ID server -> client (tx)");
@@ -175,6 +208,7 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x1600, 0x00), "RPDO mapping parameter, Number of mapped application objects in RPDO");
     assert_string_equal(dict_lookup(0x1600, 0x01), "RPDO mapping parameter, 1st application object");
     assert_string_equal(dict_lookup(0x1600, 0x02), "RPDO mapping parameter, Application object");
+    assert_string_equal(dict_lookup(0x17FF, 0x40), "RPDO mapping parameter, Application object");
     assert_string_equal(dict_lookup(0x1800, 0x00), "TPDO communication parameter, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1800, 0x01), "TPDO communication parameter, COB-ID used by RPDO");
     assert_string_equal(dict_lookup(0x1800, 0x02), "TPDO communication parameter, Transmission type");
@@ -185,22 +219,37 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0x1A00, 0x00), "TPDO mapping parameter, Number of mapped application objects in TPDO");
     assert_string_equal(dict_lookup(0x1A00, 0x01), "TPDO mapping parameter, 1st application object");
     assert_string_equal(dict_lookup(0x1A00, 0x02), "TPDO mapping parameter, Application object");
+    assert_string_equal(dict_lookup(0x1BFF, 0x40), "TPDO mapping parameter, Application object");
     assert_string_equal(dict_lookup(0x1FA0, 0x00), "Object scanner list, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1FA0, 0x01), "Object scanner list, Scan 1");
     assert_string_equal(dict_lookup(0x1FA0, 0x02), "Object scanner list, Scan");
+    assert_string_equal(dict_lookup(0x1FCF, 0xFE), "Object scanner list, Scan");
     assert_string_equal(dict_lookup(0x1FD0, 0x00), "Object dispatching list, Highest sub-index supported");
     assert_string_equal(dict_lookup(0x1FD0, 0x01), "Object dispatching list, Dispatch 1");
     assert_string_equal(dict_lookup(0x1FD0, 0x02), "Object dispatching list, Dispatch");
+    assert_string_equal(dict_lookup(0x1FFF, 0xFE), "Object dispatching list, Dispatch");
     assert_string_equal(dict_lookup(0x2000, 0x00), "Manufacturer-specific profile area");
+    assert_string_equal(dict_lookup(0x5FFF, 0xFF), "Manufacturer-specific profile area");
     assert_string_equal(dict_lookup(0x6000, 0x00), "Standardized profile area 1st logical device");
+    assert_string_equal(dict_lookup(0x67FF, 0xFF), "Standardized profile area 1st logical device");
     assert_string_equal(dict_lookup(0x6800, 0x00), "Standardized profile area 2nd logical device");
+    assert_string_equal(dict_lookup(0x6FFF, 0xFF), "Standardized profile area 2nd logical device");
     assert_string_equal(dict_lookup(0x7000, 0x00), "Standardized profile area 3th logical device");
+    assert_string_equal(dict_lookup(0x77FF, 0xFF), "Standardized profile area 3th logical device");
     assert_string_equal(dict_lookup(0x7800, 0x00), "Standardized profile area 4th logical device");
+    assert_string_equal(dict_lookup(0x7FFF, 0xFF), "Standardized profile area 4th logical device");
     assert_string_equal(dict_lookup(0x8000, 0x00), "Standardized profile area 5th logical device");
+    assert_string_equal(dict_lookup(0x87FF, 0xFF), "Standardized profile area 5th logical device");
     assert_string_equal(dict_lookup(0x8800, 0x00), "Standardized profile area 6th logical device");
+    assert_string_equal(dict_lookup(0x8FFF, 0xFF), "Standardized profile area 6th logical device");
     assert_string_equal(dict_lookup(0x9000, 0x00), "Standardized profile area 7th logical device");
+    assert_string_equal(dict_lookup(0x97FF, 0xFF), "Standardized profile area 7th logical device");
     assert_string_equal(dict_lookup(0x9800, 0x00), "Standardized profile area 8th logical device");
+    assert_string_equal(dict_lookup(0x9FFF, 0xFF), "Standardized profile area 8th logical device");
     assert_string_equal(dict_lookup(0xA000, 0x00), "Standardized network variable area");
+    assert_string_equal(dict_lookup(0xAFFF, 0xFF), "Standardized network variable area");
     assert_string_equal(dict_lookup(0xB000, 0x00), "Standardized system variable area");
+    assert_string_equal(dict_lookup(0xBFFF, 0xFF), "Standardized system variable area");
     assert_string_equal(dict_lookup(0xC000, 0x00), "Reserved");
+    assert_string_equal(dict_lookup(0xFFFF, 0xFF), "Reserved");
 }
