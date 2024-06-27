@@ -21,6 +21,8 @@ if(WIN32)
   set(PLATFORM "windows")
 elseif(UNIX)
   set(PLATFORM "linux")
+else()
+  message(FATAL_ERROR "Unsupported platform")
 endif()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/os_${PLATFORM}.cmake)
@@ -34,22 +36,32 @@ include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os)
 
-set(core_sources
+function(append_platform_files source_list pattern platform)
+  file(GLOB platform_files ${pattern}_${platform}.c)
+  list(APPEND ${source_list} ${platform_files})
+  set(${source_list} ${${source_list}} PARENT_SCOPE)
+endfunction()
+
+set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can_${PLATFORM}.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts_${PLATFORM}.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo_client.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c
+)
 
-set(os_sources
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os_${PLATFORM}.c)
+set(common_os_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c)
+
+set(core_sources ${common_core_sources})
+set(os_sources ${common_os_sources})
+
+append_platform_files(core_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/core/*" ${PLATFORM})
+append_platform_files(os_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/os/*" ${PLATFORM})
 
 add_library(
   core
