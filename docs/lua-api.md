@@ -89,6 +89,16 @@ pdo_del (can_id)
 
 ## Service data objects (SDO)
 
+### sdo_lookup_abort_code()
+
+```lua
+sdo_lookup_abort_code (abort_code)
+```
+
+> **abort_code** SDO abort code.
+
+**Returns**: Abort code description (string).
+
 ### sdo_read()
 
 Read SDO (expedided or segmented).

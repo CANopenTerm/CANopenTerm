@@ -740,6 +740,15 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
     return IS_WRITE_SEGMENTED;
 }
 
+int lua_sdo_lookup_abort_code(lua_State* L)
+{
+    int         abort_code  = luaL_checkinteger(L, 1);
+    const char* description = sdo_lookup_abort_code(abort_code);
+
+    lua_pushstring(L, (const char*)description);
+    return 1;
+}
+
 int lua_sdo_read(lua_State* L)
 {
     can_message_t sdo_response = { 0 };
@@ -917,6 +926,9 @@ int lua_sdo_write_string(lua_State* L)
 
 void lua_register_sdo_commands(core_t* core)
 {
+    lua_pushcfunction(core->L, lua_sdo_lookup_abort_code);
+    lua_setglobal(core->L, "sdo_lookup_abort_code");
+
     lua_pushcfunction(core->L, lua_sdo_read);
     lua_setglobal(core->L, "sdo_read");
 
