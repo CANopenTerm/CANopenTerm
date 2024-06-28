@@ -12,6 +12,7 @@
 #include "core.h"
 #include "command.h"
 #include "nmt_client.h"
+#include "os.h"
 #include "pdo.h"
 #include "scripts.h"
 #include "sdo_client.h"
@@ -42,28 +43,31 @@ void parse_command(char* input, core_t* core)
         run_script(token, core);
         return;
     }
-#ifdef DISABLE_BAUDRATE_SELECTION
-    else if (0 == os_strncmp(token, "b", 1))
+    else if (0 == SDL_strncmp(token, "b", 1))
     {
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        uint32 command;
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             can_print_baud_rate_help(core);
             return;
         }
-
-        convert_token_to_uint(token, &command);
+        else
+        {
+            convert_token_to_uint(token, &command);
+        }
 
         if (command > 13)
         {
             can_print_baud_rate_help(core);
             return;
         }
-
-        can_set_baud_rate(command, core);
-        return;
+        else
+        {
+            can_set_baud_rate(command, core);
+        }
     }
-#endif
     else if (0 == os_strncmp(token, "c", 1))
     {
         if (0 != system(CLEAR_CMD))
@@ -412,12 +416,10 @@ static void print_usage_information(bool_t show_all)
 
     if (IS_TRUE == show_all)
     {
-#ifdef DISABLE_BAUDRATE_SELECTION
-        table_print_row(" b ", "(command)",                                 "Set baud rate",  &table);
-#endif
+        table_print_row(" b ", "(identifer)",                               "Set baud rate",  &table);
         table_print_row(" c ", " ",                                         "Clear output", &table);
         table_print_row(" l ", " ",                                         "List scripts", &table);
-        table_print_row("(s)", "[script_identifier](.lua)",                 "Run script",   &table);
+        table_print_row("(s)", "[identifier](.lua)",                        "Run script",   &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);

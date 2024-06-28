@@ -52,6 +52,13 @@ void can_deinit(core_t* core)
     close(can_socket);
 }
 
+void can_set_baud_rate(uint8 command, core_t* core)
+{
+    (void)command;
+    (void)core;
+    os_log(LOG_ERROR, "This feature cannot yet be used on Linux: The baud rate remains unchanged");
+}
+
 void can_quit(core_t* core)
 {
     if (NULL == core)
@@ -144,11 +151,6 @@ uint32 can_read(can_message_t* message)
     return 0;
 }
 
-void can_set_baud_rate(uint8 command, core_t* core)
-{
-    return;
-}
-
 const char* can_get_error_message(uint32 can_status)
 {
     /* Handle libsocketcan error messages if needed. */
@@ -165,8 +167,6 @@ static int can_monitor(void* core_pt)
     {
         return 1;
     }
-
-    core->baud_rate = 3;
 
     while (IS_TRUE == core->is_running)
     {
@@ -206,6 +206,7 @@ static int can_monitor(void* core_pt)
             }
 
             core->is_can_initialised = IS_TRUE;
+            os_print(DEFAULT_COLOR, "\r");
             os_log(LOG_SUCCESS, "CAN successfully initialised");
             os_print_prompt();
 

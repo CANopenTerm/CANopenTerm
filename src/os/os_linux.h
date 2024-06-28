@@ -50,7 +50,6 @@
 
 #define DEFAULT_CAN_INTERFACE "can0"
 
-#define DISABLE_BAUDRATE_SELECTION
 #define OS_LAYER_DEFINED
 
 #endif /* OS_LINUX_H */

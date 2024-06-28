@@ -26,6 +26,7 @@ typedef struct core
     os_thread* can_monitor_th;
     lua_State* L;
     uint8      baud_rate;
+    uint32     can_channel;
     uint32     can_status;
     uint8      node_id;
     bool_t     is_can_initialised;

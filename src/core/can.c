@@ -14,8 +14,49 @@
 #include "os.h"
 #include "table.h"
 
-static int  can_monitor(void* core);
-static char err_message[100] = { 0 };
+void can_print_baud_rate_help(core_t* core)
+{
+    table_t      table = { DARK_CYAN, DARK_WHITE, 3, 13, 6 };
+    char         status[14][7] = { 0 };
+    unsigned int status_index = core->baud_rate;
+    unsigned int index;
+
+    if (status_index > 13)
+    {
+        status_index = 13;
+    }
+
+    for (index = 0; index < 14; index += 1)
+    {
+        if (status_index == index)
+        {
+            os_snprintf(status[index], 7, "Active");
+        }
+        else
+        {
+            os_snprintf(status[index], 2, " ");
+        }
+    }
+
+    table_print_header(&table);
+    table_print_row("Id.", "Description", "Status", &table);
+    table_print_divider(&table);
+    table_print_row("  0", "1 MBit/s",      status[0], &table);
+    table_print_row("  1", "800 kBit/s",    status[1], &table);
+    table_print_row("  2", "500 kBit/s",    status[2], &table);
+    table_print_row("  3", "250 kBit/s",    status[3], &table);
+    table_print_row("  4", "125 kBit/s",    status[4], &table);
+    table_print_row("  5", "100 kBit/s",    status[5], &table);
+    table_print_row("  6", "95,238 kBit/s", status[6], &table);
+    table_print_row("  7", "83,333 kBit/s", status[7], &table);
+    table_print_row("  8", "50 kBit/s",     status[8], &table);
+    table_print_row("  9", "47,619 kBit/s", status[9], &table);
+    table_print_row(" 10", "33,333 kBit/s", status[10], &table);
+    table_print_row(" 11", "20 kBit/s",     status[11], &table);
+    table_print_row(" 12", "10 kBit/s",     status[12], &table);
+    table_print_row(" 13", "5 kBit/s",      status[13], &table);
+    table_print_footer(&table);
+}
 
 void limit_node_id(uint8* node_id)
 {
@@ -160,48 +201,4 @@ void can_print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode)
     {
         os_print(DEFAULT_COLOR, "-\n");
     }
-}
-
-void can_print_baud_rate_help(core_t* core)
-{
-    table_t      table = { DARK_CYAN, DARK_WHITE, 3, 13, 6 };
-    char         status[14][7] = { 0 };
-    unsigned int status_index = core->baud_rate;
-    unsigned int index;
-
-    if (status_index > 13)
-    {
-        status_index = 13;
-    }
-
-    for (index = 0; index < 14; index += 1)
-    {
-        if (status_index == index)
-        {
-            os_snprintf(status[index], 7, "Active");
-        }
-        else
-        {
-            os_snprintf(status[index], 2, " ");
-        }
-    }
-
-    table_print_header(&table);
-    table_print_row("CMD", "Description", "Status", &table);
-    table_print_divider(&table);
-    table_print_row("  0", "1 MBit/s", status[0], &table);
-    table_print_row("  1", "800 kBit/s", status[1], &table);
-    table_print_row("  2", "500 kBit/s", status[2], &table);
-    table_print_row("  3", "250 kBit/s", status[3], &table);
-    table_print_row("  4", "125 kBit/s", status[4], &table);
-    table_print_row("  5", "100 kBit/s", status[5], &table);
-    table_print_row("  6", "95,238 kBit/s", status[6], &table);
-    table_print_row("  7", "83,333 kBit/s", status[7], &table);
-    table_print_row("  8", "50 kBit/s", status[8], &table);
-    table_print_row("  9", "47,619 kBit/s", status[9], &table);
-    table_print_row(" 10", "33,333 kBit/s", status[10], &table);
-    table_print_row(" 11", "20 kBit/s", status[11], &table);
-    table_print_row(" 12", "10 kBit/s", status[12], &table);
-    table_print_row(" 13", "5 kBit/s", status[13], &table);
-    table_print_footer(&table);
 }
