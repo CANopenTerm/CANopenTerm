@@ -43,14 +43,15 @@ function(append_platform_files source_list pattern platform)
 endfunction()
 
 set(common_core_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/buffer.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/command.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dict.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo_client.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c
 )
 

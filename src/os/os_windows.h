@@ -11,6 +11,7 @@
 #define OS_WINDOWS_H
 
 #include <stdarg.h>
+#include <stdio.h>
 #include "SDL.h"
 #include "SDL_main.h"
 
@@ -22,6 +23,8 @@
 #define os_memcpy    SDL_memcpy
 #define os_memmove   SDL_memmove
 #define os_memset    SDL_memset
+#define os_printf    printf
+#define os_realloc   SDL_realloc
 #define os_snprintf  SDL_snprintf
 #define os_strchr    SDL_strchr
 #define os_strcmp    SDL_strcmp

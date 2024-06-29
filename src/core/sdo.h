@@ -1,4 +1,4 @@
-/** @file sdo_client.h
+/** @file sdo.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,8 +7,8 @@
  *
  **/
 
-#ifndef SDO_CLIENT_H
-#define SDO_CLIENT_H
+#ifndef SDO_H
+#define SDO_H
 
 #include "lua.h"
 #include "can.h"
@@ -114,4 +114,4 @@ int         lua_sdo_write_file(lua_State* L);
 int         lua_sdo_write_string(lua_State* L);
 void        lua_register_sdo_commands(core_t* core);
 
-#endif /* SDO_CLIENT_H */
+#endif /* SDO_H */

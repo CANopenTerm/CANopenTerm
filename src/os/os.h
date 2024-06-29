@@ -103,6 +103,14 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_memset() not defined
 #endif
 
+#ifndef os_printf
+#error  os_printf() not defined
+#endif
+
+#ifndef os_realloc
+#error  os_realloc() not defined
+#endif
+
 #ifndef os_snprintf
 #error  os_snprintf() not defined
 #endif

@@ -1,4 +1,4 @@
-/** @file test_nmt_client.h
+/** @file test_nmt.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,10 +7,10 @@
  *
  **/
 
-#ifndef TEST_NMT_CLIENT_H
-#define TEST_NMT_CLIENT_H
+#ifndef TEST_NMT_H
+#define TEST_NMT_H
 
 void test_nmt_send_command(void** state);
 void test_nmt_print_help(void** state);
 
-#endif /* TEST_NMT_CLIENT_H */
+#endif /* TEST_NMT_H */

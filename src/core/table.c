@@ -7,10 +7,24 @@
  *
  **/
 
+#include <stdarg.h>
+#include <stdio.h>
+#include "buffer.h"
 #include "os.h"
 #include "table.h"
 
 static void print_frame(const char* left, const char* center, const char* right, table_t* t);
+
+void table_flush(table_t* t)
+{
+    buffer_flush();
+    buffer_free();
+}
+
+status_t table_init(table_t* t, size_t initial_capacity)
+{
+    return buffer_init(initial_capacity);
+}
 
 void table_print_header(table_t* t)
 {

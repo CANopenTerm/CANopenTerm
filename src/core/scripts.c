@@ -15,7 +15,6 @@
 #include "core.h"
 #include "os.h"
 #include "scripts.h"
-#include "table.h"
 
 char*  get_script_description(const char* script_path);
 bool_t has_lua_extension(const char* filename);

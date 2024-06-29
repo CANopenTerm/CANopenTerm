@@ -11,10 +11,10 @@
 #include "command.h"
 #include "core.h"
 #include "dict.h"
-#include "nmt_client.h"
+#include "nmt.h"
 #include "os.h"
 #include "pdo.h"
-#include "sdo_client.h"
+#include "sdo.h"
 #include "scripts.h"
 #include "version.h"
 

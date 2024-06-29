@@ -1,4 +1,4 @@
-/** @file nmt_client.c
+/** @file nmt.c
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -11,7 +11,7 @@
 #include "lauxlib.h"
 #include "can.h"
 #include "core.h"
-#include "nmt_client.h"
+#include "nmt.h"
 #include "table.h"
 
 static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
@@ -151,7 +151,7 @@ void lua_register_nmt_command(core_t* core)
 
 status_t nmt_print_help(disp_mode_t disp_mode)
 {
-    status_t status = ALL_OK;
+    status_t status;
 
     if (SILENT == disp_mode)
     {
@@ -161,15 +161,20 @@ status_t nmt_print_help(disp_mode_t disp_mode)
     {
         table_t table = { DARK_CYAN, DARK_WHITE, 4, 5, 30 };
 
-        table_print_header(&table);
-        table_print_row("CMD", "Alias", "Description", &table);
-        table_print_divider(&table);
-        table_print_row("0x01", "op",    "Start (go to Operational)",      &table);
-        table_print_row("0x02", "stop",  "Stop (go to Stopped)",           &table);
-        table_print_row("0x80", "preop", "Go to Pre-operational",          &table);
-        table_print_row("0x81", "reset", "Reset node (Application reset)", &table);
-        table_print_row("0x82", " ",     "Reset communication",            &table);
-        table_print_footer(&table);
+        status = table_init(&table, 1024);
+        if (ALL_OK == status)
+        {
+            table_print_header(&table);
+            table_print_row("CMD",  "Alias", "Description", &table);
+            table_print_divider(&table);
+            table_print_row("0x01", "op",    "Start (go to Operational)", &table);
+            table_print_row("0x02", "stop",  "Stop (go to Stopped)", &table);
+            table_print_row("0x80", "preop", "Go to Pre-operational", &table);
+            table_print_row("0x81", "reset", "Reset node (Application reset)", &table);
+            table_print_row("0x82", " ",     "Reset communication", &table);
+            table_print_footer(&table);
+            table_flush(&table);
+        }
     }
 
     return status;

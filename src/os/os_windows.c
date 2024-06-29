@@ -10,6 +10,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <windows.h>
+#include "buffer.h"
 #include "os.h"
 
 static HANDLE console = NULL;
@@ -205,16 +206,23 @@ void os_print(const color_t color, const char* format, ...)
     os_vsnprintf(buffer, 1024, format, varg);
     va_end(varg);
 
-    if (NULL != console)
+    if (IS_TRUE == use_buffer())
     {
-        SetConsoleTextAttribute(console, attr);
+        buffer_write(buffer);
     }
-
-    printf("%s", buffer);
-
-    if (NULL != console)
+    else
     {
-        SetConsoleTextAttribute(console, default_attr);
+        if (NULL != console)
+        {
+            SetConsoleTextAttribute(console, attr);
+        }
+
+        printf("%s", buffer);
+
+        if (NULL != console)
+        {
+            SetConsoleTextAttribute(console, default_attr);
+        }
     }
 }
 

@@ -118,70 +118,47 @@ void os_log(const log_level_t level, const char* format, ...)
 
 void os_print(const color_t color, const char* format, ...)
 {
-    char    buffer[1024];
-    va_list varg;
+    char        buffer[1024];
+    char        print_buffer[1024];
+    va_list     varg;
+    const char* color_code = "";
 
     switch (color)
     {
-        case DEFAULT_COLOR:
-        default:
-            break;
-        case DARK_BLACK:
-            printf("\e[0;30m");
-            break;
-        case DARK_BLUE:
-            printf("\e[0;34m");
-            break;
-        case DARK_GREEN:
-            printf("\e[0;32m");
-            break;
-        case DARK_CYAN:
-            printf("\e[0;36m");
-            break;
-        case DARK_RED:
-            printf("\e[0;31m");
-            break;
-        case DARK_MAGENTA:
-            printf("\e[0;35m");
-            break;
-        case DARK_YELLOW:
-            printf("\e[0;33m");
-            break;
-        case DARK_WHITE:
-            printf("\e[0;37m");
-            break;
-        case LIGHT_BLACK:
-            printf("\e[0;90m");
-            break;
-        case LIGHT_BLUE:
-            printf("\e[0;94m");
-            break;
-        case LIGHT_GREEN:
-            printf("\e[0;92m");
-            break;
-        case LIGHT_CYAN:
-            printf("\e[0;96m");
-            break;
-        case LIGHT_RED:
-            printf("\e[0;91m");
-            break;
-        case LIGHT_MAGENTA:
-            printf("\e[0;95m");
-            break;
-        case LIGHT_YELLOW:
-            printf("\e[0;93m");
-            break;
-        case LIGHT_WHITE:
-            printf("\e[0;97m");
-            break;
+        case DEFAULT_COLOR:   color_code = "\x1b[0m"; break;
+        case DARK_BLACK:      color_code = "\x1b[30m"; break;
+        case DARK_BLUE:       color_code = "\x1b[34m"; break;
+        case DARK_GREEN:      color_code = "\x1b[32m"; break;
+        case DARK_CYAN:       color_code = "\x1b[36m"; break;
+        case DARK_RED:        color_code = "\x1b[31m"; break;
+        case DARK_MAGENTA:    color_code = "\x1b[35m"; break;
+        case DARK_YELLOW:     color_code = "\x1b[33m"; break;
+        case DARK_WHITE:      color_code = "\x1b[37m"; break;
+        case LIGHT_BLACK:     color_code = "\x1b[90m"; break;
+        case LIGHT_BLUE:      color_code = "\x1b[94m"; break;
+        case LIGHT_GREEN:     color_code = "\x1b[92m"; break;
+        case LIGHT_CYAN:      color_code = "\x1b[96m"; break;
+        case LIGHT_RED:       color_code = "\x1b[91m"; break;
+        case LIGHT_MAGENTA:   color_code = "\x1b[95m"; break;
+        case LIGHT_YELLOW:    color_code = "\x1b[93m"; break;
+        case LIGHT_WHITE:     color_code = "\x1b[97m"; break;
+        default:              color_code = "\x1b[0m"; break;
     }
 
     va_start(varg, format);
-    os_vsnprintf(buffer, 1024, format, varg);
+    os_vsnprintf(buffer, sizeof(buffer), format, varg);
     va_end(varg);
 
-    printf("%s", buffer);
-    printf("\e[0m");
+    os_snprintf(print_buffer, sizeof(print_buffer), "%s%s\x1b[0m", color_code, buffer);
+
+    if (IS_TRUE == use_buffer())
+    {
+        buffer_write(print_buffer);
+    }
+    else
+    {
+        os_printf("%s", print_buffer);
+    }
 }
 
 void os_print_prompt(void)

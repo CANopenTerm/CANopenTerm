@@ -11,16 +11,16 @@
 #include "can.h"
 #include "core.h"
 #include "command.h"
-#include "nmt_client.h"
+#include "nmt.h"
 #include "os.h"
 #include "pdo.h"
 #include "scripts.h"
-#include "sdo_client.h"
+#include "sdo.h"
 #include "table.h"
 
 static void   convert_token_to_uint(char* token, uint32* result);
 static void   convert_token_to_uint64(char* token, uint64* result);
-static void   print_usage_information(bool_t show_all);
+status_t      print_usage_information(bool_t show_all);
 static bool_t is_numeric(const char* str);
 
 void parse_command(char* input, core_t* core)
@@ -405,10 +405,12 @@ static void convert_token_to_uint64(char* token, uint64* result)
     }
 }
 
-static void print_usage_information(bool_t show_all)
+status_t print_usage_information(bool_t show_all)
 {
-    table_t table = { DARK_CYAN, DARK_WHITE, 3, 45, 14 };
+    status_t status;
+    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 45, 14 };
 
+    status = table_init(&table, 1024);
     table_print_header(&table);
     table_print_row("CMD", "Parameter(s)",                                  "Function",     &table);
     table_print_divider(&table);
@@ -430,6 +432,9 @@ static void print_usage_information(bool_t show_all)
     table_print_row(" p ", "del [can_id]",                                  "Remove TPDO", &table);
     table_print_row(" q ", " ",                                             "Quit",        &table);
     table_print_footer(&table);
+    table_flush(&table);
+
+    return status;
 }
 
 static bool_t is_numeric(const char* str)

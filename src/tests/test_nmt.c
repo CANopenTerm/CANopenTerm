@@ -1,4 +1,4 @@
-/** @file test_nmt_client.c
+/** @file test_nmt.c
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -12,9 +12,9 @@
 #include <setjmp.h>
 #include <stdint.h>
 #include "cmocka.h"
-#include "nmt_client.h"
+#include "nmt.h"
 #include "os.h"
-#include "test_nmt_client.h"
+#include "test_nmt.h"
 
 void test_nmt_send_command(void** state)
 {

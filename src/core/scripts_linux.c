@@ -38,69 +38,75 @@ static void   set_nonblocking(int fd, int nonblocking);
 static void   set_terminal_raw_mode(struct termios* orig_termios);
 static void   reset_terminal_mode(struct termios* orig_termios);
 
-void list_scripts(void)
+status_t list_scripts(void)
 {
-    char*   listed_scripts[256];
-    int     listed_count = 0;
-    int     i;
-    table_t table = { DARK_CYAN, DARK_WHITE, 3, 10, 40 };
+    status_t status;
+    char* listed_scripts[256];
+    int      listed_count = 0;
+    int      i;
+    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 10, 40 };
 
-    table_print_header(&table);
-    table_print_row("No.", "Identifier", "Description", &table);
-    table_print_divider(&table);
-
-    for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
+    status = table_init(&table, 1024);
+    if (ALL_OK == status)
     {
-        DIR* dir = opendir(script_dirs[i]);
-        if (NULL != dir)
+        table_print_header(&table);
+        table_print_row("No.", "Identifier", "Description", &table);
+        table_print_divider(&table);
+
+        for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
         {
-            struct dirent* ent;
-
-            while ((ent = readdir(dir)) != NULL)
+            DIR* dir = opendir(script_dirs[i]);
+            if (NULL != dir)
             {
-                if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
+                struct dirent* ent;
+
+                while ((ent = readdir(dir)) != NULL)
                 {
-                    char script_name[256] = { 0 };
-
-                    safe_strcpy(script_name, ent->d_name, sizeof(script_name));
-                    script_name[sizeof(script_name) - 1] = '\0';
-                    strip_extension(script_name);
-
-                    if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
+                    if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
                     {
-                        char  buf[4]           = { 0 };
-                        char* script_no        = os_itoa(listed_count, buf, 10);
-                        char  script_path[512] = { 0 };
-                        char* description;
+                        char script_name[256] = { 0 };
 
-                        listed_scripts[listed_count++] = os_strdup(script_name);
+                        safe_strcpy(script_name, ent->d_name, sizeof(script_name));
+                        script_name[sizeof(script_name) - 1] = '\0';
+                        strip_extension(script_name);
 
-                        os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], ent->d_name);
-
-                        description = get_script_description(script_path);
-
-                        if (description != NULL)
+                        if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                         {
-                            table_print_row(script_no, script_name, description, &table);
-                            os_free(description);
-                        }
-                        else
-                        {
-                            table_print_row(script_no, script_name, "-", &table);
+                            char  buf[4] = { 0 };
+                            char* script_no = os_itoa(listed_count, buf, 10);
+                            char  script_path[512] = { 0 };
+                            char* description;
+
+                            listed_scripts[listed_count++] = os_strdup(script_name);
+
+                            os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], ent->d_name);
+
+                            description = get_script_description(script_path);
+
+                            if (description != NULL)
+                            {
+                                table_print_row(script_no, script_name, description, &table);
+                                os_free(description);
+                            }
+                            else
+                            {
+                                table_print_row(script_no, script_name, "-", &table);
+                            }
                         }
                     }
                 }
+                closedir(dir);
             }
-            closedir(dir);
         }
-    }
 
-    for (i = 0; i < listed_count; i++)
-    {
-        os_free(listed_scripts[i]);
-    }
+        for (i = 0; i < listed_count; i++)
+        {
+            os_free(listed_scripts[i]);
+        }
 
-    table_print_footer(&table);
+        table_print_footer(&table);
+        table_flush(&table);
+    }
 }
 
 void run_script(const char* name, core_t* core)

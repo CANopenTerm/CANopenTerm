@@ -1,4 +1,4 @@
-/** @file sdo_client.c
+/** @file sdo.c
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -13,7 +13,7 @@
 #include "core.h"
 #include "dict.h" 
 #include "os.h"
-#include "sdo_client.h"
+#include "sdo.h"
 
 #define SEGMENT_DATA_SIZE     7u
 #define MAX_SDO_RESPONSE_SIZE 8u

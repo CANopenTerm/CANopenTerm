@@ -12,8 +12,8 @@
 #include <setjmp.h>
 #include <stdint.h>
 #include "cmocka.h"
-#include "sdo_client.h"
-#include "test_sdo_client.h"
+#include "sdo.h"
+#include "test_sdo.h"
 
 void test_sdo_lookup_abort_code(void** state)
 {

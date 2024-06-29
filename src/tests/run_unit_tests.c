@@ -13,8 +13,8 @@
 #include <stdint.h>
 #include "cmocka.h"
 #include "test_dict.h"
-#include "test_nmt_client.h"
-#include "test_sdo_client.h"
+#include "test_nmt.h"
+#include "test_sdo.h"
 
 int main(void)
 {

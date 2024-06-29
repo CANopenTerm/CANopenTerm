@@ -1,4 +1,4 @@
-/** @file nmt_client.h
+/** @file nmt.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,8 +7,8 @@
  *
  **/
 
-#ifndef NMT_CLIENT_H
-#define NMT_CLIENT_H
+#ifndef NMT_H
+#define NMT_H
 
 #include "lua.h"
 #include "core.h"
@@ -29,4 +29,4 @@ int      lua_nmt_send_command(lua_State* L);
 void     lua_register_nmt_command(core_t* core);
 status_t nmt_print_help(disp_mode_t disp_mode);
 
-#endif /* NMT_CLIENT_H */
+#endif /* NMT_H */

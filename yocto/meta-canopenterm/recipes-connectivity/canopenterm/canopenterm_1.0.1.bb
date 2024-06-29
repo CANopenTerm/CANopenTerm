@@ -7,7 +7,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=10e84ea70e8c3a1fbc462f5424806474"
 
 python do_display_banner() {
-    bb.plain("CANopenTerm 1.0.0");
+    bb.plain("CANopenTerm 1.0.2");
     bb.plain("Copyright (c) 2024, Michael Fitzmayer");
 }
 
@@ -27,11 +27,11 @@ do_compile() {
     ${S}/src/core/command.c \
     ${S}/src/core/core.c \
     ${S}/src/core/dict.c \
-    ${S}/src/core/nmt_client.c \
+    ${S}/src/core/nmt.c \
     ${S}/src/core/pdo.c \
     ${S}/src/core/scripts.c \
     ${S}/src/core/scripts_linux.c \
-    ${S}/src/core/sdo_client.c \
+    ${S}/src/core/sdo.c \
     ${S}/src/core/table.c \
     ${S}/src/os/os.c \
     ${S}/src/os/os_linux.c \
