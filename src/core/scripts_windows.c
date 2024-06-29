@@ -27,15 +27,16 @@ extern void   strip_extension(char* filename);
 status_t list_scripts(void)
 {
     status_t status;
-    DIR*     dir;
-    char*    listed_scripts[256];
-    int      listed_count = 0;
-    int      i;
     table_t  table = { DARK_CYAN, DARK_WHITE, 3, 10, 40 };
 
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
+        DIR*  dir;
+        char* listed_scripts[256];
+        int   listed_count = 0;
+        int   i;
+
         table_print_header(&table);
         table_print_row("No.", "Identifier", "Description", &table);
         table_print_divider(&table);
