@@ -17,6 +17,8 @@
 
 void test_sdo_lookup_abort_code(void** state)
 {
+    (void)state;
+
     assert_string_equal(sdo_lookup_abort_code(ABORT_TOGGLE_BIT_NOT_ALTERED),             "Toggle bit not altered");
     assert_string_equal(sdo_lookup_abort_code(ABORT_SDO_PROTOCOL_TIMED_OUT),             "SDO protocol timed out");
     assert_string_equal(sdo_lookup_abort_code(ABORT_CMD_SPECIFIER_INVALID_UNKNOWN),      "Client/server command specifier not valid or unknown");

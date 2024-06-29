@@ -39,6 +39,8 @@ add_executable(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/run_unit_tests.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_nmt.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_os.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_scripts.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_wrapper.c)
 

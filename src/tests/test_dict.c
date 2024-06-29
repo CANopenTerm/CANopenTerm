@@ -17,6 +17,8 @@
 
 void test_dict_lookup(void** state)
 {
+    (void)state;
+
     assert_string_equal(dict_lookup(0x0001, 0x00), "DEFTYPE BOOLEAN");
     assert_string_equal(dict_lookup(0x0002, 0x00), "DEFTYPE INTEGER8");
     assert_string_equal(dict_lookup(0x0003, 0x00), "DEFTYPE INTEGER16");
