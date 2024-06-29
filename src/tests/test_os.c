@@ -298,6 +298,41 @@ void test_os_vsnprintf(void** state)
     assert_int_equal(result, 42);
 }
 
+void test_os_delay(void** state)
+{
+    uint64 time = os_get_ticks();
+    uint64 new_time;
+
+    os_delay(100);
+    time     = time + 100u;
+    new_time = os_get_ticks();
+
+    /* Max. deviation is 1ms. */
+    assert_in_range(new_time, time, time + 1u);
+}
+
+void test_os_get_error(void** state)
+{
+    assert_non_null(os_get_error());
+}
+
+void test_os_get_ticks(void** state)
+{
+    uint64 time_a = os_get_ticks();
+    uint64 time_b;
+    os_delay(1);
+    time_b = os_get_ticks();
+
+    assert_true(time_b > time_a);
+}
+
+void test_os_swap_be_32(void** state)
+{
+    (void)state;  
+    assert_int_equal(os_swap_be_32(0x78563412), 0x12345678);
+    assert_int_equal(os_swap_be_32(0x12345678), 0x78563412);
+}
+
 void test_uint8(void** state)
 {
     (void)state;
