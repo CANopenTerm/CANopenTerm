@@ -178,7 +178,23 @@ static int can_monitor(void* core_pt)
         PCAN_USBBUS13,
         PCAN_USBBUS14,
         PCAN_USBBUS15,
-        PCAN_USBBUS16
+        PCAN_USBBUS16,
+        PCAN_PCIBUS1,
+        PCAN_PCIBUS2,
+        PCAN_PCIBUS3,
+        PCAN_PCIBUS4,
+        PCAN_PCIBUS5,
+        PCAN_PCIBUS6,
+        PCAN_PCIBUS7,
+        PCAN_PCIBUS8,
+        PCAN_PCIBUS9,
+        PCAN_PCIBUS10,
+        PCAN_PCIBUS11,
+        PCAN_PCIBUS12,
+        PCAN_PCIBUS13,
+        PCAN_PCIBUS14,
+        PCAN_PCIBUS15,
+        PCAN_PCIBUS16
     };
 
     const char* can_channel_desc[] = {
@@ -197,7 +213,23 @@ static int can_monitor(void* core_pt)
         "PCAN-USB channel 13",
         "PCAN-USB channel 14",
         "PCAN-USB channel 15",
-        "PCAN-USB channel 16"
+        "PCAN-USB channel 16",
+        "PCAN-PCI interface, channel 1",
+        "PCAN-PCI interface, channel 2",
+        "PCAN-PCI interface, channel 3",
+        "PCAN-PCI interface, channel 4",
+        "PCAN-PCI interface, channel 5",
+        "PCAN-PCI interface, channel 6",
+        "PCAN-PCI interface, channel 7",
+        "PCAN-PCI interface, channel 8",
+        "PCAN-PCI interface, channel 9",
+        "PCAN-PCI interface, channel 10",
+        "PCAN-PCI interface, channel 11",
+        "PCAN-PCI interface, channel 12",
+        "PCAN-PCI interface, channel 13",
+        "PCAN-PCI interface, channel 14",
+        "PCAN-PCI interface, channel 15",
+        "PCAN-PCI interface, channel 16"
     };
 
     int num_baud_rates   = sizeof(baud_rates) / sizeof(baud_rates[0]);
@@ -220,7 +252,7 @@ static int can_monitor(void* core_pt)
             core->can_status = CAN_Initialize(
                 channel,
                 baud_rate,
-                PCAN_USB,
+                PCAN_NONE,
                 0, 0);
 
             CAN_GetErrorText(core->can_status, 0x09, err_message);
@@ -299,7 +331,7 @@ static int can_monitor(void* core_pt)
             core->can_status = CAN_Initialize(
                 can_channel,
                 baud_rate,
-                PCAN_USB,
+                PCAN_NONE,
                 0, 0);
 
             CAN_GetErrorText(core->can_status, 0x09, err_message);
