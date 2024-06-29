@@ -6,15 +6,21 @@ License: Public domain
 
 --]]
 
-local function get_file_list(extension)
+local function get_file_list(extension, directory)
+  directory = directory or ""
+
+  -- Convert directory path separators based on platform
+  local sep = package.config:sub(1, 1)  -- Get platform-specific path separator
+  directory = directory:gsub("/", sep)  -- Replace forward slashes with platform-specific separator
+
   local files = {}
   local i = 1
   local command
 
   if os.getenv("OS") == "Windows_NT" then
-    command = 'dir /b /a-d *.' .. extension .. ' 2>nul'
+    command = 'dir /b /a-d "' .. directory .. '*.' .. extension .. '" 2>nul'
   else
-    command = 'ls -1 *.' .. extension .. ' 2>/dev/null'
+    command = 'ls -1 "' .. directory .. '*.' .. extension .. '" 2>/dev/null'
   end
 
   for file in io.popen(command):lines() do
@@ -23,19 +29,26 @@ local function get_file_list(extension)
   end
 
   if #files == 0 then
-    print("No ." .. extension .. " files found.")
+    print("No ." .. extension .. " files found in directory: " .. directory)
     return nil
   end
 
   return files
 end
 
-local function get_file_by_selection(prompt, extension)
+local function get_file_by_selection(prompt, extension, sub_directory)
   print("")
 
-  local files = get_file_list(extension)
+  local directory = sub_directory or ""
+
+  -- Convert directory path separators based on platform
+  local sep = package.config:sub(1, 1)  -- Get platform-specific path separator
+  directory = directory:gsub("/", sep)  -- Replace forward slashes with platform-specific separator
+
+  local files = get_file_list(extension, directory)
 
   if files == nil then
+    print("Exiting.")
     return nil
   end
 
@@ -51,10 +64,12 @@ local function get_file_by_selection(prompt, extension)
   else
     choice = tonumber(choice)
     if choice and choice >= 1 and choice <= #files then
-      return files[choice]
+      -- Convert back to original directory path separators for returning
+      local original_sep = sub_directory and "/" or sep  -- Determine if sub_directory was provided
+      return directory:gsub(sep, original_sep) .. files[choice]
     else
       print("Invalid choice. Please enter a number between 1 and " .. #files .. " or 'q' to quit.")
-      return get_file_by_selection(prompt, file_extension)
+      return get_file_by_selection(prompt, extension, sub_directory)
     end
   end
 end

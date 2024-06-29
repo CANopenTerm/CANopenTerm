@@ -63,7 +63,7 @@ while not key_is_hit() do
 
         local elapsed_us = timestamp_us - initial_timestamp_us
 
-        local timestamp_ms = math.floor(elapsed_us / 1000)
+        local timestamp_ms       = math.floor(elapsed_us / 1000)
         local timestamp_fraction = math.floor(((elapsed_us / 1000) % 1) * 1000)
 
         io.write(string.format("%6d.%03d   %03X     %1d       ", timestamp_ms, timestamp_fraction, id, length))
