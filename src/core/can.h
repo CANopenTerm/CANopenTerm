@@ -31,7 +31,7 @@ const char* can_get_error_message(uint32 can_status);
 void        can_quit(core_t* core);
 uint32      can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment);
 uint32      can_read(can_message_t* message);
-void        can_print_baud_rate_help(core_t* core);
+status_t    can_print_baud_rate_help(core_t* core);
 void        can_print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode);
 void        can_set_baud_rate(uint8 command, core_t* core);
 void        limit_node_id(uint8* node_id);
