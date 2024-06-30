@@ -61,7 +61,19 @@ if(EXISTS "/proc/cpuinfo")
   endif()
 endif()
 
-set(PLATFORM_LIBS dl m pthread readline history)
+set(PLATFORM_LIBS
+  ${SDL2_LIBRARY}
+  ${SDL2MAIN_LIBRARY}
+  ${LUA_LIBRARY}
+  dl
+  m
+  pthread
+  readline
+  history)
+
+set(PLATFORM_CORE_DEPS
+  Lua_devel
+  SDL2_devel)
 
 include_directories(
   SYSTEM ${SDL2_INCLUDE_DIR}

@@ -111,7 +111,15 @@ set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 
 add_dependencies(${PROJECT_NAME} PCAN_devel)
 
-set(PLATFORM_LIBS ${PCAN_LIBRARY})
+set(PLATFORM_LIBS
+  ${PCAN_LIBRARY}
+  ${SDL2_LIBRARY}
+  ${SDL2MAIN_LIBRARY}
+  ${LUA_LIBRARY})
+
+set(PLATFORM_CORE_DEPS
+  Lua_devel
+  SDL2_devel)
 
 include_directories(
   SYSTEM ${SDL2_INCLUDE_DIR}

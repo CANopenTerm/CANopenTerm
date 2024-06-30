@@ -70,22 +70,18 @@ add_library(
   ${core_sources}
   ${os_sources})
 
-add_dependencies(
+target_link_libraries(
+  ${PROJECT_NAME}
   core
-  SDL2_devel
-  Lua_devel)
+  ${PLATFORM_LIBS})
 
 add_dependencies(
   ${PROJECT_NAME}
   core)
 
-target_link_libraries(
-  ${PROJECT_NAME}
+add_dependencies(
   core
-  ${SDL2_LIBRARY}
-  ${SDL2MAIN_LIBRARY}
-  ${LUA_LIBRARY}
-  ${PLATFORM_LIBS})
+  ${PLATFORM_CORE_DEPS})
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
   set(COMPILE_OPTIONS

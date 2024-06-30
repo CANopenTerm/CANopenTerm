@@ -40,3 +40,14 @@ set(lua_sources
 add_library(lua
   STATIC
   ${lua_sources})
+
+if(UNIX)
+  target_compile_definitions(lua
+    PUBLIC
+    LUA_USE_C89
+    LUA_USE_LINUX)
+else()
+  target_compile_definitions(lua
+    PUBLIC
+    LUA_USE_C89)
+endif()
