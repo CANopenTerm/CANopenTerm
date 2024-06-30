@@ -22,6 +22,7 @@ void test_os_realloc(void** state);
 void test_os_snprintf(void** state);
 void test_os_strchr(void** state);
 void test_os_strcmp(void** state);
+void test_os_strcspn(void** state);
 void test_os_strdup(void** state);
 void test_os_strlcat(void** state);
 void test_os_strlen(void** state);
@@ -39,5 +40,6 @@ void test_uint8(void** state);
 void test_uint16(void** state);
 void test_uint32(void** state);
 void test_uint64(void** state);
+void test_variadic_functions(void** state);
 
 #endif /* TEST_OS_H */

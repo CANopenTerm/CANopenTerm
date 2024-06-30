@@ -42,6 +42,7 @@ int main(void)
         cmocka_unit_test(test_os_snprintf),
         cmocka_unit_test(test_os_strchr),
         cmocka_unit_test(test_os_strcmp),
+        cmocka_unit_test(test_os_strcspn),
         cmocka_unit_test(test_os_strdup),
         cmocka_unit_test(test_os_strlcat),
         cmocka_unit_test(test_os_strlen),
@@ -60,6 +61,7 @@ int main(void)
         cmocka_unit_test(test_uint16),
         cmocka_unit_test(test_uint32),
         cmocka_unit_test(test_uint64),
+        cmocka_unit_test(test_variadic_functions)
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

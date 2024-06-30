@@ -83,17 +83,17 @@ status_t os_init(void)
 
 void os_log(const log_level_t level, const char* format, ...)
 {
-    char    buffer[1024];
-    va_list varg;
+    char      buffer[1024];
+    va_list_t varg;
 
     if (LOG_SUPPRESS == level)
     {
         return;
     }
 
-    va_start(varg, format);
+    os_va_start(varg, format);
     os_vsnprintf(buffer, 1024, format, varg);
-    va_end(varg);
+    os_va_end(varg);
 
     switch (level)
     {
@@ -120,7 +120,7 @@ void os_print(const color_t color, const char* format, ...)
 {
     char        buffer[1024];
     char        print_buffer[1024];
-    va_list     varg;
+    va_list_t   varg;
     const char* color_code = "";
 
     switch (color)
@@ -145,9 +145,9 @@ void os_print(const color_t color, const char* format, ...)
         default:              color_code = "\x1b[0m"; break;
     }
 
-    va_start(varg, format);
+    os_va_start(varg, format);
     os_vsnprintf(buffer, sizeof(buffer), format, varg);
-    va_end(varg);
+    os_va_end(varg);
 
     os_snprintf(print_buffer, sizeof(print_buffer), "%s%s\x1b[0m", color_code, buffer);
 

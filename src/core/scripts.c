@@ -7,7 +7,6 @@
  *
  **/
 
-#include <string.h>
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
@@ -60,18 +59,18 @@ void scripts_deinit(core_t* core)
 char* get_script_description(const char* script_path)
 {
     static char description[256] = { 0 };
-    FILE* file = fopen(script_path, "r");
+    FILE* file = os_fopen(script_path, "r");
 
     if (NULL == file)
     {
         return NULL;
     }
 
-    if (fgets(description, sizeof(description), file) != NULL)
+    if (os_fgets(description, sizeof(description), file) != NULL)
     {
         char* desc_ptr;
 
-        description[strcspn(description, "\r\n")] = '\0';
+        description[os_strcspn(description, "\r\n")] = '\0';
 
         desc_ptr = description;
 
@@ -94,11 +93,11 @@ char* get_script_description(const char* script_path)
             desc_ptr++;
         }
 
-        fclose(file);
+        os_fclose(file);
         return os_strdup(desc_ptr);
     }
 
-    fclose(file);
+    os_fclose(file);
     return NULL;
 }
 

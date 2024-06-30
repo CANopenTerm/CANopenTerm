@@ -10,7 +10,6 @@
 #ifndef OS_H
 #define OS_H
 
-#include <stdarg.h>
 #ifdef _WIN32
 #include "os_windows.h"
 #elif defined __linux__
@@ -75,6 +74,18 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_calloc() not defined
 #endif
 
+#ifndef os_fclose
+#error  os_fclose() not defined
+#endif
+
+#ifndef os_fgets
+#error  os_fgets() not defined
+#endif
+
+#ifndef os_fopen
+#error  os_fopen() not defined
+#endif
+
 #ifndef os_free
 #error  os_free() not defined
 #endif
@@ -123,6 +134,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_strcmp() not defined
 #endif
 
+#ifndef os_strcspn
+#error  os_strcspn() not defined
+#endif
+
 #ifndef os_strdup
 #error  os_strdump() not defined
 #endif
@@ -157,6 +172,14 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef os_strtoull
 #error  os_strtoull() not defined
+#endif
+
+#ifndef os_va_end
+#error  os_va_end() not defined
+#endif
+ 
+#ifndef os_va_start
+#error  os_va_start() not defined
 #endif
 
 #ifndef os_vsnprintf
@@ -197,6 +220,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef uint64
 #error  uint64 not defined
+#endif
+
+#ifndef va_list_t
+#error  va_list_t not defined
 #endif
 
 #ifndef IS_TRUE

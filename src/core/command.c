@@ -7,7 +7,6 @@
  *
  **/
 
-#include <stdio.h>
 #include "can.h"
 #include "core.h"
 #include "command.h"

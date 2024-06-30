@@ -7,8 +7,6 @@
  *
  **/
 
-#include <stdarg.h>
-#include <stdio.h>
 #include <windows.h>
 #include "buffer.h"
 #include "os.h"
@@ -106,17 +104,17 @@ status_t os_init(void)
 
 void os_log(const log_level_t level, const char* format, ...)
 {
-    char    buffer[1024];
-    va_list varg;
+    char      buffer[1024];
+    va_list_t varg;
 
     if (LOG_SUPPRESS == level)
     {
         return;
     }
 
-    va_start(varg, format);
+    os_va_start(varg, format);
     os_vsnprintf(buffer, 1024, format, varg);
-    va_end(varg);
+    os_va_end(varg);
 
     switch (level)
     {
@@ -141,9 +139,9 @@ void os_log(const log_level_t level, const char* format, ...)
 
 void os_print(const color_t color, const char* format, ...)
 {
-    char    buffer[1024];
-    va_list varg;
-    WORD    attr = 0;
+    char      buffer[1024];
+    va_list_t args;
+    WORD      attr = 0;
 
     if (INVALID_HANDLE_VALUE == console)
     {
@@ -202,9 +200,9 @@ void os_print(const color_t color, const char* format, ...)
         attr |= FOREGROUND_INTENSITY;
     }
 
-    va_start(varg, format);
-    os_vsnprintf(buffer, 1024, format, varg);
-    va_end(varg);
+    os_va_start(args, format);
+    os_vsnprintf(buffer, 1024, format, args);
+    os_va_end(args);
 
     if (IS_TRUE == use_buffer())
     {

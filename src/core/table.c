@@ -7,8 +7,6 @@
  *
  **/
 
-#include <stdarg.h>
-#include <stdio.h>
 #include "buffer.h"
 #include "os.h"
 #include "table.h"

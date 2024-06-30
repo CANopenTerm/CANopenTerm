@@ -7,8 +7,6 @@
  *
  **/
 
-#include <stdarg.h>
-#include <stdio.h>
 #include "buffer.h"
 #include "os.h"
 
@@ -47,11 +45,11 @@ void buffer_write(const char* format, ...)
 {
     int required;
 
-    va_list args;
-    va_start(args, format);
+    va_list_t args;
+    os_va_start(args, format);
 
     required = os_vsnprintf(NULL, 0, format, args) + 1;
-    va_end(args);
+    os_va_end(args);
 
     if (buffer.size + required > buffer.capacity)
     {
@@ -59,9 +57,9 @@ void buffer_write(const char* format, ...)
         buffer.buffer = (char*)os_realloc(buffer.buffer, buffer.capacity);
     }
 
-    va_start(args, format);
+    os_va_start(args, format);
     os_vsnprintf(buffer.buffer + buffer.size, required, format, args);
-    va_end(args);
+    os_va_end(args);
 
     buffer.size += required - 1;
 }

@@ -16,6 +16,8 @@
 #include "os.h"
 #include "test_os.h"
 
+static int sum_values(int coun, ...);
+
 void test_os_calloc(void** state)
 {
     size_t nmemb = 5;
@@ -157,6 +159,41 @@ void test_os_strcmp(void** state)
     assert_int_equal(os_strcmp(str1, str2), 0);
     assert_true(os_strcmp(str1, str3) < 0);
     assert_true(os_strcmp(str3, str1) > 0);
+}
+
+void test_os_strcspn(void** state)
+{
+    {
+        const char* s      = "Hello World";
+        const char* reject = "aeiou";
+        size_t      result = os_strcspn(s, reject);
+
+        assert_int_equal(result, 1);
+    }
+
+    {
+        const char* s      = "Hello World";
+        const char* reject = "aeiou";
+        size_t      result = os_strcspn(s, reject);
+
+        assert_int_equal(result, 1);
+    }
+
+    {
+        const char* s      = "Hello World";
+        const char* reject = "";
+        size_t      result = os_strcspn(s, reject);
+
+        assert_int_equal(result, os_strlen(s));
+    }
+
+    {
+        const char* s      = "Hello";
+        const char* reject = "xyz";
+        size_t      result = os_strcspn(s, reject);
+
+        assert_int_equal(result, os_strlen(s));
+    }
 }
 
 void test_os_strdup(void** state)
@@ -355,4 +392,40 @@ void test_uint64(void** state)
 {
     (void)state;
     assert_int_equal(sizeof(uint64), 8);
+}
+
+void test_variadic_functions(void** state)
+{
+    {
+        int result = sum_values(2, 3, 5);
+        assert_int_equal(result, 8);
+    }
+
+    {
+        int result = sum_values(3, 1, 2, 3);
+        assert_int_equal(result, 6);
+    }
+
+    {
+        int result = sum_values(5, 1, 2, 3, 4, 5);
+        assert_int_equal(result, 15);
+    }
+}
+
+static int sum_values(int count, ...)
+{
+    int       i;
+    va_list_t args;
+    int       sum = 0;
+
+    va_start(args, count);
+
+    for (i = 0; i < count; ++i)
+    {
+        sum += va_arg(args, int);
+    }
+
+    va_end(args);
+
+    return sum;
 }
