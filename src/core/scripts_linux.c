@@ -24,8 +24,9 @@
 #include "table.h"
 
 static const char* script_dirs[] = {
+    "./",
     "./scripts",
-    "/usr/share/CANopenTerm/scripts",
+    "/usr/share/CANopenTerm/scripts"
 };
 
 extern char*  get_script_description(const char* script_path);

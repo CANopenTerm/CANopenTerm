@@ -23,3 +23,62 @@ void test_has_lua_extension(void** state)
     assert_true(has_lua_extension("exceptional_script.lua") == IS_TRUE);
     assert_true(has_lua_extension("mediocre_script.py")     == IS_FALSE);
 }
+
+void test_run_script(void** state)
+{
+    core_t core     = { 0 };
+    FILE*  lua_file = fopen("test.lua", "w+");
+
+    if (lua_file == NULL)
+    {
+        return;
+    }
+
+    scripts_init(&core);
+
+    fprintf(lua_file, "-- Lua script to test and validate basic Lua functionality\n\n");
+
+    /* Basic Lua operations. */
+    fprintf(lua_file, "-- Variable assignment\n");
+    fprintf(lua_file, "local x = 10\n");
+
+    fprintf(lua_file, "-- Arithmetic operation\n");
+    fprintf(lua_file, "local y = x + 5\n");
+
+    fprintf(lua_file, "-- String concatenation\n");
+    fprintf(lua_file, "local message = 'Lua is great!'\n");
+
+    fprintf(lua_file, "-- Table creation and indexing\n");
+    fprintf(lua_file, "local t = { 'apple', 'banana', 'cherry' }\n");
+    fprintf(lua_file, "local fruit = t[2]\n");
+
+    fprintf(lua_file, "-- Function definition\n");
+    fprintf(lua_file, "local function add(a, b)\n");
+    fprintf(lua_file, "    return a + b\n");
+    fprintf(lua_file, "end\n");
+
+    fprintf(lua_file, "-- Function call\n");
+    fprintf(lua_file, "local result = add(x, y)\n");
+
+    fprintf(lua_file, "-- Boolean comparison\n");
+    fprintf(lua_file, "local isGreater = x > y\n");
+
+    fprintf(lua_file, "-- Control structure (if-else)\n");
+    fprintf(lua_file, "if isGreater then\n");
+    fprintf(lua_file, "    result = result * 2\n");
+    fprintf(lua_file, "else\n");
+    fprintf(lua_file, "    result = result / 2\n");
+    fprintf(lua_file, "end\n");
+
+    /* Assertions to validate results. */
+    fprintf(lua_file, "-- Assertions to validate results\n");
+    fprintf(lua_file, "assert(x == 10, 'Variable x should be 10')\n");
+    fprintf(lua_file, "assert(y == 15, 'Variable y should be 15')\n");
+    fprintf(lua_file, "assert(message == 'Lua is great!', 'Message should be Lua is great!')\n");
+    fprintf(lua_file, "assert(fruit == 'banana', 'Fruit should be banana')\n");
+    fprintf(lua_file, "assert(result == 12.5, 'Result should be 12.5')\n");
+
+    fclose(lua_file);
+    run_script("test.lua", &core);
+    scripts_deinit(&core);
+}

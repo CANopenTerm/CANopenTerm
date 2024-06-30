@@ -1,4 +1,4 @@
-/** @file test_scripts.h
+/** @file test_buffer.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,10 +7,10 @@
  *
  **/
 
-#ifndef TEST_SCRIPTS_H
-#define TEST_SCRIPTS_H
+#ifndef TEST_BUFFER_H
+#define TEST_BUFFER_H
 
-void test_has_lua_extension(void** state);
-void test_run_script(void** state);
+void test_buffer_init(void** state);
+void test_use_buffer(void** state);
 
-#endif /* TEST_SCRIPTS_H */
+#endif /* TEST_BUFFER_H */

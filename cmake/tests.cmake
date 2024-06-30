@@ -37,6 +37,7 @@ ExternalProject_Add(CMocka_devel
 add_executable(
   run_unit_tests
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/run_unit_tests.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_buffer.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_os.c
