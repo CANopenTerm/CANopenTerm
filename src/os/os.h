@@ -98,6 +98,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_isprint() not defined
 #endif
 
+#ifndef os_isspace
+#error  os_isspace() not defined
+#endif
+
 #ifndef os_itoa
 #error  os_itoa() not defined
 #endif

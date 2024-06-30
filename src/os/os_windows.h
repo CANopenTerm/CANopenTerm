@@ -23,6 +23,7 @@
 #define os_free      SDL_free
 #define os_isdigit   SDL_isdigit
 #define os_isprint   SDL_isprint
+#define os_isspace   SDL_isspace
 #define os_itoa      SDL_itoa
 #define os_memcpy    SDL_memcpy
 #define os_memmove   SDL_memmove
