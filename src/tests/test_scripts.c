@@ -29,6 +29,8 @@ void test_run_script(void** state)
     core_t core     = { 0 };
     FILE*  lua_file = fopen("test.lua", "w+");
 
+    (void)state;
+
     if (lua_file == NULL)
     {
         return;

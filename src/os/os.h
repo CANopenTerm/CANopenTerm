@@ -174,10 +174,14 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_strtoull() not defined
 #endif
 
+#ifndef os_va_arg
+#error  os_va_arg() not defined
+#endif
+
 #ifndef os_va_end
 #error  os_va_end() not defined
 #endif
- 
+
 #ifndef os_va_start
 #error  os_va_start() not defined
 #endif

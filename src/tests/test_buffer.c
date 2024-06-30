@@ -18,12 +18,16 @@
 
 void test_buffer_init(void** state)
 {
+    (void)state;
+
     assert_true(buffer_init(1024) == ALL_OK);
     buffer_free();
 }
 
 void test_use_buffer(void** state)
 {
+    (void)state;
+
     assert_true(use_buffer() == IS_FALSE);
     buffer_init(1024);
     assert_true(use_buffer() == IS_TRUE);

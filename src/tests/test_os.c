@@ -163,6 +163,8 @@ void test_os_strcmp(void** state)
 
 void test_os_strcspn(void** state)
 {
+    (void)state;
+
     {
         const char* s      = "Hello World";
         const char* reject = "aeiou";
@@ -308,12 +310,12 @@ void test_os_strtoull(void** state)
 
 static int os_vsnprintf_wrapper(char* str, size_t size, const char* format, ...)
 {
-    int     result;
-    va_list args;
+    int       result;
+    va_list_t args;
 
-    va_start(args, format);
+    os_va_start(args, format);
     result = os_vsnprintf(str, size, format, args);
-    va_end(args);
+    os_va_end(args);
 
     return result;
 }
@@ -396,6 +398,8 @@ void test_uint64(void** state)
 
 void test_variadic_functions(void** state)
 {
+    (void)state;
+
     {
         int result = sum_values(2, 3, 5);
         assert_int_equal(result, 8);
@@ -418,14 +422,14 @@ static int sum_values(int count, ...)
     va_list_t args;
     int       sum = 0;
 
-    va_start(args, count);
+    os_va_start(args, count);
 
     for (i = 0; i < count; ++i)
     {
-        sum += va_arg(args, int);
+        sum += os_va_arg(args, int);
     }
 
-    va_end(args);
+    os_va_end(args);
 
     return sum;
 }

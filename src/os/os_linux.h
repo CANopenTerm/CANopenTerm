@@ -41,6 +41,7 @@
 #define os_strtokr   SDL_strtokr
 #define os_strtol    SDL_strtol
 #define os_strtoull  SDL_strtoull
+#define os_va_arg    va_arg
 #define os_va_end    va_end
 #define os_va_start  va_start
 #define os_vsnprintf SDL_vsnprintf
