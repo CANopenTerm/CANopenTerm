@@ -184,6 +184,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_strtol() not defined
 #endif
 
+#ifndef os_strtoul
+#error  os_strtoul() not defined
+#endif
+
 #ifndef os_strtoull
 #error  os_strtoull() not defined
 #endif

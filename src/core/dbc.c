@@ -99,7 +99,7 @@ status_t dbc_load(dbc_t* dbc, const char *filename)
 
         if (starts_with(trimmed_line, "BO_ "))
         {
-            message_t *temp = os_realloc(dbc->messages, sizeof(message_t) * (dbc->message_count + 1));
+            message_t* temp = os_realloc(dbc->messages, sizeof(message_t) * (dbc->message_count + 1));
             if (NULL == temp)
             {
                 os_fclose(file);
@@ -120,7 +120,7 @@ status_t dbc_load(dbc_t* dbc, const char *filename)
         {
             if (current_message != NULL)
             {
-                signal_t *current_signal;
+                signal_t* current_signal;
                 current_message->signals = realloc(current_message->signals, sizeof(signal_t) * (current_message->signal_count + 1));
                 current_message->signal_count += 1;
                 current_signal = &current_message->signals[current_message->signal_count - 1];
@@ -164,7 +164,7 @@ static void parse_message_line(char *line, message_t *message)
     char *rest = line;
 
     token                = os_strtokr(rest, " ", &rest);
-    message->id          = strtoul(token, NULL, 10);
+    message->id          = os_strtoul(token, NULL, 10);
     token                = os_strtokr(rest, ":", &rest);
     message->name        = os_strdup(token);
     token                = os_strtokr(rest, " ", &rest);
