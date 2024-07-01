@@ -10,16 +10,18 @@
 #ifndef DBC_H
 #define DBC_H
 
+#include "os.h"
+
 typedef struct
 {
-    char* name;
-    int   tart_bit;
+    char *name;
+    int   start_bit;
     int   length;
     float scale;
     float offset;
-    char* unit;
     float min_value;
     float max_value;
+    char* unit;
     char* receiver;
 
 } signal_t;
@@ -42,6 +44,8 @@ typedef struct
 
 } dbc_t;
 
-dbc_t *dbc_load(const char *filename);
+status_t dbc_init(dbc_t **dbc);
+status_t dbc_load(dbc_t *dbc, const char *filename);
+void     dbc_print(const dbc_t *dbc);
 
 #endif /* DBC_H */

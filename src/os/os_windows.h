@@ -16,6 +16,8 @@
 #include "SDL.h"
 #include "SDL_main.h"
 
+#define os_atof      SDL_atof
+#define os_atoi      SDL_atoi
 #define os_calloc    SDL_calloc
 #define os_fclose    fclose
 #define os_fgets     fgets
@@ -38,6 +40,7 @@
 #define os_strlcat   SDL_strlcat
 #define os_strlen    SDL_strlen
 #define os_strncmp   SDL_strncmp
+#define os_strlcpy   SDL_strlcpy
 #define os_strrchr   SDL_strrchr
 #define os_strtokr   SDL_strtokr
 #define os_strtol    SDL_strtol

@@ -60,7 +60,9 @@ typedef enum status
     NMT_UNKNOWN_COMMAND,
     NOTHING_TO_DO,
     OS_CONSOLE_INIT_ERROR,
+    OS_FILE_NOT_FOUND,
     OS_INIT_ERROR,
+    OS_INVALID_ARGUMENT,
     OS_MEMORY_ALLOCATION_ERROR,
     SCRIPT_INIT_ERROR,
 
@@ -68,6 +70,14 @@ typedef enum status
 
 #ifndef os_strlcpy
 size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
+#endif
+
+#ifndef os_atof
+#error os_atof() not defined
+#endif
+
+#ifndef os_atoi
+#error os_atoi() not defined
 #endif
 
 #ifndef os_calloc
@@ -158,8 +168,8 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_strncmp() not defined
 #endif
 
-#ifndef os_strncmp
-#error  os_strncmp() not defined
+#ifndef os_strlcpy
+#error  os_strlcpy() not defined
 #endif
 
 #ifndef os_strrchr
