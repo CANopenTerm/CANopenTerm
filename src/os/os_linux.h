@@ -36,7 +36,7 @@
 #define os_strchr    SDL_strchr
 #define os_strcmp    SDL_strcmp
 #define os_strcspn   strcspn
-#define os_strdup    SDL_os_strdup
+#define os_strdup    SDL_strdup
 #define os_strlcat   SDL_strlcat
 #define os_strlen    SDL_strlen
 #define os_strncmp   SDL_strncmp
