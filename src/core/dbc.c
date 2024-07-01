@@ -163,6 +163,8 @@ static void parse_message_line(char *line, message_t *message)
     char *token;
     char *rest = line;
 
+    os_strtokr(rest, " ", &rest);
+
     token                = os_strtokr(rest, " ", &rest);
     message->id          = os_strtoul(token, NULL, 10);
     token                = os_strtokr(rest, ":", &rest);
