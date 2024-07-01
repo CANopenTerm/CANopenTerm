@@ -79,7 +79,7 @@ status_t dbc_init(dbc_t **dbc)
 status_t dbc_load(dbc_t* dbc, const char *filename)
 {
     char       line[1024]      = { 0 };
-    FILE*      file            = os_fopen(filename, "r");
+    FILE_t*    file            = os_fopen(filename, "r");
     message_t* current_message = NULL;
 
     if (NULL == file)
@@ -160,8 +160,8 @@ void dbc_print(const dbc_t *dbc)
 
 static void parse_message_line(char *line, message_t *message)
 {
-    char *token;
-    char *rest = line;
+    char* token;
+    char* rest = line;
 
     os_strtokr(rest, " ", &rest);
 
