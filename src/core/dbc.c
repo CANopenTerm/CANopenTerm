@@ -164,7 +164,6 @@ static void parse_message_line(char *line, message_t *message)
     char *rest = line;
 
     token                = os_strtokr(rest, " ", &rest);
-    token                = os_strtokr(rest, " ", &rest);
     message->id          = strtoul(token, NULL, 10);
     token                = os_strtokr(rest, ":", &rest);
     message->name        = os_strdup(token);
@@ -177,7 +176,6 @@ void parse_signal_line(char *line, signal_t *signal)
 {
     char* token;
     char* rest = line;
-    char* end;
 
     signal->name      = NULL;
     signal->unit      = NULL;
@@ -245,7 +243,7 @@ void parse_signal_line(char *line, signal_t *signal)
     }
     else
     {
-        end = os_strtokr(rest, "\"", &rest);
+        char* end = os_strtokr(rest, "\"", &rest);
         if (end != NULL)
         {
             signal->unit = os_strdup(end);
@@ -309,7 +307,7 @@ static char* trim_whitespace(char *str)
         return str;
     }
 
-    end = str + strlen(str) - 1;
+    end = str + os_strlen(str) - 1;
     while ((end > str) && (os_isspace((unsigned char)*end)))
     {
         end--;
