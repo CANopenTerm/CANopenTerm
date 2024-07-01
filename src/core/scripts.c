@@ -58,8 +58,8 @@ void scripts_deinit(core_t* core)
 
 char* get_script_description(const char* script_path)
 {
-    static char description[256] = { 0 };
-    FILE* file = os_fopen(script_path, "r");
+    static  char description[256] = { 0 };
+    FILE_t* file = os_fopen(script_path, "r");
 
     if (NULL == file)
     {

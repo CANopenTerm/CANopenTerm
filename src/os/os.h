@@ -214,6 +214,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #define bool_t int
 #endif
 
+#ifndef FILE_t
+#error  FILE_t not defined
+#endif
+
 #ifndef uint8
 #define uint8 char
 #endif

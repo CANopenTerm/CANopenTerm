@@ -53,6 +53,7 @@
 #define os_timer_id    SDL_TimerID
 
 #define bool_t    SDL_bool
+#define FILE_t    FILE
 #define uint8     Uint8
 #define uint16    Uint16
 #define uint32    Uint32
