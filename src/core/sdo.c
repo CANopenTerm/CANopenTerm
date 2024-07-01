@@ -1088,7 +1088,7 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
                 comment = "-";
             }
 
-            os_strlcpy(buffer, comment, 33);
+            os_memcpy(buffer, comment, 33);
             for (i = os_strlen(buffer); i < 33; ++i)
             {
                 buffer[i] = ' ';
