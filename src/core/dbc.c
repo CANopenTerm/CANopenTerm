@@ -188,7 +188,6 @@ void parse_signal_line(char *line, signal_t *signal)
     signal->max_value = 0.0;
 
     token = os_strtokr(rest, " ", &rest);
-    token = os_strtokr(rest, " ", &rest);
     if (token != NULL)
     {
         signal->name = os_strdup(token);
