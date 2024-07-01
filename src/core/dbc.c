@@ -187,6 +187,8 @@ void parse_signal_line(char *line, signal_t *signal)
     signal->min_value = 0.0;
     signal->max_value = 0.0;
 
+    os_strtokr(rest, " ", &rest);
+
     token = os_strtokr(rest, " ", &rest);
     if (token != NULL)
     {
@@ -234,7 +236,7 @@ void parse_signal_line(char *line, signal_t *signal)
         }
     }
 
-    token = os_strtokr(rest, "\"", &rest);
+    os_strtokr(rest, "\"", &rest);
     if (rest[0] == '\"') // Check if the next character is a quote, indicating an empty unit
     {
         signal->unit = os_strdup("");
