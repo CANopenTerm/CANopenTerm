@@ -15,7 +15,17 @@ static void   parse_signal_line(char *line, signal_t *signal);
 static bool_t starts_with(const char *str, const char *prefix);
 static char*  trim_whitespace(char *str);
 
-void dbc_deinit(dbc_t *dbc)
+const char* dbc_decode(dbc_t* dbc, uint16 id, uint32 data_d0_d3, uint32 data_d4_d7)
+{
+    if (NULL == dbc)
+    {
+        return "";
+    }
+
+    return "";
+}
+
+void dbc_deinit(dbc_t* dbc)
 {
     int i, j;
 
@@ -26,40 +36,54 @@ void dbc_deinit(dbc_t *dbc)
 
     for (i = 0; i < dbc->message_count; ++i)
     {
-        message_t *msg = &dbc->messages[i];
+        message_t* msg = &dbc->messages[i];
 
         if (msg->name)
         {
             os_free(msg->name);
+            msg->name = NULL; // Set to NULL after freeing
         }
 
         if (msg->transmitter)
         {
             os_free(msg->transmitter);
+            msg->transmitter = NULL; // Set to NULL after freeing
         }
 
         for (j = 0; j < msg->signal_count; ++j)
         {
-            signal_t *sig = &msg->signals[j];
+            signal_t* sig = &msg->signals[j];
 
-            os_free(sig->name);
-            os_free(sig->unit);
-            os_free(sig->receiver);
-
+            if (sig->name)
+            {
+                os_free(sig->name);
+                sig->name = NULL; // Set to NULL after freeing
+            }
+            if (sig->unit)
+            {
+                os_free(sig->unit);
+                sig->unit = NULL;
+            }
+            if (sig->receiver)
+            {
+                os_free(sig->receiver);
+                sig->receiver = NULL;
+            }
         }
 
         if (msg->signals)
         {
             os_free(msg->signals);
+            msg->signals = NULL;
         }
     }
 
     if (dbc->messages)
     {
         os_free(dbc->messages);
+        dbc->messages = NULL;
     }
 
-    dbc->messages      = NULL;
     dbc->message_count = 0;
 }
 

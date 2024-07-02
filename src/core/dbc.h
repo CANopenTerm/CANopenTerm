@@ -44,8 +44,10 @@ typedef struct
 
 } dbc_t;
 
-status_t dbc_init(dbc_t **dbc);
-status_t dbc_load(dbc_t *dbc, const char *filename);
-void     dbc_print(const dbc_t *dbc);
+const char* dbc_decode(dbc_t* dbc, uint16 id, uint32 data_d0_d3, uint32 data_d4_d7);
+void        dbc_deinit(dbc_t* dbc);
+status_t    dbc_init(dbc_t **dbc);
+status_t    dbc_load(dbc_t *dbc, const char *filename);
+void        dbc_print(const dbc_t *dbc);
 
 #endif /* DBC_H */
