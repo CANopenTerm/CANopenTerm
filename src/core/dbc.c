@@ -19,7 +19,7 @@ static void   parse_signal_line(char *line, signal_t *signal);
 static bool_t starts_with(const char *str, const char *prefix);
 static char*  trim_whitespace(char *str);
 
-const char *dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data)
+const char* dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data)
 {
     static char result[4096] = { 0 };
     int         pos          = 0;
@@ -83,7 +83,6 @@ const char *dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data)
 
     return result;
 }
-
 
 void dbc_deinit(dbc_t* dbc)
 {
