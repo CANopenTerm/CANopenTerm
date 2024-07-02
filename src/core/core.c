@@ -10,6 +10,7 @@
 #include "can.h"
 #include "command.h"
 #include "core.h"
+#include "dbc.h"
 #include "dict.h"
 #include "nmt.h"
 #include "os.h"
@@ -49,6 +50,7 @@ status_t core_init(core_t **core)
     if (NULL != (*core)->L)
     {
         lua_register_can_commands((*core));
+        lua_register_dbc_command((*core));
         lua_register_dict_commands((*core));
         lua_register_nmt_command((*core));
         lua_register_pdo_commands((*core));

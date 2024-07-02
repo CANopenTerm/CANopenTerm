@@ -18,7 +18,7 @@
 
 typedef struct can_message
 {
-    uint16 id;
+    uint32 id;
     uint32 length;
     uint8  data[CAN_MAX_DATA_LENGTH + 1];
     uint64 timestamp_us;
@@ -32,7 +32,7 @@ void        can_quit(core_t* core);
 uint32      can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment);
 uint32      can_read(can_message_t* message);
 status_t    can_print_baud_rate_help(core_t* core);
-void        can_print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode);
+void        can_print_error(uint32 can_id, const char* reason, disp_mode_t disp_mode);
 void        can_set_baud_rate(uint8 command, core_t* core);
 void        limit_node_id(uint8* node_id);
 int         lua_can_write(lua_State* L);

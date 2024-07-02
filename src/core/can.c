@@ -190,7 +190,7 @@ bool_t is_can_initialised(core_t* core)
     return core->is_can_initialised;
 }
 
-void can_print_error(uint16 can_id, const char* reason, disp_mode_t disp_mode)
+void can_print_error(uint32 can_id, const char* reason, disp_mode_t disp_mode)
 {
     if (SCRIPT_MODE != disp_mode)
     {

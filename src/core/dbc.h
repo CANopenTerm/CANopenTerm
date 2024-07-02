@@ -10,12 +10,14 @@
 #ifndef DBC_H
 #define DBC_H
 
+#include "core.h"
+#include "lua.h"
 #include "os.h"
 
 typedef enum
 {
-    ENDIANESS_MOTOROLA = 0,
-    ENDIANESS_INTEL
+    ENDIANNESS_MOTOROLA = 0,
+    ENDIANNESS_INTEL
 
 } endian_t;
 
@@ -24,7 +26,7 @@ typedef struct
     char*    name;
     int      start_bit;
     int      length;
-    endian_t endianess;
+    endian_t endianness;
     float    scale;
     float    offset;
     float    min_value;
@@ -52,10 +54,12 @@ typedef struct
 
 } dbc_t;
 
-const char* dbc_decode(dbc_t* dbc, uint16 id, uint32 data_d0_d3, uint32 data_d4_d7);
+const char* dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data);
 void        dbc_deinit(dbc_t* dbc);
 status_t    dbc_init(dbc_t **dbc);
 status_t    dbc_load(dbc_t *dbc, const char *filename);
 void        dbc_print(const dbc_t *dbc);
+int         lua_dbc_decode(lua_State *L);
+void        lua_register_dbc_command(core_t *core);
 
 #endif /* DBC_H */

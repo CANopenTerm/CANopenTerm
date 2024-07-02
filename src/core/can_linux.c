@@ -130,7 +130,7 @@ uint32 can_read(can_message_t* message)
         return nbytes;
     }
 
-    message->id = frame.can_id;
+    message->id     = frame.can_id;
     message->length = frame.can_dlc;
 
     for (index = 0; index < 8; index += 1)

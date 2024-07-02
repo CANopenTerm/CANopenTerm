@@ -7,26 +7,83 @@
  *
  **/
 
+#include "core.h"
 #include "dbc.h"
+#include "lauxlib.h"
+#include "lua.h"
 #include "os.h"
 
+static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness);
 static void   parse_message_line(char *line, message_t *message);
 static void   parse_signal_line(char *line, signal_t *signal);
 static bool_t starts_with(const char *str, const char *prefix);
 static char*  trim_whitespace(char *str);
 
-const char* dbc_decode(dbc_t* dbc, uint16 id, uint32 data_d0_d3, uint32 data_d4_d7)
+const char *dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data)
 {
+    static char result[4096] = { 0 };
+    int         pos          = 0;
+    int         i;
+
     if (NULL == dbc)
     {
         return "";
     }
 
+    for (i = 0; i < dbc->message_count; ++i)
+    {
+        if (dbc->messages[i].id == can_id)
+        {
+            message_t* msg = &dbc->messages[i];
+            int        n   = os_snprintf(result + pos, sizeof(result) - pos, "%s\n", msg->name);
+            int        j;
 
+            if (n > 0)
+            {
+                pos += n;
+            }
 
+            for (j = 0; j < msg->signal_count; ++j)
+            {
+                signal_t* signal    = &msg->signals[j];
+                uint64    raw_value = extract_raw_signal(data, signal->start_bit, signal->length, signal->endianness);
+                double    value     = (raw_value * signal->scale) + signal->offset;
+                int       k;
 
-    return "";
+                n = os_snprintf(result + pos, sizeof(result) - pos, "  %s", signal->name);
+                if (n > 0)
+                {
+                    pos += n;
+                }
+
+                for (k = 0; k <= 35 - os_strlen(signal->name); ++k)
+                {
+                    n = os_snprintf(result + pos, sizeof(result) - pos, " ");
+                    if (n > 0)
+                    {
+                        pos += n;
+                    }
+                }
+
+                n = os_snprintf(result + pos, sizeof(result) - pos, ": %f %s\n", value, signal->unit);
+                if (n > 0)
+                {
+                    pos += n;
+                }
+            }
+            result[sizeof(result) - 1] = '\0';
+            break;
+        }
+    }
+
+    if (0 == pos)
+    {
+        return "";
+    }
+
+    return result;
 }
+
 
 void dbc_deinit(dbc_t* dbc)
 {
@@ -179,10 +236,46 @@ void dbc_print(const dbc_t *dbc)
         for (j = 0; j < msg->signal_count; ++j)
         {
             const signal_t *sig = &msg->signals[j];
-            os_printf("  Signal %d: Name=%s, StartBit=%d, Length=%d, Endianess=%d, Scale=%.6f, Offset=%.2f, Min=%.2f, Max=%.2f, Unit=%s, Receiver=%s\n",
-                j + 1, sig->name, sig->start_bit, sig->length, sig->endianess, sig->scale, sig->offset, sig->min_value, sig->max_value, sig->unit, sig->receiver);
+            os_printf("  Signal %d: Name=%s, StartBit=%d, Length=%d, Endianness=%d, Scale=%.6f, Offset=%.2f, Min=%.2f, Max=%.2f, Unit=%s, Receiver=%s\n",
+                j + 1, sig->name, sig->start_bit, sig->length, sig->endianness, sig->scale, sig->offset, sig->min_value, sig->max_value, sig->unit, sig->receiver);
         }
     }
+}
+
+int lua_dbc_decode(lua_State *L)
+{
+    int    can_id     = luaL_checkinteger(L, 1);
+    uint32 data_d0_d3 = lua_tointeger(L, 2);
+    uint32 data_d4_d7 = lua_tointeger(L, 3);
+    uint64 data = ((uint64)data_d0_d3 << 32) | data_d4_d7;
+
+    /* Tbd. */
+
+    return 0;
+}
+
+void lua_register_dbc_command(core_t *core)
+{
+    lua_pushcfunction(core->L, lua_dbc_decode);
+    lua_setglobal(core->L, "lua_dbc_decode");
+}
+
+static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness)
+{
+    uint64 mask = (1ULL << length) - 1;
+    uint64 raw_value;
+
+    if (ENDIANNESS_MOTOROLA == endianness)
+    {
+        int bit_pos = 64 - (start_bit + length);
+        raw_value = (can_frame >> bit_pos) & mask;
+    }
+    else
+    {
+        raw_value = (can_frame >> start_bit) & mask;
+    }
+
+    return raw_value;
 }
 
 static void parse_message_line(char *line, message_t *message)
@@ -201,7 +294,7 @@ static void parse_message_line(char *line, message_t *message)
     message->transmitter = os_strdup(trim_whitespace(rest));
 }
 
-void parse_signal_line(char *line, signal_t *signal)
+static void parse_signal_line(char *line, signal_t *signal)
 {
     char* token;
     char* rest = line;
@@ -215,7 +308,7 @@ void parse_signal_line(char *line, signal_t *signal)
     signal->offset    = 0.0;
     signal->min_value = 0.0;
     signal->max_value = 0.0;
-    signal->endianess = 0;
+    signal->endianness = 0;
 
     os_strtokr(rest, " ", &rest);
 
@@ -235,7 +328,7 @@ void parse_signal_line(char *line, signal_t *signal)
             signal->length = os_atoi(token);
             if (*rest != '\0')
             {
-                signal->endianess = os_atoi(rest);
+                signal->endianness = os_atoi(rest);
                 rest++;
             }
         }
