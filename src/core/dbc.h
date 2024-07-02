@@ -12,17 +12,25 @@
 
 #include "os.h"
 
+typedef enum
+{
+    ENDIANESS_MOTOROLA = 0,
+    ENDIANESS_INTEL
+
+} endian_t;
+
 typedef struct
 {
-    char *name;
-    int   start_bit;
-    int   length;
-    float scale;
-    float offset;
-    float min_value;
-    float max_value;
-    char* unit;
-    char* receiver;
+    char*    name;
+    int      start_bit;
+    int      length;
+    endian_t endianess;
+    float    scale;
+    float    offset;
+    float    min_value;
+    float    max_value;
+    char*    unit;
+    char*    receiver;
 
 } signal_t;
 

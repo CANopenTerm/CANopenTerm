@@ -22,6 +22,9 @@ const char* dbc_decode(dbc_t* dbc, uint16 id, uint32 data_d0_d3, uint32 data_d4_
         return "";
     }
 
+
+
+
     return "";
 }
 
@@ -176,8 +179,8 @@ void dbc_print(const dbc_t *dbc)
         for (j = 0; j < msg->signal_count; ++j)
         {
             const signal_t *sig = &msg->signals[j];
-            os_printf("  Signal %d: Name=%s, StartBit=%d, Length=%d, Scale=%.6f, Offset=%.2f, Min=%.2f, Max=%.2f, Unit=%s, Receiver=%s\n",
-                j + 1, sig->name, sig->start_bit, sig->length, sig->scale, sig->offset, sig->min_value, sig->max_value, sig->unit, sig->receiver);
+            os_printf("  Signal %d: Name=%s, StartBit=%d, Length=%d, Endianess=%d, Scale=%.6f, Offset=%.2f, Min=%.2f, Max=%.2f, Unit=%s, Receiver=%s\n",
+                j + 1, sig->name, sig->start_bit, sig->length, sig->endianess, sig->scale, sig->offset, sig->min_value, sig->max_value, sig->unit, sig->receiver);
         }
     }
 }
@@ -212,6 +215,7 @@ void parse_signal_line(char *line, signal_t *signal)
     signal->offset    = 0.0;
     signal->min_value = 0.0;
     signal->max_value = 0.0;
+    signal->endianess = 0;
 
     os_strtokr(rest, " ", &rest);
 
@@ -225,10 +229,15 @@ void parse_signal_line(char *line, signal_t *signal)
     if (token != NULL)
     {
         signal->start_bit = os_atoi(token);
-        token             = os_strtokr(rest, "@", &rest);
+        token = os_strtokr(rest, "@", &rest);
         if (token != NULL)
         {
             signal->length = os_atoi(token);
+            if (*rest != '\0')
+            {
+                signal->endianess = os_atoi(rest);
+                rest++;
+            }
         }
     }
 
@@ -263,10 +272,10 @@ void parse_signal_line(char *line, signal_t *signal)
     }
 
     os_strtokr(rest, "\"", &rest);
-    if (rest[0] == '\"') // Check if the next character is a quote, indicating an empty unit
+    if (rest[0] == '\"')
     {
         signal->unit = os_strdup("");
-        rest++; // Move past the second quote
+        rest++;
     }
     else
     {
