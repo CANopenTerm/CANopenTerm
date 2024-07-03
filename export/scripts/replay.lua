@@ -2,6 +2,7 @@
 
 Author:  Michael Fitzmayer
 License: Public domain
+Comment: This script currently only works with 11-bit CAN IDs.
 
 --]]
 
@@ -10,17 +11,19 @@ local utils = require "lua/utils"
 local function convert_data_bytes(data_bytes)
     local bytes = {}
     for byte in data_bytes:gmatch("%S+") do
-        table.insert(bytes, byte)
+        table.insert(bytes, tonumber(byte, 16))
     end
     
     while #bytes < 8 do
-        table.insert(bytes, "00")
+        table.insert(bytes, 0)
     end
     
-    local data_d0_d3 = "0x" .. table.concat(bytes, "", 1, 4)
-    local data_d4_d7 = "0x" .. table.concat(bytes, "", 5, 8)
+    local data = 0
+    for i = 1, 8 do
+        data = data | (bytes[i] << ((8 - i) * 8))
+    end
     
-    return data_d0_d3, data_d4_d7
+    return data
 end
 
 function format_float(num)
@@ -62,10 +65,10 @@ function parse_pcan_trc(file_path)
         if time_offset and msg_type and can_id and dlc and data_bytes then
             return {
                 time_offset = tonumber(time_offset),
-                msg_type = msg_type,
-                can_id = can_id,
-                dlc = tonumber(dlc),
-                data_bytes = data_bytes:gsub("%s+", " ") -- Replace multiple spaces with a single space
+                msg_type    = msg_type,
+                can_id      = can_id,
+                dlc         = tonumber(dlc),
+                data_bytes  = data_bytes:gsub("%s+", " ") -- Replace multiple spaces with a single space
             }
         else
             print("Line did not match pattern: " .. line)
@@ -97,24 +100,6 @@ function round(x)
     return math.floor(x + 0.5)
 end
 
-function select_loop_count()
-    io.write("\nHow often should the playback be looped? (or 'q' to quit): ")
-    local choice = io.read()
-
-    if choice == 'q' then
-        return nil
-    else
-        choice = tonumber(choice)
-
-        if choice >= 0 then
-          return choice
-        else
-          print("Invalid number of loops. Please provide a non-negative integer.")
-          select_loop_count()
-        end
-    end
-end
-
 function get_time()
     if os.getenv("OS") == "Windows_NT" then
         return os.clock()
@@ -123,7 +108,7 @@ function get_time()
     end
 end
 
-local num_loops = select_loop_count()
+local num_loops = utils.select_number("How often should the playback be looped?")
 local trc_file  = nil
 
 if num_loops == nil then
@@ -154,13 +139,13 @@ for loop = 1, num_loops + 1 do
             local current_time = get_time()
             local elapsed_time = (current_time - start_time) * 1000
             local delay = math.floor(message.time_offset - elapsed_time)
-            local data_d0_d3, data_d4_d7 = convert_data_bytes(message.data_bytes)
+            local data  = convert_data_bytes(message.data_bytes)
 
             if delay > 0 then
                 delay_ms(delay)
             end
 
-            can_write(tonumber(message.can_id, 16), message.dlc, data_d0_d3, data_d4_d7)
+            can_write(tonumber(message.can_id, 16), message.dlc, data)
             print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
                 format_float(message.time_offset), message.msg_type, message.can_id, message.dlc, message.data_bytes))
         else

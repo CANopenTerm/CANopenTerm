@@ -14,6 +14,13 @@ local function generate_trace_filename()
     return string.format("trace_%s.trc", timestamp)
 end
 
+function print_data(data, length)
+    for i = length, 1, -1 do
+        local byte = (data >> (8 * i)) & 0xFF
+        io.write(string.format("%02X ",  byte))
+    end
+end
+
 local function write_trc_header(start_time)
     local header = string.format(";$FILEVERSION=1.1\n;$STARTTIME=%.6f\n;\n", start_time)
     header = header .. string.format(";   Start time: %s\n", os.date("%d/%m/%Y %H:%M:%S.0"))
@@ -38,9 +45,13 @@ local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, 
     local line = string.format("%5d) %10.1f  Rx     %08X  %d  ", message_number, timestamp_ms + (timestamp_fraction or 0) / 1000, id, length)
 
     if data then
-        for i = 1, length do
-            line = line .. string.format("%02X ", data:byte(i))
+        local bytes = {}
+        for i = 0, length-1 do
+            local byte = (data >> (8 * (i + 1))) & 0xFF
+            table.insert(bytes, 1, string.format("%02X", byte))
         end
+
+        line = line .. table.concat(bytes, " ") .. " "
     end
 
     line = line .. "\n"
@@ -67,11 +78,7 @@ while not key_is_hit() do
         local timestamp_fraction = math.floor(((elapsed_us / 1000) % 1) * 1000)
 
         io.write(string.format("%6d.%03d   %03X     %1d       ", timestamp_ms, timestamp_fraction, id, length))
-
-        for i = 1, length do
-            io.write(string.format("%02X ", data:byte(i)))
-        end
-
+        print_data(data, length)
         io.write("\n")
 
         -- Write to .trc file

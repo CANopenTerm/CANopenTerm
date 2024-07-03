@@ -7,28 +7,30 @@ License: Public domain
 
 local utils = require "lua/utils"
 
-dbc_file = utils.get_file_by_selection("Select CAN DBC DatabaseFile", "dbc")
+local dbc_file = utils.get_file_by_selection("Select CAN DBC Database File", "dbc")
 if dbc_file == nil then
+  print("Exiting.")
+  return
+end
+
+local watch_id = utils.select_number("Enter the CAN-ID you want to monitor")
+if watch_id == nil then
   print("Exiting.")
   return
 end
 
 dbc_load(dbc_file)
 
-local output    = dbc_decode(466, 0x00000000, 0x00000000)
+local output    = dbc_decode(watch_id, 0x0000000000000000)
 local num_lines = select(2, output:gsub('\n', '\n')) + 1
-
-local demo = 0
 
 utils.clear_screen()
 
 while false == key_is_hit() do
-  demo = demo + 1
+  local id, length, data = can_read()
 
-  if demo >= 0xffffffff then
-    demo = 0
+  if id == watch_id then
+    output = dbc_decode(watch_id, data)
+    utils.print_multiline_at_same_position(output, num_lines)
   end
-
-  output = dbc_decode(466, demo, demo)
-  utils.print_multiline_at_same_position(output, num_lines)
 end

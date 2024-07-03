@@ -171,6 +171,11 @@ bool_t os_remove_timer(os_timer_id id)
     return SDL_RemoveTimer(id);
 }
 
+uint64 os_swap_64(uint64 n)
+{
+    return SDL_Swap64(n);
+}
+
 uint32 os_swap_be_32(uint32 n)
 {
     return SDL_SwapBE32(n);

@@ -219,11 +219,9 @@ void dbc_unload(void)
 
 int lua_dbc_decode(lua_State *L)
 {
-    int         can_id     = luaL_checkinteger(L, 1);
-    uint32      data_d0_d3 = lua_tointeger(L, 2);
-    uint32      data_d4_d7 = lua_tointeger(L, 3);
-    uint64      data       = ((uint64)data_d0_d3 << 32) | data_d4_d7;
-    const char* result     = dbc_decode(can_id, data);
+    int         can_id = luaL_checkinteger(L, 1);
+    uint64      data   = lua_tointeger(L, 2);
+    const char* result = dbc_decode(can_id, data);
 
     lua_pushstring(L, result);
 

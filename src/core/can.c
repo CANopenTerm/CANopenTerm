@@ -76,26 +76,25 @@ void limit_node_id(uint8* node_id)
 
 int lua_can_write(lua_State* L)
 {
+    uint32        can_status;
     int           can_id      = luaL_checkinteger(L, 1);
     int           length      = luaL_checkinteger(L, 2);
-    uint32        can_status;
-    uint32        data_d0_d3  = lua_tointeger(L, 3);
-    uint32        data_d4_d7  = lua_tointeger(L, 4);
-    bool_t        show_output = lua_toboolean(L, 5);
-    const char*   comment     = lua_tostring(L, 6);
+    uint64        data        = lua_tointeger(L, 3);
+    bool_t        show_output = lua_toboolean(L, 4);
+    const char*   comment     = lua_tostring(L, 5);
     can_message_t message     = { 0 };
     disp_mode_t   disp_mode   = SILENT;
 
     message.id      = can_id;
     message.length  = length;
-    message.data[3] = (data_d0_d3 & 0xff);
-    message.data[2] = ((data_d0_d3 >> 8) & 0xff);
-    message.data[1] = ((data_d0_d3 >> 16) & 0xff);
-    message.data[0] = ((data_d0_d3 >> 24) & 0xff);
-    message.data[7] = (data_d4_d7 & 0xff);
-    message.data[6] = ((data_d4_d7 >> 8) & 0xff);
-    message.data[5] = ((data_d4_d7 >> 16) & 0xff);
-    message.data[4] = ((data_d4_d7 >> 24) & 0xff);
+    message.data[0] = (data >> 56) & 0xFF;
+    message.data[1] = (data >> 48) & 0xFF;
+    message.data[2] = (data >> 40) & 0xFF;
+    message.data[3] = (data >> 32) & 0xFF;
+    message.data[4] = (data >> 24) & 0xFF;
+    message.data[5] = (data >> 16) & 0xFF;
+    message.data[6] = (data >> 8) & 0xFF;
+    message.data[7] = data & 0xFF;
 
     if (IS_TRUE == show_output)
     {
@@ -126,7 +125,7 @@ int lua_can_write(lua_State* L)
             os_print(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
             os_print(LIGHT_GREEN, "SUCC    ");
             os_print(DARK_MAGENTA, "%s ", buffer);
-            os_print(DEFAULT_COLOR, "Write: 0x%08X%08X\n", data_d0_d3, data_d4_d7);
+            os_print(DEFAULT_COLOR, "Write: 0x%16X%08X\n", data);
         }
         lua_pushboolean(L, 1);
     }
@@ -141,10 +140,10 @@ int lua_can_write(lua_State* L)
 
 int lua_can_read(lua_State* L)
 {
-    can_message_t message   = { 0 };
-    char          buffer[9] = { 0 };
+    can_message_t message = { 0 };
     uint32        status;
     uint32        length;
+    uint64        data    = 0;;
 
     status = can_read(&message);
     if (0 == status)
@@ -156,12 +155,11 @@ int lua_can_read(lua_State* L)
             length = 8;
         }
 
+        os_memcpy(&data, &message.data, sizeof(uint64));
+
         lua_pushinteger(L, message.id);
         lua_pushinteger(L, length);
-
-        os_memcpy((void*)&buffer, &message.data, message.length);
-
-        lua_pushlstring(L, (const char*)buffer, length);
+        lua_pushinteger(L, os_swap_64(data));
         lua_pushinteger(L, message.timestamp_us);
         return 4;
     }

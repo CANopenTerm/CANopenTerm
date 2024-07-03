@@ -86,13 +86,11 @@ int lua_pdo_add(lua_State* L)
     int         can_id        = luaL_checkinteger(L, 1);
     int         event_time_ms = luaL_checkinteger(L, 2);
     int         length        = luaL_checkinteger(L, 3);
-    uint32      data_d0_d3    = lua_tointeger(L, 4);
-    uint32      data_d4_d7    = lua_tointeger(L, 5);
-    bool_t      show_output   = lua_toboolean(L, 6);
+    uint64      data          = lua_tointeger(L, 4);
+    bool_t      show_output   = lua_toboolean(L, 5);
+    const char* comment       = lua_tostring(L, 6);
     bool_t      success;
-    const char* comment       = lua_tostring(L, 7);
     disp_mode_t disp_mode     = SILENT;
-    uint64      data          = ((uint64)data_d0_d3 << 32) | data_d4_d7;
 
     if (IS_TRUE == show_output)
     {
@@ -123,7 +121,7 @@ int lua_pdo_add(lua_State* L)
             os_print(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
             os_print(LIGHT_GREEN, "SUCC    ");
             os_print(DARK_MAGENTA, "%s ", buffer);
-            os_print(DEFAULT_COLOR, "0x%08X%08X, %ums\n", data_d0_d3, data_d4_d7, event_time_ms);
+            os_print(DEFAULT_COLOR, "0x%08X, %ums\n", data, event_time_ms);
         }
     }
 

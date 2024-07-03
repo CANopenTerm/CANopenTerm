@@ -281,6 +281,7 @@ void        os_log(const log_level_t level, const char* format, ...);
 void        os_print(const color_t color, const char* format, ...);
 void        os_print_prompt(void);
 bool_t      os_remove_timer(os_timer_id id);
+uint64      os_swap_64(uint64 n);
 uint32      os_swap_be_32(uint32 n);
 void        os_quit(void);
 

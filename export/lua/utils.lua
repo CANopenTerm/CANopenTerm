@@ -99,6 +99,24 @@ function print_multiline_at_same_position(message, num_lines)
     io.flush()
 end
 
+function select_number(prompt)
+  io.write("\n" .. prompt .. " (or 'q' to quit): ")
+  local choice = io.read()
+
+  if choice == 'q' then
+    return nil
+  else
+    choice = tonumber(choice)
+
+    if choice >= 0 then
+      return choice
+    else
+      print("Please provide a non-negative integer.")
+      select_number()
+    end
+  end
+end
+
 local function read_word(file)
     local bytes = file:read(2)
     if not bytes or #bytes < 2 then
@@ -163,6 +181,7 @@ return {
   get_file_list                    = get_file_list,
   get_file_by_selection            = get_file_by_selection,
   print_multiline_at_same_position = print_multiline_at_same_position,
+  select_number                    = select_number,
   read_word                        = read_word,
   read_long                        = read_long,
   read_ulong                       = read_ulong,

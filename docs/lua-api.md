@@ -15,14 +15,12 @@ documented in detail below.
 ## CAN Database File (DBC)
 
 ```lua
-dbc_decode (can_id, [data_d0_d3], [data_d4_d7])
+dbc_decode (can_id, data)
 ```f
 
 > **can_id** CAN-ID.
 
-> **data_d0_d3** Data byte 0 to 3, default is `0x00000000`.
-
-> **data_d4_d7** Data byte 4 to 7, default is `0x00000000`.
+> **data** Data, default is `0x0000000000000000`.
 
 **Returns**: Decoded output as a string.
 
@@ -80,18 +78,16 @@ sent cyclically at the specified interval.
 ### pdo_add()
 
 ```lua
-pdo_add (can_id, event_time_ms, length, [data_d0_d3], [data_d4_d7], [show_output], [comment])
+pdo_add (can_id, event_time_ms, length, data, [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
 
 > **event_time_ms** Event time in milliseconds.
 
-> **length** Message length in bytes, 0 to 8.
+> **length** Data length in bytes.
 
-> **data_d0_d3** Data byte 0 to 3, default is `0x00000000`.
-
-> **data_d4_d7** Data byte 4 to 7, default is `0x00000000`.
+> **data** Data, default is `0x0000000000000000`.
 
 > **show_output** Show formatted output, default is `false`.
 
@@ -230,19 +226,17 @@ dict_lookup (index, sub_index)
 can_read ()
 ```
 
-**Returns**: id, length, data (as string) and timestamp in μs, or nil on failure.
+**Returns**: id, length, data and timestamp in μs, or nil on failure.
 
 ```lua
-can_write (can_id, data_length, [data_d0_d3], [data_d4_d7], [show_output], [comment])
+can_write (can_id, data_length, [data], [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
 
 > **length** Data length in bytes.
 
-> **data_d0_d3** Data byte 0 to 3, default is `0x00000000`.
-
-> **data_d4_d7** Data byte 4 to 7, default is `0x00000000`.
+> **data** Data, default is `0x0000000000000000`.
 
 > **show_output** Show formatted output, default is `false`.
 
