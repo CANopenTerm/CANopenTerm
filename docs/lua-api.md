@@ -16,7 +16,7 @@ documented in detail below.
 
 ```lua
 dbc_decode (can_id, [data_d0_d3], [data_d4_d7])
-```
+```f
 
 > **can_id** CAN-ID.
 
@@ -230,7 +230,7 @@ dict_lookup (index, sub_index)
 can_read ()
 ```
 
-**Returns**: id, length data (as string) and timestamp in μs, or nil on failure.
+**Returns**: id, length, data (as string) and timestamp in μs, or nil on failure.
 
 ```lua
 can_write (can_id, data_length, [data_d0_d3], [data_d4_d7], [show_output], [comment])
