@@ -13,13 +13,15 @@
 #include "lua.h"
 #include "os.h"
 
+static dbc_t* dbc;
+
 static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness);
 static void   parse_message_line(char *line, message_t *message);
 static void   parse_signal_line(char *line, signal_t *signal);
 static bool_t starts_with(const char *str, const char *prefix);
 static char*  trim_whitespace(char *str);
 
-const char* dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data)
+const char* dbc_decode(uint32 can_id, uint64 data)
 {
     static char result[4096] = { 0 };
     int         pos          = 0;
@@ -84,7 +86,7 @@ const char* dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data)
     return result;
 }
 
-void dbc_deinit(dbc_t* dbc)
+void dbc_deinit(void)
 {
     int i, j;
 
@@ -146,10 +148,10 @@ void dbc_deinit(dbc_t* dbc)
     dbc->message_count = 0;
 }
 
-status_t dbc_init(dbc_t **dbc)
+status_t dbc_init(void)
 {
-    *dbc = os_calloc(1, sizeof(dbc_t));
-    if (NULL == *dbc)
+    dbc = os_calloc(1, sizeof(dbc_t));
+    if (NULL == dbc)
     {
         return OS_MEMORY_ALLOCATION_ERROR;
     }
@@ -159,7 +161,7 @@ status_t dbc_init(dbc_t **dbc)
     }
 }
 
-status_t dbc_load(dbc_t* dbc, const char *filename)
+status_t dbc_load(const char *filename)
 {
     char       line[1024]      = { 0 };
     FILE_t*    file            = os_fopen(filename, "r");
@@ -216,7 +218,7 @@ status_t dbc_load(dbc_t* dbc, const char *filename)
     return ALL_OK;
 }
 
-void dbc_print(const dbc_t *dbc)
+void dbc_print(void)
 {
     int i, j;
 
@@ -243,20 +245,51 @@ void dbc_print(const dbc_t *dbc)
 
 int lua_dbc_decode(lua_State *L)
 {
-    int    can_id     = luaL_checkinteger(L, 1);
-    uint32 data_d0_d3 = lua_tointeger(L, 2);
-    uint32 data_d4_d7 = lua_tointeger(L, 3);
-    uint64 data = ((uint64)data_d0_d3 << 32) | data_d4_d7;
+    int         can_id     = luaL_checkinteger(L, 1);
+    uint32      data_d0_d3 = lua_tointeger(L, 2);
+    uint32      data_d4_d7 = lua_tointeger(L, 3);
+    uint64      data       = ((uint64)data_d0_d3 << 32) | data_d4_d7;
+    const char* result     = dbc_decode(can_id, data);
 
-    /* Tbd. */
+    lua_pushstring(L, result);
 
-    return 0;
+    return 1;
+}
+
+int lua_dbc_load(lua_State *L)
+{
+    const char* filename = luaL_checkstring(L, 1);
+    status_t    status;
+
+    dbc_deinit();
+    status = dbc_init();
+
+    if (ALL_OK == status)
+    {
+        status = dbc_load(filename);
+        if (ALL_OK == status)
+        {
+            lua_pushboolean(L, 1);
+        }
+        else
+        {
+            lua_pushboolean(L, 0);
+        }
+    }
+    else
+    {
+        lua_pushboolean(L, 0);
+    }
+
+    return 1;
 }
 
 void lua_register_dbc_command(core_t *core)
 {
     lua_pushcfunction(core->L, lua_dbc_decode);
-    lua_setglobal(core->L, "lua_dbc_decode");
+    lua_setglobal(core->L, "dbc_decode");
+    lua_pushcfunction(core->L, lua_dbc_load);
+    lua_setglobal(core->L, "dbc_load");
 }
 
 static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness)

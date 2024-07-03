@@ -54,12 +54,13 @@ typedef struct
 
 } dbc_t;
 
-const char* dbc_decode(dbc_t *dbc, uint32 can_id, uint64 data);
-void        dbc_deinit(dbc_t* dbc);
-status_t    dbc_init(dbc_t **dbc);
-status_t    dbc_load(dbc_t *dbc, const char *filename);
-void        dbc_print(const dbc_t *dbc);
+const char* dbc_decode(uint32 can_id, uint64 data);
+void        dbc_deinit(void);
+status_t    dbc_init(void);
+status_t    dbc_load(const char *filename);
+void        dbc_print(void);
 int         lua_dbc_decode(lua_State *L);
+int         lua_dbc_load(lua_State* L);
 void        lua_register_dbc_command(core_t *core);
 
 #endif /* DBC_H */

@@ -12,6 +12,28 @@ In addition to the standard functions and basic features of the Lua
 programming language, CANopenTerm also provides its own API, which is
 documented in detail below.
 
+## CAN Database File (DBC)
+
+```lua
+dbc_decode (can_id, [data_d0_d3], [data_d4_d7])
+```
+
+> **can_id** CAN-ID.
+
+> **data_d0_d3** Data byte 0 to 3, default is `0x00000000`.
+
+> **data_d4_d7** Data byte 4 to 7, default is `0x00000000`.
+
+**Returns**: Decoded output as a string.
+
+```lua
+dbc_load (filename)
+```
+
+> **filename** DBC file name.
+
+**Returns**: true on success, false on failure.
+
 ## Network management (NMT)
 
 ### nmd_send_command()

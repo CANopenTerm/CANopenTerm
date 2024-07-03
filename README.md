@@ -9,8 +9,8 @@
 ## Discover CANopenTerm
 
 **Are you an R&D professional or application engineer working
-with CANopen networks? Do you need a robust, easy-to-use tool
-for developing or testing CANopen nodes?**
+with CAN & CANopen networks? Do you need a robust, easy-to-use
+tool for developing or testing CANopen nodes?**
 
 Look no further!
 
@@ -45,6 +45,11 @@ on a CANopen network, allowing you to:
 
 - **Lua 5.4 Interpreter**  
   Write scripts to automate tasks and leverage a [custom API](/lua-api).
+
+- **Built-in DBC (CAN Database File) Parser**  
+  Easily import and use
+  [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
+  to simplify your work with CAN networks.
 
 - **Robust and Portable Source Code**  
   - CANopenTerm's source code is written entirely in ANSI C, ensuring
