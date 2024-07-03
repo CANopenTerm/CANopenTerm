@@ -78,7 +78,7 @@ sent cyclically at the specified interval.
 ### pdo_add()
 
 ```lua
-pdo_add (can_id, event_time_ms, length, data, [show_output], [comment])
+pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
@@ -154,7 +154,7 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 
 > **length** Data length in bytes.
 
-> **data** Data.
+> **data** Data, default is `0x0000000000000000`.
 
 > **show_output** Show formatted output, default is `false`.
 
@@ -185,7 +185,7 @@ sdo_write_file (node_id, index, sub_index, filename)
 Write string (segmented transfer).
 
 ```lua
-sdo_write_string (node_id, index, sub_index, [data], [show_output], [comment])
+sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.
