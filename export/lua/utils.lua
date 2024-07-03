@@ -6,6 +6,16 @@ License: Public domain
 
 --]]
 
+function clear_screen()
+    if package.config:sub(1,1) == '\\' then
+        -- Windows system
+        os.execute('cls')
+    else
+        -- Unix-based system
+        os.execute('clear')
+    end
+end
+
 local function get_file_list(extension, directory)
   directory = directory or ""
 
@@ -74,6 +84,21 @@ local function get_file_by_selection(prompt, extension, sub_directory)
   end
 end
 
+function print_multiline_at_same_position(message, num_lines)
+    local buffer = ""
+
+    for _ = 1, num_lines do
+        buffer = buffer .. "\27[2K"
+        buffer = buffer .. "\27[A"
+    end
+
+    buffer = buffer .. "\r"
+    buffer = buffer .. message
+
+    io.write(buffer)
+    io.flush()
+end
+
 local function read_word(file)
     local bytes = file:read(2)
     if not bytes or #bytes < 2 then
@@ -134,13 +159,15 @@ local function bitwise_and(a, b)
 end
 
 return {
-  get_file_list         = get_file_list,
-  get_file_by_selection = get_file_by_selection,
-  read_word             = read_word,
-  read_long             = read_long,
-  read_ulong            = read_ulong,
-  read_byte             = read_byte,
-  left_shift            = left_shift,
-  is_bit_set            = is_bit_set,
-  bitwise_and           = bitwise_and
+  clear_screen                     = clear_screen,
+  get_file_list                    = get_file_list,
+  get_file_by_selection            = get_file_by_selection,
+  print_multiline_at_same_position = print_multiline_at_same_position,
+  read_word                        = read_word,
+  read_long                        = read_long,
+  read_ulong                       = read_ulong,
+  read_byte                        = read_byte,
+  left_shift                       = left_shift,
+  is_bit_set                       = is_bit_set,
+  bitwise_and                      = bitwise_and
 }
