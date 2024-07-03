@@ -64,8 +64,6 @@ status_t core_init(core_t **core)
     /* Initialise CAN. */
     can_init((*core));
 
-    dbc_init();
-
     (*core)->is_running = IS_TRUE;
     return status;
 }
@@ -95,7 +93,7 @@ void core_deinit(core_t *core)
         return;
     }
 
-    dbc_deinit();
+    dbc_unload();
     can_quit(core);
     scripts_deinit(core);
     os_quit();

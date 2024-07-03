@@ -86,101 +86,38 @@ const char* dbc_decode(uint32 can_id, uint64 data)
     return result;
 }
 
-void dbc_deinit(void)
+status_t dbc_load(const char* filename)
 {
-    int i, j;
+    FILE_t*    file;
+    char       line[1024]      = { 0 };
+    message_t* current_message = NULL;
+
+    dbc_unload();
 
     if (NULL == dbc)
     {
-        return;
-    }
-
-    for (i = 0; i < dbc->message_count; ++i)
-    {
-        message_t* msg = &dbc->messages[i];
-
-        if (msg->name)
+        dbc = os_calloc(1, sizeof(dbc_t));
+        if (NULL == dbc)
         {
-            os_free(msg->name);
-            msg->name = NULL; // Set to NULL after freeing
+            return OS_MEMORY_ALLOCATION_ERROR;
         }
-
-        if (msg->transmitter)
-        {
-            os_free(msg->transmitter);
-            msg->transmitter = NULL; // Set to NULL after freeing
-        }
-
-        for (j = 0; j < msg->signal_count; ++j)
-        {
-            signal_t* sig = &msg->signals[j];
-
-            if (sig->name)
-            {
-                os_free(sig->name);
-                sig->name = NULL; // Set to NULL after freeing
-            }
-            if (sig->unit)
-            {
-                os_free(sig->unit);
-                sig->unit = NULL;
-            }
-            if (sig->receiver)
-            {
-                os_free(sig->receiver);
-                sig->receiver = NULL;
-            }
-        }
-
-        if (msg->signals)
-        {
-            os_free(msg->signals);
-            msg->signals = NULL;
-        }
-    }
-
-    if (dbc->messages)
-    {
-        os_free(dbc->messages);
-        dbc->messages = NULL;
-    }
-
-    dbc->message_count = 0;
-}
-
-status_t dbc_init(void)
-{
-    dbc = os_calloc(1, sizeof(dbc_t));
-    if (NULL == dbc)
-    {
-        return OS_MEMORY_ALLOCATION_ERROR;
     }
     else
     {
-        return ALL_OK;
+        dbc->message_count = 0;
+        dbc->messages = NULL;
     }
-}
 
-status_t dbc_load(const char *filename)
-{
-    char       line[1024]      = { 0 };
-    FILE_t*    file            = os_fopen(filename, "r");
-    message_t* current_message = NULL;
+    file = os_fopen(filename, "r");
 
     if (NULL == file)
     {
         return OS_FILE_NOT_FOUND;
     }
 
-    if (NULL == dbc)
-    {
-        os_fclose(file);
-        return OS_INVALID_ARGUMENT;
-    }
-
     while (os_fgets(line, sizeof(line), file) != NULL)
     {
-        char *trimmed_line = trim_whitespace(line);
+        char* trimmed_line = trim_whitespace(line);
 
         if (starts_with(trimmed_line, "BO_ "))
         {
@@ -188,6 +125,7 @@ status_t dbc_load(const char *filename)
             if (NULL == temp)
             {
                 os_fclose(file);
+                dbc_unload();
                 return OS_MEMORY_ALLOCATION_ERROR;
             }
 
@@ -195,22 +133,25 @@ status_t dbc_load(const char *filename)
             current_message = &dbc->messages[dbc->message_count];
             os_memset(current_message, 0, sizeof(message_t));
 
-            if (current_message != NULL)
-            {
-                dbc->message_count += 1;
-                parse_message_line(trimmed_line, current_message);
-            }
+            dbc->message_count += 1;
+            parse_message_line(trimmed_line, current_message);
         }
-        else if (starts_with(trimmed_line, "SG_ "))
+        else if (starts_with(trimmed_line, "SG_ ") && current_message != NULL)
         {
-            if (current_message != NULL)
+            signal_t* temp = os_realloc(current_message->signals, sizeof(signal_t) * (current_message->signal_count + 1));
+            if (NULL == temp)
             {
-                signal_t* current_signal;
-                current_message->signals = realloc(current_message->signals, sizeof(signal_t) * (current_message->signal_count + 1));
-                current_message->signal_count += 1;
-                current_signal = &current_message->signals[current_message->signal_count - 1];
-                parse_signal_line(trimmed_line, current_signal);
+                os_fclose(file);
+                dbc_unload();
+                return OS_MEMORY_ALLOCATION_ERROR;
             }
+
+            current_message->signals = temp;
+            signal_t* current_signal = &current_message->signals[current_message->signal_count];
+            os_memset(current_signal, 0, sizeof(signal_t));
+
+            current_message->signal_count += 1;
+            parse_signal_line(trimmed_line, current_signal);
         }
     }
 
@@ -243,6 +184,39 @@ void dbc_print(void)
     }
 }
 
+void dbc_unload(void)
+{
+    int i, j;
+
+    if (NULL == dbc)
+    {
+        return;
+    }
+
+    for (i = 0; i < dbc->message_count; ++i)
+    {
+        message_t* msg = &dbc->messages[i];
+
+        os_free(msg->name);
+        os_free(msg->transmitter);
+
+        for (j = 0; j < msg->signal_count; ++j)
+        {
+            signal_t* sig = &msg->signals[j];
+            os_free(sig->name);
+            os_free(sig->unit);
+            os_free(sig->receiver);
+        }
+
+        os_free(msg->signals);
+    }
+
+    os_free(dbc->messages);
+    dbc->message_count = 0;
+    dbc->messages      = NULL;
+}
+
+
 int lua_dbc_decode(lua_State *L)
 {
     int         can_id     = luaL_checkinteger(L, 1);
@@ -261,20 +235,11 @@ int lua_dbc_load(lua_State *L)
     const char* filename = luaL_checkstring(L, 1);
     status_t    status;
 
-    dbc_deinit();
-    status = dbc_init();
-
+    dbc_unload();
+    status = dbc_load(filename);
     if (ALL_OK == status)
     {
-        status = dbc_load(filename);
-        if (ALL_OK == status)
-        {
-            lua_pushboolean(L, 1);
-        }
-        else
-        {
-            lua_pushboolean(L, 0);
-        }
+        lua_pushboolean(L, 1);
     }
     else
     {
