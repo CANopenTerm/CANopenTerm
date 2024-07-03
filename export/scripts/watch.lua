@@ -7,6 +7,16 @@ License: Public domain
 
 local utils = require "lua/utils"
 
+function clear_screen()
+    if package.config:sub(1,1) == '\\' then
+        -- Windows system
+        os.execute('cls')
+    else
+        -- Unix-based system
+        os.execute('clear')
+    end
+end
+
 function print_multiline_at_same_position(message, num_lines)
     local buffer = ""
 
@@ -34,6 +44,8 @@ local output    = dbc_decode(466, 0x00000000, 0x00000000)
 local num_lines = select(2, output:gsub('\n', '\n')) + 1
 
 local demo = 0
+
+clear_screen()
 
 while false == key_is_hit() do
   demo = demo + 1
