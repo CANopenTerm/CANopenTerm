@@ -17,7 +17,7 @@ documented in detail below.
 ### dbc_decode()
 
 ```lua
-dbc_decode (can_id, data)
+dbc_decode (can_id, [data])
 ```
 
 > **can_id** CAN-ID.
