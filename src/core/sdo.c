@@ -104,7 +104,6 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     sdo_state_t   sdo_state   = IS_READ_EXPEDIDED;
     uint32        abort_code  = 0;
     uint32        can_status  = 0;
-    int           n;
 
     limit_node_id(&node_id);
 
@@ -170,6 +169,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
 
     if (IS_READ_SEGMENTED == sdo_state)
     {
+        int    n;
         uint8  cmd            = UPLOAD_SEGMENT_REQUEST_1;
         uint8  response_index = 0;
         uint32 data_length    = sdo_response->length;
