@@ -27,6 +27,7 @@ do_compile() {
     ${S}/src/core/can_linux.c \
     ${S}/src/core/command.c \
     ${S}/src/core/core.c \
+    ${S}/src/core/dbc.c \
     ${S}/src/core/dict.c \
     ${S}/src/core/nmt.c \
     ${S}/src/core/pdo.c \
@@ -46,8 +47,10 @@ do_compile() {
 
 do_install () {
     install -d ${D}${bindir}
+    install -d ${D}/usr/share/CANopenTerm/dbc
     install -d ${D}/usr/share/CANopenTerm/scripts
     install -d ${D}/usr/share/lua/5.4/lua
+    install -m 0644 ${S}/export/dbc/* ${D}/usr/share/CANopenTerm/dbc
     install -m 0644 ${S}/export/scripts/* ${D}/usr/share/CANopenTerm/scripts
     install -m 0644 ${S}/export/lua/* ${D}/usr/share/lua/5.4/lua
     install -m 0755 ${S}/export/CANopenTerm ${D}${bindir}

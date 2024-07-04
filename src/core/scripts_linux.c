@@ -24,7 +24,6 @@
 #include "table.h"
 
 static const char* script_dirs[] = {
-    "./",
     "./scripts",
     "/usr/share/CANopenTerm/scripts"
 };

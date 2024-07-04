@@ -21,13 +21,13 @@ ExternalProject_Add(Lua_devel
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL2
-set(SDL2_VERSION  "2.30.4")
+set(SDL2_VERSION  "2.30.5")
 set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps/SDL2-${SDL2_VERSION})
 set(SDL2_DEVEL_PKG SDL2-${SDL2_VERSION}.tar.gz)
 
 ExternalProject_Add(SDL2_devel
   URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-  URL_HASH SHA1=1779d75a8ffaec0c1be818d0adc9ca27866d348e
+  URL_HASH SHA1=4bc5fc5e76f0a1e1a88801ac1323a91c8bfee543
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
