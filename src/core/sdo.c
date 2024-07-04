@@ -275,18 +275,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     }
     else /* Expedided SDO. */
     {
-        for (n = 0; n < sdo_response->length; n += 1)
-        {
-            if (4 + n < sizeof(sdo_response->data))
-            {
-                sdo_response->data[4 + n] = msg_in.data[4 + n];
-            }
-            else
-            {
-                print_error("Buffer overflow", IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
-                return ABORT_TRANSFER;
-            }
-        }
+        os_memcpy(&sdo_response->data, &msg_in.data[4], sizeof(uint32));
     }
 
     print_read_result(node_id, index, sub_index, sdo_response, disp_mode, sdo_state, comment);
@@ -1035,7 +1024,9 @@ static void print_progress_bar(size_t bytes_sent, size_t length)
 
 static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment)
 {
-    uint32 u32_value = (uint32)sdo_response->data[4];
+    uint32 u32_value;
+
+    os_memcpy(&u32_value, &sdo_response->data, sizeof(uint32));
 
     switch (disp_mode)
     {
