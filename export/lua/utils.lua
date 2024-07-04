@@ -176,6 +176,15 @@ local function bitwise_and(a, b)
     return result
 end
 
+function swap_bytes(data, length)
+    local swapped = 0
+    for i = 0, length-1 do
+        local byte = (data >> (i * 8)) & 0xFF
+        swapped = swapped | (byte << ((length - 1 - i) * 8))
+    end
+    return swapped
+end
+
 return {
   clear_screen                     = clear_screen,
   get_file_list                    = get_file_list,
@@ -188,5 +197,6 @@ return {
   read_byte                        = read_byte,
   left_shift                       = left_shift,
   is_bit_set                       = is_bit_set,
-  bitwise_and                      = bitwise_and
+  bitwise_and                      = bitwise_and,
+  swap_bytes                       = swap_bytes
 }

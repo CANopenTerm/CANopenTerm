@@ -159,7 +159,7 @@ int lua_can_read(lua_State* L)
 
         lua_pushinteger(L, message.id);
         lua_pushinteger(L, length);
-        lua_pushinteger(L, os_swap_64(data));
+        lua_pushinteger(L, data);
         lua_pushinteger(L, message.timestamp_us);
         return 4;
     }

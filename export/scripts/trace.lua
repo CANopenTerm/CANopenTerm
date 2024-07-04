@@ -5,6 +5,8 @@ License: Public domain
 
 --]]
 
+local utils = require "lua/utils"
+
 local initial_timestamp_us
 local trace_filename
 local message_number = 1
@@ -15,9 +17,9 @@ local function generate_trace_filename()
 end
 
 function print_data(data, length)
-    for i = length, 1, -1 do
+    for i = length-1, 0, -1 do
         local byte = (data >> (8 * i)) & 0xFF
-        io.write(string.format("%02X ",  byte))
+        io.write(string.format("%02X ", byte))
     end
 end
 
@@ -44,11 +46,11 @@ local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, 
 
     local line = string.format("%5d) %10.1f  Rx     %08X  %d  ", message_number, timestamp_ms + (timestamp_fraction or 0) / 1000, id, length)
 
-    if data then
+    if data and length >= 1 and length <= 8 then
         local bytes = {}
-        for i = 0, length-1 do
-            local byte = (data >> (8 * (i + 1))) & 0xFF
-            table.insert(bytes, 1, string.format("%02X", byte))
+        for i = length-1, 0, -1 do
+            local byte = (data >> (8 * i)) & 0xFF
+            table.insert(bytes, string.format("%02X", byte))
         end
 
         line = line .. table.concat(bytes, " ") .. " "
@@ -67,6 +69,8 @@ while not key_is_hit() do
     local id, length, data, timestamp_us = can_read()
 
     if data then
+        data = utils.swap_bytes(data, length)
+
         if not initial_timestamp_us then
             initial_timestamp_us = timestamp_us
             write_trc_header(initial_timestamp_us / 1000000)

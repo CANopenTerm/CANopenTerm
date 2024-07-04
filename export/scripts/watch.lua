@@ -30,6 +30,7 @@ while false == key_is_hit() do
   local id, length, data = can_read()
 
   if id == watch_id then
+    data   = utils.swap_bytes(data, length) -- Not entirely sure if the bytes have to be swapped.
     output = dbc_decode(watch_id, data)
     utils.print_multiline_at_same_position(output, num_lines)
   end
