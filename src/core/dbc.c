@@ -281,7 +281,7 @@ static void parse_message_line(char *line, message_t *message)
     os_strtokr(rest, " ", &rest);
 
     token                = os_strtokr(rest, " ", &rest);
-    message->id          = os_strtoul(token, NULL, 10);
+    message->id          = os_strtoul(token, NULL, 10) & 0x7FFFFFFF;
     token                = os_strtokr(rest, ":", &rest);
     message->name        = os_strdup(token);
     token                = os_strtokr(rest, " ", &rest);
