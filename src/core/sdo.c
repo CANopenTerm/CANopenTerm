@@ -313,7 +313,7 @@ sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 
     msg_out.data[5] = (uint8)((u32_value & 0x0000ff00) >> 8);
     msg_out.data[6] = (uint8)((u32_value & 0x00ff0000) >> 16);
     msg_out.data[7] = (uint8)((u32_value & 0xff000000) >> 24);
-    msg_out.length  = 4 + length;
+    msg_out.length  = 8;
 
     switch (length)
     {
