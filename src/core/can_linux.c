@@ -20,6 +20,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <string.h>
+#include "buffer.h"
 #include "can.h"
 #include "core.h"
 #include "os.h"
@@ -58,7 +59,15 @@ void can_deinit(core_t* core)
 
 status_t can_print_baud_rate_help(core_t* core)
 {
-    (void)core;
+    buffer_init(1024);
+    os_print(LIGHT_RED, "\nWarning: ");
+    os_print(DEFAULT_COLOR, "Setting the CAN interface baud rate requires root permissions.\n");
+    os_print(DEFAULT_COLOR, "Please set the baud rate manually using the following command:\n\n");
+    os_print(DEFAULT_COLOR, "  sudo ip link set %s up type can bitrate 250000\n\n", core->can_interface);
+    os_print(DEFAULT_COLOR, "Replace '250000' with the desired baud rate.\n\n");
+    buffer_flush();
+    buffer_free();
+
     return ALL_OK;
 }
 
@@ -120,8 +129,7 @@ status_t can_print_channel_help(core_t* core)
 
 void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
 {
-    (void)baud_rate_index;
-    (void)core;
+    can_print_baud_rate_help(core);
 }
 
 void can_set_channel(uint32 channel, core_t* core)
