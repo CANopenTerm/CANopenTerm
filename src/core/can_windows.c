@@ -359,8 +359,7 @@ const char* can_get_error_message(uint32 can_status)
 
 static int can_monitor(void* core_pt)
 {
-    char    err_message[100] = { 0 };
-    core_t* core             = core_pt;
+    core_t* core = core_pt;
 
     if (NULL == core)
     {
