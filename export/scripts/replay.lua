@@ -45,7 +45,7 @@ function parse_pcan_trc(file_path)
         error("Could not open file: " .. file_path)
     end
 
-    -- Read the first line to determine the file version
+    -- Read the first line to determine the file version.
     local first_line = file:read("*line")
     local file_version = first_line:match("^;%$FILEVERSION=(%d%.%d)")
 
@@ -53,10 +53,10 @@ function parse_pcan_trc(file_path)
         error("Unknown file version: " .. first_line)
     end
 
-    -- Define patterns for each version
+    -- Define patterns for each version.
     local patterns = {
-        ["1.1"] = "^%s*%d+%)%s*([%d%.]+)%s+(%w+)%s+(%x+)%s+(%d)%s+(.+)$",
-        ["1.3"] = "^%s*%d+%)%s*([%d%.]+)%s+%d%s+(%w+)%s+(%x+)%s+%-%s+(%d)%s+(.+)$"
+      ["1.1"] = "^%s*%d+%)%s*([%d%.]+)%s+(%w+)%s+([%x]+)%s+(%d)%s+(.+)$",
+      ["1.3"] = "^%s*%d+%)%s*([%d%.]+)%s+%d%s+(%w+)%s+([%x]+)%s+%-%s+(%d)%s+(.+)$",
     }
 
     local function parse_line(line, pattern)
