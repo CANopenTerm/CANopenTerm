@@ -246,6 +246,11 @@ static int can_monitor(void* core_pt)
         "PCAN-PCI interface, channel 16"
     };
 
+    if (NULL == core)
+    {
+        return 1;
+    }
+
     while (IS_TRUE == core->is_running)
     {
         while (IS_FALSE == is_can_initialised(core))
@@ -254,11 +259,6 @@ static int can_monitor(void* core_pt)
             int num_can_channels = sizeof(can_channels) / sizeof(can_channels[0]);
             int chan_i;
             int rate_i;
-
-            if (NULL == core)
-            {
-                return 1;
-            }
 
             for (chan_i = can_channel_index; chan_i < num_can_channels; chan_i++)
             {
@@ -312,7 +312,6 @@ static int can_monitor(void* core_pt)
             os_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
             os_print_prompt();
         }
-
         os_delay(1);
     }
 
