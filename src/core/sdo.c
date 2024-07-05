@@ -770,7 +770,7 @@ int lua_sdo_read(lua_State* L)
             lua_pushstring(L, (const char*)sdo_response.data);
             break;
         case IS_READ_EXPEDIDED:
-            lua_pushinteger(L, (uint32)sdo_response.data[4]);
+            lua_pushinteger(L, (uint32)sdo_response.data[0]);
             break;
         default:
         case ABORT_TRANSFER:
