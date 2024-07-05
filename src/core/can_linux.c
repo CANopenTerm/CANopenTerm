@@ -59,6 +59,12 @@ void can_set_baud_rate(uint8 command, core_t* core)
     os_log(LOG_ERROR, "This feature cannot yet be used on Linux: The baud rate remains unchanged");
 }
 
+void can_set_channel(int channel, core_t* core)
+{
+    (void)channel;
+    (void)core;
+}
+
 void can_quit(core_t* core)
 {
     if (NULL == core)

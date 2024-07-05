@@ -12,7 +12,7 @@
 #include "core.h"
 #include "PCANBasic.h"
 
-static int  can_channel;
+static int  can_channel      = 0;
 static int  can_monitor(void* core);
 static char err_message[100] = { 0 };
 
@@ -108,6 +108,19 @@ void can_set_baud_rate(uint8 command, core_t* core)
     {
         can_deinit(core);
     }
+}
+
+void can_set_channel(int channel, core_t* core)
+{
+    (void)core;
+
+    if (channel >= PCAN_PCIBUS16)
+    {
+        channel = PCAN_PCIBUS16;
+    }
+
+    can_channel = channel;
+    can_deinit(core);
 }
 
 const char* can_get_error_message(uint32 can_status)
@@ -232,115 +245,51 @@ static int can_monitor(void* core_pt)
         "PCAN-PCI interface, channel 16"
     };
 
-    int num_baud_rates   = sizeof(baud_rates) / sizeof(baud_rates[0]);
-    int num_can_channels = sizeof(can_channels) / sizeof(can_channels[0]);
-    int chan_i;
-    int rate_i;
-
-    if (NULL == core)
-    {
-        return 1;
-    }
-
-    for (chan_i = 0; chan_i < num_can_channels; chan_i++)
-    {
-        for (rate_i = 0; rate_i < num_baud_rates; rate_i++)
-        {
-            TPCANBaudrate baud_rate = baud_rates[rate_i];
-            TPCANHandle   channel   = can_channels[chan_i];
-
-            core->can_status = CAN_Initialize(
-                channel,
-                baud_rate,
-                PCAN_NONE,
-                0, 0);
-
-            CAN_GetErrorText(core->can_status, 0x09, err_message);
-
-            if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
-            {
-                os_print(DEFAULT_COLOR, "\r");
-                os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", can_channel_desc[chan_i], baud_rate_desc[rate_i]);
-                core->is_can_initialised = IS_TRUE;
-                core->baud_rate          = rate_i;
-                can_channel              = channel;
-                os_print_prompt();
-                break;
-            }
-            os_delay(1);
-        }
-
-        if (core->is_can_initialised == IS_TRUE) {
-            break;
-        }
-    }
-
     while (IS_TRUE == core->is_running)
     {
         while (IS_FALSE == is_can_initialised(core))
         {
-            TPCANBaudrate baud_rate;
+            int num_baud_rates = sizeof(baud_rates) / sizeof(baud_rates[0]);
+            int num_can_channels = sizeof(can_channels) / sizeof(can_channels[0]);
+            int chan_i;
+            int rate_i;
 
-            switch (core->baud_rate)
+            if (NULL == core)
             {
-            case 0:
-                baud_rate = PCAN_BAUD_1M;
-                break;
-            case 1:
-                baud_rate = PCAN_BAUD_800K;
-                break;
-            case 2:
-                baud_rate = PCAN_BAUD_500K;
-                break;
-            case 3:
-            default:
-                baud_rate = PCAN_BAUD_250K;
-                break;
-            case 4:
-                baud_rate = PCAN_BAUD_125K;
-                break;
-            case 5:
-                baud_rate = PCAN_BAUD_100K;
-                break;
-            case 6:
-                baud_rate = PCAN_BAUD_95K;
-                break;
-            case 7:
-                baud_rate = PCAN_BAUD_83K;
-                break;
-            case 8:
-                baud_rate = PCAN_BAUD_50K;
-                break;
-            case 9:
-                baud_rate = PCAN_BAUD_47K;
-                break;
-            case 10:
-                baud_rate = PCAN_BAUD_33K;
-                break;
-            case 11:
-                baud_rate = PCAN_BAUD_20K;
-                break;
-            case 12:
-                baud_rate = PCAN_BAUD_10K;
-                break;
-            case 13:
-                baud_rate = PCAN_BAUD_5K;
-                break;
+                return 1;
             }
 
-            core->can_status = CAN_Initialize(
-                can_channel,
-                baud_rate,
-                PCAN_NONE,
-                0, 0);
-
-            CAN_GetErrorText(core->can_status, 0x09, err_message);
-
-            if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
+            for (chan_i = can_channel; chan_i < num_can_channels; chan_i++)
             {
-                os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", can_channel_desc[core->baud_rate], baud_rate_desc[core->baud_rate]);
-                core->is_can_initialised = IS_TRUE;
-                os_print_prompt();
+                for (rate_i = 0; rate_i < num_baud_rates; rate_i++)
+                {
+                    TPCANBaudrate baud_rate = baud_rates[rate_i];
+                    TPCANHandle   channel = can_channels[chan_i];
+
+                    core->can_status = CAN_Initialize(
+                        channel,
+                        baud_rate,
+                        PCAN_NONE,
+                        0, 0);
+
+                    CAN_GetErrorText(core->can_status, 0x09, err_message);
+
+                    if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
+                    {
+                        os_print(DEFAULT_COLOR, "\r");
+                        os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", can_channel_desc[chan_i], baud_rate_desc[rate_i]);
+                        core->is_can_initialised = IS_TRUE;
+                        core->baud_rate = rate_i;
+                        can_channel = channel;
+                        os_print_prompt();
+                        break;
+                    }
+                    os_delay(1);
+                }
+
+                if (core->is_can_initialised == IS_TRUE) {
+                    break;
+                }
             }
 
             os_delay(1);

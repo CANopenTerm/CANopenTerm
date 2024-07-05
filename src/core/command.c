@@ -42,6 +42,22 @@ void parse_command(char* input, core_t* core)
         run_script(token, core);
         return;
     }
+    else if (0 == SDL_strncmp(token, "y", 1))
+    {
+        uint32 channel = 0;
+
+        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            return;
+        }
+        else
+        {
+            convert_token_to_uint(token, &channel);
+        }
+
+        can_set_channel(channel, core);
+    }
     else if (0 == SDL_strncmp(token, "b", 1))
     {
         uint32 command;
@@ -378,7 +394,6 @@ void parse_command(char* input, core_t* core)
         print_usage_information(IS_FALSE);
     }
 }
-
 
 static void convert_token_to_uint(char* token, uint32* result)
 {
