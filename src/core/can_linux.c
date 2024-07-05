@@ -29,9 +29,7 @@
 
 static int can_socket;
 
-static int  can_monitor(void* core);
-static char err_message[100] = { 0 };
-
+static int    can_monitor(void* core);
 static void   parse_rtattr(struct rtattr* tb[], int max, struct rtattr* rta, int len);
 static char** get_can_interfaces(int* count);
 
@@ -346,7 +344,6 @@ static char** get_can_interfaces(int* count)
     {
         struct nlmsghdr  nlh;
         struct ifinfomsg ifm;
-        char             buf[BUFFER_SIZE];
     } req;
 
     fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
