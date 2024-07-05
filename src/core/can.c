@@ -12,59 +12,6 @@
 #include "can.h"
 #include "core.h"
 #include "os.h"
-#include "table.h"
-
-status_t can_print_baud_rate_help(core_t* core)
-{
-    status_t     status;
-    table_t      table         = { DARK_CYAN, DARK_WHITE, 3, 13, 6 };
-    char         br_status[14][7] = { 0 };
-    unsigned int br_status_index  = core->baud_rate;
-    unsigned int index;
-
-    if (br_status_index > 13)
-    {
-        br_status_index = 13;
-    }
-
-    for (index = 0; index < 14; index += 1)
-    {
-        if (br_status_index == index)
-        {
-            os_snprintf(br_status[index], 7, "Active");
-        }
-        else
-        {
-            os_snprintf(br_status[index], 2, " ");
-        }
-    }
-
-    status = table_init(&table, 1024);
-    if (ALL_OK == status)
-    {
-        table_print_header(&table);
-        table_print_row("Id.", "Description",   "Status",      &table);
-        table_print_divider(&table);
-        table_print_row("  0", "1 MBit/s",      br_status[0],  &table);
-        table_print_row("  1", "800 kBit/s",    br_status[1],  &table);
-        table_print_row("  2", "500 kBit/s",    br_status[2],  &table);
-        table_print_row("  3", "250 kBit/s",    br_status[3],  &table);
-        table_print_row("  4", "125 kBit/s",    br_status[4],  &table);
-        table_print_row("  5", "100 kBit/s",    br_status[5],  &table);
-        table_print_row("  6", "95,238 kBit/s", br_status[6],  &table);
-        table_print_row("  7", "83,333 kBit/s", br_status[7],  &table);
-        table_print_row("  8", "50 kBit/s",     br_status[8],  &table);
-        table_print_row("  9", "47,619 kBit/s", br_status[9],  &table);
-        table_print_row(" 10", "33,333 kBit/s", br_status[10], &table);
-        table_print_row(" 11", "20 kBit/s",     br_status[11], &table);
-        table_print_row(" 12", "10 kBit/s",     br_status[12], &table);
-        table_print_row(" 13", "5 kBit/s",      br_status[13], &table);
-        table_print_footer(&table);
-        table_flush(&table);
-    }
-
-    return status;
-}
 
 void limit_node_id(uint8* node_id)
 {

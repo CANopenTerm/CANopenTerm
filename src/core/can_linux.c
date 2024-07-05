@@ -52,11 +52,22 @@ void can_deinit(core_t* core)
     close(can_socket);
 }
 
-void can_set_baud_rate(uint8 command, core_t* core)
+status_t can_print_baud_rate_help(core_t* core)
 {
-    (void)command;
     (void)core;
-    os_log(LOG_ERROR, "This feature cannot yet be used on Linux: The baud rate remains unchanged");
+    return ALL_OK;
+}
+
+status_t can_print_channel_help(core_t* core)
+{
+    (void)core;
+    return ALL_OK;
+}
+
+void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
+{
+    (void)baud_rate_index;
+    (void)core;
 }
 
 void can_set_channel(int channel, core_t* core)
