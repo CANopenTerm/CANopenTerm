@@ -323,7 +323,7 @@ void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
     }
 }
 
-void can_set_channel(int channel, core_t* core)
+void can_set_channel(uint32 channel, core_t* core)
 {
     if (NULL == core)
     {
