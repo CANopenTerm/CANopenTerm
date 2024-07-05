@@ -12,9 +12,10 @@
 #include "core.h"
 #include "PCANBasic.h"
 
-static int  can_channel      = 0;
+static int  can_channel       = 0;
+static int  can_channel_index = 0;
 static int  can_monitor(void* core);
-static char err_message[100] = { 0 };
+static char err_message[100]  = { 0 };
 
 void can_init(core_t* core)
 {
@@ -119,7 +120,7 @@ void can_set_channel(int channel, core_t* core)
         channel = PCAN_PCIBUS16;
     }
 
-    can_channel = channel;
+    can_channel_index = channel;
     can_deinit(core);
 }
 
@@ -259,7 +260,7 @@ static int can_monitor(void* core_pt)
                 return 1;
             }
 
-            for (chan_i = can_channel; chan_i < num_can_channels; chan_i++)
+            for (chan_i = can_channel_index; chan_i < num_can_channels; chan_i++)
             {
                 for (rate_i = 0; rate_i < num_baud_rates; rate_i++)
                 {
@@ -279,31 +280,35 @@ static int can_monitor(void* core_pt)
                         os_print(DEFAULT_COLOR, "\r");
                         os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", can_channel_desc[chan_i], baud_rate_desc[rate_i]);
                         core->is_can_initialised = IS_TRUE;
-                        core->baud_rate = rate_i;
-                        can_channel = channel;
+                        core->baud_rate          = rate_i;
+                        can_channel              = channel;
+                        can_channel_index        = chan_i;
                         os_print_prompt();
                         break;
                     }
-                    os_delay(1);
+
+                    if (core->is_can_initialised == IS_TRUE)
+                    {
+                        break;
+                    }
                 }
 
-                if (core->is_can_initialised == IS_TRUE) {
+                if (core->is_can_initialised == IS_TRUE)
+                {
                     break;
                 }
             }
-
             os_delay(1);
-            continue;
         }
 
         core->can_status = CAN_GetStatus(can_channel);
 
         if (PCAN_ERROR_ILLHW == core->can_status)
         {
-            core->can_status = 0;
+            core->can_status         = 0;
             core->is_can_initialised = IS_FALSE;
 
-            CAN_Uninitialize(can_channel);
+            can_deinit(core);
             os_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
             os_print_prompt();
         }
