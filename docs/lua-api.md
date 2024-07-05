@@ -14,8 +14,10 @@ documented in detail below.
 
 ## CAN Database File (DBC)
 
+### dbc_decode()
+
 ```lua
-dbc_decode (can_id, data)
+dbc_decode (can_id, [data])
 ```
 
 > **can_id** CAN-ID.
