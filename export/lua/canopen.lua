@@ -34,6 +34,21 @@ local function find_devices(timeout_ms)
   return node_list, total_devices
 end
 
+local function get_id_by_bootup_message(timeout_ms)
+  local start_time = os.time()
+  local timeout    = timeout_ms / 1000  -- convert milliseconds to seconds
+
+  while os.time() - start_time < timeout do
+    local id, length, message = can_read()
+
+    if length == 1 and message == 0x00 then
+      return id - 0x700
+    end
+  end
+
+  return nil
+end
+
 local function get_id_by_name(name)
   local available_nodes, total_devices = find_devices(1000)
 
@@ -86,7 +101,7 @@ local function node_reset(node_id)
     local can_id, data_len, data = can_read()
     if can_id ~= nil then
       if can_id == 0x700 + node_id then
-        if 0x7F == data:byte(1) then
+        if length == 1 and message == 0x00 then
           break
         end
       end
@@ -99,8 +114,9 @@ local function node_reset(node_id)
 end
 
 return {
-  find_devices        = find_devices,
-  get_id_by_name      = get_id_by_name,
-  get_id_by_selection = get_id_by_selection,
-  node_reset          = node_reset
+  find_devices             = find_devices,
+  get_id_by_bootup_message = get_id_by_bootup_message,
+  get_id_by_name           = get_id_by_name,
+  get_id_by_selection      = get_id_by_selection,
+  node_reset               = node_reset
 }
