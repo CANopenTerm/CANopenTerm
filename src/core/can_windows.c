@@ -13,9 +13,6 @@
 #include "core.h"
 #include "table.h"
 
-static int  can_channel      = 0;
-static char err_message[100] = { 0 };
-
 static TPCANBaudrate baud_rates[] = {
     PCAN_BAUD_1M,
     PCAN_BAUD_800K,
@@ -50,8 +47,10 @@ static const char* baud_rate_desc[] = {
     "5 kBit/s"
 };
 
+static TPCANHandle              peak_can_channel;
 static TPCANChannelInformation* pcan_channel_information = NULL;
 static uint32                   pcan_channel_count;
+static char                     err_message[100] = { 0 };
 
 static int      can_monitor(void* core);
 static status_t search_can_channels(void);
@@ -87,7 +86,7 @@ void can_deinit(core_t* core)
     core->can_status         = 0;
     core->is_can_initialised = IS_FALSE;
 
-    CAN_Uninitialize(can_channel);
+    CAN_Uninitialize(peak_can_channel);
 }
 
 status_t can_print_baud_rate_help(core_t* core)
@@ -231,7 +230,7 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
         pcan_message.DATA[index] = message->data[index];
     }
 
-    return (uint32)CAN_Write(can_channel, &pcan_message);
+    return (uint32)CAN_Write(peak_can_channel, &pcan_message);
 }
 
 uint32 can_read(can_message_t* message)
@@ -241,7 +240,7 @@ uint32 can_read(can_message_t* message)
     TPCANMsg       pcan_message   = { 0 };
     TPCANTimestamp pcan_timestamp = { 0 };
 
-    can_status = CAN_Read(can_channel, &pcan_message, &pcan_timestamp);
+    can_status = CAN_Read(peak_can_channel, &pcan_message, &pcan_timestamp);
 
     message->id           = pcan_message.ID;
     message->length       = pcan_message.LEN;
@@ -332,20 +331,19 @@ static int can_monitor(void* core_pt)
 
     while (IS_TRUE == core->is_running)
     {
+        TPCANStatus peak_status;
+
         while (IS_FALSE == is_can_initialised(core))
         {
             search_free_can_configuration(core, IS_FALSE, IS_FALSE);
             os_delay(1);
         }
 
-        core->can_status = CAN_GetStatus(can_channel);
-
-        if (PCAN_ERROR_ILLHW == core->can_status)
+        peak_status = CAN_GetStatus(peak_can_channel);
+        if (PCAN_ERROR_ILLHW == peak_status)
         {
-            core->can_status         = 0;
-            core->is_can_initialised = IS_FALSE;
-
             can_deinit(core);
+            os_print(DEFAULT_COLOR, "\n");
             os_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
             os_print_prompt();
         }
@@ -395,8 +393,8 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
     {
         for (rate_i = 0; rate_i < num_baud_rates; rate_i++)
         {
-            TPCANBaudrate baud_rate;;
-            TPCANHandle   channel;;
+            TPCANBaudrate baud_rate;
+
 
             if (IS_TRUE == search_baud_rate)
             {
@@ -409,15 +407,15 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
 
             if (IS_TRUE == search_channel)
             {
-                channel = pcan_channel_information[chan_i].channel_handle;
+                peak_can_channel = pcan_channel_information[chan_i].channel_handle;
             }
             else
             {
-                channel = pcan_channel_information[core->can_channel].channel_handle;
+                peak_can_channel = pcan_channel_information[core->can_channel].channel_handle;
             }
 
             core->can_status = CAN_Initialize(
-                channel,
+                peak_can_channel,
                 baud_rate,
                 PCAN_NONE,
                 0, 0);
@@ -427,7 +425,6 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
             if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
             {
                 core->is_can_initialised = IS_TRUE;
-                can_channel              = channel;
 
                 if (IS_TRUE == search_baud_rate)
                 {
