@@ -54,6 +54,7 @@ typedef enum log_level
 typedef enum status
 {
     ALL_OK = 0,
+    CAN_NO_HARDWARE_FOUND,
     CAN_READ_ERROR,
     CAN_WRITE_ERROR,
     CORE_QUIT,

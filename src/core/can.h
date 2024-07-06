@@ -25,7 +25,7 @@ typedef struct can_message
 
 } can_message_t;
 
-void        can_init(core_t* core_t);
+status_t    can_init(core_t* core);
 void        can_deinit(core_t* core);
 const char* can_get_error_message(uint32 can_status);
 void        can_quit(core_t* core);

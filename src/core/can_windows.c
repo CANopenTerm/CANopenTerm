@@ -50,87 +50,31 @@ static const char* baud_rate_desc[] = {
     "5 kBit/s"
 };
 
-static const TPCANHandle can_channels[] = {
-    PCAN_USBBUS1,
-    PCAN_USBBUS2,
-    PCAN_USBBUS3,
-    PCAN_USBBUS4,
-    PCAN_USBBUS5,
-    PCAN_USBBUS6,
-    PCAN_USBBUS7,
-    PCAN_USBBUS8,
-    PCAN_USBBUS9,
-    PCAN_USBBUS10,
-    PCAN_USBBUS11,
-    PCAN_USBBUS12,
-    PCAN_USBBUS13,
-    PCAN_USBBUS14,
-    PCAN_USBBUS15,
-    PCAN_USBBUS16,
-    PCAN_PCIBUS1,
-    PCAN_PCIBUS2,
-    PCAN_PCIBUS3,
-    PCAN_PCIBUS4,
-    PCAN_PCIBUS5,
-    PCAN_PCIBUS6,
-    PCAN_PCIBUS7,
-    PCAN_PCIBUS8,
-    PCAN_PCIBUS9,
-    PCAN_PCIBUS10,
-    PCAN_PCIBUS11,
-    PCAN_PCIBUS12,
-    PCAN_PCIBUS13,
-    PCAN_PCIBUS14,
-    PCAN_PCIBUS15,
-    PCAN_PCIBUS16
-};
+static TPCANChannelInformation* pcan_channel_information = NULL;
+static uint32                   pcan_channel_count;
 
-static const char* can_channel_desc[] = {
-    "PCAN-USB channel 1",
-    "PCAN-USB channel 2",
-    "PCAN-USB channel 3",
-    "PCAN-USB channel 4",
-    "PCAN-USB channel 5",
-    "PCAN-USB channel 6",
-    "PCAN-USB channel 7",
-    "PCAN-USB channel 8",
-    "PCAN-USB channel 9",
-    "PCAN-USB channel 10",
-    "PCAN-USB channel 11",
-    "PCAN-USB channel 12",
-    "PCAN-USB channel 13",
-    "PCAN-USB channel 14",
-    "PCAN-USB channel 15",
-    "PCAN-USB channel 16",
-    "PCAN-PCI interface, channel 1",
-    "PCAN-PCI interface, channel 2",
-    "PCAN-PCI interface, channel 3",
-    "PCAN-PCI interface, channel 4",
-    "PCAN-PCI interface, channel 5",
-    "PCAN-PCI interface, channel 6",
-    "PCAN-PCI interface, channel 7",
-    "PCAN-PCI interface, channel 8",
-    "PCAN-PCI interface, channel 9",
-    "PCAN-PCI interface, channel 10",
-    "PCAN-PCI interface, channel 11",
-    "PCAN-PCI interface, channel 12",
-    "PCAN-PCI interface, channel 13",
-    "PCAN-PCI interface, channel 14",
-    "PCAN-PCI interface, channel 15",
-    "PCAN-PCI interface, channel 16"
-};
+static int      can_monitor(void* core);
+static status_t search_can_channels(void);
+static void     search_free_can_configuration(core_t* core, bool_t search_baud_rate, bool_t search_channel);
 
-static int  can_monitor(void* core);
-static void search_free_can_configuration(core_t* core, bool_t search_baud_rate, bool_t search_channel);
-
-void can_init(core_t* core)
+status_t can_init(core_t* core)
 {
+    status_t status;
+
     if (NULL == core)
     {
-        return;
+        return OS_INVALID_ARGUMENT;
+    }
+
+    status = search_can_channels();
+    if (ALL_OK != status)
+    {
+        return status;
     }
 
     core->can_monitor_th = os_create_thread(can_monitor, "CAN monitor thread", (void*)core);
+
+    return ALL_OK;
 }
 
 void can_deinit(core_t* core)
@@ -200,16 +144,17 @@ status_t can_print_channel_help(core_t* core)
 {
     status_t     status;
     table_t      table            = { DARK_CYAN, DARK_WHITE, 3, 30, 6 };
-    char         ch_status[32][7] = { 0 };
+    char         ch_status[33][7] = { 0 };
     unsigned int ch_status_index  = core->can_channel;
     unsigned int index;
 
-    if (ch_status_index >= 31)
+    status = search_can_channels();
+    if (ALL_OK != status)
     {
-        ch_status_index = 31;
+        return status;
     }
 
-    for (index = 0; index <= 31; index += 1)
+    for (index = 0; index < pcan_channel_count; index += 1)
     {
         if (ch_status_index == index)
         {
@@ -224,19 +169,25 @@ status_t can_print_channel_help(core_t* core)
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
-        int  i;
-        char row_index[4] = { 0 };
-        char row_desc[31] = { 0 };
+        char row_index[4]                            = { 0 };
+        char row_desc[MAX_LENGTH_HARDWARE_NAME + 16] = { 0 };
 
         table_print_header(&table);
         table_print_row("Id.", "Description", "Status", &table);
         table_print_divider(&table);
 
-        for (i = 0; i <= 31; i += 1)
+        for (index = 0; index < pcan_channel_count; index += 1)
         {
-            os_snprintf(row_index, 4, "%3u", i);
-            os_snprintf(row_desc, 31, "%s", can_channel_desc[i]);
-            table_print_row(row_index, row_desc, ch_status[i], &table);
+            os_snprintf(row_index, 4, "%3u", index);
+            if (ch_status_index == index)
+            {
+                os_snprintf(row_desc, MAX_LENGTH_HARDWARE_NAME + 16, "%s (%s)", pcan_channel_information[index].device_name, baud_rate_desc[core->baud_rate]);
+            }
+            else
+            {
+                os_snprintf(row_desc, MAX_LENGTH_HARDWARE_NAME, "%s", pcan_channel_information[index].device_name);
+            }
+            table_print_row(row_index, row_desc, ch_status[index], &table);
         }
 
         table_print_footer(&table);
@@ -256,6 +207,11 @@ void can_quit(core_t* core)
     if (IS_TRUE == is_can_initialised(core))
     {
         can_deinit(core);
+    }
+
+    if (NULL != pcan_channel_information)
+    {
+        os_free(pcan_channel_information);
     }
 
     os_detach_thread(core->can_monitor_th);
@@ -309,7 +265,7 @@ void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
         return;
     }
 
-    if (baud_rate_index > PCAN_BAUD_5K)
+    if (baud_rate_index >= 13)
     {
         can_print_baud_rate_help(core);
         return;
@@ -330,7 +286,13 @@ void can_set_channel(uint32 channel, core_t* core)
         return;
     }
 
-    if (channel > PCAN_PCIBUS16)
+    if (ALL_OK != search_can_channels())
+    {
+        can_print_channel_help(core);
+        return;
+    }
+
+    if (channel >= pcan_channel_count)
     {
         can_print_channel_help(core);
         return;
@@ -393,14 +355,43 @@ static int can_monitor(void* core_pt)
     return 0;
 }
 
+static status_t search_can_channels(void)
+{
+    TPCANStatus pcan_status;
+
+    pcan_status = CAN_GetValue(PCAN_NONEBUS, PCAN_ATTACHED_CHANNELS_COUNT, &pcan_channel_count, sizeof(uint32));
+    if (PCAN_ERROR_OK != pcan_status)
+    {
+        return CAN_NO_HARDWARE_FOUND;
+    }
+
+    pcan_channel_information = os_realloc(pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
+    if (NULL == pcan_channel_information)
+    {
+        return OS_MEMORY_ALLOCATION_ERROR;
+    }
+
+    pcan_status = CAN_GetValue(PCAN_NONEBUS, PCAN_ATTACHED_CHANNELS, pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
+    if (PCAN_ERROR_OK != pcan_status)
+    {
+        return CAN_NO_HARDWARE_FOUND;
+    }
+
+    return ALL_OK;
+}
+
 static void search_free_can_configuration(core_t* core, bool_t search_baud_rate, bool_t search_channel)
 {
-    int num_baud_rates   = sizeof(baud_rates)   / sizeof(baud_rates[0]);
-    int num_can_channels = sizeof(can_channels) / sizeof(can_channels[0]);
+    int num_baud_rates = sizeof(baud_rates)   / sizeof(baud_rates[0]);
     int chan_i;
     int rate_i;
 
-    for (chan_i = core->can_channel; chan_i < num_can_channels; chan_i++)
+    if (ALL_OK != search_can_channels())
+    {
+        return;
+    }
+
+    for (chan_i = core->can_channel; chan_i < pcan_channel_count; chan_i++)
     {
         for (rate_i = 0; rate_i < num_baud_rates; rate_i++)
         {
@@ -418,11 +409,11 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
 
             if (IS_TRUE == search_channel)
             {
-                channel = can_channels[chan_i];
+                channel = pcan_channel_information[chan_i].channel_handle;
             }
             else
             {
-                channel = can_channels[core->can_channel];
+                channel = pcan_channel_information[core->can_channel].channel_handle;
             }
 
             core->can_status = CAN_Initialize(
@@ -449,7 +440,7 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
                 }
 
                 os_print(DEFAULT_COLOR, "\r");
-                os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", can_channel_desc[core->can_channel], baud_rate_desc[core->baud_rate]);
+                os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", pcan_channel_information[core->can_channel].device_name, baud_rate_desc[core->baud_rate]);
                 os_print_prompt();
                 break;
             }

@@ -34,14 +34,16 @@ static int    can_monitor(void* core);
 static void   parse_rtattr(struct rtattr* tb[], int max, struct rtattr* rta, int len);
 static char** get_can_interfaces(int* count);
 
-void can_init(core_t* core)
+status_t can_init(core_t* core)
 {
     if (NULL == core)
     {
-        return;
+        return OS_INVALID_ARGUMENT;
     }
 
     core->can_monitor_th = os_create_thread(can_monitor, "CAN monitor thread", (void*)core);
+
+    return ALL_OK;
 }
 
 void can_deinit(core_t* core)
