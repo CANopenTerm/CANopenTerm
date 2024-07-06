@@ -748,6 +748,7 @@ int lua_sdo_read(lua_State* L)
     int           sub_index    = luaL_checkinteger(L, 3);
     bool_t        show_output  = lua_toboolean(L, 4);
     const char*   comment      = lua_tostring(L, 5);
+    uint32        result;
 
     limit_node_id((uint8*) & node_id);
 
@@ -770,7 +771,8 @@ int lua_sdo_read(lua_State* L)
             lua_pushstring(L, (const char*)sdo_response.data);
             break;
         case IS_READ_EXPEDIDED:
-            lua_pushinteger(L, (uint32)sdo_response.data[0]);
+            os_memcpy(&result, &sdo_response.data, sizeof(uint32));
+            lua_pushinteger(L, result);
             break;
         default:
         case ABORT_TRANSFER:
