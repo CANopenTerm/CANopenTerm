@@ -77,16 +77,26 @@ status_t can_print_channel_help(core_t* core)
 {
     status_t     status;
     table_t      table = { DARK_CYAN, DARK_WHITE, 3, 30, 6 };
-    char         ch_status[32][7] = { 0 };
+    char         ch_status[128][7] = { 0 };
     unsigned int ch_status_index  = core->can_channel;
     unsigned int index;
     int          interface_count;
     char**       can_interfaces   = get_can_interfaces(&interface_count);
     int          i;
 
-    if (ch_status_index >= 31)
+    if (0 == interface_count)
     {
-        ch_status_index = 31;
+        os_log(LOG_WARNING, "No CAN hardware found.");
+        return CAN_NO_HARDWARE_FOUND;
+    }
+    else if (interface_count > 127)
+    {
+        interface_count = 127;
+    }
+
+    if (ch_status_index > 127)
+    {
+        ch_status_index = 127;
     }
 
     for (index = 0; index < interface_count; index += 1)

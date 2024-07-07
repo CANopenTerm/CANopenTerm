@@ -153,6 +153,12 @@ status_t can_print_channel_help(core_t* core)
         return status;
     }
 
+    if (0 == pcan_channel_count)
+    {
+        os_log(LOG_WARNING, "No CAN hardware found.");
+        return CAN_NO_HARDWARE_FOUND;
+    }
+
     for (index = 0; index < pcan_channel_count; index += 1)
     {
         if (ch_status_index == index)
