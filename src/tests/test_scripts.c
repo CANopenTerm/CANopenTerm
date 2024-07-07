@@ -11,12 +11,14 @@
 #include <stddef.h>
 #include <setjmp.h>
 #include <stdint.h>
+#include <sys/stat.h>
+#include <errno.h>
 #include "cmocka.h"
 #include "os.h"
 #include "scripts.h"
 #include "test_scripts.h"
 
-void test_has_lua_extension(void** state)
+void test_has_lua_extension(void **state)
 {
     (void)state;
 
@@ -26,13 +28,25 @@ void test_has_lua_extension(void** state)
 
 void test_run_script(void** state)
 {
-    core_t core     = { 0 };
-    FILE*  lua_file = fopen("test.lua", "w+");
+    core_t core = { 0 };
+    FILE*  lua_file;
 
     (void)state;
 
+    if (mkdir("scripts", 0777) != 0)
+    {
+        if (errno != EEXIST)
+        {
+            fprintf(stderr, "Failed to create directory: %s\n", strerror(errno));
+            return;
+        }
+    }
+
+    lua_file = fopen("scripts/test.lua", "w+");
+
     if (lua_file == NULL)
     {
+        fprintf(stderr, "Failed to open file: %s\n", strerror(errno));
         return;
     }
 
