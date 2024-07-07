@@ -47,9 +47,12 @@ on a CANopen network, allowing you to:
   Write scripts to automate tasks and leverage a [custom API](/lua-api).
 
 - **Built-in DBC (CAN Database File) Parser**  
-  Easily import and use
+  Seamlessly import and utilize
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
-  to simplify your work with CAN networks.
+  to streamline your CAN network projects. This feature enhances your
+  ability to work with various protocols, including OBD-II for vehicle
+  diagnostics and J1939 for heavy-duty vehicle networking, making it
+  easier to manage and interpret CAN network data.
 
 - **Robust and Portable Source Code**  
   - CANopenTerm's source code is written entirely in ANSI C, ensuring
