@@ -356,6 +356,7 @@ static int can_monitor(void* core_pt)
 static status_t search_can_channels(void)
 {
     TPCANStatus pcan_status;
+    uint32      prev_channel_count = pcan_channel_count;
 
     pcan_status = CAN_GetValue(PCAN_NONEBUS, PCAN_ATTACHED_CHANNELS_COUNT, &pcan_channel_count, sizeof(uint32));
     if (PCAN_ERROR_OK != pcan_status)
@@ -363,10 +364,13 @@ static status_t search_can_channels(void)
         return CAN_NO_HARDWARE_FOUND;
     }
 
-    pcan_channel_information = os_realloc(pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
-    if (NULL == pcan_channel_information)
+    if (pcan_channel_count >= prev_channel_count)
     {
-        return OS_MEMORY_ALLOCATION_ERROR;
+        pcan_channel_information = os_realloc(pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
+        if (NULL == pcan_channel_information)
+        {
+            return OS_MEMORY_ALLOCATION_ERROR;
+        }
     }
 
     pcan_status = CAN_GetValue(PCAN_NONEBUS, PCAN_ATTACHED_CHANNELS, pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
