@@ -6,7 +6,7 @@ License: Public domain
 --]]
 
 local canopen   = require "lua/canopen"
-local max_nodes = 1;
+local max_nodes = 3;
 
 print("Waiting for RP2x Series Remote I/O to send bootup messages.")
 
@@ -16,28 +16,28 @@ if node_list == nil then
     return
 end
 
-for i = 1, #node_list do
-  local vendor_id    = sdo_read(node_list[i], 0x1018, 1)
-  local product_code = sdo_read(node_list[i], 0x1018, 2)
+local kinco_nodes = {
+    [0x21231608] = "RP2D-1608C1",
+    [0x21231616] = "RP2D-0016C1",
+    [0x21231632] = "RP2A-0402C1"
+}
 
-  if vendor_id == 0x300 then
-    if product_code == 0x21231608 then
-      print("RP2D-1608C1 with node ID " .. string.format("%Xh", 0x700 + node_list[i]) .. " detected.")
-    elseif product_code == 0x21231616 then
-      print("RP2D-0016C1 with node ID " .. string.format("%Xh", 0x700 + node_list[i]) .. " detected.")
-    elseif product_code == 0x21231632 then
-      print("RP2A-0402C1 with node ID " .. string.format("%Xh", 0x700 + node_list[i]) .. " detected.")
+for i = #node_list, 1, -1 do
+    local vendor_id    = sdo_read(node_list[i], 0x1018, 1)
+    local product_code = sdo_read(node_list[i], 0x1018, 2)
+
+    if vendor_id ~= 0x300 or not kinco_nodes[product_code] then
+        table.remove(node_list, i)
     else
-      table.remove(node_list, i)
+        local hardware_name = kinco_nodes[product_code]
+        local node_id = 0x700 + node_list[i]
+        print(hardware_name .. " with node ID " .. string.format("%Xh", node_id) .. " detected.")
     end
-  else
-    table.remove(node_list, i)
-  end
 end
 
 for i = 1, #node_list do
-  sdo_write(node_list[i], 0x1017, 0, 2, 1000) -- Set heartbeat time to 1000ms
-  nmt_send_command(node_list[i], 0x01)        -- Start node)
+    sdo_write(node_list[i], 0x1017, 0, 2, 1000) -- Set heartbeat time to 1000ms
+    nmt_send_command(node_list[i], 0x01)        -- Start node)
 end
 
 print("Exiting.")
