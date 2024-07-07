@@ -2,9 +2,9 @@
 
 ## Supported hardware
 
-On Windows, only USB dongles from [PEAK-System Technik
-GmbH](https://www.peak-system.com/Products.57.0.html?L=1) are currently
-supported.  SocketCAN is used under Linux, so the CAN can be accessed
+On Windows, only CAN hardware from [PEAK-System Technik
+GmbH](https://www.peak-system.com/Products.57.0.html?L=1) is currently
+supported.  SocketCAN is used on Linux, so the CAN can be accessed
 hardware-independently.
 
 ## Download

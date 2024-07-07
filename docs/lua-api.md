@@ -1,4 +1,4 @@
-﻿# Lua API
+# Lua API
 
 One of the most important and certainly most useful parts of
 CANopenTerm is the integrated Lua parser, which can execute
@@ -220,8 +220,6 @@ dict_lookup (index, sub_index)
 
 ## Generic CAN interface
 
-### can_write()
-
 ### can_read()
 
 ```lua
@@ -229,6 +227,8 @@ can_read ()
 ```
 
 **Returns**: id, length, data and timestamp in μs, or nil on failure.
+
+### can_write()
 
 ```lua
 can_write (can_id, data_length, [data], [show_output], [comment])
