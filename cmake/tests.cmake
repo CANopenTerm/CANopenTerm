@@ -64,6 +64,7 @@ target_link_libraries(
 target_link_options(
   run_unit_tests
   PUBLIC
+  -Wl,--wrap=can_read
   -Wl,--wrap=can_write)
 
 include_directories(
