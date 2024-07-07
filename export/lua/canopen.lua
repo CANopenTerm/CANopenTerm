@@ -49,6 +49,28 @@ local function get_id_by_bootup_message(timeout_ms)
   return nil
 end
 
+local function get_ids_by_bootup_message(timeout_ms, max_nodes)
+  local node_count = 0
+  local node_list  = {}
+  local start_time = os.time()
+  local timeout    = timeout_ms / 1000  -- convert milliseconds to seconds
+
+  while os.time() - start_time < timeout do
+    local id = get_id_by_bootup_message(timeout_ms)
+
+    if id then
+      table.insert(node_list, id)
+      node_count = node_count + 1
+    end
+
+    if node_count >= max_nodes then
+      break
+    end
+  end
+
+  return node_list
+end
+
 local function get_id_by_name(name)
   local available_nodes, total_devices = find_devices(1000)
 
@@ -114,9 +136,10 @@ local function node_reset(node_id)
 end
 
 return {
-  find_devices             = find_devices,
-  get_id_by_bootup_message = get_id_by_bootup_message,
-  get_id_by_name           = get_id_by_name,
-  get_id_by_selection      = get_id_by_selection,
-  node_reset               = node_reset
+  find_devices              = find_devices,
+  get_id_by_bootup_message  = get_id_by_bootup_message,
+  get_ids_by_bootup_message = get_ids_by_bootup_message,
+  get_id_by_name            = get_id_by_name,
+  get_id_by_selection       = get_id_by_selection,
+  node_reset                = node_reset
 }
