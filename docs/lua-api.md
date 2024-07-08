@@ -267,7 +267,7 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 <!-- tab:Example -->
 ```lua
 if false == sdo_write(0x123, 0x1000, 0x00, 4, 0x12345678, true, "Device type") then
-    print("Failed to write device type. Read-only object.")
+  print("Failed to write device type. Read-only object.")
 end
 ```
 <!-- tabs:end -->
