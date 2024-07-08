@@ -31,7 +31,7 @@ dbc_decode (can_id, [data])
 <!-- tab:Example -->
 ```lua
 local utils    = require "lua/utils"
-local watch_id = 0x123
+local watch_id = 0x18F01DFE -- Steer Angle Sensor
 
 if false == dbc_load("j1939.dbc") then
   print("Failed to load DBC file.")
