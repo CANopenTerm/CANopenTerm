@@ -28,19 +28,15 @@ dbc_decode (can_id, [data])
 
 **Returns**: Decoded output as a string.
 
-```lua
-dbc_load (filename)
-```
-
-> **filename** DBC file name.
-
-**Returns**: true on success, false on failure.
-
 <!-- tab:Example -->
 ```lua
-local utils = require "lua/utils"
-
+local utils    = require "lua/utils"
 local watch_id = 0x123
+
+if false == dbc_load("j1939.dbc") then
+  print("Failed to load DBC file.")
+  return
+end
 
 while false == key_is_hit() do
   local id, length, data = can_read()
@@ -51,6 +47,24 @@ while false == key_is_hit() do
   end
 end
 ```
+<!-- tabs:end -->
+
+### dbc_load()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+dbc_load (filename)
+```
+
+> **filename** DBC file name.
+
+**Returns**: true on success, false on failure.
+
+<!-- tab:Example -->
+if false == dbc_load("j1939.dbc") then
+  print("Failed to load DBC file.")
+end)
 <!-- tabs:end -->
 
 ## Network management (NMT)
