@@ -10,6 +10,24 @@
 #include "can.h"
 #include "os.h"
 
+#include "can.h"
+#include "os.h"
+
+uint32 __wrap_can_read(can_message_t* message, disp_mode_t disp_mode, const char* comment)
+{
+    uint32 status = 0;
+
+    (void)disp_mode;
+    (void)comment;
+
+    if (NULL == message)
+    {
+        status = 1;
+    }
+
+    return status;
+}
+
 uint32 __wrap_can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
     uint32 status = 0;
