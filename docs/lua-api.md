@@ -49,6 +49,41 @@ end
 ```
 <!-- tabs:end -->
 
+### dbc_find_id_by_name()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+find_id_by_name (search)
+```
+
+> **search** A case-insensitive substring to search within message names.
+
+**Returns**: CAN-ID or nil.
+
+<!-- tab:Example -->
+```lua
+local watch_id = 0
+
+if dbc_load("j1939.dbc") then
+  watch_id = dbc_find_id_by_name("sensor")
+else
+  print("Failed to load DBC file.")
+  print("Exiting.")
+  return
+end
+
+while false == key_is_hit() do
+  local id, length, data = can_read()
+
+  if id == watch_id then
+    output = dbc_decode(watch_id, data)
+    utils.print_multiline_at_same_position(output, num_lines)
+  end
+end
+```
+<!-- tabs:end -->
+
 ### dbc_load()
 
 <!-- tabs:start -->

@@ -58,6 +58,7 @@ typedef enum status
     CAN_READ_ERROR,
     CAN_WRITE_ERROR,
     CORE_QUIT,
+    ITEM_NOT_FOUND,
     NMT_UNKNOWN_COMMAND,
     NOTHING_TO_DO,
     OS_CONSOLE_INIT_ERROR,
@@ -177,6 +178,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_strrchr() not defined
 #endif
 
+#ifndef os_strstr
+#error  os_strstr() not defined
+#endif
+
 #ifndef os_strtokr
 #error  os_strtokr() not defined
 #endif
@@ -191,6 +196,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef os_strtoull
 #error  os_strtoull() not defined
+#endif
+
+#ifndef os_tolower
+#error  os_tolower() not defined
 #endif
 
 #ifndef os_va_arg

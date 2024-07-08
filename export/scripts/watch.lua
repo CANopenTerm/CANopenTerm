@@ -13,13 +13,25 @@ if dbc_file == nil then
   return
 end
 
-local watch_id = utils.select_number("Enter the CAN-ID you want to monitor")
-if watch_id == nil then
+dbc_load(dbc_file)
+
+local watch_id = utils.select_variable("Enter CAN-ID or provide a search term to find the ID by message name")
+
+if type(watch_id) == "string" then
+  if tonumber(watch_id) then
+    -- Nothing to do.
+  else
+    watch_id = dbc_find_id_by_name(watch_id)
+    if nil == watch_id then
+      print("Exiting.")
+      return
+    else
+    end
+  end
+else
   print("Exiting.")
   return
 end
-
-dbc_load(dbc_file)
 
 local output    = dbc_decode(watch_id, 0x0000000000000000)
 local num_lines = select(2, output:gsub('\n', '\n')) + 1

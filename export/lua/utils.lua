@@ -117,6 +117,17 @@ function select_number(prompt)
   end
 end
 
+function select_variable(prompt)
+  io.write("\n" .. prompt .. " (or 'q' to quit): ")
+  local choice = io.read()
+
+  if choice == 'q' then
+    return nil
+  else
+    return choice
+  end
+end
+
 local function read_word(file)
     local bytes = file:read(2)
     if not bytes or #bytes < 2 then
@@ -191,6 +202,7 @@ return {
   get_file_by_selection            = get_file_by_selection,
   print_multiline_at_same_position = print_multiline_at_same_position,
   select_number                    = select_number,
+  select_variable                  = select_variable,
   read_word                        = read_word,
   read_long                        = read_long,
   read_ulong                       = read_ulong,

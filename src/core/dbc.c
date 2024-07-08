@@ -19,6 +19,7 @@ static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length
 static void   parse_message_line(char *line, message_t *message);
 static void   parse_signal_line(char *line, signal_t *signal);
 static bool_t starts_with(const char *str, const char *prefix);
+static char*  str_tolower(const char* str);
 static char*  trim_whitespace(char *str);
 
 const char* dbc_decode(uint32 can_id, uint64 data)
@@ -32,12 +33,12 @@ const char* dbc_decode(uint32 can_id, uint64 data)
         return "";
     }
 
-    for (i = 0; i < dbc->message_count; ++i)
+    for (i = 0; i <= dbc->message_count; ++i)
     {
         if (dbc->messages[i].id == can_id)
         {
             message_t* msg = &dbc->messages[i];
-            int        n   = os_snprintf(result + pos, sizeof(result) - pos, "%s\n", msg->name);
+            int        n   = os_snprintf(result + pos, sizeof(result) - pos, "%s (%Xh)\n", msg->name, msg->id);
             int        j;
 
             if (n > 0)
@@ -84,6 +85,45 @@ const char* dbc_decode(uint32 can_id, uint64 data)
     }
 
     return result;
+}
+
+status_t dbc_find_id_by_name(uint32* id, const char* search)
+{
+    int i;
+
+    if ((NULL == dbc) || (NULL == search) || (NULL == id))
+    {
+        return OS_INVALID_ARGUMENT;
+    }
+
+    char* lower_search = str_tolower(search);
+    if (NULL == lower_search)
+    {
+        return OS_MEMORY_ALLOCATION_ERROR;
+    }
+
+    for (i = 0; i < dbc->message_count; ++i)
+    {
+        char* lower_name = str_tolower(dbc->messages[i].name);
+        if (NULL == lower_name)
+        {
+            os_free(lower_search);
+            return OS_MEMORY_ALLOCATION_ERROR;
+        }
+
+        if (os_strstr(lower_name, lower_search) != NULL)
+        {
+            *id = dbc->messages[i].id;
+            os_free(lower_name);
+            os_free(lower_search);
+            return ALL_OK;
+        }
+
+        os_free(lower_name);
+    }
+
+    os_free(lower_search);
+    return ITEM_NOT_FOUND;
 }
 
 status_t dbc_load(const char* filename)
@@ -228,6 +268,25 @@ int lua_dbc_decode(lua_State *L)
     return 1;
 }
 
+int lua_dbc_find_id_by_name(lua_State* L)
+{
+    const char* search = luaL_checkstring(L, 1);
+    uint32      id;
+    status_t    status;
+
+    status = dbc_find_id_by_name(&id, search);
+    if (ALL_OK == status)
+    {
+        lua_pushinteger(L, id);
+    }
+    else
+    {
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
 int lua_dbc_load(lua_State *L)
 {
     const char* filename = luaL_checkstring(L, 1);
@@ -251,6 +310,8 @@ void lua_register_dbc_command(core_t *core)
 {
     lua_pushcfunction(core->L, lua_dbc_decode);
     lua_setglobal(core->L, "dbc_decode");
+    lua_pushcfunction(core->L, lua_dbc_find_id_by_name);
+    lua_setglobal(core->L, "dbc_find_id_by_name");
     lua_pushcfunction(core->L, lua_dbc_load);
     lua_setglobal(core->L, "dbc_load");
 }
@@ -410,6 +471,30 @@ static bool_t starts_with(const char *str, const char *prefix)
     }
 
     return status;
+}
+
+static char* str_tolower(const char* str)
+{
+    int   i;
+    char* lower_str;
+
+    if (NULL == str)
+    {
+        return NULL;
+    }
+
+    lower_str = os_strdup(str);
+    if (NULL == lower_str)
+    {
+        return NULL;
+    }
+
+    for (i = 0; lower_str[i]; i++)
+    {
+        lower_str[i] = os_tolower((unsigned char)lower_str[i]);
+    }
+
+    return lower_str;
 }
 
 static char* trim_whitespace(char *str)
