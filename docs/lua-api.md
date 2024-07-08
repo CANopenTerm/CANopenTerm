@@ -101,6 +101,16 @@ nmt_send_command (node_id, command, [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
+nmt_send_command(0x123, 0x81) -- Reset.
+
+while false == key_is_hit() do
+  local id, length, message = can_read()
+
+  if length == 1 and message == 0x00 -- Bootup message.
+  then
+    print("Node back online.")
+  end
+end
 ```
 <!-- tabs:end -->
 
@@ -256,6 +266,9 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
+if false == sdo_write(0x123, 0x1000, 0x00, 4, 0x12345678, true, "Device type") then
+    print("Failed to write device type. Read-only object.")
+end
 ```
 <!-- tabs:end -->
 
@@ -281,6 +294,9 @@ sdo_write_file (node_id, index, sub_index, filename)
 
 <!-- tab:Example -->
 ```lua
+if sdo_write_string(0x123, 0x4500, 0x01, "Sup3rS3cuR3P4SSw0rd") then
+  sdo_write_file(0x123, 0x4500, 0x05, "firmware.hex")
+end
 ```
 <!-- tabs:end -->
 
@@ -310,6 +326,11 @@ sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
+if sdo_write_string(0x123, 0x4600, 0x01, "Hello, world!") then
+  if sdo_read(0x123, 0x4600, 0x01) == "Hello, world!" then
+    print("All good!")
+  end
+end
 ```
 <!-- tabs:end -->
 
@@ -325,6 +346,7 @@ dict_lookup (index, sub_index)
 
 <!-- tab:Example -->
 ```lua
+print(dict_lookup, 0x1008, 0x00) -- Manufacturer device name.
 ```
 <!-- tabs:end -->
 
@@ -346,6 +368,13 @@ can_read ()
 
 <!-- tab:Example -->
 ```lua
+while key_is_hit() do
+  local id, length, data, timestamp = can_read()
+
+  print(string.format(
+    "ID: 0x%03X, Length: %d, Data: 0x%016X, Timestamp: %d μs",
+    id, length, data, timestamp))
+end
 ```
 <!-- tabs:end -->
 
@@ -373,6 +402,9 @@ can_write (can_id, data_length, [data], [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
+if can_write(0x5454, 8, 0x1122334455667788, true, "SPAM") then
+  print("Message sent.")
+end
 ```
 <!-- tabs:end -->
 
@@ -396,6 +428,9 @@ delay_ms ([delay_in_ms], [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
+print("Waiting for 5 seconds.")
+delay_ms(5000)
+print("Done.")
 ```
 <!-- tabs:end -->
 
@@ -430,6 +465,16 @@ print_heading (heading)
 ```
 
 <!-- tab:Example -->
+```lua
+local device_name = sdo_read(0x123, 0x1008, 0x00)
+
+if device_name then
+  print_heading(device_name)
+end
+sdo_read(0x123, 0x1000, 0x00, true)
+sdo_read(0x123, 0x1009, 0x00, true)
+sdo_read(0x123, 0x100A, 0x00, true)
+```
 <!-- tabs:end -->
 
 > Heading to be printed.
