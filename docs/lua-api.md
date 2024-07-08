@@ -16,6 +16,8 @@ documented in detail below.
 
 ### dbc_decode()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 dbc_decode (can_id, [data])
 ```
@@ -34,12 +36,41 @@ dbc_load (filename)
 
 **Returns**: true on success, false on failure.
 
+<!-- tab:Example -->
+```lua
+local utils = require "lua/utils"
+
+local watch_id = 0x123
+
+while false == key_is_hit() do
+  local id, length, data = can_read()
+
+  if id == watch_id then
+    output = dbc_decode(watch_id, data)
+    utils.print_multiline_at_same_position(output, num_lines)
+  end
+end
+```
+<!-- tabs:end -->
+
 ## Network management (NMT)
 
-### nmd_send_command()
+!> The **command** parameter supports the following commands:
 
+| Command | Description                    |
+| ------- | ------------------------------ |
+| 0x01    | Start (go to Operational)      |
+| 0x02    | Stop (go to Stopped)           |
+| 0x80    | Go to Pre-operational          |
+| 0x81    | Reset node (Application reset) |
+| 0x82    | Reset communication            |
+
+### nmt_send_command()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
-nmd_send_command (node_id, command, [show_output], [comment])
+nmt_send_command (node_id, command, [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.
@@ -52,15 +83,10 @@ nmd_send_command (node_id, command, [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
-!> The **command** parameter supports the following commands:
-
-| Command | Description                    |
-| ------- | ------------------------------ |
-| 0x01    | Start (go to Operational)      |
-| 0x02    | Stop (go to Stopped)           |
-| 0x80    | Go to Pre-operational          |
-| 0x81    | Reset node (Application reset) |
-| 0x82    | Reset communication            |
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
 
 ## Process data objects (PDO)
 
@@ -79,6 +105,8 @@ sent cyclically at the specified interval.
 
 ### pdo_add()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 ```
@@ -97,8 +125,18 @@ pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
+<!-- tab:Example -->
+```lua
+if pdo_add(0x181, 100, 8, 0x1122334455667788, true, "TPDO1") then
+  print("TPDO1 added.")
+end
+```
+<!-- tabs:end -->
+
 ### pdo_del()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 pdo_del (can_id)
 ```
@@ -107,10 +145,20 @@ pdo_del (can_id)
 
 **Returns**: true on success, false on failure.
 
+<!-- tab:Example -->
+```lua
+if pdo_del(0x181) then
+  print("TPDO1 deleted.")
+end
+```
+<!-- tabs:end -->
+
 ## Service data objects (SDO)
 
 ### sdo_lookup_abort_code()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 sdo_lookup_abort_code (abort_code)
 ```
@@ -119,8 +167,16 @@ sdo_lookup_abort_code (abort_code)
 
 **Returns**: Abort code description (string).
 
+<!-- tab:Example -->
+```lua
+print(sdo_lookup_abort_code(0x05040005)) -- Out of memory.
+```
+<!-- tabs:end -->
+
 ### sdo_read()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 Read SDO (expedided or segmented).
 
 ```lua
@@ -140,8 +196,26 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 
 **Returns**: number or string, nil on failure.
 
+<!-- tab:Example -->
+```lua
+local node_id     = 0x123
+local device_name = sdo_read(node_id, 0x1008, 0x00)
+
+if nil == device_name then
+  device_name = "Unknown device"
+end
+
+print_heading(device_name)
+sdo_read(node_id, 0x1000, 0x00, true)
+sdo_read(node_id, 0x1009, 0x00, true)
+sdo_read(node_id, 0x100A, 0x00, true)
+```
+<!-- tabs:end -->
+
 ### sdo_write()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 Write expedided SDO.
 
 ```lua
@@ -164,8 +238,15 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
+
 ### sdo_write_file()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 Write file (block transfer).
 
 ```lua
@@ -182,8 +263,15 @@ sdo_write_file (node_id, index, sub_index, filename)
 
 **Returns**: true on success, false on failure.
 
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
+
 ### sdo_write_string()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 Write string (segmented transfer).
 
 ```lua
@@ -204,13 +292,25 @@ sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
+
 ### dict_lookup()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 Read CANopenTerm from built-in object directory.
 
 ```lua
 dict_lookup (index, sub_index)
 ```
+
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
 
 > **index** Index.
 
@@ -222,14 +322,23 @@ dict_lookup (index, sub_index)
 
 ### can_read()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 can_read ()
 ```
+
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
 
 **Returns**: id, length, data and timestamp in μs, or nil on failure.
 
 ### can_write()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 can_write (can_id, data_length, [data], [show_output], [comment])
 ```
@@ -246,10 +355,17 @@ can_write (can_id, data_length, [data], [show_output], [comment])
 
 **Returns**: true on success, false on failure.
 
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
+
 ## Program flow
 
 ### delay_ms
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 delay_ms ([delay_in_ms], [show_output], [comment])
 ```
@@ -261,6 +377,11 @@ delay_ms ([delay_in_ms], [show_output], [comment])
 > **comment** Comment to show in formatted output, default is `nil`.
 
 **Returns**: Nothing.
+
+<!-- tab:Example -->
+```lua
+```
+<!-- tabs:end -->
 
 ### key_is_hit()
 
@@ -286,9 +407,14 @@ print("Exiting.")
 
 ### print_heading()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 print_heading (heading)
 ```
+
+<!-- tab:Example -->
+<!-- tabs:end -->
 
 > Heading to be printed.
 
@@ -296,8 +422,12 @@ print_heading (heading)
 
 ### Helper functions
 
-In addition to the integrated API, there are also a couple of helper functions that can be imported:
+<!-- tabs:start -->
+<!-- tab:Description -->
+In addition to the integrated API, there are also a couple of helper
+functions that can be imported.
 
+<!-- tab:Example -->
 ```lua
 local canopen = require "lua/canopen"
 local utils   = require "lua/utils"
@@ -306,3 +436,4 @@ local node_list, total_devices = canopen.find_devices(timeout_ms)
 local node_id   = canopen.get_id_by_name("Device name")
 local hex_files = utils.get_file_list("hex")
 ```
+<!-- tabs:end -->
