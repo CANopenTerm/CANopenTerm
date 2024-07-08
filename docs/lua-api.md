@@ -262,17 +262,17 @@ delay_ms ([delay_in_ms], [show_output], [comment])
 
 **Returns**: Nothing.
 
-<!-- tabs:start -->
 ### key_is_hit()
 
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```lua
 key_is_hit ()
 ```
 
 **Returns**: true or false.
 
-### Example
-
+<!-- tab:Example -->
 ```lua
 while false == key_is_hit() do
   print("Waiting for key press.")
