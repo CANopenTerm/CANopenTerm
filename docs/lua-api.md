@@ -62,9 +62,11 @@ dbc_load (filename)
 **Returns**: true on success, false on failure.
 
 <!-- tab:Example -->
+```lua
 if false == dbc_load("j1939.dbc") then
   print("Failed to load DBC file.")
-end)
+end
+```
 <!-- tabs:end -->
 
 ## Network management (NMT)
