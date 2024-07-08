@@ -263,7 +263,7 @@ delay_ms ([delay_in_ms], [show_output], [comment])
 **Returns**: Nothing.
 
 <!-- tabs:start -->
-### key_is_hit()
+#### key_is_hit()
 
 ```lua
 key_is_hit ()
@@ -271,7 +271,7 @@ key_is_hit ()
 
 **Returns**: true or false.
 
-### Example
+#### Example
 
 ```lua
 while false == key_is_hit() do
