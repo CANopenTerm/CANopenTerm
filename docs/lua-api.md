@@ -410,7 +410,7 @@ end
 
 ## Program flow
 
-### delay_ms
+### delay_ms()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
