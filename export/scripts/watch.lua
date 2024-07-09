@@ -25,7 +25,6 @@ if type(watch_id) == "string" then
     if nil == watch_id then
       print("Exiting.")
       return
-    else
     end
   end
 else
