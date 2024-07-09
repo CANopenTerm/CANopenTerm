@@ -72,7 +72,7 @@ local function get_ids_by_bootup_message(timeout_ms, max_nodes)
 end
 
 local function get_id_by_name(name)
-  local available_nodes, total_devices = find_devices(1000)
+  local available_nodes, total_devices = find_devices(2000)
 
   if total_devices >= 1 then
     for _, node_id in ipairs(available_nodes) do
