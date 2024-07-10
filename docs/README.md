@@ -54,7 +54,9 @@ on a CANopen network, allowing you to:
   diagnostics and J1939 for heavy-duty vehicle networking, making it
   easier to manage and interpret CAN network data.
 
-- - **Robust and Portable Source Code**  
+  [![DBC Monitor](https://canopenterm.de/media/DBC_Monitor.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/DBC_Monitor.gif?raw=true "DBC Monitor")
+
+- **Robust and Portable Source Code**  
   - CANopenTerm's source code is written entirely in ANSI C, ensuring
     robust performance and high portability with minimal dependencies.
   - The quality of the code is constantly monitored through static code
