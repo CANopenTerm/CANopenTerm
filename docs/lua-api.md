@@ -255,20 +255,22 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 > **comment** Comment to show in formatted output.
               If ommited, the description from the CANopen object dictionary is used.
 
-**Returns**: Expedited: number and nil, or number and string (if printable)  
-             Segmented: string and string  
-             On failure: nil and nil
+**Returns**:
+
+Expedited: number and nil, or number and string (if printable)  
+Segmented: string and string  
+On failure: nil and nil
 
 <!-- tab:Example -->
 ```lua
-local node_id     = 0x123
-local device_name = sdo_read(node_id, 0x1008, 0x00)
+local node_id        = 0x123
+local temp, dev_name = sdo_read(node_id, 0x1008, 0x00)
 
-if nil == device_name then
-  device_name = "Unknown device"
+if nil == dev_name then
+  dev_name = "Unknown device"
 end
 
-print_heading(device_name)
+print_heading(dev_name)
 sdo_read(node_id, 0x1000, 0x00, true)
 sdo_read(node_id, 0x1009, 0x00, true)
 sdo_read(node_id, 0x100A, 0x00, true)
