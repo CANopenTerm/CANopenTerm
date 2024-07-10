@@ -255,7 +255,7 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 > **comment** Comment to show in formatted output.
               If ommited, the description from the CANopen object dictionary is used.
 
-**Returns**:
+**Returns**:  
 
 Expedited: number and nil, or number and string (if printable)  
 Segmented: string and string  
