@@ -238,7 +238,7 @@ print(sdo_lookup_abort_code(0x05040005)) -- Out of memory.
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Read SDO (expedided or segmented).
+Read SDO (expedited or segmented).
 
 ```lua
 sdo_read (node_id, index, sub_index, [show_output], [comment])
@@ -255,7 +255,9 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 > **comment** Comment to show in formatted output.
               If ommited, the description from the CANopen object dictionary is used.
 
-**Returns**: number or string, nil on failure.
+**Returns**: Expedited: number and nil, or number and string (if printable)  
+             Segmented: string and string  
+             On failure: nil and nil
 
 <!-- tab:Example -->
 ```lua
@@ -277,7 +279,7 @@ sdo_read(node_id, 0x100A, 0x00, true)
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Write expedided SDO.
+Write expedited SDO.
 
 ```lua
 sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])

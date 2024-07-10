@@ -15,15 +15,19 @@
 #include "os.h"
 #include "sdo.h"
 
+#define DATA_BUFFER_SIZE      0xffff
 #define SEGMENT_DATA_SIZE     7u
 #define MAX_SDO_RESPONSE_SIZE 8u
 #define CAN_BASE_ID           0x600
 #define SDO_TIMEOUT_IN_MS     100u
 
-static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode);
-static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
-static void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
-static int  wait_for_response(uint8 node_id, can_message_t* msg_in);
+static uint8 data_buffer[DATA_BUFFER_SIZE] = { 0 };
+
+static bool_t is_printable_string(const char *str, size_t length);
+static void   print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode);
+static void   print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
+static void   print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
+static int    wait_for_response(uint8 node_id, can_message_t* msg_in);
 
 const char* sdo_lookup_abort_code(uint32 abort_code)
 {
@@ -170,11 +174,11 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     if (IS_READ_SEGMENTED == sdo_state)
     {
         int    n;
-        uint8  cmd            = UPLOAD_SEGMENT_REQUEST_1;
-        uint8  response_index = 0;
-        uint32 data_length    = sdo_response->length;
-        uint8  remainder      = data_length % SEGMENT_DATA_SIZE;
-        uint8  expected_msgs  = (data_length / SEGMENT_DATA_SIZE) + (remainder ? 1 : 0);
+        uint8  cmd           = UPLOAD_SEGMENT_REQUEST_1;
+        uint8  data_index    = 0;
+        uint32 data_length   = sdo_response->length;
+        uint8  remainder     = data_length % SEGMENT_DATA_SIZE;
+        uint8  expected_msgs = (data_length / SEGMENT_DATA_SIZE) + (remainder ? 1 : 0);
         uint64 timeout_time;
         uint64 time_a;
         uint64 time_b;
@@ -203,8 +207,8 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
                 can_read(&msg_in);
                 if ((0x580 + node_id) == msg_in.id)
                 {
-                    int can_msg_index = 0;
-                    msg_out.data[0]   = cmd;
+                    int seg_index   = 0;
+                    msg_out.data[0] = cmd;
 
                     if (0 == (msg_in.data[0] % 2))
                     {
@@ -227,24 +231,24 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
                         }
                     }
 
-                    for (can_msg_index = 1; can_msg_index <= SEGMENT_DATA_SIZE; can_msg_index += 1)
+                    for (seg_index = 1; seg_index <= SEGMENT_DATA_SIZE; seg_index += 1)
                     {
                         char printable_char;
-                        if (response_index >= data_length)
+                        if (data_index >= data_length)
                         {
                             break;
                         }
-                        else if (os_isprint(msg_in.data[can_msg_index]))
+                        else if (os_isprint(data_buffer[seg_index]))
                         {
-                            printable_char = msg_in.data[can_msg_index];
+                            printable_char = data_buffer[seg_index];
                         }
                         else
                         {
                             break;
                         }
-                        sdo_response->data[response_index] = printable_char;
+                        data_buffer[data_index] = printable_char;
 
-                        response_index += 1;
+                        data_index += 1;
                     }
 
                     response_received = IS_TRUE;
@@ -743,11 +747,12 @@ int lua_sdo_read(lua_State* L)
     can_message_t sdo_response = { 0 };
     disp_mode_t   disp_mode    = SILENT;
     sdo_state_t   sdo_state;
-    int           node_id      = luaL_checkinteger(L, 1);
-    int           index        = luaL_checkinteger(L, 2);
-    int           sub_index    = luaL_checkinteger(L, 3);
-    bool_t        show_output  = lua_toboolean(L, 4);
-    const char*   comment      = lua_tostring(L, 5);
+    int           node_id       = luaL_checkinteger(L, 1);
+    int           index         = luaL_checkinteger(L, 2);
+    int           sub_index     = luaL_checkinteger(L, 3);
+    bool_t        show_output   = lua_toboolean(L, 4);
+    const char*   comment       = lua_tostring(L, 5);
+    char          str_buffer[5] = {0};
     uint32        result;
 
     limit_node_id((uint8*) & node_id);
@@ -769,18 +774,30 @@ int lua_sdo_read(lua_State* L)
     {
         case IS_READ_SEGMENTED:
             lua_pushstring(L, (const char*)sdo_response.data);
+            lua_pushstring(L, (const char*)sdo_response.data);
             break;
         case IS_READ_EXPEDIDED:
-            os_memcpy(&result, &sdo_response.data, sizeof(uint32));
+            os_memcpy(&result,     &sdo_response.data, sizeof(uint32));
+            os_memcpy(&str_buffer, &sdo_response.data, sizeof(uint32));
             lua_pushinteger(L, result);
+
+            if (is_printable_string(str_buffer, sizeof(uint32)))
+            {
+                lua_pushstring(L, (const char*)str_buffer);
+            }
+            else
+            {
+                lua_pushnil(L);
+            }
             break;
         default:
         case ABORT_TRANSFER:
             lua_pushnil(L);
+            lua_pushnil(L);
             break;
     }
 
-    return 1;
+    return 2;
 }
 
 int lua_sdo_write(lua_State* L)
@@ -933,6 +950,19 @@ void lua_register_sdo_commands(core_t* core)
     lua_setglobal(core->L, "sdo_write_string");
 }
 
+static bool_t is_printable_string(const char *str, size_t length)
+{
+    size_t i;
+    for (i = 0; i < length; i++)
+    {
+        if (0 == os_isprint(str[i]))
+        {
+            return IS_FALSE;
+        }
+    }
+    return IS_TRUE;
+}
+
 static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode)
 {
     switch (disp_mode)
@@ -1027,8 +1057,15 @@ static void print_progress_bar(size_t bytes_sent, size_t length)
 static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment)
 {
     uint32 u32_value;
+    char   str_buffer[5] = { 0 };
 
     os_memcpy(&u32_value, &sdo_response->data, sizeof(uint32));
+    os_memcpy(&str_buffer, &u32_value, sizeof(uint32));
+
+    if (IS_FALSE == is_printable_string(str_buffer, sizeof(uint32)))
+    {
+        str_buffer[0] = '\0';
+    }
 
     switch (disp_mode)
     {
@@ -1044,20 +1081,21 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
             switch (sdo_state)
             {
                 case IS_READ_EXPEDIDED:
-                    os_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %u (0x%x)",
+                    os_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %u (0x%x) %s",
                         index,
                         sub_index,
                         sdo_response->length,
                         u32_value,
-                        u32_value);
+                        u32_value,
+                        str_buffer);
                     break;
                 case IS_READ_SEGMENTED:
-                    sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+                    data_buffer[DATA_BUFFER_SIZE - 1] = '\0';
                     os_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %s",
                         index,
                         sub_index,
                         sdo_response->length,
-                        (char*)sdo_response->data);
+                        (char*)data_buffer);
                     break;
                 default:
                     return;
@@ -1069,7 +1107,7 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
             int  i;
             char buffer[34] = { 0 };
 
-            sdo_response->data[CAN_MAX_DATA_LENGTH] = '\0';
+            data_buffer[DATA_BUFFER_SIZE - 1] = '\0';
 
             if (NULL == comment)
             {
@@ -1097,22 +1135,22 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
                 switch (sdo_response->length)
                 {
                     case 4:
-                        os_print(DEFAULT_COLOR, "0x%08X %u (U32)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%08X %u (U32) %s", u32_value, u32_value, str_buffer);
                         break;
                     case 3:
-                        os_print(DEFAULT_COLOR, "0x%06X %u (U24)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%06X %u (U24) %s", u32_value, u32_value, str_buffer);
                         break;
                     case 2:
-                        os_print(DEFAULT_COLOR, "0x%04X %u (U16)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%04X %u (U16) %s", u32_value, u32_value, str_buffer);
                         break;
                     case 1:
-                        os_print(DEFAULT_COLOR, "0x%02X %u (U8)", u32_value, u32_value);
+                        os_print(DEFAULT_COLOR, "0x%02X %u (U8) %s", u32_value, u32_value, str_buffer);
                         break;
                 }
             }
             else /* Read segmented SDO. */
             {
-                os_print(DEFAULT_COLOR, "%s", (char*)sdo_response->data);
+                os_print(DEFAULT_COLOR, "%s", (char*)data_buffer);
             }
             puts("");
             break;
@@ -1187,9 +1225,7 @@ void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint
                     str);
             }
             else if (IS_WRITE_SEGMENTED)
-            {
-                data_str[CAN_MAX_DATA_LENGTH] = '\0';
-    
+            {    
                 os_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) written: %s",
                     index,
                     sub_index,

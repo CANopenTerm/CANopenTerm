@@ -10,8 +10,6 @@
 #ifndef CAN_H
 #define CAN_H
 
-#define CAN_MAX_DATA_LENGTH 0xff
-
 #include "lua.h"
 #include "core.h"
 #include "os.h"
@@ -20,8 +18,9 @@ typedef struct can_message
 {
     uint32 id;
     uint32 length;
-    uint8  data[CAN_MAX_DATA_LENGTH + 1];
+    uint8  data[8];
     uint64 timestamp_us;
+    bool_t is_extended;
 
 } can_message_t;
 

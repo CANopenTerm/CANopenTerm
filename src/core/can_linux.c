@@ -53,7 +53,7 @@ void can_deinit(core_t* core)
         return;
     }
 
-    core->can_status = 0;
+    core->can_status         = 0;
     core->is_can_initialised = IS_FALSE;
 
     close(can_socket);
@@ -229,15 +229,15 @@ uint32 can_read(can_message_t* message)
     int              nbytes;
 
     iov.iov_base = &frame;
-    iov.iov_len = sizeof(frame);
+    iov.iov_len  = sizeof(frame);
 
-    msg.msg_name = NULL;
-    msg.msg_namelen = 0;
-    msg.msg_iov = &iov;
-    msg.msg_iovlen = 1;
-    msg.msg_control = &ctrlmsg;
+    msg.msg_name       = NULL;
+    msg.msg_namelen    = 0;
+    msg.msg_iov        = &iov;
+    msg.msg_iovlen     = 1;
+    msg.msg_control    = &ctrlmsg;
     msg.msg_controllen = sizeof(ctrlmsg);
-    msg.msg_flags = 0;
+    msg.msg_flags      = 0;
 
     nbytes = recvmsg(can_socket, &msg, 0);
     if (nbytes < 0)
