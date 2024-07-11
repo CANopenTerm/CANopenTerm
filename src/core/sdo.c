@@ -115,6 +115,9 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     msg_out.data[3] = sub_index;
     msg_out.length  = 8;
 
+    can_read(&msg_in); /* Clear buffer. */
+    os_memset(&msg_in, 0, sizeof(msg_in));
+
     can_status = can_write(&msg_out, SILENT, NULL);
     if (0 != can_status)
     {
