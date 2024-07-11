@@ -51,6 +51,6 @@ local function get_id_by_selection(prompt)
 end
 
 return {
-  get_id_by_name            = get_id_by_name,
-  get_id_by_selection       = get_id_by_selection,
+  get_id_by_name      = get_id_by_name,
+  get_id_by_selection = get_id_by_selection,
 }
