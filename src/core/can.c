@@ -27,9 +27,9 @@ int lua_can_write(lua_State* L)
     int           can_id      = luaL_checkinteger(L, 1);
     int           length      = luaL_checkinteger(L, 2);
     uint64        data        = lua_tointeger(L, 3);
-    bool_t        show_output = lua_toboolean(L, 4);
-    const char*   comment     = lua_tostring(L, 5);
-    bool_t        is_extended = lua_toboolean(L, 6);
+    bool_t        is_extended = lua_toboolean(L, 4);
+    bool_t        show_output = lua_toboolean(L, 5);
+    const char*   comment     = lua_tostring(L, 6);
     can_message_t message     = { 0 };
     disp_mode_t   disp_mode   = SILENT;
 
