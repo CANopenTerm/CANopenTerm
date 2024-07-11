@@ -14,6 +14,8 @@ tool for developing or testing CANopen nodes?**
 
 Look no further!
 
+[![CANopenTerm](https://canopenterm.de/media/CANopenTerm.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/CANopenTerm.gif?raw=true "CANopenTerm")
+
 CANopenTerm is your go-to software for analyzing and testing
 CANopen nodes with ease.  Empower your R&D with CANopenTerm,
 the interactive terminal tool that simplifies communication
@@ -54,6 +56,8 @@ on a CANopen network, allowing you to:
   diagnostics and J1939 for heavy-duty vehicle networking, making it
   easier to manage and interpret CAN network data.
 
+  [![DBC Monitor](https://canopenterm.de/media/DBC_Monitor.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/DBC_Monitor.gif?raw=true "DBC Monitor")
+ 
 - **Robust and Portable Source Code**  
   - CANopenTerm's source code is written entirely in ANSI C, ensuring
     robust performance and high portability with minimal dependencies.
