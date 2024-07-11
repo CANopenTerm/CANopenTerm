@@ -14,6 +14,8 @@ tool for developing or testing CANopen nodes?**
 
 Look no further!
 
+[![CANopenTerm](https://canopenterm.de/media/CANopenTerm.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/CANopenTerm.gif?raw=true "CANopenTerm")
+
 CANopenTerm is your go-to software for analyzing and testing
 CANopen nodes with ease.  Empower your R&D with CANopenTerm,
 the interactive terminal tool that simplifies communication
@@ -85,17 +87,6 @@ tool remains available and continues to evolve.
 Thank you for your support!
 
 [![Buy Me A Coffee](https://canopenterm.de/media/buy-me-a-coffee.png)](https://www.buymeacoffee.com/mupf.dev)
-
-## Watch it in Action
-
-Experience the power of CANopenTerm firsthand with a live demonstration.
-Watch the tool seamlessly interact with CANopen networks, showcasing its
-capabilities in real-time.  From reading and writing SDOs to sending NMT
-messages and automating tasks with custom scripts, this demonstration will
-give you a glimpse of how CANopenTerm can simplify your workflow and enhance
-your R&D processes.
-
-[![CANopenTerm](https://canopenterm.de/media/CANopenTerm.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/CANopenTerm.gif?raw=true "CANopenTerm")
 
 ## Try It Yourself
 
