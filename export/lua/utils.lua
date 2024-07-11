@@ -84,6 +84,14 @@ local function get_file_by_selection(prompt, extension, sub_directory)
   end
 end
 
+function measure_time(func)
+  local start_time   = os.clock()
+  local ret          = func()
+  local elapsed_time = (os.clock() - start_time) * 1000
+
+  return ret, elapsed_time
+end
+
 function print_multiline_at_same_position(message, num_lines)
     local buffer = ""
 
@@ -200,6 +208,7 @@ return {
   clear_screen                     = clear_screen,
   get_file_list                    = get_file_list,
   get_file_by_selection            = get_file_by_selection,
+  measure_time                     = measure_time,
   print_multiline_at_same_position = print_multiline_at_same_position,
   select_number                    = select_number,
   select_variable                  = select_variable,
