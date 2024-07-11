@@ -14,11 +14,13 @@
 #include "core.h"
 #include "os.h"
 
+#define CAN_BUF_SIZE 0xff
+
 typedef struct can_message
 {
     uint32 id;
     uint32 length;
-    uint8  data[8];
+    uint8  data[CAN_BUF_SIZE];
     uint64 timestamp_us;
     bool_t is_extended;
 
