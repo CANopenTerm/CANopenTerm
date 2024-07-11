@@ -195,8 +195,9 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
     struct can_frame frame;
     long             num_bytes;
 
-    frame.can_id  = message->id;
-    frame.can_dlc = message->length;
+    frame.can_id   = message->id;
+    frame.can_dlc  = message->length;
+    frame.can_id  |= message->is_extended ? CAN_EFF_FLAG : 0;
 
     for (index = 0; index < 8; index += 1)
     {
@@ -245,8 +246,9 @@ uint32 can_read(can_message_t* message)
         return nbytes;
     }
 
-    message->id     = frame.can_id;
-    message->length = frame.can_dlc;
+    message->id          = frame.can_id;
+    message->length      = frame.can_dlc;
+    message->is_extended = frame.can_id & CAN_EFF_FLAG;
 
     for (index = 0; index < 8; index += 1)
     {

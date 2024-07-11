@@ -227,9 +227,17 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
     int      index;
     TPCANMsg pcan_message = { 0 };
 
-    pcan_message.ID      = message->id;
-    pcan_message.MSGTYPE = PCAN_MESSAGE_STANDARD;
-    pcan_message.LEN     = message->length;
+    pcan_message.ID  = message->id;
+    pcan_message.LEN = message->length;
+
+    if (message->is_extended == IS_TRUE)
+    {
+        pcan_message.MSGTYPE = PCAN_MESSAGE_EXTENDED;
+    }
+    else
+    {
+        pcan_message.MSGTYPE = PCAN_MESSAGE_STANDARD;
+    }
 
     for (index = 0; index < 8; index += 1)
     {
@@ -250,6 +258,7 @@ uint32 can_read(can_message_t* message)
 
     message->id           = pcan_message.ID;
     message->length       = pcan_message.LEN;
+    message->is_extended  = (PCAN_MESSAGE_EXTENDED == pcan_message.MSGTYPE) ? IS_TRUE : IS_FALSE;
     message->timestamp_us =
         pcan_timestamp.micros
         + (1000ULL * pcan_timestamp.millis)
