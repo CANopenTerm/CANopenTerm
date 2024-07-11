@@ -534,8 +534,10 @@ functions that can be imported.
 local canopen = require "lua/canopen"
 local utils   = require "lua/utils"
 
-local node_list, total_devices = canopen.find_devices(timeout_ms)
 local node_id   = canopen.get_id_by_name("Device name")
 local hex_files = utils.get_file_list("hex")
+
+local temp, time = utils.measure_time(function() return delay_ms(2) end)
+print(string.format("Elapsed time: %.2f milliseconds.", time))
 ```
 <!-- tabs:end -->

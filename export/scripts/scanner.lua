@@ -5,19 +5,28 @@ License: Public domain
 
 --]]
 
-local canopen = require "lua/canopen"
+local nodes      = {}
+local start_time = os.clock()
+local timeout_ms = 3000
 
-local available_nodes, total_devices = canopen.find_devices(1000)
+nmt_send_command(0x00, 0x81) -- Reset all nodes.
 
-print(string.format("\nFound %d device(s)", total_devices))
+while (os.clock() - start_time) * 1000 <= timeout_ms do
+  local id, length, message = can_read()
 
-for _, node_id in ipairs(available_nodes) do
-  local device_name = sdo_read(node_id, 0x1008, 0x00)
-  if nil == device_name then
-    device_name = "Unknown device"
+  -- Wait for boot-up messages.
+  if length == 1 and message == 0x00 then
+    table.insert(nodes, id - 0x700)
+  end
+end
+
+for _, node_id in ipairs(nodes) do
+  local temp, dev_name = sdo_read(node_id, 0x1008, 0x00)
+  if nil == dev_name then
+    dev_name = "Unknown device"
   end
 
-  print_heading(device_name)
+  print_heading(dev_name)
   sdo_read(node_id, 0x1000, 0x00, true)
   sdo_read(node_id, 0x1009, 0x00, true)
   sdo_read(node_id, 0x100A, 0x00, true)

@@ -98,12 +98,12 @@ int lua_can_write(lua_State* L)
 int lua_can_read(lua_State* L)
 {
     can_message_t message = { 0 };
-    uint32        status;
+    status_t      status;
     uint32        length;
     uint64        data    = 0;;
 
     status = can_read(&message);
-    if (0 == status)
+    if (ALL_OK == status)
     {
         length = message.length;
 
