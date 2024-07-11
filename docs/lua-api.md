@@ -443,7 +443,7 @@ can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
-if can_write(0x5454, 8, 0x1122334455667788, true, "SPAM") then
+if can_write(0x5454, 8, 0x1122334455667788, false, true, "SPAM") then
   print("Message sent.")
 end
 ```
