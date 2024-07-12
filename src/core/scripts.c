@@ -13,6 +13,9 @@
 #include "dirent.h"
 #include "core.h"
 #include "os.h"
+#ifdef ENABLE_POCKETPY_SUPPORT
+#include "pocketpy.h"
+#endif
 #include "scripts.h"
 
 char*  get_script_description(const char* script_path);
@@ -41,6 +44,10 @@ void scripts_init(core_t* core)
         lua_pushcfunction(core->L, lua_print_heading);
         lua_setglobal(core->L, "print_heading");
     }
+
+#ifdef ENABLE_POCKETPY_SUPPORT
+    py_initialize();
+#endif
 }
 
 void scripts_deinit(core_t* core)
@@ -54,6 +61,10 @@ void scripts_deinit(core_t* core)
     {
         lua_close(core->L);
     }
+
+#ifdef ENABLE_POCKETPY_SUPPORT
+    py_finalize();
+#endif
 }
 
 char* get_script_description(const char* script_path)
