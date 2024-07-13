@@ -10,7 +10,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/pocketpy.lib)
 ExternalProject_Add(pocketpy_devel
   URL https://github.com/pocketpy/pocketpy/archive/${POCKETPY_DEVEL_PKG}
   URL_HASH SHA1=39c075222b6d5738fd3b9d85f89cb860c18b842e
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
   SOURCE_DIR ${POCKETPY_PATH}/

@@ -8,7 +8,7 @@ set(LUA_LIBRARY     ${LUA_PATH}/liblua.a)
 ExternalProject_Add(Lua_devel
   URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
   URL_HASH SHA1=96abb80f46e2c6548b47632384205bddfaeb6c37
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
   SOURCE_DIR ${LUA_PATH}/
