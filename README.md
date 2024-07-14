@@ -19,45 +19,45 @@ networks.
 
 Key functionalities include:
 
-- **Monitoring and Analysis**  
+- **Monitoring and Analysis**:
   Advanced trace filtering and node access for comprehensive
   network monitoring and analysis.
 
-- **Configuration and Simulation**  
+- **Configuration and Simulation**:
   Tools for configuring CANopen devices and simulating nodes
   under development.
 
-- **Testing**  
+- **Testing**:
   Capabilities to thoroughly test CANopen networks and devices.
 
-- **Extended Protocol Support** 
+- **Extended Protocol Support**:
   Features tailored for SAE J1939 and OBD-II protocols.
 
 ## Key Features
 
-- **Read and Write SDOs**  
+- **Read and Write SDOs**:
   Manage Service Data Objects with a user-friendly interface.
 
-- **Send NMT Messages**  
+- **Send NMT Messages**:
   Control network management with commands to one or all nodes.
 
-- **Simulate PDOs**  
+- **Simulate PDOs**:
   Add asynchronous Process Data Objects to simulate network
   traffic.
 
-- **Versatile Raw CAN Interface**  
+- **Versatile Raw CAN Interface**:
   For non-CANopen needs, offering flexibility and control.
 
-- **Automate Workflow**  
+- **Automate Workflow**:
   Use Lua scripts for workflow automation, including a
   [PEAK CAN trace](https://www.peak-system.com/produktcd/Pdf/English/PEAK_CAN_TRC_File_Format.pdf)
   record and playback script.
 
-- **Lua 5.4 Interpreter**  
+- **Lua 5.4 Interpreter**:
   Write scripts to automate tasks and leverage a
   [custom API](https://canopenterm.de/lua-api).
 
-- **Built-in DBC Parser**  
+- **Built-in DBC Parser**:
   Import and utilize
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
   for streamlined CAN network projects.
@@ -66,13 +66,13 @@ Key functionalities include:
 
 ## Technical Excellence
 
-- **ANSI C Source Code**  
+- **ANSI C Source Code**:
   Ensures robust performance and high portability.
 
-- **Quality Assurance**  
+- **Quality Assurance**:
   Static code analysis and unit tests for reliability.
 
-- **OS Abstraction Layer**  
+- **OS Abstraction Layer**:
   Facilitates porting to other platforms.
 
 ## Open Source Commitment
