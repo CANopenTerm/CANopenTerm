@@ -87,8 +87,6 @@ in its features without the need for marketing embellishments.
 
 ## Why Your Support Matters
 
-## Why Your Support Matters
-
 **CANopenTerm** is developed to provide a powerful tool for
 professionals at no cost.  However, maintaining and improving
 such a project requires resources.  Your donations can make a
