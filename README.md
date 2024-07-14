@@ -51,11 +51,8 @@ Key functionalities include:
 - **Automate Workflow**:
   Use Lua scripts for workflow automation, including a
   [PEAK CAN trace](https://www.peak-system.com/produktcd/Pdf/English/PEAK_CAN_TRC_File_Format.pdf)
-  record and playback script.
-
-- **Lua 5.4 Interpreter**:
-  Write scripts to automate tasks and leverage a
-  [custom API](https://canopenterm.de/lua-api).
+  record and playback script.  Or write yuour own scripts to automate tasks
+  and leverage a [custom API](https://canopenterm.de/lua-api).
 
 - **Built-in DBC Parser**:
   Import and utilize
