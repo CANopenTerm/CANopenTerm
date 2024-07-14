@@ -102,7 +102,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     can_message_t msg_in      = { 0 };
     can_message_t msg_out     = { 0 };
     char          reason[300] = { 0 };
-    sdo_state_t   sdo_state   = IS_READ_EXPEDIDED;
+    sdo_state_t   sdo_state   = IS_READ_EXPEDITED;
     uint32        abort_code  = 0;
     uint32        can_status  = 0;
 
@@ -121,7 +121,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     can_status = can_write(&msg_out, SILENT, NULL);
     if (0 != can_status)
     {
-        print_error(can_get_error_message(can_status), IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+        print_error(can_get_error_message(can_status), IS_READ_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
         return ABORT_TRANSFER;
     }
 
@@ -130,7 +130,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     {
         if (0 != wait_for_response(node_id, &msg_in))
         {
-            print_error(reason, IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+            print_error(reason, IS_READ_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
         }
     }
@@ -142,19 +142,19 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
             sdo_response->length = msg_in.data[4];
             sdo_state = IS_READ_SEGMENTED;
             break;
-        case UPLOAD_RESPONSE_EXPEDIDED_4_BYTE:
+        case UPLOAD_RESPONSE_EXPEDITED_4_BYTE:
         case DOWNLOAD_INIT_EXPEDITED_4_BYTE:
             sdo_response->length = 4;
             break;
-        case UPLOAD_RESPONSE_EXPEDIDED_3_BYTE:
+        case UPLOAD_RESPONSE_EXPEDITED_3_BYTE:
         case DOWNLOAD_INIT_EXPEDITED_3_BYTE:
             sdo_response->length = 3;
             break;
-        case UPLOAD_RESPONSE_EXPEDIDED_2_BYTE:
+        case UPLOAD_RESPONSE_EXPEDITED_2_BYTE:
         case DOWNLOAD_INIT_EXPEDITED_2_BYTE:
             sdo_response->length = 2;
             break;
-        case UPLOAD_RESPONSE_EXPEDIDED_1_BYTE:
+        case UPLOAD_RESPONSE_EXPEDITED_1_BYTE:
         case DOWNLOAD_INIT_EXPEDITED_1_BYTE:
             sdo_response->length = 1;
             break;
@@ -167,7 +167,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
             abort_code = os_swap_be_32(abort_code);
 
             os_snprintf(reason, 300, "0x%08x: %s", abort_code, sdo_lookup_abort_code((abort_code)));
-            print_error(reason, IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+            print_error(reason, IS_READ_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
             return ABORT_TRANSFER;
     }
 
@@ -226,7 +226,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
                         can_status = can_write(&msg_out, SILENT, NULL);
                         if (0 != can_status)
                         {
-                            print_error(can_get_error_message(can_status), IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+                            print_error(can_get_error_message(can_status), IS_READ_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
                             return ABORT_TRANSFER;
                         }
                     }
@@ -272,12 +272,12 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
             if (timeout_time >= SDO_TIMEOUT_IN_MS)
             {
                 os_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
-                print_error(reason, IS_READ_EXPEDIDED, node_id, index, sub_index, comment, disp_mode);
+                print_error(reason, IS_READ_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
                 return ABORT_TRANSFER;
             }
         }
     }
-    else /* Expedided SDO. */
+    else /* Expedited SDO. */
     {
         os_memcpy(&sdo_response->data, &msg_in.data[4], sizeof(uint32));
     }
@@ -776,7 +776,7 @@ int lua_sdo_read(lua_State* L)
             lua_pushstring(L, (const char*)sdo_response.data);
             lua_pushstring(L, (const char*)sdo_response.data);
             break;
-        case IS_READ_EXPEDIDED:
+        case IS_READ_EXPEDITED:
             os_memcpy(&result, &sdo_response.data, sizeof(uint32));
             os_memcpy(&str_buffer, &sdo_response.data, sizeof(uint32));
             lua_pushinteger(L, result);
@@ -978,7 +978,7 @@ static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id
 
             switch (sdo_state)
             {
-                case IS_READ_EXPEDIDED:
+                case IS_READ_EXPEDITED:
                 case IS_READ_SEGMENTED:
                     os_log(LOG_ERROR, "Index %x, Sub-index %x: 0 byte(s) read error: %s", index, sub_index, reason);
                     break;
@@ -999,7 +999,7 @@ static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id
 
             switch (sdo_state)
             {
-                case IS_READ_EXPEDIDED:
+                case IS_READ_EXPEDITED:
                     os_print(color, "Read ");
                     os_print(DEFAULT_COLOR, "    0x%02X    0x%04X  0x%02X      -       ", node_id, index, sub_index);
                     break;
@@ -1080,7 +1080,7 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
 
             switch (sdo_state)
             {
-                case IS_READ_EXPEDIDED:
+                case IS_READ_EXPEDITED:
                     os_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) read: %u (0x%x) %s",
                         index,
                         sub_index,
@@ -1130,7 +1130,7 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
             os_print(LIGHT_GREEN, "SUCC    ");
             os_print(DARK_MAGENTA, "%s ", buffer);
 
-            if (IS_READ_EXPEDIDED == sdo_state)
+            if (IS_READ_EXPEDITED == sdo_state)
             {
                 switch (sdo_response->length)
                 {

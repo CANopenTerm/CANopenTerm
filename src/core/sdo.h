@@ -25,7 +25,7 @@
 
 typedef enum
 {
-    IS_READ_EXPEDIDED = 0,
+    IS_READ_EXPEDITED = 0,
     IS_READ_SEGMENTED,
     IS_READ_BLOCK,
     IS_WRITE_EXPEDITED,
@@ -47,18 +47,18 @@ typedef enum
 {
     UPLOAD_RESPONSE_SEGMENT_NO_SIZE       = 0x40, /* Upload response, segment transfer, no size indicated */
     UPLOAD_RESPONSE_SEGMENT_SIZE_IN_DATA  = 0x41, /* Upload response, segment transfer, size in data */
-    UPLOAD_RESPONSE_EXPEDIDED_NO_SIZE     = 0x42, /* Upload response, expedided transfer, no size indicated */
-    UPLOAD_RESPONSE_EXPEDIDED_4_BYTE      = 0x43, /* Upload response, expedided transfer, 4 byte data */
-    UPLOAD_RESPONSE_EXPEDIDED_3_BYTE      = 0x47, /* Upload response, expedided transfer, 3 byte data */
-    UPLOAD_RESPONSE_EXPEDIDED_2_BYTE      = 0x4b, /* Upload response, expedided transfer, 2 byte data */
-    UPLOAD_RESPONSE_EXPEDIDED_1_BYTE      = 0x4f, /* Upload response, expedided transfer, 1 byte data */
+    UPLOAD_RESPONSE_EXPEDITED_NO_SIZE     = 0x42, /* Upload response, EXPEDITED transfer, no size indicated */
+    UPLOAD_RESPONSE_EXPEDITED_4_BYTE      = 0x43, /* Upload response, EXPEDITED transfer, 4 byte data */
+    UPLOAD_RESPONSE_EXPEDITED_3_BYTE      = 0x47, /* Upload response, EXPEDITED transfer, 3 byte data */
+    UPLOAD_RESPONSE_EXPEDITED_2_BYTE      = 0x4b, /* Upload response, EXPEDITED transfer, 2 byte data */
+    UPLOAD_RESPONSE_EXPEDITED_1_BYTE      = 0x4f, /* Upload response, EXPEDITED transfer, 1 byte data */
     DOWNLOAD_INIT_SEGMENT_NO_SIZE         = 0x20, /* Download initiate, segment transfer, no size indicated */
     DOWNLOAD_INIT_SEGMENT_SIZE_IN_DATA    = 0x21, /* Download initiate, segment transfer, size in data */
-    DOWNLOAD_INIT_EXPEDIDED_NO_SIZE       = 0x22, /* Download initiate, expedided transfer, no size indicated */
-    DOWNLOAD_INIT_EXPEDITED_4_BYTE        = 0x23, /* Download initiate, expedided transfer, 4 byte data */
-    DOWNLOAD_INIT_EXPEDITED_3_BYTE        = 0x27, /* Download initiate, expedided transfer, 3 byte data */
-    DOWNLOAD_INIT_EXPEDITED_2_BYTE        = 0x2b, /* Download initiate, expedided transfer, 2 byte data */
-    DOWNLOAD_INIT_EXPEDITED_1_BYTE        = 0x2f, /* Download initiate, expedided transfer, 1 byte data */
+    DOWNLOAD_INIT_EXPEDITED_NO_SIZE       = 0x22, /* Download initiate, EXPEDITED transfer, no size indicated */
+    DOWNLOAD_INIT_EXPEDITED_4_BYTE        = 0x23, /* Download initiate, EXPEDITED transfer, 4 byte data */
+    DOWNLOAD_INIT_EXPEDITED_3_BYTE        = 0x27, /* Download initiate, EXPEDITED transfer, 3 byte data */
+    DOWNLOAD_INIT_EXPEDITED_2_BYTE        = 0x2b, /* Download initiate, EXPEDITED transfer, 2 byte data */
+    DOWNLOAD_INIT_EXPEDITED_1_BYTE        = 0x2f, /* Download initiate, EXPEDITED transfer, 1 byte data */
     UPLOAD_INIT_BLOCK_NO_CRC_NO_SIZE      = 0xc0, /* Upload initiate, block transfer, no CRC, no size indicated */
     UPLOAD_INIT_BLOCK_NO_CRC_SIZE_IN_DATA = 0xc2, /* Upload initiate, block transfer, no CRC, size in data */
     UPLOAD_INIT_BLOCK_CRC_NO_SIZE         = 0xc4, /* Upload initiate, block transfer, CRC, no size indicated */
