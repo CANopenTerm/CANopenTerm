@@ -6,8 +6,6 @@
 [![Linux Build & Unit Tests](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/linux.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/linux.yml)
 [![Windows Build](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml)
 
-## Discover CANopenTerm
-
 ## Overview
 
 CANopenTerm is an open-source software tool designed for the
