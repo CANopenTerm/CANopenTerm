@@ -146,7 +146,6 @@ set(PLATFORM_LIBS
   ${LUA_LIBRARY})
 
 set(PLATFORM_CORE_DEPS
-  picoc
   Lua_devel
   SDL2_devel)
 
