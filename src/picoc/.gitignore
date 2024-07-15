@@ -9,7 +9,6 @@ picoc
 build/*
 archives/
 
-CMakeLists.txt
 picoc.plist
 picoc.config
 picoc.creator
