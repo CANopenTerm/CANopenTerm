@@ -19,7 +19,7 @@
 #include "table.h"
 
 extern char*  get_script_description(const char* script_path);
-extern bool_t has_lua_extension(const char* filename);
+extern bool_t has_valid_extension(const char* filename);
 extern size_t safe_strcpy(char* dest, const char* src, size_t size);
 extern bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
 extern void   strip_extension(char* filename);
@@ -48,7 +48,7 @@ status_t list_scripts(void)
             struct dirent* ent;
             while ((ent = readdir(dir)) != NULL)
             {
-                if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
+                if (DT_REG == ent->d_type && has_valid_extension(ent->d_name))
                 {
                     char script_name[256] = { 0 };
 
@@ -97,29 +97,63 @@ status_t list_scripts(void)
 
 void run_script(const char* name, core_t* core)
 {
-    bool_t   has_extension = os_strchr(name, '.') != NULL;
-    char     script_path[64] = { 0 };
+    const char* extension         = os_strrchr(name, '.');
+    bool_t      has_c_extension   = extension && os_strcmp(extension, ".c")   == 0;
+    bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
+    char        script_path[64]   = { 0 };
 
     if (NULL == core)
     {
         return;
     }
 
-    os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
-    if (LUA_OK == luaL_dofile(core->L, script_path))
+    if (IS_TRUE == has_lua_extension)
     {
-        lua_pop(core->L, lua_gettop(core->L));
+        os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
+        if (LUA_OK == luaL_dofile(core->L, script_path))
+        {
+            lua_pop(core->L, lua_gettop(core->L));
+        }
+        return;
+    }
+    else if (IS_TRUE == has_c_extension)
+    {
+        FILE* file;
+
+        PicocInitialize(&core->P, (128000 * 4));
+        PicocIncludeAllSystemHeaders(&core->P);
+
+        os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
+
+        file  = fopen(script_path, "r");
+        if (file != NULL)
+        {
+            fclose(file);
+
+            if (PicocPlatformSetExitPoint(&core->P))
+            {
+                PicocCleanup(&core->P);
+                return;
+            }
+
+            PicocPlatformScanFile(&core->P, script_path);
+            PicocCallMain(&core->P, 0, NULL);
+        }
+        else
+        {
+            os_log(LOG_WARNING, "Script file '%s' does not exist.", script_path);
+        }
+
+        PicocCleanup(&core->P);
+        return;
     }
     else
     {
-        if (IS_FALSE == has_extension)
+        os_snprintf(script_path, sizeof(script_path), "scripts/%s.lua", name);
+        if (LUA_OK == luaL_dofile(core->L, script_path))
         {
-            os_snprintf(script_path, sizeof(script_path), "scripts/%s.lua", name);
-            if (LUA_OK == luaL_dofile(core->L, script_path))
-            {
-                lua_pop(core->L, lua_gettop(core->L));
-                return;
-            }
+            lua_pop(core->L, lua_gettop(core->L));
+            return;
         }
         os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }

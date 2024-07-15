@@ -12,6 +12,7 @@
 
 #include "lua.h"
 #include "os.h"
+#include "picoc.h"
 
 typedef enum disp_mode
 {
@@ -25,6 +26,7 @@ typedef struct core
 {
     os_thread* can_monitor_th;
     lua_State* L;
+    Picoc      P;
     uint8      baud_rate;
     uint32     can_channel;
     uint32     can_status;

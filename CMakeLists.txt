@@ -18,6 +18,8 @@ add_executable(
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/picoc)
+
 if(WIN32)
   set(PLATFORM "windows")
 elseif(UNIX)
@@ -35,7 +37,8 @@ endif(BUILD_TESTS)
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os)
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/picoc)
 
 function(append_platform_files source_list pattern platform)
   file(GLOB platform_files ${pattern}_${platform}.c)
@@ -73,6 +76,10 @@ add_library(
   ${os_sources})
 
 target_link_libraries(
+  core
+  picoc)
+
+target_link_libraries(
   ${PROJECT_NAME}
   core
   ${PLATFORM_LIBS})
@@ -83,6 +90,7 @@ add_dependencies(
 
 add_dependencies(
   core
+  picoc
   ${PLATFORM_CORE_DEPS})
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")

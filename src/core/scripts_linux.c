@@ -29,7 +29,7 @@ static const char* script_dirs[] = {
 };
 
 extern char*  get_script_description(const char* script_path);
-extern bool_t has_lua_extension(const char* filename);
+extern bool_t has_valid_extension(const char* filename);
 extern size_t safe_strcpy(char* dest, const char* src, size_t size);
 extern bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
 extern void   strip_extension(char* filename);
@@ -63,7 +63,7 @@ status_t list_scripts(void)
 
                 while ((ent = readdir(dir)) != NULL)
                 {
-                    if (DT_REG == ent->d_type && has_lua_extension(ent->d_name))
+                    if (DT_REG == ent->d_type && has_valid_extension(ent->d_name))
                     {
                         char script_name[256] = { 0 };
 

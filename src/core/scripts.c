@@ -19,7 +19,7 @@
 #include "scripts.h"
 
 char*  get_script_description(const char* script_path);
-bool_t has_lua_extension(const char* filename);
+bool_t has_valid_extension(const char* filename);
 void   strip_extension(char* filename);
 
 void scripts_init(core_t* core)
@@ -90,7 +90,15 @@ char* get_script_description(const char* script_path)
             desc_ptr++;
         }
 
-        if (os_strncmp(desc_ptr, "--[[", 4) == 0)
+        if (os_strncmp(desc_ptr, "//", 2) == 0)
+        {
+            os_memmove(desc_ptr, desc_ptr + 2, os_strlen(desc_ptr) - 1);
+        }
+        else if (os_strncmp(desc_ptr, "/*", 2) == 0)
+        {
+            os_memmove(desc_ptr, desc_ptr + 2, os_strlen(desc_ptr) - 1);
+        }
+        else if (os_strncmp(desc_ptr, "--[[", 4) == 0)
         {
             os_memmove(desc_ptr, desc_ptr + 4, os_strlen(desc_ptr) - 3);
         }
@@ -112,11 +120,15 @@ char* get_script_description(const char* script_path)
     return NULL;
 }
 
-bool_t has_lua_extension(const char* filename)
+bool_t has_valid_extension(const char* filename)
 {
     const char* dot = os_strrchr(filename, '.');
 
-    if (0 == (dot && strcmp(dot, ".lua")))
+    if (0 == (dot && os_strcmp(dot, ".c")))
+    {
+        return IS_TRUE;
+    }
+    else if (0 == (dot && os_strcmp(dot, ".lua")))
     {
         return IS_TRUE;
     }
