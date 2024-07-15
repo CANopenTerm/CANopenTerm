@@ -10,7 +10,7 @@
 #ifndef TEST_SCRIPTS_H
 #define TEST_SCRIPTS_H
 
-void test_has_lua_extension(void** state);
+void test_has_valid_extension(void** state);
 void test_run_script(void** state);
 
 #endif /* TEST_SCRIPTS_H */

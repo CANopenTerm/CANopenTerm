@@ -26,7 +26,7 @@ int main(void)
         cmocka_unit_test(test_buffer_init),
         cmocka_unit_test(test_use_buffer),
         cmocka_unit_test(test_dict_lookup),
-        cmocka_unit_test(test_has_lua_extension),
+        cmocka_unit_test(test_has_valid_extension),
         cmocka_unit_test(test_run_script),
         cmocka_unit_test(test_nmt_send_command),
         cmocka_unit_test(test_nmt_print_help),

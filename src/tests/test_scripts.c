@@ -18,12 +18,13 @@
 #include "scripts.h"
 #include "test_scripts.h"
 
-void test_has_lua_extension(void **state)
+void test_has_valid_extension(void **state)
 {
     (void)state;
 
-    assert_true(has_lua_extension("exceptional_script.lua") == IS_TRUE);
-    assert_true(has_lua_extension("mediocre_script.py")     == IS_FALSE);
+    assert_true(has_valid_extension("exceptional_script.lua") == IS_TRUE);
+    assert_true(has_valid_extension("mediocre_script.py")     == IS_FALSE);
+    assert_true(has_valid_extension("because_why_not.c")      == IS_TRUE);
 }
 
 void test_run_script(void** state)
