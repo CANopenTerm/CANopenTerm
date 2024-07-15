@@ -15,8 +15,6 @@ protocols, including SAE J1939 and OBD-II, making it a
 versatile tool for professionals working with CAN-based
 networks.
 
-[![CANopenTerm](https://canopenterm.de/media/CANopenTerm.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/CANopenTerm.gif?raw=true "CANopenTerm")
-
 Key functionalities include:
 
 - **Monitoring and Analysis**:
@@ -59,8 +57,6 @@ Key functionalities include:
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
   for streamlined CAN network projects.
 
-  [![DBC Monitor](https://canopenterm.de/media/DBC_Monitor.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/DBC_Monitor.gif?raw=true "DBC Monitor")
-
 ## Technical Excellence
 
 - **ANSI C Source Code**:
@@ -79,6 +75,16 @@ available for use and contribution by the community. It aims
 to provide a technical, no-nonsense tool for professionals
 working with CAN-based networks, offering depth and versatility
 in its features without the need for marketing embellishments.
+
+## Showcase
+
+### Basic Usage
+
+[![Basic Usage](https://canopenterm.de/media/Basic_Usage.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/Basic_Usage.gif?raw=true "Basic Usage")
+
+### DBC Monitor
+
+[![DBC Monitor](https://canopenterm.de/media/DBC_Monitor.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/DBC_Monitor.gif?raw=true "DBC Monitor")
 
 ## Why Your Support Matters
 

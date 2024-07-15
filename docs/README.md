@@ -80,6 +80,16 @@ to provide a technical, no-nonsense tool for professionals
 working with CAN-based networks, offering depth and versatility
 in its features without the need for marketing embellishments.
 
+## Showcase
+
+### Basic Usage
+
+[![Basic Usage](https://canopenterm.de/media/Basic_Usage.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/Basic_Usage.gif?raw=true "Basic Usage")
+
+### DBC Monitor
+
+[![DBC Monitor](https://canopenterm.de/media/DBC_Monitor.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/DBC_Monitor.gif?raw=true "DBC Monitor")
+
 ## Why Your Support Matters
 
 **CANopenTerm** is developed to provide a powerful tool for
