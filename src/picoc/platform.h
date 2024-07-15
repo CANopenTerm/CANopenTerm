@@ -2,6 +2,7 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -16,7 +17,6 @@
 
 /* host platform includes */
 #ifdef UNIX_HOST
-# include <stdint.h>
 # include <unistd.h>
 #elif defined(WIN32) /*(predefined on MSVC)*/
 #else
