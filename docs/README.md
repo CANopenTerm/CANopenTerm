@@ -15,8 +15,6 @@ protocols, including SAE J1939 and OBD-II, making it a
 versatile tool for professionals working with CAN-based
 networks.
 
-[![CANopenTerm](https://canopenterm.de/media/CANopenTerm.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/CANopenTerm.gif?raw=true "CANopenTerm")
-
 Key functionalities include:
 
 - **Monitoring and Analysis**:
@@ -58,8 +56,6 @@ Key functionalities include:
   Import and utilize
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
   for streamlined CAN network projects.
-
-  [![DBC Monitor](https://canopenterm.de/media/DBC_Monitor.gif)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/docs/media/DBC_Monitor.gif?raw=true "DBC Monitor")
 
 ## Technical Excellence
 
