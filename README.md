@@ -86,14 +86,3 @@ significant difference, enabling continued development and support.
 Your contribution, no matter how small, will be greatly appreciated
 and will help keep CANopenTerm thriving. Together, we can ensure
 this essential tool remains available and continues to evolve.
-
-## License
-
-This project is licensed under the "The MIT License".  See the file
-[LICENSE.md](LICENSE.md) for details.
-
-J1939 DBC from
-[Haskell.org](https://hackage.haskell.org/package/ecu-0.0.8/src/src/j1939_utf8.dbc),
-original author unknown.
-
-CANopen® is a trademark of the CAN in Automation User's Group

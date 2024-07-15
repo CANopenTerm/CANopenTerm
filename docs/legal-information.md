@@ -18,6 +18,10 @@ dem Urheberrecht.  Alle Rechte sind dem Autor vorbehalten.
 
 CANopen® is a trademark of the CAN in Automation User's Group
 
+J1939 DBC from
+[Haskell.org](https://hackage.haskell.org/package/ecu-0.0.8/src/src/j1939_utf8.dbc),
+original author unknown.
+
 ## Datenschutzerklärung
 
 ### Hosting
