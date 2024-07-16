@@ -22,6 +22,10 @@ J1939 DBC from
 [Haskell.org](https://hackage.haskell.org/package/ecu-0.0.8/src/src/j1939_utf8.dbc),
 original author unknown.
 
+PicoC is licensed under the
+"[New BSD License](https://github.com/CANopenTerm/CANopenTerm/blob/main/src/picoc/LICENSE)".  
+Copyright (c) 2009-2011, Zik Saleeba, Copyright (c) 2015, Joseph Poirier, All rights reserved.
+
 ## Datenschutzerklärung
 
 ### Hosting

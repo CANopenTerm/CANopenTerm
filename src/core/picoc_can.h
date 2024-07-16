@@ -1,4 +1,4 @@
-/** @file library_can.h
+/** @file picoc_can.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,11 +7,11 @@
  *
  **/
 
-#ifndef LIBRARY_CAN_H
-#define LIBRARY_CAN_H
+#ifndef PICOC_CAN_H
+#define PICOC_CAN_H
 
 #include "core.h"
 
-void library_can_init(core_t* core);
+void picoc_can_init(core_t* core);
 
-#endif /* LIBRARY_CAN_H */
+#endif /* PICOC_CAN_H */

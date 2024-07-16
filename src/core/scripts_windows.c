@@ -12,7 +12,7 @@
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-#include "library_can.h"
+#include "picoc_can.h"
 #include "dirent.h"
 #include "core.h"
 #include "os.h"
@@ -124,7 +124,7 @@ void run_script(const char* name, core_t* core)
 
         PicocInitialize(&core->P, (128000 * 4));
         PicocIncludeAllSystemHeaders(&core->P);
-        library_can_init(core);
+        picoc_can_init(core);
 
         os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
 
@@ -140,7 +140,6 @@ void run_script(const char* name, core_t* core)
             }
 
             PicocPlatformScanFile(&core->P, script_path);
-            PicocCallMain(&core->P, 0, NULL);
         }
         else
         {

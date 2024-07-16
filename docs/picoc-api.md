@@ -5,29 +5,42 @@
 
 ## Generic CAN interface
 
-```c
+To use the CAN interface, include the following header file:
+
+```C
 #include "can.h"
 ```
 
 ### can_message_t
 
-```c
-struct can_message_t
+```C
+typedef struct can_message
 {
   int  id;
   int  length;
   char data[0xff];
   long timestamp_us;
   int  is_extended;
-};
+
+} can_message_t;
 ```
+
+> **id** CAN-ID.
+
+> **length** Data length (0 to 8).
+
+> **data** Data buffer.
+
+> **timestamp_us** Timestamp in microseconds.
+
+> **is_extended** Extended frame format.
 
 ### can_read()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-int can_read (struct can_message_t* message)
+int can_read (can_message_t* message)
 ```
 
 > **message** Pointer to [CAN message structure](#can_message_t).
@@ -38,18 +51,13 @@ int can_read (struct can_message_t* message)
 ```c
 #include "can.h"
 
-int main()
-{
-    struct can_message_t msg;
+can_message_t msg;
 
-    while (msg.id != 0x721)
-    {
-        can_read(&msg);
-    }
-    printf("ID: %d\n", msg.id);
-
-    return 0;
+while (msg.id != 0x721) {
+  can_read(&msg);
 }
+
+printf("ID: %d\n", msg.id);
 ```
 <!-- tabs:end -->
 
@@ -113,14 +121,6 @@ Structs and unions can only be defined globally. It's not possible to define
 them within the scope of a function.
 
 Bitfields in structs are not supported.
-
-### Linking with libraries
-Because picoc is an interpreter (and not a compiler) libraries must be linked
-with picoc itself. Also a glue module must be written to interface to picoc.
-This is the same as other interpreters like python.
-
-If you're looking for an example check the interface to the C standard library
-time functions in cstdlib/time.c.
 
 ### goto
 The goto statement is implemented but only supports forward gotos, not backward.
