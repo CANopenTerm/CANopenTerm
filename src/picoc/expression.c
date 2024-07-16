@@ -255,7 +255,7 @@ long ExpressionCoerceInteger(struct Value *Val)
     case TypeUnsignedChar:
         return (long)Val->Val->UnsignedCharacter;
     case TypePointer:
-        return (long)Val->Val->Pointer;
+        return (uintptr_t)Val->Val->Pointer;
     case TypeFP:
         return (long)Val->Val->FP;
     default:
@@ -283,7 +283,7 @@ unsigned long ExpressionCoerceUnsignedInteger(struct Value *Val)
     case TypeUnsignedChar:
         return (unsigned long)Val->Val->UnsignedCharacter;
     case TypePointer:
-        return (unsigned long)Val->Val->Pointer;
+        return (uintptr_t)Val->Val->Pointer;
     case TypeFP:
         return (unsigned long)Val->Val->FP;
     default:
@@ -495,7 +495,7 @@ void ExpressionAssignToPointer(struct ParseState *Parser, struct Value *ToValue,
     } else if (AllowPointerCoercion && IS_NUMERIC_COERCIBLE(FromValue)) {
         /* assign integer to native pointer */
         ToValue->Val->Pointer =
-            (void*)(unsigned long)ExpressionCoerceUnsignedInteger(FromValue);
+            (void*)(uintptr_t)ExpressionCoerceUnsignedInteger(FromValue);
     } else if (AllowPointerCoercion && FromValue->Typ->Base == TypePointer) {
         /* assign a pointer to a pointer to a different type */
         ToValue->Val->Pointer = FromValue->Val->Pointer;
