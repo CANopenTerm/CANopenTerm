@@ -43,7 +43,7 @@ typedef struct can_message
 int can_read (can_message_t* message)
 ```
 
-> **message** Pointer to [CAN message structure](#can_message_t).
+> **message** A pointer of type [can_message_t](#can_message_t).
 
 **Returns**: 0 on success, 1 on failure.
 
