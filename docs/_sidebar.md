@@ -2,5 +2,6 @@
 - [Getting started](getting-started.md)
 - [Download](https://github.com/CANopenTerm/CANopenTerm/releases/latest)
 - [Lua API](lua-api.md)
+- [PicoC API](picoc-api.md)
 - [Report issue](report-issue.md)
 - [Legal information](legal-information.md)
