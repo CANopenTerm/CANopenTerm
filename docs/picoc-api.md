@@ -1,7 +1,57 @@
-# PicoC API
+﻿# PicoC API
 
 !> Support for PicoC is currently being developed and is expected to become
    available in Version 1.0.5 at the earliest.
+
+## Generic CAN interface
+
+```c
+#include "can.h"
+```
+
+### can_message_t
+
+```c
+struct can_message_t
+{
+  int  id;
+  int  length;
+  char data[0xff];
+  long timestamp_us;
+  int  is_extended;
+};
+```
+
+### can_read()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+int can_read (struct can_message_t* message)
+```
+
+> **message** Pointer to [CAN message structure](#can_message_t).
+
+**Returns**: 0 on success, 1 on failure.
+
+<!-- tab:Example -->
+```c
+#include "can.h"
+
+int main()
+{
+    struct can_message_t msg;
+
+    while (msg.id != 0x721)
+    {
+        can_read(&msg);
+    }
+    printf("ID: %d\n", msg.id);
+
+    return 0;
+}
+```
+<!-- tabs:end -->
 
 ## How PicoC differs from C90
 

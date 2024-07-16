@@ -9,7 +9,6 @@ set(picoc_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/include.c
   ${CMAKE_CURRENT_SOURCE_DIR}/lex.c
   ${CMAKE_CURRENT_SOURCE_DIR}/parse.c
-#  ${CMAKE_CURRENT_SOURCE_DIR}/picoc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/platform.c
   ${CMAKE_CURRENT_SOURCE_DIR}/table.c
   ${CMAKE_CURRENT_SOURCE_DIR}/type.c
@@ -22,7 +21,6 @@ set(picoc_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/cstdlib/stdlib.c
   ${CMAKE_CURRENT_SOURCE_DIR}/cstdlib/string.c
   ${CMAKE_CURRENT_SOURCE_DIR}/cstdlib/time.c)
-#  ${CMAKE_CURRENT_SOURCE_DIR}/cstdlib/unistd.c)
 
 if(WIN32)
 
@@ -45,3 +43,7 @@ add_library(picoc
   ${picoc_sources})
 
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+
+target_include_directories(picoc
+  PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR})
