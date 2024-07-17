@@ -7,6 +7,7 @@
  *
  **/
 
+#include <conio.h>
 #include <windows.h>
 #include "buffer.h"
 #include "os.h"
@@ -100,6 +101,21 @@ status_t os_init(void)
     }
 
     return status;
+}
+
+bool_t os_key_is_hit(void)
+{
+    if (0 != _kbhit())
+    {
+        char key = _getch();
+        (void)key;
+
+        return IS_TRUE;
+    }
+    else
+    {
+        return IS_FALSE;
+    }
 }
 
 void os_log(const log_level_t level, const char* format, ...)

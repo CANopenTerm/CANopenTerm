@@ -7,13 +7,7 @@
  *
  **/
 
-#include <string.h>
-#include <unistd.h>
-#include <termios.h>
-#include <fcntl.h>
-#include <stdio.h>
 #include <dirent.h>
-#include <stdlib.h>
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
@@ -33,10 +27,6 @@ extern bool_t has_valid_extension(const char* filename);
 extern size_t safe_strcpy(char* dest, const char* src, size_t size);
 extern bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
 extern void   strip_extension(char* filename);
-
-static void   set_nonblocking(int fd, int nonblocking);
-static void   set_terminal_raw_mode(struct termios* orig_termios);
-static void   reset_terminal_mode(struct termios* orig_termios);
 
 status_t list_scripts(void)
 {
@@ -156,57 +146,4 @@ void run_script(const char* name, core_t* core)
     {
         os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }
-}
-
-int lua_key_is_hit(lua_State * L)
-{
-    struct termios orig_termios;
-    char buffer = 0;
-    int n;
-
-    set_terminal_raw_mode(&orig_termios);
-    set_nonblocking(STDIN_FILENO, 1);
-
-    n = read(STDIN_FILENO, &buffer, 1);
-
-    reset_terminal_mode(&orig_termios);
-    set_nonblocking(STDIN_FILENO, 0);
-
-    if (n > 0)
-    {
-        lua_pushboolean(L, 1);
-    }
-    else
-    {
-        lua_pushboolean(L, 0);
-    }
-
-    return 1;
-}
-
-static void set_nonblocking(int fd, int nonblocking)
-{
-    int flags = fcntl(fd, F_GETFL, 0);
-    if (nonblocking)
-    {
-        fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-    }
-    else
-    {
-        fcntl(fd, F_SETFL, flags & ~O_NONBLOCK);
-    }
-}
-
-static void set_terminal_raw_mode(struct termios* orig_termios)
-{
-    struct termios new_termios;
-    tcgetattr(STDIN_FILENO, orig_termios);
-    new_termios = *orig_termios;
-    cfmakeraw(&new_termios);
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
-}
-
-static void reset_terminal_mode(struct termios* orig_termios)
-{
-    tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }

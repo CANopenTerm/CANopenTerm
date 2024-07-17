@@ -449,7 +449,7 @@ end
 ```
 <!-- tabs:end -->
 
-## Program flow
+## Miscellaneous
 
 ### delay_ms()
 
@@ -494,8 +494,6 @@ end
 print("Exiting.")
 ```
 <!-- tabs:end -->
-
-## Miscellaneous
 
 ### print_heading()
 

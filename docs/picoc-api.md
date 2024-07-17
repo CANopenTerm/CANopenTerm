@@ -7,6 +7,16 @@
    PicoC scripts are executed from top to bottom without the need for an
    explicit entry point like a main function in traditional C programs.
 
+## CAN Database File (DBC)
+
+To use the DBC file parser interface, include the following header file:
+
+```c
+#include "dbc.h"
+```
+
+!> Not yet available.
+
 ## Network management (NMT)
 
 To use the NMT interface, include the following header file:
@@ -33,7 +43,7 @@ typedef enum
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-```lua
+```c
 int nmt_send_command (int node_id, nmt_command_t command, int show_output, char* comment)
 
 ```
@@ -55,6 +65,26 @@ int nmt_send_command (int node_id, nmt_command_t command, int show_output, char*
 nmt_send_command(0x01, NMT_OPERATIONAL, 1, "Switch to operational state");
 ```
 <!-- tabs:end -->
+
+## Process data objects (PDO)
+
+To use the PDO interface, include the following header file:
+
+```c
+#include "pdo.h"
+```
+
+!> Not yet available.
+
+## Service data objects (SDO)
+
+To use the SDO interface, include the following header file:
+
+```c
+#include "sdo.h"
+```
+
+!> Not yet available.
 
 ## Generic CAN interface
 
@@ -96,7 +126,7 @@ typedef struct can_message
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-```lua
+```c
 int can_read (can_message_t* message)
 ```
 
@@ -122,7 +152,7 @@ printf("ID: %d\n", msg.id);
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-```lua
+```c
 int can_write (can_message_t* message, int show_output, char* comment)
 ```
 
@@ -148,6 +178,72 @@ can_write(&msg);
 ```
 <!-- tabs:end -->
 
+## Miscellaneous
+
+To use the miscellaneous function, include the following header file:
+
+```c
+#include "misc.h"
+```
+
+### delay_ms()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+void delay_ms (unsigned int delay_in_ms)
+```
+
+> **delay_in_ms** Delay in milliseconds.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```c
+while (key_is_hit() == 0) {
+  delay_ms(10);
+}
+```
+<!-- tabs:end -->
+
+### key_is_hit()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+int key_is_hit (void)
+
+**Returns**: 1 if a key is hit, 0 otherwise.
+
+<!-- tab:Example -->
+```c
+while (key_is_hit() == 0) {
+  delay_ms(10);
+}
+```
+<!-- tabs:end -->
+
+### print_heading()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+void print_heading (char* heading)
+```
+
+> **heading** The heading to be printed or NULL.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```c
+#include "misc.h"
+#include "nmt.h"
+
+print_heading("A clever heading");
+nmt_send_command(0x00, NMT_OPERATIONAL, true, NULL);
+```
+<!-- tabs:end -->
+
 ## How PicoC differs from C90
 
 PicoC is a tiny C language, not a complete implementation of C90. It doesn't
@@ -160,35 +256,37 @@ PicoC also has scripting abilities which enhance it beyond what C90 offers.
 There is no true preprocessor in PicoC. The most popular preprocessor features
 are implemented in a slightly limited way.
 
-### `#define`
+### #define
 Macros are implemented but have some limitations. They can only be used
 as part of expressions and operate a bit like functions. Since they're used in
 expressions they must result in a value.
 
-### `#if/#ifdef/#else/#endif`
+### #if/#ifdef/#else/#endif
 The conditional compilation operators are implemented, but have some limitations.
-The operator "defined()" is not implemented. These operators can only be used at
+The operator `defined()` is not implemented. These operators can only be used at
 statement boundaries.
 
-### `#include`
+### #include
 Includes are supported however the level of support depends on the specific port
 of PicoC on your platform. Linux/UNIX and Windows support #include fully.
 
-### Function declarations
-These styles of function declarations are supported:
+### Function declarations/definitions
+These styles of function declarations/definitions are supported:
 
 ```c
 int my_function(char param1, int param2, char *param3)
 {
    …
 }
+```
 
+```c
 int my_function(char param1, int param2, char *param3) {
    …
 }
 ```
 
-The old "K&R" form of function declaration is **not** supported:
+The old "K&R" form of function declaration/definition is **not** supported:
 
 ```c
 int my_function(param1, param2, param3)

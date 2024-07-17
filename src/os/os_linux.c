@@ -8,9 +8,16 @@
  **/
 
 #include "SDL.h"
-#include "os.h"
+#include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <termios.h>
+#include <unistd.h>
+#include "os.h"
+
+static void   set_nonblocking(int fd, int nonblocking);
+static void   set_terminal_raw_mode(struct termios* orig_termios);
+static void   reset_terminal_mode(struct termios* orig_termios);
 
 os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
 {
@@ -58,7 +65,7 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
     {
         status = 1; /* TODO: Add proper error. */
     }
-   
+
     free(buffer);
     return status;
 }
@@ -79,6 +86,30 @@ status_t os_init(void)
     }
 
     return status;
+}
+
+bool_t os_key_is_hit(void)
+{
+    struct termios orig_termios;
+    char buffer = 0;
+    int n;
+
+    set_terminal_raw_mode(&orig_termios);
+    set_nonblocking(STDIN_FILENO, 1);
+
+    n = read(STDIN_FILENO, &buffer, 1);
+
+    reset_terminal_mode(&orig_termios);
+    set_nonblocking(STDIN_FILENO, 0);
+
+    if (n > 0)
+    {
+        return IS_TRUE;
+    }
+    else
+    {
+        return IS_FALSE;
+    }
 }
 
 void os_log(const log_level_t level, const char* format, ...)
@@ -184,4 +215,31 @@ uint32 os_swap_be_32(uint32 n)
 void os_quit(void)
 {
     SDL_Quit();
+}
+
+static void set_nonblocking(int fd, int nonblocking)
+{
+    int flags = fcntl(fd, F_GETFL, 0);
+    if (nonblocking)
+    {
+        fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    }
+    else
+    {
+        fcntl(fd, F_SETFL, flags & ~O_NONBLOCK);
+    }
+}
+
+static void set_terminal_raw_mode(struct termios* orig_termios)
+{
+    struct termios new_termios;
+    tcgetattr(STDIN_FILENO, orig_termios);
+    new_termios = *orig_termios;
+    cfmakeraw(&new_termios);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+}
+
+static void reset_terminal_mode(struct termios* orig_termios)
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }

@@ -287,6 +287,7 @@ const char* os_get_error(void);
 status_t    os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
 uint64      os_get_ticks(void);
 status_t    os_init(void);
+bool_t      os_key_is_hit(void);
 void        os_log(const log_level_t level, const char* format, ...);
 void        os_print(const color_t color, const char* format, ...);
 void        os_print_prompt(void);

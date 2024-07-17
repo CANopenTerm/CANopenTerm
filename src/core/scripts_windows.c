@@ -8,11 +8,11 @@
  **/
 
 #include <string.h>
-#include "conio.h"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 #include "picoc_can.h"
+#include "picoc_misc.h"
 #include "picoc_nmt.h"
 #include "dirent.h"
 #include "core.h"
@@ -126,6 +126,7 @@ void run_script(const char* name, core_t* core)
         PicocInitialize(&core->P, (128000 * 4));
         PicocIncludeAllSystemHeaders(&core->P);
         picoc_can_init(core);
+        picoc_misc_init(core);
         picoc_nmt_init(core);
 
         os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
@@ -161,21 +162,4 @@ void run_script(const char* name, core_t* core)
         }
         os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
     }
-}
-
-int lua_key_is_hit(lua_State * L)
-{
-    if (0 != _kbhit())
-    {
-        char key = _getch();
-        (void)key;
-
-        lua_pushboolean(L, 1);
-    }
-    else
-    {
-        lua_pushboolean(L, 0);
-    }
-
-    return 1;
 }

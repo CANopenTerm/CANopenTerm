@@ -176,12 +176,28 @@ int lua_delay_ms(lua_State * L)
     return 1;
 }
 
+int lua_key_is_hit(lua_State* L)
+{
+    lua_pushboolean(L, os_key_is_hit());
+    return 1;
+}
+
+void print_heading(const char* heading)
+{
+    if (NULL == heading)
+    {
+        return;
+    }
+
+    os_print(LIGHT_YELLOW, "\n%s\n", heading);
+    os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
+}
+
 int lua_print_heading(lua_State* L)
 {
     const char* heading = lua_tostring(L, 1);
 
-    os_print(LIGHT_YELLOW, "\n%s\n", heading);
-    os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
+    print_heading(heading);
 
     return 0;
 }
