@@ -10,6 +10,7 @@
 #include "can.h"
 #include "core.h"
 #include "interpreter.h"
+#include "os.h"
 #include "picoc_can.h"
 
 static const char defs[] = " \
@@ -22,12 +23,14 @@ typedef struct can_message { \
 } can_message_t;";
 
 static void c_can_read(struct ParseState* parser, struct Value* return_value, struct Value** param, int args);
+static void c_can_write(struct ParseState* parser, struct Value* return_value, struct Value** param, int args);
 static void setup(Picoc* P);
 
 struct LibraryFunction picoc_can_functions[] =
 {
-    {c_can_read, "int can_read(can_message_t* message);"},
-    {NULL,       NULL}
+    {c_can_read,  "int can_read(can_message_t* message);"},
+    {c_can_write, "int can_write(can_message_t* message, int show_output, char* comment);"},
+    {NULL,        NULL}
 };
 
 void picoc_can_init(core_t* core)
@@ -38,6 +41,18 @@ void picoc_can_init(core_t* core)
 static void c_can_read(struct ParseState* parser, struct Value* return_value, struct Value** param, int args)
 {
     return_value->Val->Integer = can_read((can_message_t*)param[0]->Val->Pointer);
+}
+
+static void c_can_write(struct ParseState* parser, struct Value* return_value, struct Value** param, int args)
+{
+    disp_mode_t disp_mode = SILENT;
+
+    if (param[1]->Val->Integer > 0)
+    {
+        disp_mode = SCRIPT_MODE;
+    }
+
+    return_value->Val->Integer = can_write((can_message_t*)param[0]->Val->Pointer, disp_mode, (char*)param[2]->Val->Pointer);
 }
 
 static void setup(Picoc* P)

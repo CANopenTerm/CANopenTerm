@@ -3,6 +3,10 @@
 !> Support for PicoC is currently being developed and is expected to become
    available in Version 1.0.5 at the earliest.
 
+!> When writing a PicoC script, you do not need to define a main function.
+   PicoC scripts are executed from top to bottom without the need for an
+   explicit entry point like a main function in traditional C programs.
+
 ## Generic CAN interface
 
 To use the CAN interface, include the following header file:
@@ -35,6 +39,10 @@ typedef struct can_message
 
 > **is_extended** Extended frame format.
 
+!> The can_message_t struct in the PicoC API includes a data buffer with a size
+   of 0xff. However, only the first 8 bytes of the buffer are relevant to the user.
+   The remaining buffer space is used internally.
+
 ### can_read()
 
 <!-- tabs:start -->
@@ -53,11 +61,41 @@ int can_read (can_message_t* message)
 
 can_message_t msg;
 
-while (msg.id != 0x721) {
+while (msg.id != 0x123) {
   can_read(&msg);
 }
 
 printf("ID: %d\n", msg.id);
+```
+<!-- tabs:end -->
+
+### can_write()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+int can_write (can_message_t* message, int show_output, char* comment)
+```
+
+> **message** A pointer of type [can_message_t](#can_message_t).
+
+> **show_output** Show output (boolean operation).
+
+> **comment** Comment string or NULL.
+
+**Returns**: 0 on success, 1 on failure.
+
+<!-- tab:Example -->
+```c
+#include "can.h"
+
+can_message_t msg;
+
+msg.id      = 0x123;
+msg.length  = 1;
+msg.data[0] = 0x55;
+
+can_write(&msg);
 ```
 <!-- tabs:end -->
 
@@ -93,20 +131,30 @@ These styles of function declarations are supported:
 ```C
 int my_function(char param1, int param2, char *param3)
 {
-   ...
+   …
 }
 
 int my_function(char param1, int param2, char *param3) {
-   ...
+   …
 }
 ```
 
-The old "K&R" form of function declaration is not supported.
+The old "K&R" form of function declaration is **not** supported:
+
+```C
+int my_function(param1, param2, param3)
+  char  param1;
+  int   param2;
+  char *param3;
+{
+   …
+}
+```
 
 ### Predefined macros
 A few macros are pre-defined:
 
-* PICOC_VERSION - gives the picoc version as a string eg. "v2.1 beta r524"
+* `PICOC_VERSION` - gives the picoc version as a string eg. "v2.1 beta r524"
 
 ### Function pointers
 Pointers to functions are currently not supported.

@@ -227,6 +227,10 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
     int      index;
     TPCANMsg pcan_message = { 0 };
 
+    /* Not yet implemented. */
+    (void)disp_mode;
+    (void)comment;
+
     pcan_message.ID  = message->id;
     pcan_message.LEN = message->length;
 
@@ -263,7 +267,7 @@ uint32 can_read(can_message_t* message)
         pcan_timestamp.micros
         + (1000ULL * pcan_timestamp.millis)
         + (0x100000000ULL * 1000ULL * pcan_timestamp.millis_overflow);
-        
+
     for (index = 0; index < 8; index += 1)
     {
         message->data[index] = pcan_message.DATA[index];
