@@ -25,7 +25,8 @@ entering `h`.
 It is possible to run a script from the command line.  However, on Linux,
 the CAN interface can be set as second argument (Default: `can0`).
 
-The `.lua` file extension can be omitted.
+The `.lua` file extension can be omitted.  
+The `.c` file extension has to be specified.
 
 #### Linux
 
