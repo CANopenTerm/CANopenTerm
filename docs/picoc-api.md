@@ -11,13 +11,13 @@
 
 To use the CAN interface, include the following header file:
 
-```C
+```c
 #include "can.h"
 ```
 
 ### can_message_t
 
-```C
+```c
 typedef struct can_message
 {
   int  id;
@@ -128,7 +128,7 @@ of PicoC on your platform. Linux/UNIX and Windows support #include fully.
 ### Function declarations
 These styles of function declarations are supported:
 
-```C
+```c
 int my_function(char param1, int param2, char *param3)
 {
    …
@@ -141,7 +141,7 @@ int my_function(char param1, int param2, char *param3) {
 
 The old "K&R" form of function declaration is **not** supported:
 
-```C
+```c
 int my_function(param1, param2, param3)
   char  param1;
   int   param2;
