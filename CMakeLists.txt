@@ -56,6 +56,7 @@ set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c

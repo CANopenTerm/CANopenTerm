@@ -13,6 +13,7 @@
 #include "lualib.h"
 #include "lauxlib.h"
 #include "picoc_can.h"
+#include "picoc_nmt.h"
 #include "dirent.h"
 #include "core.h"
 #include "os.h"
@@ -125,6 +126,7 @@ void run_script(const char* name, core_t* core)
         PicocInitialize(&core->P, (128000 * 4));
         PicocIncludeAllSystemHeaders(&core->P);
         picoc_can_init(core);
+        picoc_nmt_init(core);
 
         os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
 

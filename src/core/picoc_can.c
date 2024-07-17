@@ -15,11 +15,11 @@
 
 static const char defs[] = " \
 typedef struct can_message { \
-    int  id; \
-    int  length; \
-    char data[0xff]; \
-    long timestamp_us; \
-    int is_extended; \
+    int  id;                 \
+    int  length;             \
+    char data[0xff];         \
+    long timestamp_us;       \
+    int  is_extended;        \
 } can_message_t;";
 
 static void c_can_read(struct ParseState* parser, struct Value* return_value, struct Value** param, int args);

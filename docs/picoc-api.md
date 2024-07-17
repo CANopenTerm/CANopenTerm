@@ -7,6 +7,55 @@
    PicoC scripts are executed from top to bottom without the need for an
    explicit entry point like a main function in traditional C programs.
 
+## Network management (NMT)
+
+To use the NMT interface, include the following header file:
+
+```c
+#include "nmt.h"
+```
+
+### nmt_command_t
+
+```c
+typedef enum
+{
+  NMT_OPERATIONAL     = 0x01,
+  NMT_STOP            = 0x02,
+  NMT_PRE_OPERATIONAL = 0x80,
+  NMT_RESET_NODE      = 0x81,
+  NMT_RESET_COMM      = 0x82
+
+} nmt_command_t;
+```
+
+### nmt_send_command()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+int nmt_send_command (int node_id, nmt_command_t command, int show_output, char* comment)
+
+```
+
+> **node_id** CANopen Node-ID.
+
+> **command** NMT command code of type [nmt_command_t](#nmt_command_t).
+
+> **show_output** Show output (boolean operation).
+
+> **comment** Comment string or NULL.
+
+**Returns**: 0 on success, 1 on failure.
+
+<!-- tab:Example -->
+```c
+#include "nmt.h"
+
+nmt_send_command(0x01, NMT_OPERATIONAL, 1, "Switch to operational state");
+```
+<!-- tabs:end -->
+
 ## Generic CAN interface
 
 To use the CAN interface, include the following header file:
