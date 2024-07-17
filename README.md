@@ -57,7 +57,8 @@ Key functionalities include:
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
   for streamlined CAN network projects.
 
-## Technical Excellence
+## Code Quality and Standards
+
 
 - **ANSI C Source Code**:
   Ensures robust performance and high portability.
