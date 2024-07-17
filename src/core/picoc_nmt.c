@@ -1,4 +1,4 @@
-/** @file picoc_nmt.h
+/** @file picoc_nmt.c
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
