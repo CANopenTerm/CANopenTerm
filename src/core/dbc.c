@@ -256,7 +256,6 @@ void dbc_unload(void)
     dbc->messages      = NULL;
 }
 
-
 int lua_dbc_decode(lua_State *L)
 {
     int         can_id = luaL_checkinteger(L, 1);

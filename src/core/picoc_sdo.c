@@ -19,7 +19,7 @@ static void setup(Picoc* P);
 
 struct LibraryFunction picoc_sdo_functions[] =
 {
-    {NULL, NULL}
+    { NULL, NULL }
 };
 
 void picoc_sdo_init(core_t* core)

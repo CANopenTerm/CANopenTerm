@@ -28,9 +28,9 @@ static void setup(Picoc* P);
 
 struct LibraryFunction picoc_can_functions[] =
 {
-    {c_can_read,  "int can_read(can_message_t* message);"},
-    {c_can_write, "int can_write(can_message_t* message, int show_output, char* comment);"},
-    {NULL,        NULL}
+    { c_can_read,  "int can_read(can_message_t* message);" },
+    { c_can_write, "int can_write(can_message_t* message, int show_output, char* comment);" },
+    { NULL,        NULL }
 };
 
 void picoc_can_init(core_t* core)
@@ -40,11 +40,23 @@ void picoc_can_init(core_t* core)
 
 static void c_can_read(struct ParseState* parser, struct Value* return_value, struct Value** param, int args)
 {
-    return_value->Val->Integer = can_read((can_message_t*)param[0]->Val->Pointer);
+    uint32 status;
+
+    status = can_read((can_message_t*)param[0]->Val->Pointer);
+
+    if (ALL_OK == status)
+    {
+        return_value->Val->Integer = 1;
+    }
+    else
+    {
+        return_value->Val->Integer = 0;
+    }
 }
 
 static void c_can_write(struct ParseState* parser, struct Value* return_value, struct Value** param, int args)
 {
+    uint32      status;
     disp_mode_t disp_mode = SILENT;
 
     if (param[1]->Val->Integer > 0)
@@ -52,7 +64,16 @@ static void c_can_write(struct ParseState* parser, struct Value* return_value, s
         disp_mode = SCRIPT_MODE;
     }
 
-    return_value->Val->Integer = can_write((can_message_t*)param[0]->Val->Pointer, disp_mode, (char*)param[2]->Val->Pointer);
+    status = can_write((can_message_t*)param[0]->Val->Pointer, disp_mode, (char*)param[2]->Val->Pointer);
+
+    if (ALL_OK == status)
+    {
+        return_value->Val->Integer = 1;
+    }
+    else
+    {
+        return_value->Val->Integer = 0;
+    }
 }
 
 static void setup(Picoc* P)

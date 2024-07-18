@@ -27,8 +27,8 @@ static void setup(Picoc* P);
 
 struct LibraryFunction picoc_nmt_functions[] =
 {
-    {c_nmt_send_command, "int nmt_send_command(int node_id, nmt_command_t command, int show_output, char* comment);"},
-    {NULL,               NULL}
+    { c_nmt_send_command, "int nmt_send_command(int node_id, nmt_command_t command, int show_output, char* comment);" },
+    { NULL,               NULL }
 };
 
 void picoc_nmt_init(core_t* core)
@@ -49,11 +49,11 @@ static void c_nmt_send_command(struct ParseState* parser, struct Value* return_v
     status = nmt_send_command(param[0]->Val->Integer, (nmt_command_t)param[1]->Val->Integer, disp_mode, (char*)param[3]->Val->Pointer);
     if (ALL_OK == status)
     {
-        return_value->Val->Integer = 0;
+        return_value->Val->Integer = 1;
     }
     else
     {
-        return_value->Val->Integer = 1;
+        return_value->Val->Integer = 0;
     }
 }
 

@@ -231,11 +231,11 @@ bool_t script_already_listed(char** listed_scripts, int count, const char* scrip
     return IS_FALSE;
 }
 
-void strip_extension(char* filename)
+void strip_lua_extension(char* filename)
 {
     char* dot = os_strrchr(filename, '.');
 
-    if (dot && dot != filename)
+    if (dot && dot != filename && os_strcmp(dot, ".lua") == 0)
     {
         *dot = '\0';
     }

@@ -15,7 +15,78 @@ To use the DBC file parser interface, include the following header file:
 #include "dbc.h"
 ```
 
-!> Not yet available.
+### dbc_decode()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+char* dbc_decode (int can_id, char* data)
+```
+> **can_id** CAN-ID.
+
+> **data** 8-byte data buffer.
+
+**Returns**: A string containing the decoded message.
+
+<!-- tab:Example -->
+```c
+#include "dbc.h"
+
+char data[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
+
+printf("%s\n", dbc_decode(0x123, data));
+```
+<!-- tabs:end -->
+
+### dbc_find_id_by_name()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+int dbc_find_id_by_name (int* can_id, char* search)
+```
+
+> **can_id** CAN-ID.
+
+> **search** A case-insensitive substring to search within message names.
+
+**Returns**: 1 on success, 0 on failure.
+
+<!-- tab:Example -->
+```c
+#include "dbc.h"
+
+int id = 0
+
+dbc_load("Edison_Model_3.dbc");
+
+if (dbc_find_id_by_name(&id, "engine_speed")) {
+   printf("%Xh\n, id);
+}
+```
+<!-- tabs:end -->
+
+### dbc_load()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+int dbc_load (char* filename)
+```
+
+> **filename** DBC file name.
+
+**Returns**: 1 on success, 0 on failure.
+
+<!-- tab:Example -->
+```c
+#include "dbc.h"
+
+if (! dbc_load("Edison_Model_3.dbc")) {
+   printf("Failed to load DBC file\n");
+}
+```
+<!-- tabs:end -->
 
 ## Network management (NMT)
 
@@ -45,7 +116,6 @@ typedef enum
 <!-- tab:Description -->
 ```c
 int nmt_send_command (int node_id, nmt_command_t command, int show_output, char* comment)
-
 ```
 
 > **node_id** CANopen Node-ID.
@@ -56,7 +126,7 @@ int nmt_send_command (int node_id, nmt_command_t command, int show_output, char*
 
 > **comment** Comment string or NULL.
 
-**Returns**: 0 on success, 1 on failure.
+**Returns**: 1 on success, 0 on failure.
 
 <!-- tab:Example -->
 ```c
@@ -132,7 +202,7 @@ int can_read (can_message_t* message)
 
 > **message** A pointer of type [can_message_t](#can_message_t).
 
-**Returns**: 0 on success, 1 on failure.
+**Returns**: 1 on success, 01 on failure.
 
 <!-- tab:Example -->
 ```c
@@ -162,7 +232,7 @@ int can_write (can_message_t* message, int show_output, char* comment)
 
 > **comment** Comment string or NULL.
 
-**Returns**: 0 on success, 1 on failure.
+**Returns**: 1 on success, 0 on failure.
 
 <!-- tab:Example -->
 ```c

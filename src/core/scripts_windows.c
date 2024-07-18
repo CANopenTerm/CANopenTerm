@@ -12,8 +12,11 @@
 #include "lualib.h"
 #include "lauxlib.h"
 #include "picoc_can.h"
+#include "picoc_dbc.h"
 #include "picoc_misc.h"
 #include "picoc_nmt.h"
+#include "picoc_pdo.h"
+#include "picoc_sdo.h"
 #include "dirent.h"
 #include "core.h"
 #include "os.h"
@@ -25,7 +28,7 @@ extern char*  get_script_description(const char* script_path);
 extern bool_t has_valid_extension(const char* filename);
 extern size_t safe_strcpy(char* dest, const char* src, size_t size);
 extern bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
-extern void   strip_extension(char* filename);
+extern void   strip_lua_extension(char* filename);
 
 status_t list_scripts(void)
 {
@@ -57,7 +60,7 @@ status_t list_scripts(void)
 
                     safe_strcpy(script_name, ent->d_name, sizeof(script_name));
                     script_name[sizeof(script_name) - 1] = '\0';
-                    strip_extension(script_name);
+                    strip_lua_extension(script_name);
 
                     if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                     {
@@ -126,8 +129,11 @@ void run_script(const char* name, core_t* core)
         PicocInitialize(&core->P, (128000 * 4));
         PicocIncludeAllSystemHeaders(&core->P);
         picoc_can_init(core);
+        picoc_dbc_init(core);
         picoc_misc_init(core);
         picoc_nmt_init(core);
+        picoc_pdo_init(core);
+        picoc_sdo_init(core);
 
         os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
 

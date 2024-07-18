@@ -24,10 +24,10 @@ static void setup(Picoc* P);
 
 struct LibraryFunction picoc_misc_functions[] =
 {
-    {c_delay_ms,      "void delay_ms(unsigned int delay_in_ms);"},
-    {c_key_is_hit,    "int key_is_hit(void);"},
-    {c_print_heading, "void print_heading(char* comment);"},
-    {NULL,             NULL}
+    { c_delay_ms,      "void delay_ms(unsigned int delay_in_ms);" },
+    { c_key_is_hit,    "int key_is_hit(void);" },
+    { c_print_heading, "void print_heading(char* comment);" },
+    { NULL,             NULL }
 };
 
 void picoc_misc_init(core_t* core)
