@@ -54,7 +54,7 @@ end
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-find_id_by_name (search)
+dbc_find_id_by_name (search)
 ```
 
 > **search** A case-insensitive substring to search within message names.

@@ -46,11 +46,14 @@ Key functionalities include:
 - **Versatile Raw CAN Interface**:
   For non-CANopen needs, offering flexibility and control.
 
-- **Automate Workflow**:
-  Use Lua scripts for workflow automation, including a
+- **Workflow Automation**:
+  Automate your workflow with pre-included scripts, such as the
   [PEAK CAN trace](https://www.peak-system.com/produktcd/Pdf/English/PEAK_CAN_TRC_File_Format.pdf)
-  record and playback script.  Or write yuour own scripts to automate tasks
-  and leverage a [custom API](https://canopenterm.de/lua-api).
+  record and playback script.  Additionally, you have the flexibility to write
+  your own scripts in either [Lua](https://canopenterm.de/lua-api) or
+  [PicoC](https://canopenterm.de/lua-api) to customize and automate tasks.
+  Both languages are supported by similar APIs, offering equal functionality
+  to cater to your automation needs.
 
 - **Built-in DBC Parser**:
   Import and utilize
