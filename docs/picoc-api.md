@@ -202,7 +202,7 @@ int can_read (can_message_t* message)
 
 > **message** A pointer of type [can_message_t](#can_message_t).
 
-**Returns**: 1 on success, 01 on failure.
+**Returns**: 1 on success, 0 on failure.
 
 <!-- tab:Example -->
 ```c
