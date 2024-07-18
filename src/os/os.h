@@ -102,6 +102,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_free() not defined
 #endif
 
+#ifndef os_freopen
+#error  os_freopen() not defined
+#endif
+
 #ifndef os_isdigit
 #error  os_isdigit() not defined
 #endif

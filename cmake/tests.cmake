@@ -6,11 +6,11 @@ set(CMocka_BUILD_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/deps/cmocka-${CMocka_VERSION}
 set(CMocka_INCLUDE_DIR ${CMocka_PATH}/include)
 
 if(UNIX)
-  set(CMocka_LIBRARY ${CMocka_BUILD_PATH}/src/libcmocka.a)  
+  set(CMocka_LIBRARY ${CMocka_BUILD_PATH}/src/libcmocka.a)
 endif(UNIX)
 
 if(WIN32)
-  set(CMocka_LIBRARY ${CMocka_BUILD_PATH}/src/cmocka.lib)  
+  set(CMocka_LIBRARY ${CMocka_BUILD_PATH}/src/cmocka.lib)
 endif(WIN32)
 
 ExternalProject_Add(CMocka_devel
@@ -30,7 +30,7 @@ ExternalProject_Add(CMocka_devel
     -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
     -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON
     -DBUILD_SHARED_LIBS=OFF
-    -DWITH_EXAMPLES=OFF 
+    -DWITH_EXAMPLES=OFF
 
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step.")
 
@@ -64,7 +64,7 @@ target_link_libraries(
 target_link_options(
   run_unit_tests
   PUBLIC
-  -Wl,--wrap=can_read   
+  -Wl,--wrap=can_read
   -Wl,--wrap=can_write)
 
 include_directories(

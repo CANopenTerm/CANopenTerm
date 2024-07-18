@@ -33,6 +33,7 @@ elseif(UNIX)
 
 set(picoc_sources
   ${picoc_sources}
+  ${CMAKE_CURRENT_SOURCE_DIR}/cstdlib/unistd.c
   ${CMAKE_CURRENT_SOURCE_DIR}/platform/library_unix.c
   ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform_unix.c)
 
