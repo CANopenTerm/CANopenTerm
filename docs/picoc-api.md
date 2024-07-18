@@ -280,7 +280,9 @@ while (key_is_hit() == 0) {
 
 <!-- tabs:start -->
 <!-- tab:Description -->
+```c
 int key_is_hit (void)
+```
 
 **Returns**: 1 if a key is hit, 0 otherwise.
 
