@@ -122,7 +122,7 @@ void run_script(const char* name, core_t* core)
         return;
     }
 
-    for (i = 0; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
+    for (i = 1; i < sizeof(script_dirs) / sizeof(script_dirs[0]); i++)
     {
         if (IS_TRUE == has_lua_extension)
         {
