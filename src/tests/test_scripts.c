@@ -1257,6 +1257,7 @@ static void test_picoc_script(const char* basename)
     restore_stdout();
 
     assert_files_equal(result_file_path, expect_file_path);
+    remove(result_file_path);
 
     scripts_deinit(&core);
 }
