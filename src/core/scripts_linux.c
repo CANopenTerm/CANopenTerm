@@ -158,17 +158,20 @@ void run_script(const char* name, core_t* core)
                     PicocCleanup(&core->P);
                     return;
                 }
+                script_found = IS_TRUE;
+            }
 
+            if (IS_TRUE == script_found)
+            {
                 PicocPlatformScanFile(&core->P, script_path);
+                PicocCleanup(&core->P);
+                break;
             }
             else
             {
-                os_log(LOG_WARNING, "Script file '%s' does not exist.", script_path);
+                PicocCleanup(&core->P);
+                continue;
             }
-
-            PicocCleanup(&core->P);
-            script_found = IS_TRUE;
-            break;
         }
         else
         {
