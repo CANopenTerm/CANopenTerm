@@ -1,6 +1,7 @@
 *
 !scripts
 !lua
+!tests
 !*.c
 !*.lua
 !.gitignore

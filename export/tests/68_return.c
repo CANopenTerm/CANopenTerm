@@ -28,7 +28,4 @@ void demo_error()
   return;
 }
 
-void main() 
-{
-    demo_error();
-}
+ demo_error();

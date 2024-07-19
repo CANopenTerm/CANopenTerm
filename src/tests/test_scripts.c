@@ -20,7 +20,7 @@
 
 static int stdout_fd_backup;
 
-static void compare_files(const char* file1_path, const char* file2_path);
+static void assert_files_equal(const char *file1_path, const char *file2_path);
 static void redirect_stdout_to_file(const char* filename);
 static void restore_stdout(void);
 static void test_picoc_script(const char* basename);
@@ -1176,39 +1176,45 @@ void test_picoc_rand110(void** state)
     test_picoc_script("rand110");
 }
 
-static void compare_files(const char* file1_path, const char* file2_path)
+static void assert_files_equal(const char *file1_path, const char *file2_path)
 {
-    FILE* file1;
-    FILE* file2;
-    char* buffer1;
-    char* buffer2;
-    long  file1_size;
-    long  file2_size;
+    FILE *file1, *file2;
+    int ch1, ch2;
 
     file1 = fopen(file1_path, "rb");
-    assert_non_null(file1);
+    if (file1 == NULL)
+    {
+        fail_msg("Failed to open %s for reading.", file1_path);
+    }
 
     file2 = fopen(file2_path, "rb");
-    assert_non_null(file2);
+    if (file2 == NULL)
+    {
+        fclose(file1);
+        fail_msg("Failed to open %s for reading.", file2_path);
+    }
 
-    fseek(file1, 0, SEEK_END);
-    file1_size = ftell(file1);
-    rewind(file1);
+    do
+    {
+        ch1 = fgetc(file1);
+        ch2 = fgetc(file2);
 
-    fseek(file2, 0, SEEK_END);
-    file2_size = ftell(file2);
-    rewind(file2);
+        if (ch1 != ch2)
+        {
+            fclose(file1);
+            fclose(file2);
+            fail_msg("Files %s and %s are not equal.", file1_path, file2_path);
+        }
+    } while (ch1 != EOF && ch2 != EOF);
 
-    buffer1 = (char*)malloc(file1_size);
-    buffer2 = (char*)malloc(file2_size);
+    // Check if both files reached EOF, otherwise they are of different sizes
+    if (ch1 != ch2)
+    {
+        fclose(file1);
+        fclose(file2);
+        fail_msg("Files %s and %s have different sizes.", file1_path, file2_path);
+    }
 
-    fread(buffer1, 1, file1_size, file1);
-    fread(buffer2, 1, file2_size, file2);
-
-    assert_memory_equal(buffer1, buffer2, file1_size);
-
-    free(buffer1);
-    free(buffer2);
     fclose(file1);
     fclose(file2);
 }
@@ -1248,8 +1254,9 @@ static void test_picoc_script(const char* basename)
     redirect_stdout_to_file(result_file_path);
     snprintf(script_name, sizeof(script_name), "%s.c", basename);
     run_script(script_name, &core);
-    compare_files(result_file_path, expect_file_path);
     restore_stdout();
+
+    assert_files_equal(result_file_path, expect_file_path);
 
     scripts_deinit(&core);
 }

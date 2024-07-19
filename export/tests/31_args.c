@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main(int argc, char **argv)
+int test(int argc, char **argv)
 {
     int Count;
 
@@ -10,3 +10,7 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+char* argv[] = {"-", "arg1", "arg2", "arg3", "arg4"};
+
+test(5, argv);

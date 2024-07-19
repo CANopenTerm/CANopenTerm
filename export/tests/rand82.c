@@ -29,7 +29,7 @@ crc32_byte (unsigned char b) {
   ((crc32_context >> 8) & 0x00FFFFFF) ^
   crc32_tab[(crc32_context ^ b) & 0xFF];
 }
-extern int strcmp ( char *, char *);
+
 static void
 crc32_8bytes (unsigned val)
 {
@@ -464,14 +464,11 @@ void step_hash(int stmt_id)
 
 
 
-int main (void)
-{
-    int i;
-    int print_hash_value = 0;
-    platform_main_begin();
-    crc32_gentab();
-    func_1();
-    csmith_compute_hash();
-    platform_main_end(crc32_context ^ 0xFFFFFFFFUL, print_hash_value);
-    return 0;
-}
+
+int i;
+int print_hash_val = 0;
+platform_main_begin();
+crc32_gentab();
+func_1();
+csmith_compute_hash();
+platform_main_end(crc32_context ^ 0xFFFFFFFFUL, print_hash_val);

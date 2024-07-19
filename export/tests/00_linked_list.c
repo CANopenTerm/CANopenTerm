@@ -122,40 +122,39 @@ void reverse_list(void) {
 }
 
 #define COUNT (20)
-int main(int argc, char **argv) {
-	int i;
-	for (i = 0; i < COUNT; i++) {
-		printf("enqueue tail: %d\n", i);
-		enqueue_tail(i);
-	}
-	for (i = 0; i < COUNT; i++) {
-		printf("dequeue tail: %d\n", dequeue_tail());
-	}
-	for (i = 0; i < COUNT; i++) {
-		printf("enqueue head: %d\n", i);
-		enqueue_head(i);
-	}
-	for (i = 0; i < COUNT; i++) {
-		printf("dequeue head: %d\n", dequeue_head());
-	}
-	for (i = 0; i < 10; i++) {
-		printf("enqueue head: %d\n", i);
-		enqueue_head(i);
-	}
-	for (i = 10; i < COUNT; i++) {
-		printf("enqueue tail: %d\n", i);
-		enqueue_tail(i);
-	}
-	for (i = 0; i < COUNT; i++) {
-		printf("dequeue tail: %d\n", dequeue_tail());
-	}
-	for (i = 0; i < COUNT; i++) {
-		printf("enqueue tail: %d\n", i);
-		enqueue_head(i);
-	}
-	reverse_list();
-	for (i = 0; i < COUNT; i++) {
-		printf("dequeue tail: %d\n", dequeue_tail());
-	}
-	return 0;
+
+int i;
+for (i = 0; i < COUNT; i++) {
+	printf("enqueue tail: %d\n", i);
+	enqueue_tail(i);
 }
+for (i = 0; i < COUNT; i++) {
+	printf("dequeue tail: %d\n", dequeue_tail());
+}
+for (i = 0; i < COUNT; i++) {
+	printf("enqueue head: %d\n", i);
+	enqueue_head(i);
+}
+for (i = 0; i < COUNT; i++) {
+	printf("dequeue head: %d\n", dequeue_head());
+}
+for (i = 0; i < 10; i++) {
+	printf("enqueue head: %d\n", i);
+	enqueue_head(i);
+}
+for (i = 10; i < COUNT; i++) {
+	printf("enqueue tail: %d\n", i);
+	enqueue_tail(i);
+}
+for (i = 0; i < COUNT; i++) {
+	printf("dequeue tail: %d\n", dequeue_tail());
+}
+for (i = 0; i < COUNT; i++) {
+	printf("enqueue tail: %d\n", i);
+	enqueue_head(i);
+}
+reverse_list();
+for (i = 0; i < COUNT; i++) {
+	printf("dequeue tail: %d\n", dequeue_tail());
+}
+

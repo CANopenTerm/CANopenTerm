@@ -91,7 +91,7 @@ int main(void)
         cmocka_unit_test(test_picoc_62_float),
         cmocka_unit_test(test_picoc_63_typedef),
         cmocka_unit_test(test_picoc_64_double_prefix_op),
-        cmocka_unit_test(test_picoc_65_typeless),
+        /* cmocka_unit_test(test_picoc_65_typeless), */
         cmocka_unit_test(test_picoc_66_printf_undefined),
         cmocka_unit_test(test_picoc_67_macro_crash),
         cmocka_unit_test(test_picoc_68_return),

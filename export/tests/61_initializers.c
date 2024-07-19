@@ -59,93 +59,88 @@ static void func_1(void)
 }
 
 
-int main(int argc, char** argv)
+printf("Hello, World!\n");
+
+printf("a='%s' (%ld)\n", a, sizeof(a));
+printf("b='%s' (%ld)\n", b, sizeof(b));
+
+printf("x=[");
+for (int i = 0; i < sizeof(x) / sizeof(int); i++)
+    printf("%d ", x[i]);
+printf("]\n");
+
+printf("y=[");
+for (int i = 0; i < sizeof(y) / sizeof(int); i++)
+    printf("%d ", y[i]);
+printf("]\n");
+
+printf("p=[\n");
+for (int i = 0; i < 3; i++)
 {
-    printf("Hello, World!\n");
-
-    printf("a='%s' (%ld)\n", a, sizeof(a));
-    printf("b='%s' (%ld)\n", b, sizeof(b));
-
-    printf("x=[");
-    for (int i = 0; i < sizeof(x) / sizeof(int); i++)
-        printf("%d ", x[i]);
-    printf("]\n");
-
-    printf("y=[");
-    for (int i = 0; i < sizeof(y) / sizeof(int); i++)
-        printf("%d ", y[i]);
-    printf("]\n");
-
-    printf("p=[\n");
-    for (int i = 0; i < 3; i++)
-    {
-        printf("    ");
-        for (int j = 0; j < 4; j++)
-            printf("%d ", p[i][j]);
-        printf("\n");
-    }
-    printf("  ]\n");
-
-    printf("q=[\n");
-    for (int i = 0; i < 3; i++)
-    {
-        printf("    ");
-        for (int j = 0; j < 4; j++)
-            printf("%d ", q[i][j]);
-        printf("\n");
-    }
-    printf("  ]\n");
-
-    printf("r=[\n");
-    for (int i = 0; i < 3; i++)
-    {
-        printf("    ");
-        for (int j = 0; j < 4; j++)
-        {
-            for (int k = 0; k < 5; k++)
-                printf("%d ", r[i][j][k]);
-            printf("    ");
-        }
-        printf("\n");
-    }
-    printf("  ]\n");
-
-    printf("s=[\n");
-    for (int i = 0; i < 3; i++)
-    {
-        printf("    ");
-        for (int j = 0; j < 4; j++)
-        {
-            for (int k = 0; k < 5; k++)
-                printf("%d ", s[i][j][k]);
-            printf("    ");
-        }
-        printf("\n");
-    }
-    printf("  ]\n");
-
-    printf("t=[\n");
-    for (int i = 0; i < 3; i++)
-    {
-        printf("    ");
-        for (int j = 0; j < 4; j++)
-        {
-            for (int k = 0; k < 5; k++)
-                printf("%d ", t[i][j][k]);
-            printf("    ");
-        }
-        printf("\n");
-    }
-    printf("  ]\n");
-
-    printf("soko1=\n");
-    for (int i = 0; i < 9; i++)
-        printf("%s    %c\n", soko1[i], soko1[i][3]);
-    printf("soko2=\n");
-    for (int i = 0; i < 9; i++)
-        printf("%s    %c\n", soko2[i], soko2[i][3]);
-    
-    func_1();
-    
-    return 0;
+    printf("    ");
+    for (int j = 0; j < 4; j++)
+        printf("%d ", p[i][j]);
+    printf("\n");
 }
+printf("  ]\n");
+
+printf("q=[\n");
+for (int i = 0; i < 3; i++)
+{
+    printf("    ");
+    for (int j = 0; j < 4; j++)
+        printf("%d ", q[i][j]);
+    printf("\n");
+}
+printf("  ]\n");
+
+printf("r=[\n");
+for (int i = 0; i < 3; i++)
+{
+    printf("    ");
+    for (int j = 0; j < 4; j++)
+    {
+        for (int k = 0; k < 5; k++)
+            printf("%d ", r[i][j][k]);
+        printf("    ");
+    }
+    printf("\n");
+}
+printf("  ]\n");
+
+printf("s=[\n");
+for (int i = 0; i < 3; i++)
+{
+    printf("    ");
+    for (int j = 0; j < 4; j++)
+    {
+        for (int k = 0; k < 5; k++)
+            printf("%d ", s[i][j][k]);
+        printf("    ");
+    }
+    printf("\n");
+}
+printf("  ]\n");
+
+printf("t=[\n");
+for (int i = 0; i < 3; i++)
+{
+    printf("    ");
+    for (int j = 0; j < 4; j++)
+    {
+        for (int k = 0; k < 5; k++)
+            printf("%d ", t[i][j][k]);
+        printf("    ");
+    }
+    printf("\n");
+}
+printf("  ]\n");
+
+printf("soko1=\n");
+for (int i = 0; i < 9; i++)
+    printf("%s    %c\n", soko1[i], soko1[i][3]);
+printf("soko2=\n");
+for (int i = 0; i < 9; i++)
+    printf("%s    %c\n", soko2[i], soko2[i][3]);
+
+func_1();

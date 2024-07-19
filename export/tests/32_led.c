@@ -1,9 +1,9 @@
 /* example from http://barnyard.syr.edu/quickies/led.c */
 
 /* led.c: print out number as if on 7 line led display. I.e., write integer
-   given on command line like this:  
-     _   _       _  
-  |  _|  _| |_| |_  
+   given on command line like this:
+     _   _       _
+  |  _|  _| |_| |_
   | |_   _|   |  _| etc.
 
    We assume the terminal behaves like a classical teletype. So the top
@@ -13,7 +13,7 @@
 	By Terry R. McConnell
 
   compile: cc -o led led.c
- 
+
   If you just want to link in the subroutine print_led that does all the
   work, compile with -DNO_MAIN, and declare the following in any source file
   that uses the call:
@@ -35,7 +35,7 @@
 #define NO_MAIN
 
 
-/* Print the top line of the digit d into buffer. 
+/* Print the top line of the digit d into buffer.
    Does not null terminate buffer. */
 
 void topline(int d, char *p){
@@ -56,18 +56,18 @@ void topline(int d, char *p){
 			break;
 		default:
 			*p++=' ';
-	
+
 	}
 	*p++=' ';
 }
 
-/* Print the middle line of the digit d into the buffer. 
+/* Print the middle line of the digit d into the buffer.
    Does not null terminate. */
 
 void midline(int d, char *p){
 
 	switch(d){
-		
+
 		/* those that have leading | on middle line */
 
 		case 0:
@@ -79,7 +79,7 @@ void midline(int d, char *p){
 			*p++='|';
 			break;
 		default:
-			*p++=' ';	
+			*p++=' ';
 	}
 	switch(d){
 
@@ -114,7 +114,7 @@ void midline(int d, char *p){
 			break;
 		default:
 			*p++=' ';
-			
+
 	}
 }
 
@@ -126,7 +126,7 @@ void botline(int d, char *p){
 	switch(d){
 
 		/* those that have leading | on bottom line */
-		
+
 		case 0:
 		case 2:
 		case 6:
@@ -134,7 +134,7 @@ void botline(int d, char *p){
 			*p++='|';
 			break;
 		default:
-			*p++=' ';	
+			*p++=' ';
 	}
 	switch(d){
 
@@ -169,7 +169,7 @@ void botline(int d, char *p){
 			break;
 		default:
 			*p++=' ';
-			
+
 	}
 }
 
@@ -209,7 +209,7 @@ void print_led(unsigned long x, char *buf)
 		*buf++=' ';
 	}
 	*buf++='\n';
-	
+
 	/* print bottom lines of all digits */
 
 	for(i=n-1;i>=0;i--){
@@ -221,14 +221,9 @@ void print_led(unsigned long x, char *buf)
 	*buf='\0';
 }
 
-int main()
-{
-	char buf[5*MAX_DIGITS];
-	print_led(1234567, buf);
-	printf("%s\n",buf);
-
-    return 0;
-}
+char buf[5*MAX_DIGITS];
+print_led(1234567, buf);
+printf("%s\n",buf);
 
 #ifndef NO_MAIN
 int main(int argc, char **argv)
@@ -259,6 +254,6 @@ int main(int argc, char **argv)
 	printf("%s\n",buf);
 
 	return 0;
-	
+
 }
 #endif
