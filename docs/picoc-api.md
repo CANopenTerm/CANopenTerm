@@ -138,11 +138,24 @@ nmt_send_command(0x01, NMT_OPERATIONAL, 1, "Switch to operational state");
 
 ## Process data objects (PDO)
 
+It is possible to create up to 632 asynchronous PDOs, which are then
+sent cyclically at the specified interval.
+
 To use the PDO interface, include the following header file:
 
 ```c
 #include "pdo.h"
 ```
+
+!>The following **CAN-IDs** can be used:
+
+| From  | To    | Description |
+| ----- | ----- | ----------- |
+| 0x000 | 0x07f | Node-ID     |
+| 0x181 | 0x1ff | TPDO1       |
+| 0x281 | 0x2ff | TPDO2       |
+| 0x381 | 0x3ff | TPDO3       |
+| 0x481 | 0x4ff | TPDO4       |
 
 ### pdo_add()
 
