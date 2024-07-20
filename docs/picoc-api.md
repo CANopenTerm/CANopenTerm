@@ -144,7 +144,69 @@ To use the PDO interface, include the following header file:
 #include "pdo.h"
 ```
 
-!> Not yet available.
+### pdo_add()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+int pdo_add (int can_id, unsigned int event_time_ms, int length, char* data, int show_output, char* comment);
+```
+
+> **can_id** CAN-ID.
+
+> **event_time_ms** Event time in milliseconds.
+
+> **length** Data length (0 to 8).
+
+> **data** Data buffer.
+
+> **show_output** Show output (boolean operation).
+
+> **comment** Comment string or NULL.
+
+**Returns**: 1 on success, 0 on failure.
+
+<!-- tab:Example -->
+```c
+#include "misc.h"
+#include "pdo.h"
+
+char data[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
+
+pdo_add(0x181, 100, 8, data, true, "New TPDO!");
+delay_ms(1000);
+pdo_del(0x181, true, NULL);
+```
+<!-- tabs:end -->
+
+### pdo_del()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+int pdo_del (int can_id, int show_output, char* comment)
+```
+
+> **can_id** CAN-ID.
+
+> **show_output** Show output (boolean operation).
+
+> **comment** Comment string or NULL.
+
+**Returns**: 1 on success, 0 on failure.
+
+<!-- tab:Example -->
+```c
+#include "misc.h"
+#include "pdo.h"
+
+char data[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
+
+pdo_add(0x181, 100, 8, data, true, "New TPDO!");
+delay_ms(1000);
+pdo_del(0x181, true, NULL);
+```
+<!-- tabs:end -->
 
 ## Service data objects (SDO)
 

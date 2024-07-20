@@ -15,10 +15,16 @@
 
 static const char defs[] = "";
 
+extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char *comment);
+
+static void c_pdo_add(struct ParseState *parser, struct Value *return_value, struct Value **param, int args);
+static void c_pdo_del(struct ParseState *parser, struct Value *return_value, struct Value **param, int args);
 static void setup(Picoc* P);
 
 struct LibraryFunction picoc_pdo_functions[] =
 {
+    { c_pdo_add, "int pdo_add(int can_id, unsigned int event_time_ms, int length, char* data, int show_output, char* comment);" },
+    { c_pdo_del, "int pdo_del(int can_id, int show_output, char* comment);" },
     { NULL, NULL }
 };
 
@@ -27,93 +33,49 @@ void picoc_pdo_init(core_t* core)
     IncludeRegister(&core->P, "pdo.h", &setup, &picoc_pdo_functions[0], defs);
 }
 
-#if 0
-int lua_pdo_add(lua_State *L)
+static void c_pdo_add(struct ParseState *parser, struct Value *return_value, struct Value **param, int args)
 {
-    int         can_id = luaL_checkinteger(L, 1);
-    int         event_time_ms = luaL_checkinteger(L, 2);
-    int         length = luaL_checkinteger(L, 3);
-    uint64      data = lua_tointeger(L, 4);
-    bool_t      show_output = lua_toboolean(L, 5);
-    const char *comment = lua_tostring(L, 6);
-    bool_t      success;
-    disp_mode_t disp_mode = SILENT;
+    int         can_id          = param[0]->Val->Integer;
+    uint32      event_time_ms   = param[1]->Val->UnsignedInteger;
+    int         length          = param[2]->Val->Integer;
+    uint64      data            = 0;
+    bool_t      show_output     = (bool_t)param[4]->Val->Integer;
+    const char* comment         = (const char*)param[5]->Val->Pointer;
+    bool_t      was_successful;
+    disp_mode_t disp_mode       = SILENT;
 
     if (IS_TRUE == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
 
-    success = pdo_add(can_id, event_time_ms, length, data, disp_mode);
+    os_memcpy(&data, param[3]->Val->Pointer, sizeof(uint64));
+    data = os_swap_64(data);
+
+    was_successful = pdo_add(can_id, event_time_ms, length, data, disp_mode);
 
     if (IS_TRUE == show_output)
     {
-        int  i;
-        char buffer[34] = { 0 };
-
-        if (NULL == comment)
-        {
-            comment = "-";
-        }
-
-        os_strlcpy(buffer, comment, 33);
-        for (i = os_strlen(buffer); i < 33; ++i)
-        {
-            buffer[i] = ' ';
-        }
-
-        if (IS_TRUE == success)
-        {
-            os_print(LIGHT_BLACK, "PDO  ");
-            os_print(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
-            os_print(LIGHT_GREEN, "SUCC    ");
-            os_print(DARK_MAGENTA, "%s ", buffer);
-            os_print(DEFAULT_COLOR, "0x%08X, %ums\n", data, event_time_ms);
-        }
+        pdo_print_result(can_id, event_time_ms, data, was_successful, comment);
     }
 
-    lua_pushboolean(L, success);
-
-    return 1;
+    return_value->Val->Integer = (int)was_successful;
 }
 
-int lua_pdo_del(lua_State *L)
+static void c_pdo_del(struct ParseState *parser, struct Value *return_value, struct Value **param, int args)
 {
-    int         can_id = luaL_checkinteger(L, 1);
-    bool_t      show_output = lua_toboolean(L, 2);
-    const char *comment = lua_tostring(L, 3);
-    disp_mode_t disp_mode = SILENT;
+    int         can_id      = param[0]->Val->Integer;
+    bool_t      show_output = (bool_t)param[1]->Val->Integer;
+    const char* comment     = (const char*)param[2]->Val->Pointer;
+    disp_mode_t disp_mode   = SILENT;
 
     if (IS_TRUE == show_output)
     {
-        int  i;
-        char buffer[34] = { 0 };
-
-        disp_mode = SCRIPT_MODE;
-
-        if (NULL == comment)
-        {
-            comment = "-";
-        }
-
-        os_strlcpy(buffer, comment, 33);
-        for (i = os_strlen(buffer); i < 33; ++i)
-        {
-            buffer[i] = ' ';
-        }
-
-        os_print(LIGHT_BLACK, "PDO  ");
-        os_print(DEFAULT_COLOR, "    0x%02X   -       -         -       ", can_id);
-        os_print(LIGHT_GREEN, "SUCC    ");
-        os_print(DEFAULT_COLOR, "%s ", buffer);
-        os_print(DEFAULT_COLOR, "Delete\n");
+        pdo_print_result(can_id, 0, 0, IS_TRUE, comment);
     }
 
-    lua_pushboolean(L, pdo_del(can_id, disp_mode));
-    return 1;
+    return_value->Val->Integer = (int)pdo_del(can_id, disp_mode);
 }
-#endif
-
 
 static void setup(Picoc* P)
 {

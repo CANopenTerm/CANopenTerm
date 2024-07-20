@@ -152,6 +152,41 @@ bool_t pdo_is_id_valid(uint16 can_id)
     return IS_FALSE;
 }
 
+void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char *comment)
+{
+    int  i;
+    char buffer[34] = { 0 };
+
+    if (NULL == comment)
+    {
+        comment = "-";
+    }
+
+    os_strlcpy(buffer, comment, 33);
+    for (i = os_strlen(buffer); i < 33; ++i)
+    {
+        buffer[i] = ' ';
+    }
+
+    if (IS_TRUE == was_successful)
+    {
+        os_print(LIGHT_BLACK, "PDO  ");
+        os_print(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
+        os_print(LIGHT_GREEN, "SUCC    ");
+        os_print(DARK_MAGENTA, "%s ", buffer);
+
+
+        if ((0 == data) && (0 == event_time_ms))
+        {
+            os_print(DEFAULT_COLOR, "Delete\n");
+        }
+        else
+        {
+            os_print(DEFAULT_COLOR, "0x%08X, %ums\n", data, event_time_ms);
+        }
+    }
+}
+
 static void print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id)
 {
     if (SCRIPT_MODE != disp_mode)
