@@ -10,7 +10,6 @@
 #ifndef NMT_H
 #define NMT_H
 
-#include "lua.h"
 #include "core.h"
 #include "os.h"
 
@@ -25,8 +24,6 @@ typedef enum
 } nmt_command_t;
 
 status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment);
-int      lua_nmt_send_command(lua_State* L);
-void     lua_register_nmt_command(core_t* core);
 status_t nmt_print_help(disp_mode_t disp_mode);
 
 #endif /* NMT_H */

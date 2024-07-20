@@ -38,9 +38,6 @@ void        can_print_error(uint32 can_id, const char* reason, disp_mode_t disp_
 void        can_set_baud_rate(uint8 baud_rate_index, core_t* core);
 void        can_set_channel(uint32 channel, core_t* core);
 void        limit_node_id(uint8* node_id);
-int         lua_can_write(lua_State* L);
-int         lua_can_read(lua_State* L);
-void        lua_register_can_commands(core_t* core);
 bool_t      is_can_initialised(core_t* core);
 
 #endif /* CAN_H */

@@ -34,15 +34,6 @@ void scripts_init(core_t* core)
     if (NULL != core->L)
     {
         luaL_openlibs(core->L);
-
-        lua_pushcfunction(core->L, lua_delay_ms);
-        lua_setglobal(core->L, "delay_ms");
-
-        lua_pushcfunction(core->L, lua_key_is_hit);
-        lua_setglobal(core->L, "key_is_hit");
-
-        lua_pushcfunction(core->L, lua_print_heading);
-        lua_setglobal(core->L, "print_heading");
     }
 
 #ifdef ENABLE_POCKETPY_SUPPORT
@@ -138,49 +129,6 @@ bool_t has_valid_extension(const char* filename)
     }
 }
 
-int lua_delay_ms(lua_State * L)
-{
-    uint32      delay_in_ms = (uint32)lua_tointeger(L, 1);
-    bool_t      show_output = lua_toboolean(L, 2);
-    const char* comment     = lua_tostring(L, 3);
-
-    if (0 == delay_in_ms)
-    {
-        delay_in_ms = 1000u;
-    }
-
-    if (IS_TRUE == show_output)
-    {
-        int  i;
-        char buffer[34] = { 0 };
-
-        os_print(LIGHT_BLACK, "Delay ");
-        os_print(DEFAULT_COLOR, "   -       -       -         -       -       ");
-
-        if (NULL == comment)
-        {
-            comment = "-";
-        }
-
-        os_strlcpy(buffer, comment, 33);
-        for (i = os_strlen(buffer); i < 33; ++i)
-        {
-            buffer[i] = ' ';
-        }
-
-        os_print(DARK_MAGENTA, "%s ", buffer);
-        os_print(DEFAULT_COLOR, "%ums\n", delay_in_ms);
-    }
-
-    os_delay(delay_in_ms);
-    return 1;
-}
-
-int lua_key_is_hit(lua_State* L)
-{
-    lua_pushboolean(L, os_key_is_hit());
-    return 1;
-}
 
 void print_heading(const char* heading)
 {
@@ -193,14 +141,6 @@ void print_heading(const char* heading)
     os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 }
 
-int lua_print_heading(lua_State* L)
-{
-    const char* heading = lua_tostring(L, 1);
-
-    print_heading(heading);
-
-    return 0;
-}
 
 size_t safe_strcpy(char* dest, const char* src, size_t size)
 {

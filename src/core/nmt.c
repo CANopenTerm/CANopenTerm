@@ -7,14 +7,12 @@
  *
  **/
 
-#include "lua.h"
-#include "lauxlib.h"
 #include "can.h"
 #include "core.h"
 #include "nmt.h"
 #include "table.h"
 
-static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
+void nmt_print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
 
 status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
 {
@@ -48,7 +46,7 @@ status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp
         can_status = can_write(&can_message, SILENT, NULL);
         if (0 != can_status)
         {
-            print_error(can_get_error_message(can_status), command, disp_mode);
+            nmt_print_error(can_get_error_message(can_status), command, disp_mode);
             status = CAN_WRITE_ERROR;
         }
         else
@@ -100,55 +98,6 @@ status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp
     return status;
 }
 
-int lua_nmt_send_command(lua_State* L)
-{
-    uint32      status;
-    disp_mode_t disp_mode   = SILENT;
-    int         node_id     = luaL_checkinteger(L, 1);
-    int         command     = luaL_checkinteger(L, 2);
-    bool_t      show_output = lua_toboolean(L, 3);
-    const char* comment     = lua_tostring(L, 4);
-
-    limit_node_id((uint8*)&node_id);
-
-    if (IS_TRUE == show_output)
-    {
-        disp_mode = SCRIPT_MODE;
-    }
-
-    switch (command)
-    {
-        case NMT_OPERATIONAL:
-        case NMT_STOP:
-        case NMT_PRE_OPERATIONAL:
-        case NMT_RESET_NODE:
-        case NMT_RESET_COMM:
-            status = nmt_send_command(node_id, command, disp_mode, comment);
-            if (0 == status)
-            {
-                lua_pushboolean(L, 1);
-            }
-            else
-            {
-                print_error(can_get_error_message(status), command, disp_mode);
-                lua_pushboolean(L, 0);
-            }
-            break;
-        default:
-            print_error("Unknown NMT command", command, disp_mode);
-            lua_pushboolean(L, 0);
-            break;
-    }
-
-    return 1;
-}
-
-void lua_register_nmt_command(core_t* core)
-{
-    lua_pushcfunction(core->L, lua_nmt_send_command);
-    lua_setglobal(core->L, "nmt_send_command");
-}
-
 status_t nmt_print_help(disp_mode_t disp_mode)
 {
     status_t status;
@@ -180,12 +129,12 @@ status_t nmt_print_help(disp_mode_t disp_mode)
     return status;
 }
 
-static void print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode)
+void nmt_print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode)
 {
     switch (disp_mode)
     {
         case TERM_MODE:
-        {        
+        {
             os_log(LOG_ERROR, "NMT 0x%02X error: %s", command, reason);
             break;
         }

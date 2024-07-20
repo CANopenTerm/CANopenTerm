@@ -12,7 +12,6 @@
 
 #include "os.h"
 #include "core.h"
-#include "lua.h"
 
 typedef struct dict_entry
 {
@@ -25,7 +24,5 @@ typedef struct dict_entry
 } dict_entry_t;
 
 const char* dict_lookup(uint16 index, uint8 sub_index);
-int         lua_dict_lookup(lua_State* L);
-void        lua_register_dict_commands(core_t* core);
 
 #endif /* DICT_H */

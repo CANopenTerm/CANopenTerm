@@ -9,8 +9,6 @@
 
 #include "os.h"
 #include "core.h"
-#include "lua.h"
-#include "lauxlib.h"
 #include "dict.h"
 
 static const dict_entry_t dictionary[] =
@@ -232,28 +230,4 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
     }
 
     return NULL;
-}
-
-int lua_dict_lookup(lua_State* L)
-{
-    int         index       = luaL_checkinteger(L, 1);
-    int         sub_index   = luaL_checkinteger(L, 2);
-    const char* description = dict_lookup(index, sub_index);
-
-    if (NULL == description)
-    {
-        lua_pushnil(L);
-    }
-    else
-    {
-        lua_pushstring(L, description);
-    }
-    
-    return 1;
-}
-
-void lua_register_dict_commands(core_t* core)
-{
-    lua_pushcfunction(core->L, lua_dict_lookup);
-    lua_setglobal(core->L, "dict_lookup");
 }

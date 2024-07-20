@@ -10,7 +10,6 @@
 #ifndef SDO_H
 #define SDO_H
 
-#include "lua.h"
 #include "can.h"
 #include "core.h"
 
@@ -107,11 +106,5 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
 sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment);
 sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, const char* filename, const char* comment);
 sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment);
-int         lua_sdo_lookup_abort_code(lua_State* L);
-int         lua_sdo_read(lua_State* L);
-int         lua_sdo_write(lua_State* L);
-int         lua_sdo_write_file(lua_State* L);
-int         lua_sdo_write_string(lua_State* L);
-void        lua_register_sdo_commands(core_t* core);
 
 #endif /* SDO_H */

@@ -36,6 +36,7 @@ endif(BUILD_TESTS)
 
 include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/api
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/picoc)
@@ -46,6 +47,20 @@ function(append_platform_files source_list pattern platform)
   set(${source_list} ${${source_list}} PARENT_SCOPE)
 endfunction()
 
+set(api_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_dbc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_misc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_nmt.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_pdo.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_sdo.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_dbc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_misc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_nmt.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_pdo.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_sdo.c)
+
 set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/buffer.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can.c
@@ -55,12 +70,6 @@ set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_can.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_dbc.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_misc.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_nmt.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_pdo.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/picoc_sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c
@@ -78,6 +87,7 @@ append_platform_files(os_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/os/*" ${PLATFO
 add_library(
   core
   STATIC
+  ${api_sources}
   ${core_sources}
   ${os_sources})
 

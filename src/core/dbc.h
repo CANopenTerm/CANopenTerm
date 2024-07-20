@@ -11,7 +11,6 @@
 #define DBC_H
 
 #include "core.h"
-#include "lua.h"
 #include "os.h"
 
 typedef enum
@@ -59,9 +58,5 @@ status_t    dbc_find_id_by_name(uint32* id, const char* search);
 status_t    dbc_load(const char *filename);
 void        dbc_print(void);
 void        dbc_unload(void);
-int         lua_dbc_decode(lua_State *L);
-int         lua_dbc_find_id_by_name(lua_State* L);
-int         lua_dbc_load(lua_State* L);
-void        lua_register_dbc_command(core_t *core);
 
 #endif /* DBC_H */

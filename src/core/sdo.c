@@ -7,11 +7,9 @@
  *
  **/
 
-#include "lua.h"
-#include "lauxlib.h"
 #include "can.h"
 #include "core.h"
-#include "dict.h" 
+#include "dict.h"
 #include "os.h"
 #include "sdo.h"
 
@@ -20,11 +18,12 @@
 #define CAN_BASE_ID           0x600
 #define SDO_TIMEOUT_IN_MS     100u
 
-static bool_t is_printable_string(const char* str, size_t length);
-static void   print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode);
-static void   print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
-static void   print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
-static int    wait_for_response(uint8 node_id, can_message_t* msg_in);
+static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode);
+static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
+static void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
+static int  wait_for_response(uint8 node_id, can_message_t* msg_in);
+
+bool_t is_printable_string(const char *str, size_t length);
 
 const char* sdo_lookup_abort_code(uint32 abort_code)
 {
@@ -733,224 +732,7 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
     return IS_WRITE_SEGMENTED;
 }
 
-int lua_sdo_lookup_abort_code(lua_State* L)
-{
-    int         abort_code  = luaL_checkinteger(L, 1);
-    const char* description = sdo_lookup_abort_code(abort_code);
-
-    lua_pushstring(L, (const char*)description);
-    return 1;
-}
-
-int lua_sdo_read(lua_State* L)
-{
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
-    sdo_state_t   sdo_state;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    bool_t        show_output = lua_toboolean(L, 4);
-    const char* comment = lua_tostring(L, 5);
-    char          str_buffer[5] = { 0 };
-    uint32        result;
-
-    limit_node_id((uint8*)&node_id);
-
-    if (IS_TRUE == show_output)
-    {
-        disp_mode = SCRIPT_MODE;
-    }
-
-    sdo_state = sdo_read(
-        &sdo_response,
-        disp_mode,
-        (uint8)node_id,
-        (uint16)index,
-        (uint16)sub_index,
-        comment);
-
-    switch (sdo_state)
-    {
-        case IS_READ_SEGMENTED:
-            lua_pushstring(L, (const char*)sdo_response.data);
-            lua_pushstring(L, (const char*)sdo_response.data);
-            break;
-        case IS_READ_EXPEDITED:
-            os_memcpy(&result, &sdo_response.data, sizeof(uint32));
-            os_memcpy(&str_buffer, &sdo_response.data, sizeof(uint32));
-            lua_pushinteger(L, result);
-
-            if (is_printable_string(str_buffer, sizeof(uint32)))
-            {
-                lua_pushstring(L, (const char*)str_buffer);
-            }
-            else
-            {
-                lua_pushnil(L);
-            }
-            break;
-        default:
-        case ABORT_TRANSFER:
-            lua_pushnil(L);
-            lua_pushnil(L);
-            break;
-    }
-
-    return 2;
-}
-
-int lua_sdo_write(lua_State* L)
-{
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode    = SILENT;
-    sdo_state_t   sdo_state;
-    int           node_id      = luaL_checkinteger(L, 1);
-    int           index        = luaL_checkinteger(L, 2);
-    int           sub_index    = luaL_checkinteger(L, 3);
-    int           length       = luaL_checkinteger(L, 4);
-    int           data         = lua_tointeger(L, 5);
-    bool_t        show_output  = lua_toboolean(L, 6);
-    const char*   comment      = lua_tostring(L, 7);
-
-    limit_node_id((uint8*)&node_id);
-
-    if (IS_TRUE == show_output)
-    {
-        disp_mode = SCRIPT_MODE;
-    }
-
-    sdo_state = sdo_write(
-        &sdo_response,
-        disp_mode,
-        (uint8)node_id,
-        (uint16)index,
-        (uint8)sub_index,
-        (uint32)length,
-        (void*)&data,
-        comment);
-
-    switch (sdo_state)
-    {
-        case ABORT_TRANSFER:
-            lua_pushboolean(L, 0);
-            break;
-        default:
-            lua_pushboolean(L, 1);
-            break;
-    }
-
-    return 1;
-}
-
-int lua_sdo_write_file(lua_State* L)
-{
-    can_message_t sdo_response  = { 0 };
-    disp_mode_t   disp_mode     = SILENT;
-    int           status;
-    int           node_id       = luaL_checkinteger(L, 1);
-    int           index         = luaL_checkinteger(L, 2);
-    int           sub_index     = luaL_checkinteger(L, 3);
-    const char*   filename      = luaL_checkstring(L, 4);
-
-    if (NULL == filename)
-    {
-        lua_pushboolean(L, 0);
-        return 1;
-    }
-    
-    status = sdo_write_block(
-        &sdo_response,
-        disp_mode,
-        (uint8)node_id,
-        (uint16)index,
-        (uint8)sub_index,
-        filename,
-        NULL);
-
-    switch (status)
-    {
-        case ABORT_TRANSFER:
-            lua_pushboolean(L, 0);
-            break;
-        default:
-            lua_pushboolean(L, 1);
-            break;
-    }
-
-    return 1;
-}
-
-int lua_sdo_write_string(lua_State* L)
-{
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode    = SILENT;
-    int           status;
-    int           node_id      = luaL_checkinteger(L, 1);
-    int           index        = luaL_checkinteger(L, 2);
-    int           sub_index    = luaL_checkinteger(L, 3);
-    const char*   data         = luaL_checkstring(L, 4);
-    uint32        length       = 0;
-    bool_t        show_output  = lua_toboolean(L, 5);
-    const char*   comment      = lua_tostring(L, 6);
-
-    if (NULL != data)
-    {
-        length = os_strlen(data);
-    }
-    else
-    {
-        lua_pushboolean(L, 0);
-        return 1;
-    }
-
-    if (IS_TRUE == show_output)
-    {
-        disp_mode = SCRIPT_MODE;
-    }
-
-    status = sdo_write_segmented(
-        &sdo_response,
-        disp_mode,
-        (uint8)node_id,
-        (uint16)index,
-        (uint8)sub_index,
-        length,
-        (void*)data,
-        comment);
-
-    switch (status)
-    {
-        case ABORT_TRANSFER:
-            lua_pushboolean(L, 0);
-            break;
-        default:
-            lua_pushboolean(L, 1);
-            break;
-    }
-
-    return 1;
-}
-
-void lua_register_sdo_commands(core_t* core)
-{
-    lua_pushcfunction(core->L, lua_sdo_lookup_abort_code);
-    lua_setglobal(core->L, "sdo_lookup_abort_code");
-
-    lua_pushcfunction(core->L, lua_sdo_read);
-    lua_setglobal(core->L, "sdo_read");
-
-    lua_pushcfunction(core->L, lua_sdo_write);
-    lua_setglobal(core->L, "sdo_write");
-
-    lua_pushcfunction(core->L, lua_sdo_write_file);
-    lua_setglobal(core->L, "sdo_write_file");
-
-    lua_pushcfunction(core->L, lua_sdo_write_string);
-    lua_setglobal(core->L, "sdo_write_string");
-}
-
-static bool_t is_printable_string(const char* str, size_t length)
+bool_t is_printable_string(const char* str, size_t length)
 {
     size_t i;
     for (i = 0; i < length; i++)
@@ -1182,7 +964,7 @@ void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint
         case TERM_MODE:
         {
             const char* description = dict_lookup(index, sub_index);
-        
+
             if (NULL != description)
             {
                 os_log(LOG_INFO, "%s", description);
@@ -1227,7 +1009,7 @@ void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint
             else if (IS_WRITE_SEGMENTED)
             {
                 data_str[CAN_BUF_SIZE - 1] = '\0';
-    
+
                 os_log(LOG_SUCCESS, "Index %x, Sub-index %x: %u byte(s) written: %s",
                     index,
                     sub_index,
@@ -1243,8 +1025,8 @@ void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint
         case SCRIPT_MODE:
         {
             int  i;
-            char buffer[34] = { 0 }; 
-            
+            char buffer[34] = { 0 };
+
             if (NULL == comment)
             {
                 comment = dict_lookup(index, sub_index);
