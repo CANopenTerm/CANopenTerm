@@ -1,11 +1,13 @@
 ﻿# PicoC API
 
-!> Support for PicoC is currently being developed and is expected to become
-   available in Version 1.0.5 at the earliest.
+!> Support for PicoC is currently being developed and is expected to
+   become available in Version 1.0.5 at the earliest.
 
-!> When writing a PicoC script, you do not need to define a main function.
-   PicoC scripts are executed from top to bottom without the need for an
-   explicit entry point like a main function in traditional C programs.
+!> Scripts are slightly simpler than standard C programs because, **A**)
+   all the system headers are included automatically for you so you don't
+   need to include them in your file/s and **B**) scripts don't require a
+   `main()` function; they have statements that are run directly from the
+   top of a file to the bottom.
 
 ## CAN Database File (DBC)
 
@@ -229,7 +231,158 @@ To use the SDO interface, include the following header file:
 #include "sdo.h"
 ```
 
-!> Not yet available.
+## sdo_abort_code_t
+
+```c
+typedef enum
+{
+    ABORT_TOGGLE_BIT_NOT_ALTERED             = 0x05030000,
+    ABORT_SDO_PROTOCOL_TIMED_OUT             = 0x05040000,
+    ABORT_CMD_SPECIFIER_INVALID_UNKNOWN      = 0x05040001,
+    ABORT_INVALID_BLOCK_SIZE                 = 0x05040002,
+    ABORT_INVALID_SEQUENCE_NUMBER            = 0x05040003,
+    ABORT_CRC_ERROR                          = 0x05040004,
+    ABORT_OUT_OF_MEMORY                      = 0x05040005,
+    ABORT_UNSUPPORTED_ACCESS                 = 0x06010000,
+    ABORT_ATTEMPT_TO_READ_WRITE_ONLY         = 0x06010001,
+    ABORT_ATTEMPT_TO_WRITE_READ_ONLY         = 0x06010002,
+    ABORT_OBJECT_DOES_NOT_EXIST              = 0x06020000,
+    ABORT_OBJECT_CANNOT_BE_MAPPED            = 0x06040041,
+    ABORT_WOULD_EXCEED_PDO_LENGTH            = 0x06040042,
+    ABORT_GENERAL_INCOMPATIBILITY_REASON     = 0x06040043,
+    ABORT_GENERAL_INTERNAL_INCOMPATIBILITY   = 0x06040047,
+    ABORT_ACCESS_FAILED_DUE_HARDWARE_ERROR   = 0x06060000,
+    ABORT_DATA_TYPE_DOES_NOT_MATCH           = 0x06070010,
+    ABORT_DATA_TYPE_LENGTH_TOO_HIGH          = 0x06070012,
+    ABORT_DATA_TYPE_LENGTH_TOO_LOW           = 0x06070013,
+    ABORT_SUB_INDEX_DOES_NOT_EXIST           = 0x06090011,
+    ABORT_INVALID_VALUE_FOR_PARAMETER        = 0x06090030,
+    ABORT_VALUE_FOR_PARAMETER_TOO_HIGH       = 0x06090031,
+    ABORT_VALUE_FOR_PARAMETER_TOO_LOW        = 0x06090032,
+    ABORT_MAX_VALUE_LESS_THAN_MIN_VALUE      = 0x06090036,
+    ABORT_RESOURCE_NOT_AVAILABLE             = 0x060a0023,
+    ABORT_GENERAL_ERROR                      = 0x08000000,
+    ABORT_DATA_CANNOT_BE_TRANSFERRED         = 0x08000020,
+    ABORT_DATA_CANNOT_TRANSFERRED_LOCAL_CTRL = 0x08000021,
+    ABORT_DATA_CANNOT_TRANSFERRED_DEV_STATE  = 0x08000022,
+    ABORT_NO_OBJECT_DICTIONARY_PRESENT       = 0x08000023,
+    ABORT_NO_DATA_AVAILABLE                  = 0x08000024
+
+} sdo_abort_code_t;
+```
+
+## sdo_lookup_abort_code()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+char* sdo_lookup_abort_code (sdo_abort_code_t abort_code)
+```
+
+> **abort_code** SDO abort code of type [sdo_abort_code_t](#sdo_abort_code_t).
+
+> **Returns**: A string containing the abort code description.
+
+<!-- tab:Example -->
+```c
+#include "sdo.h"
+
+printf("%s\n", sdo_lookup_abort_code(ABORT_CRC_ERROR));
+printf("%s\n", sdo_lookup_abort_code(0x06060000)); // Hardware error.
+```
+<!-- tabs:end -->
+
+## sdo_read()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+char* sdo_read (unsigned int* result, int node_id, int index, int sub_index, int show_output, char* comment)
+```
+
+> **result** A pointer to store the result.
+
+> **node_id** CANopen Node-ID.
+
+> **index** Object index.
+
+> **sub_index** Object sub-index.
+
+> **show_output** Show output (boolean operation).
+
+> **comment** Comment string or NULL.
+
+**Returns**: A string (if printable) or NULL.
+
+<!-- tab:Example -->
+```c
+#include "sdo.h"
+
+unsigned int result = 0;
+char*        result_str = sdo_read(&result, 0x123, 0x1008, 0x00, true, NULL);
+
+printf("%Xh %s\n", result, result_str);
+```
+<!-- tabs:end -->
+
+## sdo_write()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+```
+
+<!-- tab:Example -->
+```c
+#include "sdo.h"
+```
+<!-- tabs:end -->
+
+## sdo_write_file()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+```
+
+<!-- tab:Example -->
+```c
+#include "sdo.h"
+```
+<!-- tabs:end -->
+
+## sdo_write_string()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+```
+
+<!-- tab:Example -->
+```c
+#include "sdo.h"
+```
+<!-- tabs:end -->
+
+## dict_lookup()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+char* dict_lookup (int index, int sub_index)
+
+> **index** Object index.
+
+> **sub_index** Object sub-index.
+
+**Returns**: A string containing the object description or NULL.
+```
+
+<!-- tab:Example -->
+```c
+#include "sdo.h"
+```
+<!-- tabs:end -->
 
 ## Generic CAN interface
 

@@ -129,7 +129,6 @@ bool_t has_valid_extension(const char* filename)
     }
 }
 
-
 void print_heading(const char* heading)
 {
     if (NULL == heading)
@@ -140,7 +139,6 @@ void print_heading(const char* heading)
     os_print(LIGHT_YELLOW, "\n%s\n", heading);
     os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 }
-
 
 size_t safe_strcpy(char* dest, const char* src, size_t size)
 {

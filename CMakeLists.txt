@@ -113,13 +113,16 @@ if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
   set(COMPILE_OPTIONS
     -Wall
     -Wextra
-    -Wpedantic)
+    -Wpedantic
+    -Weverything
+    -Werror)
 
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
   set(COMPILE_OPTIONS
     -Wall
     -Wextra
-    -Wpedantic)
+    -Wpedantic
+    -Wtraditional)
 
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   set(COMPILE_OPTIONS

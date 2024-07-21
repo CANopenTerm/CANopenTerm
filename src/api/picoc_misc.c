@@ -13,7 +13,7 @@
 #include "picoc_misc.h"
 #include "scripts.h"
 
-extern void print_heading(char* heading);
+extern void print_heading(const char* heading);
 
 static const char defs[] = "";
 

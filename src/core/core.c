@@ -10,6 +10,7 @@
 #include "can.h"
 #include "command.h"
 #include "core.h"
+#include "dbc.h"
 #include "lua_can.h"
 #include "lua_dbc.h"
 #include "lua_misc.h"

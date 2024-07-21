@@ -7,8 +7,8 @@
  *
  **/
 
-#ifndef LUA_PDO_H
-#define LUA_PDO_H
+#ifndef LUA_SDO_H
+#define LUA_SDO_H
 
 #include "core.h"
 #include "lua.h"
@@ -21,4 +21,4 @@ int  lua_sdo_write_string(lua_State *L);
 int  lua_dict_lookup(lua_State *L);
 void lua_register_sdo_commands(core_t *core);
 
-#endif /* LUA_PDO_H */
+#endif /* LUA_SDO_H */

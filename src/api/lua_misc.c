@@ -13,6 +13,8 @@
 #include "lua_misc.h"
 #include "os.h"
 
+extern void print_heading(const char *heading);
+
 int lua_delay_ms(lua_State *L)
 {
     uint32      delay_in_ms = (uint32)lua_tointeger(L, 1);
