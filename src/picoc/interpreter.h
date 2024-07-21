@@ -251,17 +251,19 @@ struct ValueType {
     int StaticQualifier;            /* true if it's a static */
 };
 
+struct Value; /* Forward declaration. */
+
 /* function definition */
 struct FuncDef {
-    struct ValueType *ReturnType;   /* the return value type */
-    int NumParams;                  /* the number of parameters */
-    int VarArgs;                    /* has a variable number of arguments after
-                                        the explicitly specified ones */
-    struct ValueType **ParamType;   /* array of parameter types */
-    char **ParamName;               /* array of parameter names */
-    void (*Intrinsic)();            /* intrinsic call address or NULL */
-    struct ParseState Body;         /* lexical tokens of the function body if
-                                        not intrinsic */
+    struct ValueType *ReturnType;                                                       /* the return value type */
+    int NumParams;                                                                      /* the number of parameters */
+    int VarArgs;                                                                        /* has a variable number of arguments after
+                                                                                           the explicitly specified ones */
+    struct ValueType **ParamType;                                                       /* array of parameter types */
+    char **ParamName;                                                                   /* array of parameter names */
+    void (*Intrinsic)(struct ParseState *Parser, struct Value *, struct Value **, int); /* intrinsic call address or NULL */
+    struct ParseState Body;                                                             /* lexical tokens of the function body if
+                                                                                           not intrinsic */
 };
 
 /* macro definition */
