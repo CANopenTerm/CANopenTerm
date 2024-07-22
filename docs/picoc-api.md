@@ -406,7 +406,6 @@ char* dict_lookup (int index, int sub_index)
 > **sub_index** Object sub-index.
 
 **Returns**: A string containing the object description or NULL.
-```
 
 <!-- tab:Example -->
 ```c
