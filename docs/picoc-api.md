@@ -410,6 +410,9 @@ char* dict_lookup (int index, int sub_index)
 <!-- tab:Example -->
 ```c
 #include "sdo.h"
+
+/* Manufacturer device name. */
+printf("%s\n", dict_lookup, 0x1008, 0x00);
 ```
 <!-- tabs:end -->
 
