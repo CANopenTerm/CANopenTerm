@@ -35,13 +35,17 @@
             "configurationType": "Debug",
             "buildRoot": "${projectDir}\\out\\build\\${name}",
             "installRoot": "${projectDir}\\out\\install\\${name}",
-            "cmakeCommandArgs": "-DENABLE_POCKETPY_SUPPORT=ON",
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
             "inheritEnvironments": [ "clang_cl_x64_x64" ],
             "variables": [
                 {
                     "name": "BUILD_TESTS",
+                    "value": "False",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "ENABLE_POCKETPY_SUPPORT",
                     "value": "False",
                     "type": "BOOL"
                 }
