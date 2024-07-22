@@ -17,7 +17,7 @@ unsigned char nodes[MAX_NODES];
 int           node_count = 0;
 clock_t       start_time = clock();
 double        elapsed_time_ms;
-int           i, id;
+int           i;
 
 nmt_send_command(0x00, 0x81, false, NULL); // Reset all nodes.
 
@@ -38,7 +38,7 @@ while (1)
         // Wait for boot-up messages.
         if (msg->length == 1 && msg->data[0] == 0x00)
         {
-            nodes[node_count++] = id - 0x700;
+            nodes[node_count++] = msg->id - 0x700;
             if (node_count >= MAX_NODES)
             {
                 break;
