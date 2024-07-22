@@ -372,11 +372,24 @@ sdo_write(0x123, 0x2000, 0x01, 0x08, data, 1, "Hello, world.");
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
+int sdo_write_file (int node_id, int index, int sub_index, char* filename)
 ```
+
+> **node_id** CANopen Node-ID.
+
+> **index** Object index.
+
+> **sub_index** Object sub-index.
+
+> **filename** File name.
+
+**Returns**: 1 on success, 0 on failure.
 
 <!-- tab:Example -->
 ```c
 #include "sdo.h"
+
+sdo_write_file (0x123, 0x4555, 2, "firmware.hex");
 ```
 <!-- tabs:end -->
 
@@ -385,11 +398,24 @@ sdo_write(0x123, 0x2000, 0x01, 0x08, data, 1, "Hello, world.");
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
+int sdo_write_string (int node_id, int index, int sub_index, char* data)
 ```
+
+> **node_id** CANopen Node-ID.
+
+> **index** Object index.
+
+> **sub_index** Object sub-index.
+
+> **data** Data string.
+
+**Returns**: 1 on success, 0 on failure.
 
 <!-- tab:Example -->
 ```c
 #include "sdo.h"
+
+sdo_write_string(0x123, 0x4552, 1, "Sup3rSecuR3Passw0id");
 ```
 <!-- tabs:end -->
 

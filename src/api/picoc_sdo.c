@@ -68,8 +68,8 @@ struct LibraryFunction picoc_sdo_functions[] =
     { c_sdo_lookup_abort_code, "char* sdo_lookup_abort_code(sdo_abort_code_t abort_code);" },
     { c_sdo_read,              "char* sdo_read(unsigned int* result, int node_id, int index, int sub_index, int show_output, char* comment);"},
     { c_sdo_write,             "int sdo_write(int node_id, int index, int sub_index, int length, char* data, int show_output, char* comment);"},
-    //{ c_sdo_write_file,        ""},
-    //{ c_sdo_write_string,      ""},
+    { c_sdo_write_file,        "int sdo_write_file(int node_id, int index, int sub_index, char* filename);"},
+    { c_sdo_write_string,      "int sdo_write_string(int node_id, int index, int sub_index, char* data);"},
     { c_dict_lookup,           "char* dict_lookup(int index, int sub_index);"},
     { NULL, NULL }
 };
@@ -186,19 +186,17 @@ static void c_sdo_write(struct ParseState *parser, struct Value *return_value, s
 
 static void c_sdo_write_file(struct ParseState *parser, struct Value *return_value, struct Value **param, int args)
 {
-#if 0
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
-    int           status;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    const char *filename = luaL_checkstring(L, 4);
+    disp_mode_t disp_mode = SILENT;
+    int         status;
+    int         node_id   = param[0]->Val->Integer;
+    int         index     = param[1]->Val->Integer;
+    int         sub_index = param[2]->Val->Integer;
+    const char* filename  = (const char*)param[0]->Val->Pointer;
 
     if (NULL == filename)
     {
-        lua_pushboolean(L, 0);
-        return 1;
+        return_value->Val->Integer = 0;
+        return;
     }
 
     status = sdo_write_block(
@@ -213,30 +211,26 @@ static void c_sdo_write_file(struct ParseState *parser, struct Value *return_val
     switch (status)
     {
         case ABORT_TRANSFER:
-            lua_pushboolean(L, 0);
+            return_value->Val->Integer = 0;
             break;
         default:
-            lua_pushboolean(L, 1);
+            return_value->Val->Integer = 1;
             break;
     }
-
-    return 1;
-#endif
 }
 
 static void c_sdo_write_string(struct ParseState *parser, struct Value *return_value, struct Value **param, int args)
 {
-#if 0
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
-    int           status;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    const char *data = luaL_checkstring(L, 4);
-    uint32        length = 0;
-    bool_t        show_output = lua_toboolean(L, 5);
-    const char *comment = lua_tostring(L, 6);
+
+    disp_mode_t disp_mode   = SILENT;
+    int         status;
+    int         node_id     = param[0]->Val->Integer;
+    int         index       = param[1]->Val->Integer;
+    int         sub_index   = param[2]->Val->Integer;
+    const char* data        = (const char*)param[3]->Val->Integer;
+    uint32      length      = 0;
+    bool_t      show_output = param[4]->Val->Integer;
+    const char* comment     = (const char*)param[5]->Val->Pointer;
 
     if (NULL != data)
     {
@@ -244,8 +238,8 @@ static void c_sdo_write_string(struct ParseState *parser, struct Value *return_v
     }
     else
     {
-        lua_pushboolean(L, 0);
-        return 1;
+        return_value->Val->Integer = 0;
+        return;
     }
 
     if (IS_TRUE == show_output)
@@ -266,15 +260,12 @@ static void c_sdo_write_string(struct ParseState *parser, struct Value *return_v
     switch (status)
     {
         case ABORT_TRANSFER:
-            lua_pushboolean(L, 0);
+            return_value->Val->Integer = 0;
             break;
         default:
-            lua_pushboolean(L, 1);
+            return_value->Val->Integer = 1;
             break;
     }
-
-    return 1;
-#endif
 }
 
 static void c_dict_lookup(struct ParseState *parser, struct Value *return_value, struct Value **param, int args)
