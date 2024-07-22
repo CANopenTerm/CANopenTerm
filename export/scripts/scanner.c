@@ -38,8 +38,6 @@ while (1)
         // Wait for boot-up messages.
         if (msg->length == 1 && msg->data[0] == 0x00)
         {
-            printf("%s\n", "Test");
-
             nodes[node_count++] = id - 0x700;
             if (node_count >= MAX_NODES)
             {
