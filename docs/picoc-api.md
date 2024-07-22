@@ -3,6 +3,22 @@
 !> Support for PicoC is currently being developed and is expected to
    become available in Version 1.0.5 at the earliest.
 
+## Capabilities and Limitations
+
+!> The PicoC API serves as an alternative for users who prefer not to work
+   with Lua, offering a different approach to scripting and automation
+   within the given environment.  However, it's important to note that
+   PicoC, as a language, inherently possesses certain limitations compared
+   to Lua, particularly in terms of language features.  For instance, PicoC
+   does not support default parameters or multiple return values in
+   functions.  These restrictions may affect the flexibility and
+   expressiveness of scripts written for the PicoC API. Users considering
+   PicoC should weigh these limitations against their specific needs and
+   preferences to determine if it aligns with their project requirements.
+   While PicoC provides a viable option for those seeking alternatives to
+   Lua, understanding its constraints is crucial for effective utilization
+   within your projects.
+
 !> Scripts are slightly simpler than standard C programs because, **A**)
    all the system headers are included automatically for you so you don't
    need to include them in your file/s and **B**) scripts don't require a
@@ -188,9 +204,9 @@ int pdo_add (int can_id, unsigned int event_time_ms, int length, char* data, int
 
 char data[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
 
-pdo_add(0x181, 100, 8, data, true, "New TPDO!");
+pdo_add(0x181, 100, 8, data, 1, "New TPDO!");
 delay_ms(1000);
-pdo_del(0x181, true, NULL);
+pdo_del(0x181, 1, NULL);
 ```
 <!-- tabs:end -->
 
@@ -217,9 +233,9 @@ int pdo_del (int can_id, int show_output, char* comment)
 
 char data[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
 
-pdo_add(0x181, 100, 8, data, true, "New TPDO!");
+pdo_add(0x181, 100, 8, data, 1, "New TPDO!");
 delay_ms(1000);
-pdo_del(0x181, true, NULL);
+pdo_del(0x181, 1, NULL);
 ```
 <!-- tabs:end -->
 
@@ -319,7 +335,7 @@ char* sdo_read (unsigned int* result, int node_id, int index, int sub_index, int
 #include "sdo.h"
 
 unsigned int result = 0;
-char*        result_str = sdo_read(&result, 0x123, 0x1008, 0x00, true, NULL);
+char*        result_str = sdo_read(&result, 0x123, 0x1008, 0x00, 1, NULL);
 
 printf("%Xh %s\n", result, result_str);
 ```
@@ -330,11 +346,32 @@ printf("%Xh %s\n", result, result_str);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
+int sdo_write (int node_id, int index, int sub_index, int length, char* data, int show_output, char* comment);
 ```
+
+> **node_id** CANopen Node-ID.
+
+> **index** Object index.
+
+> **sub_index** Object sub-index.
+
+> **length** Data length (0 to 8).
+
+> **data** Data buffer.
+
+> **show_output** Show output (boolean operation).
+
+> **comment** Comment string or NULL.
+
+**Returns**: 1 on success, 0 on failure.
 
 <!-- tab:Example -->
 ```c
 #include "sdo.h"
+
+char data[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
+
+sdo_write(0x123, 0x2000, 0x01, 0x08, data, 1, "Hello, world.");
 ```
 <!-- tabs:end -->
 
@@ -540,7 +577,7 @@ void print_heading (char* heading)
 #include "nmt.h"
 
 print_heading("A clever heading");
-nmt_send_command(0x00, NMT_OPERATIONAL, true, NULL);
+nmt_send_command(0x00, NMT_OPERATIONAL, 1, NULL);
 ```
 <!-- tabs:end -->
 

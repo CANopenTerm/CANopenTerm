@@ -67,11 +67,9 @@ struct LibraryFunction picoc_sdo_functions[] =
 {
     { c_sdo_lookup_abort_code, "char* sdo_lookup_abort_code(sdo_abort_code_t abort_code);" },
     { c_sdo_read,              "char* sdo_read(unsigned int* result, int node_id, int index, int sub_index, int show_output, char* comment);"},
-#if 0
-    { c_sdo_write,             ""},
-    { c_sdo_write_file,        ""},
-    { c_sdo_write_string,      ""},
-#endif
+    { c_sdo_write,             "int sdo_write(int node_id, int index, int sub_index, int length, char* data, int show_output, char* comment);"},
+    //{ c_sdo_write_file,        ""},
+    //{ c_sdo_write_string,      ""},
     { c_dict_lookup,           "char* dict_lookup(int index, int sub_index);"},
     { NULL, NULL }
 };
@@ -140,17 +138,15 @@ static void c_sdo_read(struct ParseState *parser, struct Value *return_value, st
 
 static void c_sdo_write(struct ParseState *parser, struct Value *return_value, struct Value **param, int args)
 {
-#if 0
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
-    sdo_state_t   sdo_state;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    int           length = luaL_checkinteger(L, 4);
-    int           data = lua_tointeger(L, 5);
-    bool_t        show_output = lua_toboolean(L, 6);
-    const char *comment = lua_tostring(L, 7);
+    disp_mode_t disp_mode   = SILENT;
+    sdo_state_t sdo_state;
+    int         node_id     = param[0]->Val->Integer;
+    int         index       = param[1]->Val->Integer;
+    int         sub_index   = param[2]->Val->Integer;
+    int         length      = param[3]->Val->Integer;
+    bool_t      show_output = param[5]->Val->Integer;
+    uint32      data        = 0;
+    const char* comment     = (const char*)param[6]->Val->Pointer;
 
     limit_node_id((uint8 *)&node_id);
 
@@ -158,6 +154,14 @@ static void c_sdo_write(struct ParseState *parser, struct Value *return_value, s
     {
         disp_mode = SCRIPT_MODE;
     }
+
+    if (length > sizeof(uint32))
+    {
+        length = sizeof(uint32);
+    }
+
+    os_memcpy(&data, param[4]->Val->Pointer, sizeof(uint32));
+    data = os_swap_be_32(data);
 
     sdo_state = sdo_write(
         &sdo_response,
@@ -172,15 +176,12 @@ static void c_sdo_write(struct ParseState *parser, struct Value *return_value, s
     switch (sdo_state)
     {
         case ABORT_TRANSFER:
-            lua_pushboolean(L, 0);
+            return_value->Val->Integer = 0;
             break;
         default:
-            lua_pushboolean(L, 1);
+            return_value->Val->Integer = 1;
             break;
     }
-
-    return 1;
-#endif
 }
 
 static void c_sdo_write_file(struct ParseState *parser, struct Value *return_value, struct Value **param, int args)

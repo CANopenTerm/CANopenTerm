@@ -17,14 +17,14 @@
 int lua_can_write(lua_State *L)
 {
     uint32        can_status;
-    int           can_id = luaL_checkinteger(L, 1);
-    int           length = luaL_checkinteger(L, 2);
-    uint64        data = lua_tointeger(L, 3);
+    int           can_id      = luaL_checkinteger(L, 1);
+    int           length      = luaL_checkinteger(L, 2);
+    uint64        data        = lua_tointeger(L, 3);
     bool_t        is_extended = lua_toboolean(L, 4);
     bool_t        show_output = lua_toboolean(L, 5);
-    const char *comment = lua_tostring(L, 6);
-    can_message_t message = { 0 };
-    disp_mode_t   disp_mode = SILENT;
+    const char*   comment     = lua_tostring(L, 6);
+    can_message_t message     = { 0 };
+    disp_mode_t   disp_mode   = SILENT;
 
     message.id = can_id;
     message.length = length;
@@ -93,7 +93,7 @@ int lua_can_read(lua_State *L)
     can_message_t message = { 0 };
     status_t      status;
     uint32        length;
-    uint64        data = 0;;
+    uint64        data    = 0;;
 
     status = can_read(&message);
     if (ALL_OK == status)

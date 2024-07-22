@@ -115,17 +115,30 @@ if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     -Wextra
     -Wpedantic
     -Weverything
-    -Werror)
+    -Werror
+    -fsanitize=address)
+
+  set(LINK_OPTIONS
+    -fsanitize=address)
 
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
   set(COMPILE_OPTIONS
     -Wall
     -Wextra
     -Wpedantic
-    -Wtraditional)
+    -Wtraditional
+    -fno-omit-frame-pointer
+    -fsanitize=address)
+
+  set(LINK_OPTIONS
+    -fsanitize=address)
 
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   set(COMPILE_OPTIONS
     /W4
-    /utf-8)
+    /utf-8
+    /fsanitize=address)
+
+  set(LINK_OPTIONS
+    /fsanitize=address)
 endif()
