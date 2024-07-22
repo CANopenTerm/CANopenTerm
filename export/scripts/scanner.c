@@ -69,3 +69,5 @@ for (i = 0; i < node_count; i++)
     sdo_read(&result, node_id, 0x1009, 0x00, true, NULL);
     sdo_read(&result, node_id, 0x100A, 0x00, true, NULL);
 }
+
+printf("\n");
