@@ -419,7 +419,7 @@ sdo_write_string(0x123, 0x4552, 1, "Sup3rSecuR3Passw0id");
 ```
 <!-- tabs:end -->
 
-## dict_lookup()
+### dict_lookup()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
