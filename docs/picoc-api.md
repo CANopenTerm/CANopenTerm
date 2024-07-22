@@ -5,19 +5,11 @@
 
 ## Capabilities and Limitations
 
-!> The PicoC API serves as an alternative for users who prefer not to work
-   with Lua, offering a different approach to scripting and automation
-   within the given environment.  However, it's important to note that
-   PicoC, as a language, inherently possesses certain limitations compared
-   to Lua, particularly in terms of language features.  For instance, PicoC
-   does not support default parameters or multiple return values in
-   functions.  These restrictions may affect the flexibility and
-   expressiveness of scripts written for the PicoC API. Users considering
-   PicoC should weigh these limitations against their specific needs and
-   preferences to determine if it aligns with their project requirements.
-   While PicoC provides a viable option for those seeking alternatives to
-   Lua, understanding its constraints is crucial for effective utilization
-   within your projects.
+!> The PicoC API offers an alternative to Lua for scripting and automation,
+   but with some limitations. Notably, PicoC lacks support for default
+   parameters and multiple return values, which may limit script flexibility.
+   Users should consider these constraints to determine if PicoC meets their
+   project needs.
 
 !> Scripts are slightly simpler than standard C programs because, **A**)
    all the system headers are included automatically for you so you don't
@@ -407,6 +399,7 @@ sdo_write(0x123, 0x2000, 0x01, 0x08, data, 1, "Hello, world.");
 <!-- tab:Description -->
 ```c
 char* dict_lookup (int index, int sub_index)
+```
 
 > **index** Object index.
 
