@@ -13,6 +13,8 @@
 #include "os.h"
 #include "picoc_can.h"
 
+static can_message_t can_msg = { 0 };
+
 static const char defs[] = " \
 typedef struct can_message { \
     int  id;                 \
@@ -28,7 +30,7 @@ static void setup(Picoc* P);
 
 struct LibraryFunction picoc_can_functions[] =
 {
-    { c_can_read,  "int can_read(can_message_t* message);" },
+    { c_can_read,  "can_message_t* can_read(void);" },
     { c_can_write, "int can_write(can_message_t* message, int show_output, char* comment);" },
     { NULL,        NULL }
 };
@@ -42,15 +44,15 @@ static void c_can_read(struct ParseState* parser, struct Value* return_value, st
 {
     uint32 status;
 
-    status = can_read((can_message_t*)param[0]->Val->Pointer);
+    status = can_read(&can_msg);
 
     if (ALL_OK == status)
     {
-        return_value->Val->Integer = 1;
+        return_value->Val->Pointer = (void*)&can_msg;
     }
     else
     {
-        return_value->Val->Integer = 0;
+        return_value->Val->Pointer = NULL;
     }
 }
 

@@ -483,12 +483,10 @@ typedef struct can_message
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_read (can_message_t* message)
+can_message_t* message can_read (void)
 ```
 
-> **message** A pointer of type [can_message_t](#can_message_t).
-
-**Returns**: 1 on success, 0 on failure.
+**Returns**: A pointer of type [can_message_t](#can_message_t) or NULL on failure.
 
 <!-- tab:Example -->
 ```c

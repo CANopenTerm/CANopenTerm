@@ -227,7 +227,7 @@ static void c_sdo_write_string(struct ParseState *parser, struct Value *return_v
     int         node_id     = param[0]->Val->Integer;
     int         index       = param[1]->Val->Integer;
     int         sub_index   = param[2]->Val->Integer;
-    const char* data        = (const char*)param[3]->Val->Integer;
+    const char* data        = (const char*)param[3]->Val->Pointer;
     uint32      length      = 0;
     bool_t      show_output = param[4]->Val->Integer;
     const char* comment     = (const char*)param[5]->Val->Pointer;
