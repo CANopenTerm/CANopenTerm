@@ -239,7 +239,7 @@ To use the SDO interface, include the following header file:
 #include "sdo.h"
 ```
 
-## sdo_abort_code_t
+### sdo_abort_code_t
 
 ```c
 typedef enum
@@ -279,7 +279,7 @@ typedef enum
 } sdo_abort_code_t;
 ```
 
-## sdo_lookup_abort_code()
+### sdo_lookup_abort_code()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -300,7 +300,7 @@ printf("%s\n", sdo_lookup_abort_code(0x06060000)); // Hardware error.
 ```
 <!-- tabs:end -->
 
-## sdo_read()
+### sdo_read()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -333,7 +333,7 @@ printf("%Xh %s\n", result, result_str);
 ```
 <!-- tabs:end -->
 
-## sdo_write()
+### sdo_write()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -367,7 +367,7 @@ sdo_write(0x123, 0x2000, 0x01, 0x08, data, 1, "Hello, world.");
 ```
 <!-- tabs:end -->
 
-## sdo_write_file()
+### sdo_write_file()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -393,7 +393,7 @@ sdo_write_file (0x123, 0x4555, 2, "firmware.hex");
 ```
 <!-- tabs:end -->
 
-## sdo_write_string()
+### sdo_write_string()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
