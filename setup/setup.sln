@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "CANopenTerm", "CANopenTerm\CANopenTerm.wixproj", "{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Debug|ARM64.Build.0 = Debug|ARM64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Debug|x64.ActiveCfg = Debug|x64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Debug|x64.Build.0 = Debug|x64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Debug|x86.ActiveCfg = Debug|x86
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Debug|x86.Build.0 = Debug|x86
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Release|ARM64.ActiveCfg = Release|ARM64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Release|ARM64.Build.0 = Release|ARM64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Release|x64.ActiveCfg = Release|x64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Release|x64.Build.0 = Release|x64
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Release|x86.ActiveCfg = Release|x86
+		{F1F55662-5367-4921-BF4C-FB0C4B0C2FEE}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4CF1B116-5249-46B5-B818-E75E47DAA409}
+	EndGlobalSection
+EndGlobal

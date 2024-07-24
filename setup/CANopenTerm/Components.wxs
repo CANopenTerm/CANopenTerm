@@ -1,0 +1,48 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
+      <Component>
+        <File Source="../../export/CANopenTerm.exe" />
+      </Component>
+      <Component>
+        <File Source="../../export/PCANBasic.dll" />
+      </Component>
+      <Component>
+        <File Source="../../export/SDL2.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
+      <Component>
+        <File Source="../../export/dbc/j1939.dbc" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="LuaComponents" Directory="LUAFOLDER">
+        <Component>
+            <File Source="../../export/lua/canopen.lua" />
+        </Component>
+        <Component>
+            <File Source="../../export/lua/utils.lua" />
+        </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
+      <Component>
+        <File Source="../../export/scripts/hello.c" />
+      </Component>
+      <Component>
+        <File Source="../../export/scripts/replay.lua" />
+      </Component>
+      <Component>
+        <File Source="../../export/scripts/scanner.c" />
+      </Component>
+      <Component>
+        <File Source="../../export/scripts/scanner.lua" />
+      </Component>
+      <Component>
+        <File Source="../../export/scripts/trace.lua" />
+      </Component>
+      <Component>
+        <File Source="../../export/scripts/watch.lua" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
