@@ -4,8 +4,9 @@ project(CANopenTerm C)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
-option(BUILD_TESTS             "Build CMocka unit tests"              OFF)
-option(ENABLE_POCKETPY_SUPPORT "Enable experimental pocketpy support" OFF)
+option(BUILD_TESTS              "Build CMocka unit tests"              OFF)
+option(ENABLE_POCKETPY_SUPPORT  "Enable experimental pocketpy support" OFF)
+option(ENABLE_ADDRESS_SANITIZER "Enable address sanitizer (Clang)"     OFF)
 
 set(CMAKE_C_STANDARD 90)
 if (POLICY CMP0135)
@@ -110,23 +111,47 @@ add_dependencies(
   ${PLATFORM_CORE_DEPS})
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-  set(COMPILE_OPTIONS
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Weverything
-    -Werror)
+    target_compile_options(
+        ${PROJECT_NAME}
+        PUBLIC
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wno-unsafe-buffer-usage
+        -Wno-covered-switch-default
+        -Werror)
+
+    if (ENABLE_ADDRESS_SANITIZER)
+        target_compile_options(
+            ${PROJECT_NAME}
+            PUBLIC
+            -fsanitize=address)
+
+        target_link_options(
+            ${PROJECT_NAME}
+            PUBLIC
+            -fsanitize=address)
+
+        target_link_libraries(
+            ${PROJECT_NAME}
+            clang_rt.asan_dynamic-x86_64
+            clang_rt.asan_dynamic_runtime_thunk-x86_64)
+
+    endif()
 
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-  set(COMPILE_OPTIONS
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Wtraditional)
+    target_compile_options(
+        ${PROJECT_NAME}
+        PUBLIC
+        -Wall
+        -Wextra
+        -Wpedantic)
 
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-  set(COMPILE_OPTIONS
-    /W4
-    /utf-8)
+    target_compile_options(
+        ${PROJECT_NAME}
+        PUBLIC
+        /W4
+        /utf-8)
 
 endif()

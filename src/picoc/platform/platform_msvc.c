@@ -29,7 +29,7 @@ char *PlatformGetLine(char *Buf, int MaxLen, const char *Prompt)
 }
 
 /* get a character of interactive input */
-int PlatformGetCharacter()
+int PlatformGetCharacter(void)
 {
     fflush(stdout);
     return getchar();

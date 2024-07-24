@@ -43,13 +43,23 @@ int main(int argc, char* argv[])
         {
             case CORE_QUIT:
                 core->is_running = IS_FALSE;
-                break;
+                continue;
             case OS_CONSOLE_INIT_ERROR:
             case OS_INIT_ERROR:
             case OS_MEMORY_ALLOCATION_ERROR:
             case SCRIPT_INIT_ERROR:
                 status = EXIT_FAILURE;
                 break;
+            case ALL_OK:
+            case CAN_NO_HARDWARE_FOUND:
+            case CAN_READ_ERROR:
+            case CAN_WRITE_ERROR:
+            case ITEM_NOT_FOUND:
+            case NMT_UNKNOWN_COMMAND:
+            case NOTHING_TO_DO:
+            case OS_FILE_NOT_FOUND:
+            case OS_INVALID_ARGUMENT:
+                continue;
             default:
                 continue;
         }

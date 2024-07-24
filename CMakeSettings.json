@@ -66,6 +66,11 @@
                     "name": "BUILD_TESTS",
                     "value": "False",
                     "type": "BOOL"
+                },
+                {
+                    "name": "ENABLE_ADDRESS_SANITIZER",
+                    "value": "True",
+                    "type": "BOOL"
                 }
             ]
         },
