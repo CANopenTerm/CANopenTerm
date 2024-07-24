@@ -69,7 +69,7 @@
                 },
                 {
                     "name": "ENABLE_ADDRESS_SANITIZER",
-                    "value": "True",
+                    "value": "False",
                     "type": "BOOL"
                 }
             ]
