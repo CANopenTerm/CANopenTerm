@@ -1,8 +1,5 @@
 ﻿# PicoC API
 
-!> Support for PicoC is currently being developed and is expected to
-   become available in Version 1.0.5 at the earliest.
-
 ## Capabilities and Limitations
 
 !> The PicoC API offers an alternative to Lua for scripting and automation,

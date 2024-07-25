@@ -2,6 +2,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DefineConstants>ProductVersion=1.0.5;UpgradeCode=4fe8d03a-6f50-4887-a724-66992deef6f8</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup>
+    <OutputName>$(MSBuildProjectName)</OutputName>
+  </PropertyGroup>
   <ItemGroup>
     <None Include=".gitignore" />
   </ItemGroup>
