@@ -1,6 +1,6 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
-    <Package Name="CANopenTerm" Manufacturer="Michael Fitzmayer" Version="1.0.5" UpgradeCode="4fe8d03a-6f50-4887-a724-66992deef6f8">
+    <Package Name="CANopenTerm" Manufacturer="Michael Fitzmayer" Version="$(var.ProductVersion)" UpgradeCode="$(var.UpgradeCode)">
         <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
         <MediaTemplate EmbedCab="yes" />
 
@@ -30,6 +30,13 @@
 
         <Icon Id="icon.ico" SourceFile="icon.ico"/>
         <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+        <Upgrade Id="$(var.UpgradeCode)">
+            <!-- Detect older product versions -->
+            <UpgradeVersion OnlyDetect="no" IncludeMinimum="yes" IncludeMaximum="yes" Minimum="1.0.0" Maximum="$(var.ProductVersion)" Property="PREVIOUSVERSIONSINSTALLED"/>
+            <!-- Detect newer product versions -->
+            <!-- -->UpgradeVersion OnlyDetect="yes" IncludeMinimum="no" Minimum="$(var.ProductVersion)" Property="NEWERVERSIONDETECTED"/-->
+        </Upgrade>
 
     </Package>
 </Wix>
