@@ -15,7 +15,7 @@ endif()
 
 add_executable(
   ${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c ${CMAKE_CURRENT_SOURCE_DIR}/src/icon.rc)
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 

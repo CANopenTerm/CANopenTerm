@@ -28,7 +28,7 @@
             Value="WixUIDialogBmp.png"
         />
 
-        <Icon Id="icon.ico" SourceFile="icon.ico"/>
+        <Icon Id="icon.ico" SourceFile="../../src/icon.ico"/>
         <Property Id="ARPPRODUCTICON" Value="icon.ico" />
 
         <Upgrade Id="$(var.UpgradeCode)">
