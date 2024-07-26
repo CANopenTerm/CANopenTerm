@@ -12,14 +12,6 @@ hardware-independently.
 A pre-compiled Windows version of CANopenTerm can be found on the
 [Releases page on GitHub](https://github.com/CANopenTerm/CANopenTerm/releases/latest).
 
-## Troubleshooting
-
-At present, the installation directory under Windows is not writable
-by default. To record CAN traces, the appropriate permissions must be
-granted manually.  This is a
-[bug](https://github.com/CANopenTerm/CANopenTerm/issues/52) that should
-be fixed in a later version.
-
 ## Usage
 
 ### Command-line interface
