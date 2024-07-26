@@ -128,6 +128,9 @@ if trc_file == nil then
 end
 
 local base_name = trc_file:match("[^/\\]+$") or trc_file
+if os.getenv("OS") == "Windows_NT" then
+    base_name = trc_path .. "\\" .. base_name
+end
 
 for loop = 1, num_loops + 1 do
     local trc_data   = parse_pcan_trc(base_name)
