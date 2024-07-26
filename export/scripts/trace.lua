@@ -12,8 +12,16 @@ local trace_filename
 local message_number = 1
 
 local function generate_trace_filename()
-    local timestamp = os.date("%Y%m%d_%H%M%S")
-    return string.format("trace_%s.trc", timestamp)
+    local  timestamp = os.date("%Y%m%d_%H%M%S")
+
+    if os.getenv("OS") == "Windows_NT" then
+        local  user_path = os.getenv("USERPROFILE")
+        local  filename  = string.format("trace_%s.trc", timestamp)
+        local  filepath  = user_path .. "\\" .. filename
+        return filepath
+    else
+        return string.format("trace_%s.trc", timestamp)
+    end
 end
 
 function print_data(data, length)

@@ -13,27 +13,27 @@ local function convert_data_bytes(data_bytes)
     for byte in data_bytes:gmatch("%S+") do
         table.insert(bytes, tonumber(byte, 16))
     end
-    
+
     while #bytes < 8 do
         table.insert(bytes, 0)
     end
-    
+
     local data = 0
     for i = 1, 8 do
         data = data | (bytes[i] << ((8 - i) * 8))
     end
-    
+
     return data
 end
 
 function format_float(num)
     local formatted_str = string.format("%.1f", num)
     local length_needed = string.len("1234.5")
-    
+
     if string.len(formatted_str) < length_needed then
         formatted_str = string.rep(" ", length_needed - string.len(formatted_str)) .. string.format("%.1f", num)
     end
-    
+
     return formatted_str
 end
 
@@ -116,7 +116,12 @@ if num_loops == nil then
   return
 end
 
-trc_file = utils.get_file_by_selection("Enter the number of the file you want to choose", "trc")
+local trc_path = ""
+if os.getenv("OS") == "Windows_NT" then
+    trc_path = os.getenv("USERPROFILE") .. "\\"
+end
+
+trc_file = utils.get_file_by_selection("Enter the number of the file you want to choose", "trc", trc_path)
 if trc_file == nil then
   print("Exiting.")
   return
