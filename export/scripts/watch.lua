@@ -19,7 +19,7 @@ local watch_id = utils.select_variable("Enter CAN-ID or provide a search term to
 
 if type(watch_id) == "string" then
   if tonumber(watch_id) then
-    -- Nothing to do.
+    watch_id = tonumber(watch_id)
   else
     watch_id = dbc_find_id_by_name(watch_id)
     if nil == watch_id then
@@ -41,6 +41,7 @@ while false == key_is_hit() do
   local id, length, data = can_read()
 
   if id == watch_id then
+    print(id)
     output = dbc_decode(watch_id, data)
     utils.print_multiline_at_same_position(output, num_lines)
   end
