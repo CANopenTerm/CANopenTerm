@@ -10,9 +10,9 @@
 
 CANopenTerm is an open-source software tool designed for the
 development, testing, and analysis of CANopen networks and
-devices. It extends its capabilities to support other CAN
+devices. It extends its capabilities to support other CAN CC
 protocols, including SAE J1939 and OBD-II, making it a
-versatile tool for professionals working with CAN-based
+versatile tool for professionals working with CAN CC-based
 networks.
 
 Key functionalities include:
@@ -43,7 +43,7 @@ Key functionalities include:
   Add asynchronous Process Data Objects to simulate network
   traffic.
 
-- **Versatile Raw CAN Interface**:
+- **Versatile Raw CAN CC Interface**:
   For non-CANopen needs, offering flexibility and control.
 
 - **Workflow Automation**:
@@ -58,7 +58,7 @@ Key functionalities include:
 - **Built-in DBC Parser**:
   Import and utilize
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
-  for streamlined CAN network projects.
+  for streamlined CAN CC network projects.
 
 ## Code Quality and Standards
 
@@ -77,7 +77,7 @@ Key functionalities include:
 CANopenTerm is developed as an open-source project, freely
 available for use and contribution by the community. It aims
 to provide a technical, no-nonsense tool for professionals
-working with CAN-based networks, offering depth and versatility
+working with CAN CC-based networks, offering depth and versatility
 in its features without the need for marketing embellishments.
 
 ## Why Your Support Matters

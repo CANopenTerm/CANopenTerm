@@ -395,7 +395,7 @@ print(dict_lookup, 0x1008, 0x00) -- Manufacturer device name.
 
 **Returns**: a string or nil.
 
-## Generic CAN interface
+## Generic CAN CC interface
 
 ### can_read()
 
