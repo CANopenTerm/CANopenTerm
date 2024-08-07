@@ -82,8 +82,8 @@ make
 
 ### Yocto
 
-CANopenTerm also provides an experimental Yocto layer.  Before each release,
-it is tested on an embedded Linux distribution based on kirkstone.
+CANopenTerm also provides an experimental
+[Yocto layer](https://github.com/CANopenTerm/meta-canopenterm).
 
 ```bash
 bitbake-layers add-layer meta-canopenterm
