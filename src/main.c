@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 
     if ((argc > 2) && (argv[2] != NULL))
     {
-        os_strlcpy(core->can_interface, argv[1], sizeof(core->can_interface));
+        os_strlcpy(core->can_interface, argv[2], sizeof(core->can_interface));
     }
     else
     {
