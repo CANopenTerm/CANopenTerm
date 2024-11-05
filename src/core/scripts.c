@@ -20,7 +20,7 @@
 
 char*  get_script_description(const char* script_path);
 bool_t has_valid_extension(const char* filename);
-void   strip_extension(char* filename);
+void   strip_lua_extension(char* filename);
 
 void scripts_init(core_t* core)
 {

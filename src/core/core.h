@@ -34,6 +34,7 @@ typedef struct core
     bool_t     is_can_initialised;
     bool_t     is_running;
     bool_t     is_script_running;
+    bool_t     is_silent;
     char       can_interface[32];
 
 } core_t;

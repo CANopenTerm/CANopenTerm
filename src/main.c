@@ -17,6 +17,11 @@ int main(int argc, char* argv[])
     int      status = EXIT_SUCCESS;
     core_t*  core   = NULL;
 
+    if ((argc > 1) && (argv[1] != NULL))
+    {
+        core->is_silent = IS_TRUE;
+    }
+
     if (core_init(&core) != ALL_OK)
     {
         status = EXIT_FAILURE;
