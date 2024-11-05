@@ -22,7 +22,7 @@
 #include "scripts.h"
 #include "version.h"
 
-status_t core_init(core_t **core)
+status_t core_init(core_t **core, bool_t is_silent)
 {
     status_t status;
 
@@ -38,7 +38,7 @@ status_t core_init(core_t **core)
         return status;
     }
 
-    if (IS_FALSE == (*core)->is_silent)
+    if (IS_FALSE == is_silent)
     {
         os_print(LIGHT_YELLOW, "<");
         os_print(LIGHT_GREEN, ">");

@@ -14,15 +14,16 @@
 
 int main(int argc, char* argv[])
 {
-    int      status = EXIT_SUCCESS;
-    core_t*  core   = NULL;
+    int      status    = EXIT_SUCCESS;
+    bool_t   is_silent = IS_FALSE;
+    core_t*  core      = NULL;
 
     if ((argc > 1) && (argv[1] != NULL))
     {
-        core->is_silent = IS_TRUE;
+        is_silent = IS_TRUE;
     }
 
-    if (core_init(&core) != ALL_OK)
+    if (core_init(&core, is_silent) != ALL_OK)
     {
         status = EXIT_FAILURE;
     }
