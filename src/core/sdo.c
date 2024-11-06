@@ -278,7 +278,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     }
     else /* Expedited SDO. */
     {
-        os_memcpy(&sdo_response->data, &msg_in.data[4], sizeof(uint32));
+        os_memcpy(&sdo_response->data, &msg_in.data[4], sdo_response->length);
     }
 
     print_read_result(node_id, index, sub_index, sdo_response, disp_mode, sdo_state, comment);
