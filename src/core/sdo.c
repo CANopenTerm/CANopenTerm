@@ -838,11 +838,19 @@ static void print_progress_bar(size_t bytes_sent, size_t length)
 
 static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment)
 {
-    uint32 u32_value;
+    uint32 u32_value = 0;
     char   str_buffer[5] = { 0 };
 
-    os_memcpy(&u32_value, &sdo_response->data, sizeof(uint32));
-    os_memcpy(&str_buffer, &u32_value, sizeof(uint32));
+    if (sdo_response->length >= 4)
+    {
+        os_memcpy(&u32_value, &sdo_response->data, sizeof(uint32));
+        os_memcpy(&str_buffer, &u32_value, sizeof(uint32));
+    }
+    else
+    {
+        os_memcpy(&u32_value, &sdo_response->data, sdo_response->length);
+        os_memcpy(&str_buffer, &u32_value, sdo_response->length);
+    }
 
     if (IS_FALSE == is_printable_string(str_buffer, sizeof(uint32)))
     {
