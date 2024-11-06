@@ -20,5 +20,10 @@ jobs:
           arch: x64
       - name: Build
         run: |
-          cmake -G "Ninja" -B build
+          cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE
           cmake --build build
+      - name: Archive output
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: export/*.exe
