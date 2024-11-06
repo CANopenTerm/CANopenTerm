@@ -23,7 +23,7 @@ jobs:
           cmake -G "Ninja" -B build
           cmake --build build
       - name: Archive output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: export/*.exe
