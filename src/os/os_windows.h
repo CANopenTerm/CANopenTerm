@@ -10,6 +10,7 @@
 #ifndef OS_WINDOWS_H
 #define OS_WINDOWS_H
 
+#include <dirent.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,6 +20,7 @@
 #define os_atof      SDL_atof
 #define os_atoi      SDL_atoi
 #define os_calloc    SDL_calloc
+#define os_closedir  closedir
 #define os_fclose    fclose
 #define os_fgets     fgets
 #define os_fopen     fopen
@@ -31,7 +33,9 @@
 #define os_memcpy    SDL_memcpy
 #define os_memmove   SDL_memmove
 #define os_memset    SDL_memset
+#define os_opendir   opendir
 #define os_printf    printf
+#define os_readdir   readdir
 #define os_realloc   SDL_realloc
 #define os_snprintf  SDL_snprintf
 #define os_strchr    SDL_strchr
@@ -60,6 +64,8 @@
 #define os_timer_id    SDL_TimerID
 
 #define bool_t    SDL_bool
+#define DIR_t     DIR
+#define dirent_t  dirent
 #define FILE_t    FILE
 #define uint8     Uint8
 #define uint16    Uint16

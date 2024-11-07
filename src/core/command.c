@@ -10,6 +10,7 @@
 #include "can.h"
 #include "core.h"
 #include "command.h"
+#include "eds.h"
 #include "nmt.h"
 #include "os.h"
 #include "pdo.h"
@@ -382,6 +383,16 @@ void parse_command(char* input, core_t* core)
         }
         run_script(token, core);
     }
+    else if (0 == os_strncmp(token, "x", 1))
+    {
+        token = os_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            list_eds();
+            return;
+        }
+        validate_eds(token, core);
+    }
     else
     {
         print_usage_information(IS_FALSE);
@@ -430,6 +441,7 @@ status_t print_usage_information(bool_t show_all)
         table_print_row(" c ", " ",                                         "Clear output",    &table);
         table_print_row(" l ", " ",                                         "List scripts",    &table);
         table_print_row("(s)", "[identifier](.lua)",                        "Run script",      &table);
+        table_print_row(" x ", "[file no.]",                                "Validate EDS",    &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);

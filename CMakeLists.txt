@@ -69,6 +69,7 @@ set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/core.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dbc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dict.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/eds.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c

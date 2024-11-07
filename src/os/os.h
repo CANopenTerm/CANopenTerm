@@ -86,6 +86,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_calloc() not defined
 #endif
 
+#ifndef os_closedir
+#error  os_closedir() not defined
+#endif
+
 #ifndef os_fclose
 #error  os_fclose() not defined
 #endif
@@ -134,8 +138,16 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_memset() not defined
 #endif
 
+#ifndef os_opendir
+#error  os_opendir() not defined
+#endif
+
 #ifndef os_printf
 #error  os_printf() not defined
+#endif
+
+#ifndef os_readdir
+#error  os_readdir() not defined
 #endif
 
 #ifndef os_realloc
@@ -240,6 +252,14 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef bool_t
 #define bool_t int
+#endif
+
+#ifndef DIR_t
+#error  DIR_t not defined
+#endif
+
+#ifndef dirent_t
+#error  dirent_t not defined
 #endif
 
 #ifndef FILE_t
