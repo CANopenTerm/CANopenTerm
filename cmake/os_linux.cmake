@@ -6,7 +6,7 @@ set(INIH_INCLUDE_DIR ${INIH_PATH})
 set(INIH_LIBRARY     ${INIH_PATH}_build/inih.lib)
 
 ExternalProject_Add(inih_devel
-  URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
+  URL https://github.com/benhoyt/inih/archive/refs/tags/${INIH_DEVEL_PKG}
   URL_HASH SHA1=4ab39673da3a84ccf9828428616acced69f0528e
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
