@@ -3,7 +3,7 @@ set(INIH_VERSION     "58")
 set(INIH_DEVEL_PKG   r${INIH_VERSION}.zip)
 set(INIH_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/inih-${INIH_VERSION})
 set(INIH_INCLUDE_DIR ${INIH_PATH})
-set(INIH_LIBRARY     ${INIH_PATH}_build/inih.a)
+set(INIH_LIBRARY     ${INIH_PATH}_build/libinih.a)
 
 ExternalProject_Add(inih_devel
   URL https://github.com/benhoyt/inih/archive/refs/tags/${INIH_DEVEL_PKG}
