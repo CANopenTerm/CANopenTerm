@@ -13,12 +13,14 @@
 #include "ini.h"
 #include "table.h"
 
+static status_t run_conformance_test(const char* eds_file);
+
 void list_eds(void)
 {
     status_t status;
     table_t  table = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
     DIR_t*   d;
-    int      script_no = 1;
+    int      file_no = 1;
 
     struct dirent_t* dir;
 
@@ -39,11 +41,11 @@ void list_eds(void)
         {
             if (os_strstr(dir->d_name, ".eds") != NULL)
             {
-                char script_no_str[4];
-                os_snprintf(script_no_str, 4, "%3d", script_no);
+                char file_no_str[4];
+                os_snprintf(file_no_str, 4, "%3d", file_no);
 
-                table_print_row(script_no_str, dir->d_name, "-", &table);
-                script_no++;
+                table_print_row(file_no_str, dir->d_name, "-", &table);
+                file_no++;
             }
         }
         os_closedir(d);
@@ -57,9 +59,48 @@ void list_eds(void)
     table_flush(&table);
 }
 
-void validate_eds(const char* name, core_t* core)
+status_t validate_eds(uint32 file_no, core_t* core)
 {
-    (void)name;
-    (void)core;
-    /* tbd. */
+    status_t status = ALL_OK;
+    DIR_t*   d;
+    int      found_file_no = 1;
+
+    struct dirent_t* dir;
+
+    d = os_opendir("eds");
+    if (d)
+    {
+        while ((dir = os_readdir(d)) != NULL)
+        {
+            if (os_strstr(dir->d_name, ".eds") != NULL)
+            {
+                if (file_no == found_file_no)
+                {
+                    status = run_conformance_test(dir->d_name);
+                    break;
+                }
+                found_file_no++;
+            }
+        }
+    }
+    else
+    {
+        os_log(LOG_WARNING, "Could not open eds directory.");
+    }
+
+    return status;
+}
+
+static status_t run_conformance_test(const char* eds_file)
+{
+    status_t status = ALL_OK;
+    eds_t    eds;
+
+    os_log(LOG_INFO, "Running conformance test for %s...", eds_file);
+
+    /* Parse EDS file. */
+
+
+
+    return status;
 }

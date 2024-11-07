@@ -385,13 +385,15 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == os_strncmp(token, "x", 1))
     {
+        uint32 file_no;
         token = os_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             list_eds();
             return;
         }
-        validate_eds(token, core);
+        convert_token_to_uint(token, &file_no);
+        validate_eds(file_no, core);
     }
     else
     {
