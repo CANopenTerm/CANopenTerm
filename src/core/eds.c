@@ -13,7 +13,10 @@
 #include "ini.h"
 #include "table.h"
 
-static status_t run_conformance_test(const char* eds_file);
+static eds_t eds;
+
+static int parse_eds(void* user, const char* section, const char* name, const char* value);
+static     status_t run_conformance_test(const char* eds_file);
 
 void list_eds(void)
 {
@@ -76,7 +79,10 @@ status_t validate_eds(uint32 file_no, core_t* core)
             {
                 if (file_no == found_file_no)
                 {
-                    status = run_conformance_test(dir->d_name);
+                    char eds_path[50];
+                    os_snprintf(eds_path, 50, "eds/%s", dir->d_name);
+
+                    status = run_conformance_test(eds_path);
                     break;
                 }
                 found_file_no++;
@@ -91,16 +97,34 @@ status_t validate_eds(uint32 file_no, core_t* core)
     return status;
 }
 
-static status_t run_conformance_test(const char* eds_file)
+static int parse_eds(void* user, const char* section, const char* name, const char* value)
+{
+    static char prev_section[50] = "";
+
+    if (0 != os_strcmp(section, prev_section))
+    {
+        //printf("%s[%s]\n", (prev_section[0] ? "\n" : ""), section);
+        os_strlcpy(prev_section, section, sizeof(prev_section));
+        prev_section[sizeof(prev_section) - 1] = '\0';
+    }
+    //printf("%s = %s\n", name, value);
+    return 1;
+}
+
+static status_t run_conformance_test(const char* eds_path)
 {
     status_t status = ALL_OK;
-    eds_t    eds;
+    int      error;
 
-    os_log(LOG_INFO, "Running conformance test for %s...", eds_file);
+    os_log(LOG_INFO, "Running conformance test for %s...", eds_path);
 
     /* Parse EDS file. */
-
-
+    error = ini_parse(eds_path, parse_eds, &eds_path);
+    if (error < 0)
+    {
+        os_log(LOG_ERROR, "Can't load '%s' (%d).", eds_path, error);
+        status = EDS_PARSE_ERROR;
+    }
 
     return status;
 }

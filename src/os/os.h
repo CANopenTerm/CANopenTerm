@@ -58,6 +58,7 @@ typedef enum status
     CAN_READ_ERROR,
     CAN_WRITE_ERROR,
     CORE_QUIT,
+    EDS_PARSE_ERROR,
     ITEM_NOT_FOUND,
     NMT_UNKNOWN_COMMAND,
     NOTHING_TO_DO,
@@ -66,7 +67,7 @@ typedef enum status
     OS_INIT_ERROR,
     OS_INVALID_ARGUMENT,
     OS_MEMORY_ALLOCATION_ERROR,
-    SCRIPT_INIT_ERROR
+    SCRIPT_INIT_ERROR,
 
 } status_t;
 
