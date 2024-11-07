@@ -123,6 +123,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_isspace() not defined
 #endif
 
+#ifndef os_isxdigit
+#define os_isxdigit isxdigit
+#endif
+
 #ifndef os_itoa
 #error  os_itoa() not defined
 #endif
