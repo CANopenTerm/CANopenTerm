@@ -20,15 +20,15 @@ static     status_t run_conformance_test(const char* eds_file);
 
 void list_eds(void)
 {
-    table_t table = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
-
+    DIR_t*   d      = os_opendir("eds");
+    table_t  table  = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
     status_t status = table_init(&table, 1024);
+
     if (ALL_OK != status)
     {
         return;
     }
 
-    DIR_t *d = os_opendir("eds");
     if (d)
     {
         struct dirent_t* dir;
@@ -64,8 +64,8 @@ void list_eds(void)
 status_t validate_eds(uint32 file_no, core_t *core)
 {
     status_t status = ALL_OK;
+    DIR_t*   d      = os_opendir("eds");
 
-    DIR_t *d = os_opendir("eds");
     if (d)
     {
         struct dirent_t* dir;
@@ -98,9 +98,8 @@ status_t validate_eds(uint32 file_no, core_t *core)
 
 static int parse_eds(void* user, const char* section, const char* name, const char* value)
 {
-    size_t len;
+    size_t len = os_strlen(section);
 
-    len = os_strlen(section);
     if (len > 7 &&
         os_isxdigit(section[0]) &&
         os_isxdigit(section[1]) &&
