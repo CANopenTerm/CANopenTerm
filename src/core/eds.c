@@ -22,8 +22,7 @@ void list_eds(void)
 {
     status_t status;
     table_t  table = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
-    DIR_t* d;
-    int      file_no = 1; // Move file_no declaration here
+    DIR_t*   d;
 
     status = table_init(&table, 1024);
     if (ALL_OK != status)
@@ -44,7 +43,9 @@ void list_eds(void)
         {
             if (os_strstr(dir->d_name, ".eds") != NULL)
             {
-                char file_no_str[4];
+                int  file_no        = 1;
+                char file_no_str[4] = { 0 };
+
                 os_snprintf(file_no_str, 4, "%3d", file_no);
 
                 table_print_row(file_no_str, dir->d_name, "-", &table);
@@ -66,18 +67,19 @@ status_t validate_eds(uint32 file_no, core_t* core)
 {
     status_t status = ALL_OK;
     DIR_t*   d;
-    int      found_file_no = 1; // Move found_file_no declaration here
     int      i;
-
-    struct dirent_t* dir;
 
     d = os_opendir("eds");
     if (d)
     {
+        struct dirent_t *dir;
+
         while ((dir = os_readdir(d)) != NULL)
         {
             if (os_strstr(dir->d_name, ".eds") != NULL)
             {
+                int found_file_no = 1;
+
                 if (file_no == found_file_no)
                 {
                     char eds_path[50];
