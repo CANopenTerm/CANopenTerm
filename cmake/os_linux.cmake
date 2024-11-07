@@ -1,3 +1,25 @@
+# inih
+set(INIH_VERSION     "58")
+set(INIH_DEVEL_PKG   r${INIH_VERSION}.zip)
+set(INIH_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/inih-${INIH_VERSION})
+set(INIH_INCLUDE_DIR ${INIH_PATH})
+set(INIH_LIBRARY     ${INIH_PATH}_build/inih.lib)
+
+ExternalProject_Add(inih_devel
+  URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
+  URL_HASH SHA1=4ab39673da3a84ccf9828428616acced69f0528e
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+  DOWNLOAD_NO_PROGRESS true
+  TLS_VERIFY true
+  SOURCE_DIR ${INIH_PATH}/
+  BINARY_DIR ${INIH_PATH}_build/
+  BUILD_BYPRODUCTS ${INIH_LIBRARY}
+
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+
+  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_inih.cmake" ${INIH_PATH}/CMakeLists.txt)
+
 # Lua
 set(LUA_VERSION     "5.4.6")
 set(LUA_DEVEL_PKG   v${LUA_VERSION}.zip)
@@ -64,6 +86,7 @@ endif()
 set(PLATFORM_LIBS
   ${SDL2_LIBRARY}
   ${SDL2MAIN_LIBRARY}
+  ${INIH_LIBRARY}
   ${LUA_LIBRARY}
   dl
   m
@@ -72,9 +95,11 @@ set(PLATFORM_LIBS
   history)
 
 set(PLATFORM_CORE_DEPS
+  inih_devel
   Lua_devel
   SDL2_devel)
 
 include_directories(
   SYSTEM ${SDL2_INCLUDE_DIR}
-  SYSTEM ${LUA_INCLUDE_DIR})
+  SYSTEM ${LUA_INCLUDE_DIR}
+  SYSTEM ${INIH_INCLUDE_DIR})

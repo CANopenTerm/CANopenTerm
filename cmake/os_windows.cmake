@@ -1,29 +1,24 @@
-if(ENABLE_POCKETPY_SUPPORT)
+# inih
+set(INIH_VERSION     "58")
+set(INIH_DEVEL_PKG   r${INIH_VERSION}.zip)
+set(INIH_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/inih-${INIH_VERSION})
+set(INIH_INCLUDE_DIR ${INIH_PATH})
+set(INIH_LIBRARY     ${INIH_PATH}_build/inih.lib)
 
-# pocketpy
-set(POCKETPY_VERSION     "ed6c7a7887ad5b2ee32f298d9fc87f3f716173d9")
-set(POCKETPY_DEVEL_PKG   ${POCKETPY_VERSION}.zip)
-set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
-set(POCKETPY_INCLUDE_DIR "${POCKETPY_PATH}/include")
-set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/pocketpy.lib)
-
-ExternalProject_Add(pocketpy_devel
-  URL https://github.com/pocketpy/pocketpy/archive/${POCKETPY_DEVEL_PKG}
-  URL_HASH SHA1=39c075222b6d5738fd3b9d85f89cb860c18b842e
+ExternalProject_Add(inih_devel
+  URL https://github.com/benhoyt/inih/archive/refs/tags/${INIH_DEVEL_PKG}
+  URL_HASH SHA1=4ab39673da3a84ccf9828428616acced69f0528e
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
-  SOURCE_DIR       ${POCKETPY_PATH}/
-  BINARY_DIR       ${POCKETPY_PATH}_build/
-  BUILD_BYPRODUCTS ${POCKETPY_LIBRARY}
+  SOURCE_DIR ${INIH_PATH}/
+  BINARY_DIR ${INIH_PATH}_build/
+  BUILD_BYPRODUCTS ${INIH_LIBRARY}
 
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step.")
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
-else()
-
-set(POCKETPY_LIBRARY "")
-
-endif(ENABLE_POCKETPY_SUPPORT)
+  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_inih.cmake" ${INIH_PATH}/CMakeLists.txt)
 
 # Lua
 set(LUA_VERSION     "5.4.6")
@@ -142,30 +137,21 @@ set(PLATFORM_LIBS
   ${PCAN_LIBRARY}
   ${SDL2_LIBRARY}
   ${SDL2MAIN_LIBRARY}
-  ${POCKETPY_LIBRARY}
+  ${INIH_LIBRARY}
   ${LUA_LIBRARY})
 
 set(PLATFORM_CORE_DEPS
+  inih_devel
   Lua_devel
   SDL2_devel)
-
-if(ENABLE_POCKETPY_SUPPORT)
-
-set(PLATFORM_CORE_DEPS
-  ${PLATFORM_CORE_DEPS}
-  pocketpy_devel)
-
-add_compile_definitions(ENABLE_POCKETPY_SUPPORT)
-
-endif(ENABLE_POCKETPY_SUPPORT)
 
 include_directories(
   SYSTEM ${SDL2_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
-  SYSTEM ${POCKETPY_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
+  SYSTEM ${INIH_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
 
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)

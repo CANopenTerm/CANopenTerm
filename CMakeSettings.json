@@ -43,11 +43,6 @@
                     "name": "BUILD_TESTS",
                     "value": "False",
                     "type": "BOOL"
-                },
-                {
-                    "name": "ENABLE_POCKETPY_SUPPORT",
-                    "value": "False",
-                    "type": "BOOL"
                 }
             ]
         },
