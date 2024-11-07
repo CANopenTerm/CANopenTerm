@@ -30,7 +30,7 @@ typedef struct eds_entry
     uint16        Index;
     uint8         SubIndex;
 
-    const char    ParameterName[242]; /* max. 241 characters, leading \0. */
+    char          ParameterName[242]; /* max. 241 characters, leading \0. */
     uint8         ObjectType;
     uint16        DataType;
     uint32        LowLimit;

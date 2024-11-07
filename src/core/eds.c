@@ -65,8 +65,9 @@ void list_eds(void)
 status_t validate_eds(uint32 file_no, core_t* core)
 {
     status_t status = ALL_OK;
-    DIR_t* d;
+    DIR_t*   d;
     int      found_file_no = 1; // Move found_file_no declaration here
+    int      i;
 
     struct dirent_t* dir;
 
@@ -100,17 +101,7 @@ status_t validate_eds(uint32 file_no, core_t* core)
 
 static int parse_eds(void* user, const char* section, const char* name, const char* value)
 {
-    static char prev_section[50] = "";
     size_t len;
-
-    /*
-    if (0 != os_strcmp(section, prev_section))
-    {
-        os_strlcpy(prev_section, section, sizeof(prev_section));
-        prev_section[sizeof(prev_section) - 1] = '\0';
-        os_log(LOG_INFO, "Section: %s", section);
-    }
-    */
 
     len = os_strlen(section);
     if (len > 7 &&
@@ -124,48 +115,93 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
         os_isxdigit(section[7]) &&
         (len == 8 || (len == 9 && os_isxdigit(section[8]))) )
     {
-        char index[5]     = { 0 };
-        char sub_index[3] = { 0 };
+        static char prev_section[50] = "";
 
-        os_strlcpy(index, section, 5);
-        os_strlcpy(sub_index, section + 7, 3);
-
-        /* Todo: add new EDS entry once (!). */
-
-
-
-        if (0 == os_strcmp(name, "ParameterName"))
+        if (0 != os_strcmp(section, prev_section))
         {
+            char index[5]     = { 0 };
+            char sub_index[3] = { 0 };
 
+            os_strlcpy(index, section, 5);
+            os_strlcpy(sub_index, section + 7, 3);
+            os_strlcpy(prev_section, section, sizeof(prev_section));
+
+            prev_section[sizeof(prev_section) - 1] = '\0';
+
+            eds.entries = os_realloc(eds.entries, (eds.num_entries + 1) * sizeof(eds_entry_t));
+            if (NULL == eds.entries)
+            {
+                os_log(LOG_ERROR, "Memory allocation error.");
+                return 0;
+            }
+
+            eds.entries[eds.num_entries].Index    = (uint16)os_strtoul(index, NULL, 16);
+            eds.entries[eds.num_entries].SubIndex = (uint8)os_strtoul(sub_index, NULL, 16);
+            eds.num_entries++;
         }
-        else if (0 == os_strcmp(name, "ObjectType"))
+    }
+
+    if (0 == eds.num_entries)
+    {
+        return 1;
+    }
+
+    if (0 == os_strcmp(name, "ParameterName"))
+    {
+        size_t len = os_strlen(value) + 1;
+        if (len > 242)
         {
-
+            len = 242;
         }
-        else if (0 == os_strcmp(name, "DataType"))
+
+        os_strlcpy(eds.entries[eds.num_entries - 1].ParameterName, value, len);
+    }
+    else if (0 == os_strcmp(name, "ObjectType"))
+    {
+        eds.entries[eds.num_entries - 1].ObjectType = (uint8)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "DataType"))
+    {
+        eds.entries[eds.num_entries - 1].DataType = (uint16)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "LowLimit"))
+    {
+        eds.entries[eds.num_entries - 1].LowLimit = (uint32)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "HighLimit"))
+    {
+        eds.entries[eds.num_entries - 1].HighLimit = (uint32)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "AccessType"))
+    {
+        if (0 == os_strcmp(value, "ro"))
         {
-
+            eds.entries[eds.num_entries - 1].AccessType = RO;
         }
-        else if (0 == os_strcmp(name, "LowLimit"))
+        else if (0 == os_strcmp(value, "wo"))
         {
-
+            eds.entries[eds.num_entries - 1].AccessType = WO;
         }
-        else if (0 == os_strcmp(name, "HighLimit"))
+        else if (0 == os_strcmp(value, "rw"))
         {
-
+            eds.entries[eds.num_entries - 1].AccessType = RW;
         }
-        else if (0 == os_strcmp(name, "AccessType"))
+        else if (0 == os_strcmp(value, "rwr"))
         {
-
+            eds.entries[eds.num_entries - 1].AccessType = RWR;
         }
-        else if (0 == os_strcmp(name, "DefaultValue"))
+        else if (0 == os_strcmp(value, "rww"))
         {
-
+            eds.entries[eds.num_entries - 1].AccessType = RWW;
         }
-        else if (0 == os_strcmp(name, "PDOMapping"))
-        {
-
-        }
+    }
+    else if (0 == os_strcmp(name, "DefaultValue"))
+    {
+        eds.entries[eds.num_entries - 1].DefaultValue = (uint32)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "PDOMapping"))
+    {
+        eds.entries[eds.num_entries - 1].DefaultValue = (bool_t)os_strtoul(value, NULL, 0);
     }
 
     return 1;
@@ -184,6 +220,16 @@ static status_t run_conformance_test(const char* eds_path)
     {
         os_log(LOG_ERROR, "Can't load '%s' (%d).", eds_path, error);
         status = EDS_PARSE_ERROR;
+    }
+
+    os_log(LOG_INFO, "Number of objects: %u", eds.num_entries);
+    /* tbd. */
+
+    if (eds.entries != NULL)
+    {
+        os_free(eds.entries);
+        eds.entries     = NULL;
+        eds.num_entries = 0;
     }
 
     return status;
