@@ -13,7 +13,7 @@
 #include "core.h"
 
 void     list_eds(void);
-status_t validate_eds(uint32 file_no, core_t* core);
+status_t validate_eds(uint32 file_no, uint32 node_id);
 
 typedef enum access_type
 {

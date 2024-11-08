@@ -9,14 +9,17 @@
 
 #include <string.h>
 #include <dirent.h>
+#include "can.h"
+#include "core.h"
 #include "eds.h"
 #include "ini.h"
+#include "sdo.h"
 #include "table.h"
 
 static eds_t eds;
 
 static int parse_eds(void* user, const char* section, const char* name, const char* value);
-static     status_t run_conformance_test(const char* eds_file);
+static     status_t run_conformance_test(const char* eds_file, uint32 node_id);
 
 void list_eds(void)
 {
@@ -61,7 +64,7 @@ void list_eds(void)
     table_flush(&table);
 }
 
-status_t validate_eds(uint32 file_no, core_t *core)
+status_t validate_eds(uint32 file_no, uint32 node_id)
 {
     status_t status = ALL_OK;
     DIR_t*   d      = os_opendir("eds");
@@ -80,7 +83,7 @@ status_t validate_eds(uint32 file_no, core_t *core)
                     char eds_path[50];
                     os_snprintf(eds_path, 50, "eds/%s", dir->d_name);
 
-                    status = run_conformance_test(eds_path);
+                    status = run_conformance_test(eds_path, node_id);
                     break;
                 }
                 found_file_no++;
@@ -203,10 +206,12 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
     return 1;
 }
 
-static status_t run_conformance_test(const char* eds_path)
+static status_t run_conformance_test(const char* eds_path, uint32 node_id)
 {
-    status_t status = ALL_OK;
+    status_t status    = ALL_OK;
+    int      err_count = 0;
     int      error;
+    int      i;
 
     os_log(LOG_INFO, "Running conformance test for %s...", eds_path);
 
@@ -219,7 +224,25 @@ static status_t run_conformance_test(const char* eds_path)
     }
 
     os_log(LOG_INFO, "Number of objects: %u", eds.num_entries);
-    /* tbd. */
+    os_log(LOG_INFO, "Testing object availability...");
+
+    for (i = 0; i < eds.num_entries; i++)
+    {
+        if (WO != eds.entries[i].AccessType)
+        {
+            can_message_t sdo_response;
+            sdo_state_t   state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
+            if (ABORT_TRANSFER == state)
+            {
+                os_log(LOG_INFO, "  0x%04X sub %u not available.", eds.entries[i].Index, eds.entries[i].SubIndex);
+                err_count++;
+                status = EDS_OBJECT_NOT_AVAILABLE;
+            }
+        }
+    }
+
+    os_log(LOG_INFO, "Conformity: %.2f%%", 100.f / (float)eds.num_entries * (float)err_count);
+    os_log(LOG_INFO, "%d of %d objects not available.", err_count, eds.num_entries);
 
     if (eds.entries != NULL)
     {

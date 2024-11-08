@@ -383,9 +383,19 @@ void parse_command(char* input, core_t* core)
         }
         run_script(token, core);
     }
-    else if (0 == os_strncmp(token, "x", 1))
+    else if (0 == os_strncmp(token, "t", 1))
     {
+        uint32 node_id;
         uint32 file_no;
+
+        token = os_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            print_usage_information(IS_FALSE);
+            return;
+        }
+        convert_token_to_uint(token, &node_id);
+
         token = os_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
@@ -393,7 +403,8 @@ void parse_command(char* input, core_t* core)
             return;
         }
         convert_token_to_uint(token, &file_no);
-        validate_eds(file_no, core);
+
+        validate_eds(file_no, node_id);
     }
     else
     {
@@ -428,7 +439,7 @@ static void convert_token_to_uint64(char* token, uint64* result)
 status_t print_usage_information(bool_t show_all)
 {
     status_t status;
-    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 45, 15 };
+    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 45, 16 };
 
     status = table_init(&table, 1024);
     table_print_header(&table);
@@ -438,12 +449,12 @@ status_t print_usage_information(bool_t show_all)
 
     if (IS_TRUE == show_all)
     {
-        table_print_row(" b ", "(identifer)",                               "Set baud rate",   &table);
-        table_print_row(" y ", "(identifer)",                               "Set CAN channel", &table);
-        table_print_row(" c ", " ",                                         "Clear output",    &table);
-        table_print_row(" l ", " ",                                         "List scripts",    &table);
-        table_print_row("(s)", "[identifier](.lua)",                        "Run script",      &table);
-        table_print_row(" x ", "[file no.]",                                "Validate EDS",    &table);
+        table_print_row(" b ", "(identifer)",                               "Set baud rate",    &table);
+        table_print_row(" y ", "(identifer)",                               "Set CAN channel",  &table);
+        table_print_row(" c ", " ",                                         "Clear output",     &table);
+        table_print_row(" l ", " ",                                         "List scripts",     &table);
+        table_print_row("(s)", "[identifier](.lua)",                        "Run script",       &table);
+        table_print_row(" t ", "[node_id] [file no.]",                      "Conformance test", &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);
