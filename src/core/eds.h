@@ -21,7 +21,8 @@ typedef enum access_type
     WO,
     RW,
     RWR,
-    RWW
+    RWW,
+    RO_CONST
 
 } access_type_t;
 
