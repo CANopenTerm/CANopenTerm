@@ -193,6 +193,10 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
         {
             eds.entries[eds.num_entries - 1].AccessType = RWW;
         }
+        else if (0 == os_strcmp(value, "const"))
+        {
+            eds.entries[eds.num_entries - 1].AccessType = RO_CONST;
+        }
     }
     else if (0 == os_strcmp(name, "DefaultValue"))
     {
