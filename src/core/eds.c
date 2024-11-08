@@ -241,7 +241,7 @@ static status_t run_conformance_test(const char* eds_path, uint32 node_id)
         }
     }
 
-    os_log(LOG_INFO, "Conformity: %.2f%%", 100.f / (float)eds.num_entries * (float)err_count);
+    os_log(LOG_INFO, "Conformity: %.2f%%", 100.f - (100.f / (float)eds.num_entries * (float)err_count));
     os_log(LOG_INFO, "%d of %d objects not available.", err_count, eds.num_entries);
 
     if (eds.entries != NULL)
