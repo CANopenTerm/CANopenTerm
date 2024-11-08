@@ -60,8 +60,11 @@ Key functionalities include:
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
   for streamlined CAN CC network projects.
 
-## Code Quality and Standards
+- **Conformance Testing**:
+  Verify the object dictionary of your CANopen devices with the built-in
+  electronic data sheet (EDS) parser.
 
+## Code Quality and Standards
 
 - **ANSI C Source Code**:
   Ensures robust performance and high portability.
