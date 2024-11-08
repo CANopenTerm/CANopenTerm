@@ -14,13 +14,29 @@
 
 int main(int argc, char* argv[])
 {
-    int      status    = EXIT_SUCCESS;
-    bool_t   is_silent = IS_FALSE;
-    core_t*  core      = NULL;
+    int      i;
+    int      status        = EXIT_SUCCESS;
+    bool_t   is_silent     = IS_FALSE;
+    core_t*  core          = NULL;
+    char*    script        = NULL;
+    char*    can_interface = DEFAULT_CAN_INTERFACE;
 
-    if ((argc > 1) && (argv[1] != NULL))
+    for (i = 1; i < argc; i++)
     {
-        is_silent = IS_TRUE;
+        if (0 == os_strcmp(argv[i], "-s") && (i + 1) < argc)
+        {
+            is_silent = IS_TRUE;
+            script    = argv[++i];
+        }
+        else if (0 == os_strcmp(argv[i], "-i") && (i + 1) < argc)
+        {
+            can_interface = argv[++i];
+        }
+        else
+        {
+            os_printf("Usage: %s [-s script] [-i can_interface]\n", argv[0]);
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (core_init(&core, is_silent) != ALL_OK)
@@ -28,18 +44,11 @@ int main(int argc, char* argv[])
         status = EXIT_FAILURE;
     }
 
-    if ((argc > 2) && (argv[2] != NULL))
-    {
-        os_strlcpy(core->can_interface, argv[2], sizeof(core->can_interface));
-    }
-    else
-    {
-        os_strlcpy(core->can_interface, DEFAULT_CAN_INTERFACE, sizeof(core->can_interface));
-    }
+    os_strlcpy(core->can_interface, can_interface, sizeof(core->can_interface));
 
-    if ((argc > 1) && (argv[1] != NULL))
+    if (script != NULL)
     {
-        run_script(argv[1], core);
+        run_script(script, core);
         core->is_running = IS_FALSE;
     }
 
