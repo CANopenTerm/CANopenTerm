@@ -17,13 +17,14 @@ A pre-compiled Windows version of CANopenTerm can be found on the
 ### Command-line interface
 
 CANopenTerm is an interactive terminal which can be used via a number of
-commands. You can get a detailed overview of all available command by
+commands.  You can get a detailed overview of all available command by
 entering `h`.
 
 ### Run script from command-line
 
-It is possible to run a script from the command line.  However, on Linux,
-the CAN interface can be set as second argument (Default: `can0`).
+It is possible to run or set the CAN interface from the command line.
+
+Usage: `CANopenTerm [-s script] [-i can_interface]`
 
 The `.lua` file extension can be omitted.  
 The `.c` file extension has to be specified.
@@ -31,13 +32,13 @@ The `.c` file extension has to be specified.
 #### Linux
 
 ```bash
-./CANopenTerm hello can1
+./CANopenTerm -s hello -i can1
 ```
 
 #### Windows
 
 ```bash
-CANopenTerm.exe hello
+CANopenTerm.exe -s hello
 ```
 
 ## Compiling
