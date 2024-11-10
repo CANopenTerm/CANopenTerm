@@ -72,7 +72,7 @@ jobs:
       id: delete_release
       uses: octokit/request-action@v2.x
       with:
-        route: DELETE /repos/${{ github.repository }}/releases/${{ steps.get_release.outputs.data.id }}
+        route: DELETE /repos/${{ github.repository }}/releases/tags/latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
