@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up CMake
-      uses: lukka/get-cmake@v3
+      uses: lukka/get-cmake@latest
 
     - name: Set up Clang
       uses: llvm/llvm-project@main
@@ -27,8 +27,9 @@ jobs:
     - name: Build with CMake
       run: cmake --build build --config Release
 
-    - name: Set up WiX Toolset
-      uses: warrenbuckley/Setup-WiX-Toolset@v1
+    - name: Install WiX Toolset
+      run: |
+        choco install wix --version=3.11.2
 
     - name: Build WiX Toolset solution
       run: |
