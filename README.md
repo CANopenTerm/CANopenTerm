@@ -6,6 +6,13 @@
 [![Linux Build & Unit Tests](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/linux.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/linux.yml)
 [![Windows Build](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml)
 
+## Table of Contents
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Code Quality and Standards](#code-quality-and-standards)
+- [Open Source Commitment](#open-source-commitment)
+- [Why Your Support Matters](#why-your-support-matters)
+   
 ## Overview
 
 CANopenTerm is an open-source software tool designed for the
@@ -29,7 +36,7 @@ Key functionalities include:
   Capabilities to thoroughly test CANopen CC networks and devices.
 
 - **Extended Protocol Support**:
-  Features tailored for SAE J1939 and OBD-II protocols.
+  Features tailored for CANopen, SAE J1939, and OBD-II protocols.
 
 ## Key Features
 
@@ -73,7 +80,7 @@ Key functionalities include:
   Static code analysis and unit tests for reliability.
 
 - **OS Abstraction Layer**:
-  Facilitates porting to other platforms.
+  Simplifies the process of porting to different platforms.
 
 ## Open Source Commitment
 
@@ -86,10 +93,12 @@ in its features without the need for marketing embellishments.
 ## Why Your Support Matters
 
 **CANopenTerm** is developed to provide a powerful tool for
-professionals at no cost.  However, maintaining and improving
-such a project requires resources.  Your donations can make a
+professionals at no cost. However, maintaining and improving
+such a project requires resources. Your donations can make a
 significant difference, enabling continued development and support.
 
 Your contribution, no matter how small, will be greatly appreciated
 and will help keep CANopenTerm thriving. Together, we can ensure
 this essential tool remains available and continues to evolve.
+
+[Donate Now](https://github.com/sponsors/mupfdev)
