@@ -17,16 +17,11 @@ jobs:
       uses: lukka/get-cmake@latest
 
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
-
-    - name: List contents of deps_windows directory
-      run: dir D:/a/CANopenTerm/CANopenTerm/deps_windows
-
-    - name: List contents of inih-58_build directory
-      run: dir D:/a/CANopenTerm/CANopenTerm/deps_windows/inih-58_build
-
-    - name: List contents of lua-5.4.6_windows_build directory
-      run: dir D:/a/CANopenTerm/CANopenTerm/deps_windows/lua-5.4.6_windows_build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja" \
+          -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+          -DCMAKE_C_FLAGS="-D_DLL -D_MT -Xclang --dependent-lib=msvcrt" \
+          -DCMAKE_CXX_FLAGS="-D_DLL -D_MT -Xclang --dependent-lib=msvcrt"
 
     - name: Build with CMake
       run: cmake --build build --config Release
