@@ -16,6 +16,11 @@
         <File Source="../../export/dbc/j1939.dbc" />
       </Component>
     </ComponentGroup>
+      <ComponentGroup Id="EdsComponents" Directory="EDSFOLDER">
+          <Component>
+              <File Source="../../export/eds/DS301_profile.eds" />
+          </Component>
+      </ComponentGroup>
     <ComponentGroup Id="LuaComponents" Directory="LUAFOLDER">
         <Component>
             <File Source="../../export/lua/canopen.lua" />

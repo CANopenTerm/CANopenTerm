@@ -7,6 +7,7 @@
         <Feature Id="Main">
             <ComponentGroupRef Id="MainComponents" />
             <ComponentGroupRef Id="DbcComponents" />
+            <ComponentGroupRef Id="EdsComponents" />
             <ComponentGroupRef Id="LuaComponents" />
             <ComponentGroupRef Id="ScriptsComponents" />
         </Feature>
@@ -33,7 +34,7 @@
 
         <Upgrade Id="$(var.UpgradeCode)">
             <!-- Detect older product versions -->
-            <UpgradeVersion OnlyDetect="no" IncludeMinimum="yes" IncludeMaximum="yes" Minimum="1.0.0" Maximum="$(var.ProductVersion)" Property="PREVIOUSVERSIONSINSTALLED"/>
+            <UpgradeVersion OnlyDetect="no" IncludeMinimum="yes" IncludeMaximum="yes" Minimum="1.0.0" Maximum="1.0.5" Property="PREVIOUSVERSIONSINSTALLED"/>
         </Upgrade>
 
     </Package>

@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up CMake
       uses: lukka/get-cmake@latest
@@ -38,3 +38,44 @@ jobs:
       run: |
         cd setup
         msbuild /p:Configuration=Release /p:Platform=x64
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: .
+
+    - name: Create or update release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: latest
+        release_name: "Latest Release"
+        draft: false
+        prerelease: false
+        body: "This is the most recent build."
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
+        asset_name: CANopenTerm-latest.msi
+        asset_content_type: application/octet-stream
