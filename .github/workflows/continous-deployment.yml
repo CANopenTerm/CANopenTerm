@@ -58,12 +58,12 @@ jobs:
         name: build-artifacts
         path: .
 
-#    - name: Delete existing release
-#      uses: dev-drprasad/delete-tag-and-release@v1.1
-#      with:
-#        tag_name: latest
-#        delete_release: true
-#        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Delete existing release
+      uses: dev-drprasad/delete-tag-and-release@v1.1
+      with:
+        tag_name: latest
+        delete_release: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
@@ -71,6 +71,8 @@ jobs:
         files: |
           CANopenTerm.msi
         tag_name: latest
+        name: "Latest Release"
+        body: "This is the latest build of CANopenTerm."
         draft: false
         prerelease: true
         token: ${{ secrets.GITHUB_TOKEN }}
