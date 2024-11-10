@@ -60,7 +60,7 @@ jobs:
 
     - name: Delete existing release
       id: delete_release
-      uses: octokit/request-action@v2
+      uses: octokit/request-action@v2.x
       with:
         route: DELETE /repos/${{ github.repository }}/releases/tags/latest
       env:
