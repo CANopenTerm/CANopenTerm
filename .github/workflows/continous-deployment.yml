@@ -1,0 +1,36 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up CMake
+      uses: lukka/get-cmake@v3
+
+    - name: Set up Clang
+      uses: llvm/llvm-project@main
+      with:
+        version: '12.0.0'
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja"
+
+    - name: Build with CMake
+      run: cmake --build build --config Release
+
+    - name: Set up WiX Toolset
+      uses: warrenbuckley/Setup-WiX-Toolset@v1
+
+    - name: Build WiX Toolset solution
+      run: |
+        cd setup
+        msbuild /p:Configuration=Release
