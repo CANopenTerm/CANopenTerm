@@ -76,6 +76,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
+        asset_path: ./CANopenTerm.msi
         asset_name: CANopenTerm-latest.msi
         asset_content_type: application/octet-stream
