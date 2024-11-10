@@ -16,12 +16,8 @@ jobs:
     - name: Set up CMake
       uses: lukka/get-cmake@latest
 
-    - name: Install Clang
-      run: |
-        choco install llvm --version=12.0.0
-
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja"
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
     - name: Build with CMake
       run: cmake --build build --config Release
