@@ -58,7 +58,16 @@ jobs:
         name: build-artifacts
         path: .
 
-    - name: Create or update release
+    - name: Delete existing release
+      id: delete_release
+      uses: octokit/request-action@v2
+      with:
+        route: DELETE /repos/${{ github.repository }}/releases/tags/latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
+
+    - name: Create release
       id: create_release
       uses: actions/create-release@v1
       env:
