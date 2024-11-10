@@ -30,7 +30,7 @@ jobs:
 
     - name: Install WiX Toolset
       run: |
-        choco install wix --version=3.11.2
+        choco install wix
 
     - name: Build WiX Toolset solution
       run: |
