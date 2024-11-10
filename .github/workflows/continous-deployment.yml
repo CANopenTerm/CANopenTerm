@@ -29,9 +29,9 @@ jobs:
       run: cmake --build build --config Release
 
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.3
+      uses: microsoft/setup-msbuild@v2
 
     - name: Build WiX Toolset solution
       run: |
         cd setup
-        msbuild /p:Configuration=Release
+        msbuild /p:Configuration=Release /p:Platform=x64
