@@ -28,9 +28,8 @@ jobs:
     - name: Build with CMake
       run: cmake --build build --config Release
 
-    - name: Install WiX Toolset
-      run: |
-        choco install wixtoolset
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.3
 
     - name: Build WiX Toolset solution
       run: |
