@@ -31,6 +31,9 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
+    - name: Restore NuGet packages
+      run: nuget restore setup/setup.sln
+
     - name: Build WiX Toolset solution
       run: |
         cd setup
