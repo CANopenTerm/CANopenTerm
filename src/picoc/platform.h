@@ -15,6 +15,12 @@
 #include <math.h>
 #include <stdbool.h>
 
+#ifdef _WIN32
+#  ifndef WIN32
+#    define WIN32
+#  endif
+#endif
+
 #ifdef __linux__
 #  ifndef UNIX_HOST
 #    define UNIX_HOST
