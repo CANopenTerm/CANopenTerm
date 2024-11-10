@@ -16,6 +16,20 @@ jobs:
     - name: Set up CMake
       uses: lukka/get-cmake@latest
 
+    - name: Install dependencies
+      run: |
+        choco install llvm
+        choco install ninja
+
+    - name: Build Lua with Clang
+      run: |
+        cd deps_windows/lua-5.4.6
+        mkdir build
+        cd build
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS="-D_DLL -D_MT -Xclang --dependent-lib=msvcrt" -DCMAKE_CXX_FLAGS="-D_DLL -D_MT -Xclang --dependent-lib=msvcrt" ..
+        cmake --build . --config Release
+        cd ../../..
+
     - name: Configure CMake
       run: |
         cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS="-D_DLL -D_MT -Xclang --dependent-lib=msvcrt" -DCMAKE_CXX_FLAGS="-D_DLL -D_MT -Xclang --dependent-lib=msvcrt" -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld-link -nostdlib++ -lmsvcrt -lmsvcprt"
