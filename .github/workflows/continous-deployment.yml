@@ -58,23 +58,12 @@ jobs:
         name: build-artifacts
         path: .
 
-    - name: Get release by tag
-      id: get_release
-      uses: octokit/request-action@v2.x
+    - name: Delete release
+      uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
-        route: GET /repos/${{ github.repository }}/releases/tags/latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      continue-on-error: true
-
-    - name: Delete existing release
-      if: steps.get_release.outputs.status == 200
-      id: delete_release
-      uses: octokit/request-action@v2.x
-      with:
-        route: DELETE /repos/${{ github.repository }}/releases/tags/latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: latest
+        delete_release: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create release
       id: create_release
