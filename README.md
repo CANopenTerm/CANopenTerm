@@ -7,10 +7,15 @@
 [![Windows Build & Continuous Deployment](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/windows.yml)
 
 ## Table of Contents
+
 - [Overview](#overview)
+
 - [Key Features](#key-features)
+
 - [Code Quality and Standards](#code-quality-and-standards)
+
 - [Open Source Commitment](#open-source-commitment)
+
 - [Why Your Support Matters](#why-your-support-matters)
    
 ## Overview
