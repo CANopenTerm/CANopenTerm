@@ -53,6 +53,9 @@ if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     ucrt
     legacy_stdio_definitions
     legacy_stdio_wide_specifiers)
+
+  set_target_properties(lua PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded")
 endif()
 
 set_target_properties(lua PROPERTIES
