@@ -139,12 +139,20 @@ set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 
 add_dependencies(${PROJECT_NAME} PCAN_devel)
 
+if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  set(ADDITIONAL_RUNTIME
+    ucrt
+    legacy_stdio_definitions
+    legacy_stdio_wide_specifiers)
+endif()
+
 set(PLATFORM_LIBS
   ${PCAN_LIBRARY}
   ${SDL2_LIBRARY}
   ${SDL2MAIN_LIBRARY}
   ${INIH_LIBRARY}
-  ${LUA_LIBRARY})
+  ${LUA_LIBRARY}
+  ${ADDITIONAL_RUNTIME})
 
 set(PLATFORM_CORE_DEPS
   inih_devel
@@ -158,9 +166,6 @@ include_directories(
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${INIH_INCLUDE_DIR}
-  SYSTEM ${DIRENT_INCLUDE_DIR}
-  PUBLIC ucrt
-  PUBLIC legacy_stdio_definitions
-  PUBLIC legacy_stdio_wide_specifiers)
+  SYSTEM ${DIRENT_INCLUDE_DIR})
 
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
