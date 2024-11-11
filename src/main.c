@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
             char* endptr;
 
             baud_rate_index = (uint8)os_strtol(argv[++i], &endptr, 0);
-            if (baud_rate_index < 0 || baud_rate_index > 13 || *endptr != '\0')
+            if (baud_rate_index > 13 || *endptr != '\0')
             {
                 os_printf("Invalid baud rate.  Must be between 0 and 13.\n");
                 exit(EXIT_FAILURE);

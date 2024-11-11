@@ -41,7 +41,7 @@ typedef struct eds_entry
     uint32        DefaultValue;
     bool_t        PDOMapping;
 
-} eds_entry_t;;
+} eds_entry_t;
 
 typedef struct eds
 {

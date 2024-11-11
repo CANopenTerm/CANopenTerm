@@ -324,7 +324,7 @@ static int can_monitor(void* core_pt)
             core->is_can_initialised = IS_TRUE;
             os_print(DEFAULT_COLOR, "\r");
             os_log(LOG_SUCCESS, "CAN successfully initialised on %s", core->can_interface);
-            os_print_prompt();
+            os_print_prompt(core->is_silent);
 
             os_delay(1);
             continue;
