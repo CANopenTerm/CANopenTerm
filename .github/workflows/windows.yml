@@ -59,7 +59,7 @@ jobs:
         files: |
           CANopenTerm.msi
         tag_name: latest
-        name: "Latest Release"
+        name: "Latest Build"
         body: "This is the latest build of CANopenTerm."
         draft: false
         prerelease: true
