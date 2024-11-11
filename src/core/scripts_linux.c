@@ -126,7 +126,18 @@ void run_script(const char* name, core_t* core)
     {
         if (IS_TRUE == has_lua_extension)
         {
-            os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
+            FILE *file = os_fopen(name, "r");
+
+            if (file != NULL)
+            {
+                os_snprintf(script_path, sizeof(script_path), "%s", name);
+                os_fclose(file);
+            }
+            else
+            {
+                os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
+            }
+
             if (LUA_OK == luaL_dofile(core->L, script_path))
             {
                 lua_pop(core->L, lua_gettop(core->L));
@@ -146,7 +157,16 @@ void run_script(const char* name, core_t* core)
             picoc_pdo_init(core);
             picoc_sdo_init(core);
 
-            os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
+            file = os_fopen(name, "r");
+            if (file != NULL)
+            {
+                os_snprintf(script_path, sizeof(script_path), "%s", name);
+                os_fclose(file);
+            }
+            else
+            {
+                os_snprintf(script_path, sizeof(script_path), "%s/%s", script_dirs[i], name);
+            }
 
             file = fopen(script_path, "r");
             if (file != NULL)

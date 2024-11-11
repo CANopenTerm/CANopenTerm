@@ -106,7 +106,7 @@ void run_script(const char* name, core_t* core)
     const char* extension         = os_strrchr(name, '.');
     bool_t      has_c_extension   = extension && os_strcmp(extension, ".c")   == 0;
     bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
-    char        script_path[64]   = { 0 };
+    char        script_path[1024] = { 0 };
 
     if (NULL == core)
     {
@@ -115,7 +115,18 @@ void run_script(const char* name, core_t* core)
 
     if (IS_TRUE == has_lua_extension)
     {
-        os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
+        FILE* file = os_fopen(name, "r");
+
+        if (file != NULL)
+        {
+            os_snprintf(script_path, sizeof(script_path), "%s", name);
+            os_fclose(file);
+        }
+        else
+        {
+            os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
+        }
+
         if (LUA_OK == luaL_dofile(core->L, script_path))
         {
             lua_pop(core->L, lua_gettop(core->L));
@@ -135,9 +146,18 @@ void run_script(const char* name, core_t* core)
         picoc_pdo_init(core);
         picoc_sdo_init(core);
 
-        os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
+        file = os_fopen(name, "r");
+        if (file != NULL)
+        {
+            os_snprintf(script_path, sizeof(script_path), "%s", name);
+            os_fclose(file);
+        }
+        else
+        {
+            os_snprintf(script_path, sizeof(script_path), "scripts/%s", name);
+        }
 
-        file  = fopen(script_path, "r");
+        file = fopen(script_path, "r");
         if (file != NULL)
         {
             fclose(file);

@@ -168,4 +168,6 @@ include_directories(
   SYSTEM ${INIH_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
 
-add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+add_compile_definitions(
+  _CRT_SECURE_NO_WARNINGS
+  WIN32)
