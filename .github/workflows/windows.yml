@@ -1,4 +1,4 @@
-name: Windows Build & Continous Deployment
+name: Windows Build & Continuous Deployment
 
 on:
   push:

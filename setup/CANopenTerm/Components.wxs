@@ -10,6 +10,9 @@
       <Component>
         <File Source="../../export/SDL2.dll" />
       </Component>
+      <Component>
+        <File Source="../../export/vcruntime140.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
       <Component>

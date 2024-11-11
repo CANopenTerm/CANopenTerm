@@ -155,4 +155,32 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
         /W4
         /utf-8)
 
+    set(MSVC_REDIST_DIRS
+        "C:/Program Files/Microsoft Visual Studio/2019/Professional/VC/Redist/MSVC"
+        "C:/Program Files/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC"
+        "C:/Program Files/Microsoft Visual Studio/2019/Enterprise/VC/Redist/MSVC"
+        "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Redist/MSVC"
+        "C:/Program Files/Microsoft Visual Studio/2022/Professional/VC/Redist/MSVC"
+        "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Redist/MSVC"
+    )
+
+    set(MSVC_REDIST_DIR "")
+    foreach(DIR ${MSVC_REDIST_DIRS})
+        file(GLOB_RECURSE FOUND_DLL "${DIR}/*/x64/Microsoft.VC143.CRT/vcruntime140.dll")
+        if (FOUND_DLL)
+            get_filename_component(MSVC_REDIST_DIR ${FOUND_DLL} DIRECTORY)
+            break()
+        endif()
+    endforeach()
+
+    if (MSVC_REDIST_DIR)
+        message(STATUS "Found vcruntime140.dll at ${MSVC_REDIST_DIR}")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${MSVC_REDIST_DIR}/vcruntime140.dll"
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+    else()
+        message(WARNING "vcruntime140.dll not found. Please ensure the Visual Studio redistributable is installed.")
+    endif()
+
 endif()
