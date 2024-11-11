@@ -155,6 +155,13 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
         /W4
         /utf-8)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+
+    target_link_libraries(
+        ${PROJECT_NAME}
+        PUBLIC
+        ucrt
+        legacy_stdio_definitions
+        legacy_stdio_wide_specifiers)
 
 endif()
