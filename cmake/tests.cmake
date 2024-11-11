@@ -32,6 +32,8 @@ ExternalProject_Add(CMocka_devel
     -DBUILD_SHARED_LIBS=OFF
     -DWITH_EXAMPLES=OFF
 
+  PATCH_COMMAND ${CMAKE_COMMAND} -DCMocka_PATH=${CMocka_PATH} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch_cmocka.cmake
+
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step.")
 
 add_executable(
