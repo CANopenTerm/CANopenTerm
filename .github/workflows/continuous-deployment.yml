@@ -1,4 +1,4 @@
-name: Windows Build & Continuous Deployment
+name: Continuous Deployment
 
 on:
   push:
@@ -10,7 +10,28 @@ env:
   BUILD_TYPE: Release
 
 jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -y -qq
+        sudo apt-get install ninja-build libsocketcan-dev
+
+    - name: Build unit tests
+      run: |
+        cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON ${{github.workspace}}
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Run unit tests
+      working-directory: ${{github.workspace}}/export
+      run: ./run_unit_tests
+
   build:
+    needs:   tests
     runs-on: windows-latest
 
     steps:
