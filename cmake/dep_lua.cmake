@@ -47,7 +47,3 @@ if(UNIX)
     LUA_USE_C89
     LUA_USE_LINUX)
 endif()
-
-if(WIN32)
-  set_target_properties(lua PROPERTIES OUTPUT_NAME "lua" PREFIX "" SUFFIX ".lib")
-endif(WIN32)

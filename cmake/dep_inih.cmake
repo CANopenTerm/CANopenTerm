@@ -7,7 +7,3 @@ set(inih_sources
 add_library(inih
   STATIC
   ${inih_sources})
-
-if(WIN32)
-  set_target_properties(inih PROPERTIES OUTPUT_NAME "inih" PREFIX "" SUFFIX ".lib")
-endif(WIN32)
