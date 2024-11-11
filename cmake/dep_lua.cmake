@@ -53,7 +53,8 @@ if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   target_link_libraries(lua
     PUBLIC
     ucrt
-    legacy_stdio_definitions)
+    legacy_stdio_definitions
+    legacy_stdio_wide_specifiers)
 endif()
 
 set_target_properties(lua PROPERTIES
