@@ -141,7 +141,6 @@ add_dependencies(${PROJECT_NAME} PCAN_devel)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   set(ADDITIONAL_RUNTIME
-    ucrt
     legacy_stdio_definitions
     legacy_stdio_wide_specifiers)
 endif()
