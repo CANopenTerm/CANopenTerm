@@ -66,9 +66,13 @@ void list_eds(void)
 status_t run_conformance_test(const char* eds_path, uint32 node_id)
 {
     status_t status = ALL_OK;
+    char     unavailable_subs[256] = { 0 };
     int      err_count = 0;
     int      error;
     int      i;
+    int      last_sub_index = -1;
+    int      range_start = -1;
+    uint16   current_index = 0xFFFF;
 
     os_log(LOG_INFO, "Running conformance test for %s...", eds_path);
 
@@ -91,11 +95,66 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id)
             sdo_state_t   state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
             if (ABORT_TRANSFER == state)
             {
-                os_log(LOG_INFO, "  0x%04X sub %u not available.", eds.entries[i].Index, eds.entries[i].SubIndex);
+                if (eds.entries[i].Index != current_index)
+                {
+                    if (current_index != 0xFFFF)
+                    {
+                        if (range_start != -1)
+                        {
+                            if (last_sub_index == range_start)
+                            {
+                                os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d", range_start);
+                            }
+                            else
+                            {
+                                os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d-%d", range_start, last_sub_index);
+                            }
+                        }
+                        os_log(LOG_INFO, "  0x%04X sub %s not available.", current_index, unavailable_subs);
+                    }
+                    current_index = eds.entries[i].Index;
+                    os_strlcpy(unavailable_subs, "", sizeof(unavailable_subs));
+                    range_start = -1;
+                }
+
+                if (range_start == -1)
+                {
+                    range_start = eds.entries[i].SubIndex;
+                }
+                else if (eds.entries[i].SubIndex != last_sub_index + 1)
+                {
+                    if (last_sub_index == range_start)
+                    {
+                        os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d, ", range_start);
+                    }
+                    else
+                    {
+                        os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d-%d, ", range_start, last_sub_index);
+                    }
+                    range_start = eds.entries[i].SubIndex;
+                }
+
+                last_sub_index = eds.entries[i].SubIndex;
                 err_count++;
                 status = EDS_OBJECT_NOT_AVAILABLE;
             }
         }
+    }
+
+    if (current_index != 0xFFFF)
+    {
+        if (range_start != -1)
+        {
+            if (last_sub_index == range_start)
+            {
+                os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d", range_start);
+            }
+            else
+            {
+                os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d-%d", range_start, last_sub_index);
+            }
+        }
+        os_log(LOG_INFO, "  0x%04X sub %s not available.", current_index, unavailable_subs);
     }
 
     os_log(LOG_INFO, "Conformity: %.2f%%", 100.f - (100.f / (float)eds.num_entries * (float)err_count));
