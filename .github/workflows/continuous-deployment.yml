@@ -10,7 +10,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,7 @@ jobs:
       run: ./run_unit_tests
 
   build:
-    needs:   tests
+    needs:   test
     runs-on: windows-latest
 
     steps:
