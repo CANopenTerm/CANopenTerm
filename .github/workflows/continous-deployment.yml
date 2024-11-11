@@ -20,6 +20,7 @@ jobs:
       run: |
         choco install llvm
         choco install ninja
+        choco install vswhere
 
     - name: Configure CMake
       run: |
@@ -33,6 +34,14 @@ jobs:
 
     - name: Restore NuGet packages
       run: nuget restore setup/setup.sln
+
+    - name: Locate and copy vcruntime140.dll
+      run: |
+        $vsInstallPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Runtime -property installationPath
+        $dllPath = Join-Path $vsInstallPath "VC\Redist\MSVC\14.29.30037\x64\Microsoft.VC142.CRT\vcruntime140.dll"
+        $destination = "export/"
+        Copy-Item -Path $dllPath -Destination $destination
+        dir export
 
     - name: Build WiX Toolset solution
       run: |
