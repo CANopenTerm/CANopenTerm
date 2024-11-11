@@ -24,7 +24,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja" -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DCMAKE_C_STANDARD=99
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja" -T host=x64 -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 
     - name: Build with CMake
       run: cmake --build build --config Release
