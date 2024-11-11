@@ -19,7 +19,6 @@
 static eds_t eds;
 
 static int parse_eds(void* user, const char* section, const char* name, const char* value);
-static     status_t run_conformance_test(const char* eds_file, uint32 node_id);
 
 void list_eds(void)
 {
@@ -62,6 +61,54 @@ void list_eds(void)
 
     table_print_footer(&table);
     table_flush(&table);
+}
+
+status_t run_conformance_test(const char* eds_path, uint32 node_id)
+{
+    status_t status = ALL_OK;
+    int      err_count = 0;
+    int      error;
+    int      i;
+
+    os_log(LOG_INFO, "Running conformance test for %s...", eds_path);
+
+    /* Parse EDS file. */
+    error = ini_parse(eds_path, parse_eds, &eds_path);
+    if (error < 0)
+    {
+        os_log(LOG_ERROR, "Can't load '%s' (%d).", eds_path, error);
+        status = EDS_PARSE_ERROR;
+    }
+
+    os_log(LOG_INFO, "Number of objects: %u", eds.num_entries);
+    os_log(LOG_INFO, "Testing object availability...");
+
+    for (i = 0; i < eds.num_entries; i++)
+    {
+        if (WO != eds.entries[i].AccessType)
+        {
+            can_message_t sdo_response;
+            sdo_state_t   state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
+            if (ABORT_TRANSFER == state)
+            {
+                os_log(LOG_INFO, "  0x%04X sub %u not available.", eds.entries[i].Index, eds.entries[i].SubIndex);
+                err_count++;
+                status = EDS_OBJECT_NOT_AVAILABLE;
+            }
+        }
+    }
+
+    os_log(LOG_INFO, "Conformity: %.2f%%", 100.f - (100.f / (float)eds.num_entries * (float)err_count));
+    os_log(LOG_INFO, "%d of %d objects not available.", err_count, eds.num_entries);
+
+    if (eds.entries != NULL)
+    {
+        os_free(eds.entries);
+        eds.entries = NULL;
+        eds.num_entries = 0;
+    }
+
+    return status;
 }
 
 status_t validate_eds(uint32 file_no, uint32 node_id)
@@ -208,52 +255,4 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
     }
 
     return 1;
-}
-
-static status_t run_conformance_test(const char* eds_path, uint32 node_id)
-{
-    status_t status    = ALL_OK;
-    int      err_count = 0;
-    int      error;
-    int      i;
-
-    os_log(LOG_INFO, "Running conformance test for %s...", eds_path);
-
-    /* Parse EDS file. */
-    error = ini_parse(eds_path, parse_eds, &eds_path);
-    if (error < 0)
-    {
-        os_log(LOG_ERROR, "Can't load '%s' (%d).", eds_path, error);
-        status = EDS_PARSE_ERROR;
-    }
-
-    os_log(LOG_INFO, "Number of objects: %u", eds.num_entries);
-    os_log(LOG_INFO, "Testing object availability...");
-
-    for (i = 0; i < eds.num_entries; i++)
-    {
-        if (WO != eds.entries[i].AccessType)
-        {
-            can_message_t sdo_response;
-            sdo_state_t   state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
-            if (ABORT_TRANSFER == state)
-            {
-                os_log(LOG_INFO, "  0x%04X sub %u not available.", eds.entries[i].Index, eds.entries[i].SubIndex);
-                err_count++;
-                status = EDS_OBJECT_NOT_AVAILABLE;
-            }
-        }
-    }
-
-    os_log(LOG_INFO, "Conformity: %.2f%%", 100.f - (100.f / (float)eds.num_entries * (float)err_count));
-    os_log(LOG_INFO, "%d of %d objects not available.", err_count, eds.num_entries);
-
-    if (eds.entries != NULL)
-    {
-        os_free(eds.entries);
-        eds.entries     = NULL;
-        eds.num_entries = 0;
-    }
-
-    return status;
 }

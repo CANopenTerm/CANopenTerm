@@ -8,18 +8,23 @@
  **/
 
 #include <stdlib.h>
+#include "can.h"
 #include "core.h"
+#include "eds.h"
 #include "os.h"
 #include "scripts.h"
 
 int main(int argc, char* argv[])
 {
+    bool_t   is_silent       = IS_FALSE;
+    char*    can_interface   = DEFAULT_CAN_INTERFACE;
+    char*    eds_file        = NULL;
+    char*    script          = NULL;
+    core_t*  core            = NULL;
     int      i;
-    int      status        = EXIT_SUCCESS;
-    bool_t   is_silent     = IS_FALSE;
-    core_t*  core          = NULL;
-    char*    script        = NULL;
-    char*    can_interface = DEFAULT_CAN_INTERFACE;
+    int      status          = EXIT_SUCCESS;
+    uint32   node_id         = 0x01;
+    uint8    baud_rate_index = 0;
 
     for (i = 1; i < argc; i++)
     {
@@ -28,13 +33,50 @@ int main(int argc, char* argv[])
             is_silent = IS_TRUE;
             script    = argv[++i];
         }
+        else if (0 == os_strcmp(argv[i], "-t"))
+        {
+            is_silent = IS_TRUE;
+            script    = NULL;
+            eds_file  = argv[++i];
+        }
         else if (0 == os_strcmp(argv[i], "-i") && (i + 1) < argc)
         {
             can_interface = argv[++i];
         }
+        else if (0 == os_strcmp(argv[i], "-b") && (i + 1) < argc)
+        {
+            char* endptr;
+
+            baud_rate_index = (uint8)os_strtol(argv[++i], &endptr, 0);
+            if (baud_rate_index < 0 || baud_rate_index > 13 || *endptr != '\0')
+            {
+                os_printf("Invalid baud rate.  Must be between 0 and 13.\n");
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if (0 == os_strcmp(argv[i], "-n") && (i + 1) < argc)
+        {
+            char* endptr;
+
+            node_id = os_strtol(argv[++i], &endptr, 0);
+            if (node_id < 1 || node_id > 127 || *endptr != '\0')
+            {
+                os_printf("Invalid node ID.  Must be between 0x01 and 0x7F.\n");
+                exit(EXIT_FAILURE);
+            }
+        }
         else
         {
-            os_printf("Usage: %s [-s script] [-i can_interface]\n", argv[0]);
+            os_printf("Usage: %s [OPTION]\n\n", argv[0]);
+            os_printf("    -s SCRIPT         Run script\n");
+            os_printf("    -t EDS            Run EDS conformance test\n");
+            os_printf("    -i INTERFACE      Set CAN interface\n");
+            os_printf("    -b BAUD           Set baud rate\n");
+            os_printf("                        0 = 1 MBit/s\n");
+            os_printf("                        2 = 500 kBit/s\n");
+            os_printf("                        3 = 250 kBit/s\n");
+            os_printf("                        4 = 125 kBit/s\n");
+            os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
             exit(EXIT_FAILURE);
         }
     }
@@ -45,10 +87,20 @@ int main(int argc, char* argv[])
     }
 
     os_strlcpy(core->can_interface, can_interface, sizeof(core->can_interface));
+    if (baud_rate_index != 0)
+    {
+        while (IS_FALSE == is_can_initialised(core)) {}
+        can_set_baud_rate(baud_rate_index, core);
+    }
 
     if (script != NULL)
     {
         run_script(script, core);
+        core->is_running = IS_FALSE;
+    }
+    else if (eds_file != NULL)
+    {
+        run_conformance_test(eds_file, node_id);
         core->is_running = IS_FALSE;
     }
 

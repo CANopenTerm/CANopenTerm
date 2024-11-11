@@ -418,7 +418,6 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
         {
             TPCANBaudrate baud_rate;
 
-
             if (IS_TRUE == search_baud_rate)
             {
                 baud_rate = baud_rates[rate_i];
