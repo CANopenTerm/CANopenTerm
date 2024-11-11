@@ -1,4 +1,4 @@
-name: Windows Build
+name: Windows Build & Continous Deployment
 
 on:
   push:
@@ -27,3 +27,52 @@ jobs:
         with:
           name: build-artifacts
           path: export/*.exe
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore setup/setup.sln
+
+      - name: Build WiX Toolset solution
+        run: |
+          cd setup
+          msbuild /p:Configuration=Release /p:Platform=x64
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: .
+
+    - name: Delete existing release
+      uses: dev-drprasad/delete-tag-and-release@v1.1
+      with:
+        tag_name: latest
+        delete_release: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          CANopenTerm.msi
+        tag_name: latest
+        name: "Latest Release"
+        body: "This is the latest build of CANopenTerm."
+        draft: false
+        prerelease: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        make_latest: true

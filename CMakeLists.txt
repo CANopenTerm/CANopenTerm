@@ -155,6 +155,4 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
         /W4
         /utf-8)
 
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
-
 endif()

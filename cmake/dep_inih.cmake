@@ -8,16 +8,6 @@ add_library(inih
   STATIC
   ${inih_sources})
 
-if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-  target_link_libraries(inih
-    ucrt
-    legacy_stdio_definitions
-    legacy_stdio_wide_specifiers)
-
-  set_target_properties(inih PROPERTIES
-    MSVC_RUNTIME_LIBRARY "MultiThreaded")
-endif()
-
 set_target_properties(inih PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY_DEBUG          ${CMAKE_CURRENT_BINARY_DIR}
   ARCHIVE_OUTPUT_DIRECTORY_RELEASE        ${CMAKE_CURRENT_BINARY_DIR}
