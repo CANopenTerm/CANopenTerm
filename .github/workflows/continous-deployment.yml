@@ -18,13 +18,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        choco install llvm
         choco install ninja
-        choco install vswhere
 
     - name: Configure CMake
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Ninja" -T host=x64 -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64 -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 
     - name: Build with CMake
       run: cmake --build build --config Release
