@@ -10,6 +10,10 @@ add_library(inih
 
 if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+  target_link_libraries(inih
+    PUBLIC
+    ucrt
+    legacy_stdio_definitions)
 endif()
 
 set_target_properties(inih PROPERTIES

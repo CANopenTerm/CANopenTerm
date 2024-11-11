@@ -50,6 +50,10 @@ endif()
 
 if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+  target_link_libraries(lua
+    PUBLIC
+    ucrt
+    legacy_stdio_definitions)
 endif()
 
 set_target_properties(lua PROPERTIES
