@@ -403,7 +403,7 @@ static status_t search_can_channels(void)
 
 static void search_free_can_configuration(core_t* core, bool_t search_baud_rate, bool_t search_channel)
 {
-    int num_baud_rates = sizeof(baud_rates)   / sizeof(baud_rates[0]);
+    int num_baud_rates = sizeof(baud_rates) / sizeof(baud_rates[0]);
     int chan_i;
     int rate_i;
 

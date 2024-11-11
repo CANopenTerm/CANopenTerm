@@ -32,7 +32,7 @@ status_t core_init(core_t **core, bool_t is_silent)
         return OS_MEMORY_ALLOCATION_ERROR;
     }
 
-    status = os_console_init();
+    status = os_console_init(is_silent);
     if (status != ALL_OK)
     {
         return status;

@@ -16,17 +16,20 @@
 #include <unistd.h>
 #include "os.h"
 
-static void   set_nonblocking(int fd, int nonblocking);
-static void   set_terminal_raw_mode(struct termios* orig_termios);
-static void   reset_terminal_mode(struct termios* orig_termios);
+static bool_t console_is_silent;
+
+static void set_nonblocking(int fd, int nonblocking);
+static void set_terminal_raw_mode(struct termios* orig_termios);
+static void reset_terminal_mode(struct termios* orig_termios);
 
 os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
 {
     return SDL_AddTimer(interval, callback, param);
 }
 
-status_t os_console_init(void)
+status_t os_console_init(bool_t is_silent)
 {
+    console_is_silent = is_silent;
     return ALL_OK;
 }
 
@@ -145,6 +148,7 @@ void os_log(const log_level_t level, const char* format, ...)
             os_print(LIGHT_RED, "[ERROR]   ");
             break;
     }
+
     os_print(DARK_WHITE, "%s\r\n", buffer);
 }
 
@@ -181,7 +185,14 @@ void os_print(const color_t color, const char* format, ...)
     os_vsnprintf(buffer, sizeof(buffer), format, varg);
     os_va_end(varg);
 
-    os_snprintf(print_buffer, sizeof(print_buffer), "%s%s\x1b[0m", color_code, buffer);
+    if (IS_FALSE == console_is_silent)
+    {
+        os_snprintf(print_buffer, sizeof(print_buffer), "%s%s\x1b[0m", color_code, buffer);
+    }
+    else
+    {
+        os_snprintf(print_buffer, sizeof(print_buffer), "%s", buffer);
+    }
 
     if (IS_TRUE == use_buffer())
     {

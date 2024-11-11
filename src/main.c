@@ -30,12 +30,10 @@ int main(int argc, char* argv[])
     {
         if (0 == os_strcmp(argv[i], "-s") && (i + 1) < argc)
         {
-            is_silent = IS_TRUE;
             script    = argv[++i];
         }
         else if (0 == os_strcmp(argv[i], "-t"))
         {
-            is_silent = IS_TRUE;
             script    = NULL;
             eds_file  = argv[++i];
         }
@@ -65,6 +63,10 @@ int main(int argc, char* argv[])
                 exit(EXIT_FAILURE);
             }
         }
+        else if (0 == os_strcmp(argv[i], "-m"))
+        {
+            is_silent = IS_TRUE;
+        }
         else
         {
             os_printf("Usage: %s [OPTION]\n\n", argv[0]);
@@ -77,6 +79,7 @@ int main(int argc, char* argv[])
             os_printf("                        3 = 250 kBit/s\n");
             os_printf("                        4 = 125 kBit/s\n");
             os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
+            os_printf("    -m                Run in silent mode\n");
             exit(EXIT_FAILURE);
         }
     }
