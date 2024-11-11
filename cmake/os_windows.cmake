@@ -158,6 +158,9 @@ include_directories(
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${INIH_INCLUDE_DIR}
-  SYSTEM ${DIRENT_INCLUDE_DIR})
+  SYSTEM ${DIRENT_INCLUDE_DIR}
+  PUBLIC ucrt
+  PUBLIC legacy_stdio_definitions
+  PUBLIC legacy_stdio_wide_specifiers)
 
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
