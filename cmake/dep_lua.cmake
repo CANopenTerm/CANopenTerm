@@ -48,6 +48,13 @@ if(UNIX)
     LUA_USE_LINUX)
 endif()
 
+if(WIN32)
+  target_link_libraries(lua
+    PUBLIC
+    ucrt
+    legacy_stdio_definitions)
+endif()
+
 set_target_properties(lua PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY_DEBUG          ${CMAKE_CURRENT_BINARY_DIR}
   ARCHIVE_OUTPUT_DIRECTORY_RELEASE        ${CMAKE_CURRENT_BINARY_DIR}
