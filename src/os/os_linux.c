@@ -193,8 +193,9 @@ void os_print(const color_t color, const char* format, ...)
     }
 }
 
-void os_print_prompt(void)
+void os_print_prompt(bool_t is_silent);
 {
+    (void)is_silent;
     return;
 }
 

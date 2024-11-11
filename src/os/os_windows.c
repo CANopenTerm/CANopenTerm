@@ -240,9 +240,12 @@ void os_print(const color_t color, const char* format, ...)
     }
 }
 
-void os_print_prompt(void)
+void os_print_prompt(bool_t is_silent)
 {
-    os_print(LIGHT_WHITE, "\r: ");
+    if (IS_FALSE == is_silent)
+    {
+        os_print(LIGHT_WHITE, "\r: ");
+    }
 }
 
 bool_t os_remove_timer(os_timer_id id)

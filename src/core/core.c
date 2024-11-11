@@ -38,6 +38,7 @@ status_t core_init(core_t **core, bool_t is_silent)
         return status;
     }
 
+    (*core)->is_silent = is_silent;
     if (IS_FALSE == is_silent)
     {
         os_print(LIGHT_YELLOW, "<");
@@ -83,7 +84,7 @@ status_t core_update(core_t* core)
         return ALL_OK;
     }
 
-    os_print_prompt();
+    os_print_prompt(core->is_silent);
     if (ALL_OK == os_get_prompt(command))
     {
         parse_command(command, core);

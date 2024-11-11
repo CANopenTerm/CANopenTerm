@@ -364,7 +364,7 @@ static int can_monitor(void* core_pt)
             can_deinit(core);
             os_print(DEFAULT_COLOR, "\n");
             os_log(LOG_WARNING, "CAN de-initialised: USB-dongle removed?");
-            os_print_prompt();
+            os_print_prompt(core->is_silent);
         }
         os_delay(1);
     }
@@ -460,7 +460,7 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
 
                 os_print(DEFAULT_COLOR, "\r");
                 os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", pcan_channel_information[core->can_channel].device_name, baud_rate_desc[core->baud_rate]);
-                os_print_prompt();
+                os_print_prompt(core->is_silent);
                 break;
             }
 

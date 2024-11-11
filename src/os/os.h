@@ -320,7 +320,7 @@ status_t    os_init(void);
 bool_t      os_key_is_hit(void);
 void        os_log(const log_level_t level, const char* format, ...);
 void        os_print(const color_t color, const char* format, ...);
-void        os_print_prompt(void);
+void        os_print_prompt(bool_t is_silent);
 bool_t      os_remove_timer(os_timer_id id);
 uint64      os_swap_64(uint64 n);
 uint32      os_swap_be_32(uint32 n);
