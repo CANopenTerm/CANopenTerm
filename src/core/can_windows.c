@@ -458,7 +458,7 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
                     core->can_channel = chan_i;
                 }
 
-                if (IS_FALSE == core->is_silent)
+                if (IS_FALSE == core->is_plain_mode)
                 {
                     os_print(DEFAULT_COLOR, "\r");
                     os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", pcan_channel_information[core->can_channel].device_name, baud_rate_desc[core->baud_rate]);

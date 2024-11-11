@@ -323,7 +323,7 @@ static int can_monitor(void* core_pt)
 
             core->is_can_initialised = IS_TRUE;
 
-            if (IS_FALSE == core->is_silent)
+            if (IS_FALSE == core->is_plain_mode)
             {
                 os_print(DEFAULT_COLOR, "\r");
                 os_log(LOG_SUCCESS, "CAN successfully initialised on %s", core->can_interface);

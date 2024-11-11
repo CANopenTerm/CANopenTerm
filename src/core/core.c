@@ -22,7 +22,7 @@
 #include "scripts.h"
 #include "version.h"
 
-status_t core_init(core_t **core, bool_t is_silent)
+status_t core_init(core_t **core, bool_t is_plain_mode)
 {
     status_t status;
 
@@ -32,14 +32,14 @@ status_t core_init(core_t **core, bool_t is_silent)
         return OS_MEMORY_ALLOCATION_ERROR;
     }
 
-    status = os_console_init(is_silent);
+    status = os_console_init(is_plain_mode);
     if (status != ALL_OK)
     {
         return status;
     }
 
-    (*core)->is_silent = is_silent;
-    if (IS_FALSE == is_silent)
+    (*core)->is_plain_mode = is_plain_mode;
+    if (IS_FALSE == is_plain_mode)
     {
         os_print(LIGHT_YELLOW, "<");
         os_print(LIGHT_GREEN, ">");

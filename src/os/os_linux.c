@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include "os.h"
 
-static bool_t console_is_silent;
+static bool_t console_is_plain_mode;
 
 static void set_nonblocking(int fd, int nonblocking);
 static void set_terminal_raw_mode(struct termios* orig_termios);
@@ -27,9 +27,9 @@ os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
     return SDL_AddTimer(interval, callback, param);
 }
 
-status_t os_console_init(bool_t is_silent)
+status_t os_console_init(bool_t is_plain_mode)
 {
-    console_is_silent = is_silent;
+    console_is_plain_mode = is_plain_mode;
     return ALL_OK;
 }
 
@@ -185,7 +185,7 @@ void os_print(const color_t color, const char* format, ...)
     os_vsnprintf(buffer, sizeof(buffer), format, varg);
     os_va_end(varg);
 
-    if (IS_FALSE == console_is_silent)
+    if (IS_FALSE == console_is_plain_mode)
     {
         os_snprintf(print_buffer, sizeof(print_buffer), "%s%s\x1b[0m", color_code, buffer);
     }

@@ -12,7 +12,7 @@
 #include "buffer.h"
 #include "os.h"
 
-static bool_t console_is_silent;
+static bool_t console_is_plain_mode;
 static HANDLE console = NULL;
 static WORD   default_attr;
 
@@ -21,7 +21,7 @@ os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
     return SDL_AddTimer(interval, callback, param);
 }
 
-status_t os_console_init(bool_t is_silent)
+status_t os_console_init(bool_t is_plain_mode)
 {
     SetConsoleOutputCP(65001);
     SetConsoleTitle("CANopenTerm");
@@ -45,8 +45,8 @@ status_t os_console_init(bool_t is_silent)
         return 2;
     }
 
-    default_attr      = info.wAttributes;
-    console_is_silent = is_silent;
+    default_attr          = info.wAttributes;
+    console_is_plain_mode = is_plain_mode;
 
     return ALL_OK;
 }
@@ -167,7 +167,7 @@ void os_print(const color_t color, const char* format, ...)
 
     if (NULL == console)
     {
-        if (ALL_OK != os_console_init(console_is_silent))
+        if (ALL_OK != os_console_init(console_is_plain_mode))
         {
             return;
         }
@@ -227,14 +227,14 @@ void os_print(const color_t color, const char* format, ...)
     }
     else
     {
-        if (NULL != console && IS_FALSE == console_is_silent)
+        if (NULL != console && IS_FALSE == console_is_plain_mode)
         {
             SetConsoleTextAttribute(console, attr);
         }
 
         printf("%s", buffer);
 
-        if (NULL != console && IS_FALSE == console_is_silent)
+        if (NULL != console && IS_FALSE == console_is_plain_mode)
         {
             SetConsoleTextAttribute(console, default_attr);
         }

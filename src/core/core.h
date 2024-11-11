@@ -34,12 +34,12 @@ typedef struct core
     bool_t     is_can_initialised;
     bool_t     is_running;
     bool_t     is_script_running;
-    bool_t     is_silent;
+    bool_t     is_plain_mode;
     char       can_interface[32];
 
 } core_t;
 
-status_t core_init(core_t** core, bool_t is_silent);
+status_t core_init(core_t** core, bool_t is_plain_mode);
 status_t core_update(core_t *core);
 void     core_deinit(core_t *core);
 

@@ -16,7 +16,7 @@
 
 int main(int argc, char* argv[])
 {
-    bool_t   is_silent       = IS_FALSE;
+    bool_t   is_plain_mode   = IS_FALSE;
     char*    can_interface   = DEFAULT_CAN_INTERFACE;
     char*    eds_file        = NULL;
     char*    script          = NULL;
@@ -30,12 +30,13 @@ int main(int argc, char* argv[])
     {
         if (0 == os_strcmp(argv[i], "-s") && (i + 1) < argc)
         {
-            script    = argv[++i];
+            script = argv[++i];
         }
         else if (0 == os_strcmp(argv[i], "-t"))
         {
-            script    = NULL;
-            eds_file  = argv[++i];
+            script        = NULL;
+            eds_file      = argv[++i];
+            is_plain_mode = IS_TRUE;
         }
         else if (0 == os_strcmp(argv[i], "-i") && (i + 1) < argc)
         {
@@ -63,15 +64,15 @@ int main(int argc, char* argv[])
                 exit(EXIT_FAILURE);
             }
         }
-        else if (0 == os_strcmp(argv[i], "-m"))
+        else if (0 == os_strcmp(argv[i], "-p"))
         {
-            is_silent = IS_TRUE;
+            is_plain_mode = IS_TRUE;
         }
         else
         {
             os_printf("Usage: %s [OPTION]\n\n", argv[0]);
             os_printf("    -s SCRIPT         Run script\n");
-            os_printf("    -t EDS            Run EDS conformance test\n");
+            os_printf("    -t EDS            Run EDS conformance test (implies -p)\n");
             os_printf("    -i INTERFACE      Set CAN interface\n");
             os_printf("    -b BAUD           Set baud rate\n");
             os_printf("                        0 = 1 MBit/s\n");
@@ -79,12 +80,12 @@ int main(int argc, char* argv[])
             os_printf("                        3 = 250 kBit/s\n");
             os_printf("                        4 = 125 kBit/s\n");
             os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
-            os_printf("    -m                Run in silent mode\n");
+            os_printf("    -p                Run in plain mode\n");
             exit(EXIT_FAILURE);
         }
     }
 
-    if (core_init(&core, is_silent) != ALL_OK)
+    if (core_init(&core, is_plain_mode) != ALL_OK)
     {
         status = EXIT_FAILURE;
     }
