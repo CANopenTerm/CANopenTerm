@@ -48,26 +48,8 @@ if(UNIX)
     LUA_USE_LINUX)
 endif()
 
-if(WIN32)
-  target_compile_definitions(lua
-    PUBLIC
-    LUA_BUILD_AS_DLL)
-  target_link_libraries(lua
-    PUBLIC
-    ucrt
-    legacy_stdio_definitions
-    kernel32
-    user32
-    gdi32
-    winspool
-    comdlg32
-    advapi32
-    shell32
-    ole32
-    oleaut32
-    uuid
-    odbc32
-    odbccp32)
+if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 endif()
 
 set_target_properties(lua PROPERTIES
