@@ -84,7 +84,7 @@ status_t core_update(core_t* core)
         return ALL_OK;
     }
 
-    os_print_prompt(core->is_silent);
+    os_print_prompt();
     if (ALL_OK == os_get_prompt(command))
     {
         parse_command(command, core);
