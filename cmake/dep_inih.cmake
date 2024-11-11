@@ -7,3 +7,6 @@ set(inih_sources
 add_library(inih
   STATIC
   ${inih_sources})
+
+set_target_properties(inih PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
