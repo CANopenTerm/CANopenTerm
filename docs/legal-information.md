@@ -26,6 +26,10 @@ PicoC is licensed under the
 "[New BSD License](https://github.com/CANopenTerm/CANopenTerm/blob/main/src/picoc/LICENSE)".  
 Copyright (c) 2009-2011, Zik Saleeba, Copyright (c) 2015, Joseph Poirier, All rights reserved.
 
+inih is licensed under the
+"[New BSD License](https://github.com/benhoyt/inih/blob/master/LICENSE.txt)".  
+Copyright (c) 2009, Ben Hoyt, All rights reserved.
+
 ## Datenschutzerklärung
 
 ### Hosting

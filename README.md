@@ -70,7 +70,7 @@ Key functionalities include:
 - **Built-in DBC Parser**:
   Import and utilize
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
-  for streamlined CAN CC network projects.
+  for efficient CAN CC network analysis.
 
 - **Conformance Testing**:
   Verify the object dictionary of your CANopen CC devices with the built-in
