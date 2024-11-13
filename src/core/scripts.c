@@ -16,12 +16,6 @@
 #include "scripts.h"
 #include "table.h"
 
-#ifdef _WIN32
-#  define SCRIPT_DIR "./scripts"
-#elif defined __linux__
-#  define SCRIPT_DIR "/usr/share/CANopenTerm/scripts"
-#endif
-
 static char*  get_script_description(const char* script_path);
 static size_t safe_strcpy(char* dest, const char* src, size_t size);
 static bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
@@ -143,7 +137,7 @@ status_t list_scripts(void)
         table_print_row("No.", "Identifier", "Description", &table);
         table_print_divider(&table);
 
-        dir = opendir(SCRIPT_DIR);
+        dir = opendir("./scripts");
 
         if (dir != NULL)
         {
@@ -167,7 +161,7 @@ status_t list_scripts(void)
 
                         listed_scripts[listed_count++] = os_strdup(script_name);
 
-                        snprintf(script_path, sizeof(script_path), "%s/%s", SCRIPT_DIR, ent->d_name);
+                        snprintf(script_path, sizeof(script_path), "./scripts/%s", ent->d_name);
 
                         description = get_script_description(script_path);
                         if (description != NULL)
@@ -231,7 +225,7 @@ void run_script(const char* name, core_t* core)
         }
         else
         {
-            os_snprintf(script_path, sizeof(script_path), "%s/%s", SCRIPT_DIR, name);
+            os_snprintf(script_path, sizeof(script_path), "./scripts/%s", name);
         }
 
         if (LUA_OK == luaL_dofile(core->L, script_path))
@@ -261,7 +255,7 @@ void run_script(const char* name, core_t* core)
         }
         else
         {
-            os_snprintf(script_path, sizeof(script_path), "%s/%s", SCRIPT_DIR, name);
+            os_snprintf(script_path, sizeof(script_path), "./scripts/%s", name);
         }
 
         file = fopen(script_path, "r");
@@ -287,7 +281,7 @@ void run_script(const char* name, core_t* core)
     }
     else
     {
-        os_snprintf(script_path, sizeof(script_path), "%s/%s.lua", SCRIPT_DIR, name);
+        os_snprintf(script_path, sizeof(script_path), "%s/%s.lua", , name);
         if (LUA_OK == luaL_dofile(core->L, script_path))
         {
             lua_pop(core->L, lua_gettop(core->L));
