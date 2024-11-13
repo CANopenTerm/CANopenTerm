@@ -281,7 +281,7 @@ void run_script(const char* name, core_t* core)
     }
     else
     {
-        os_snprintf(script_path, sizeof(script_path), "./scripts/%s.lua", ame);
+        os_snprintf(script_path, sizeof(script_path), "./scripts/%s.lua", name);
         if (LUA_OK == luaL_dofile(core->L, script_path))
         {
             lua_pop(core->L, lua_gettop(core->L));
