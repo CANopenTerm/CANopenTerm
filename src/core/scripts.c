@@ -249,7 +249,6 @@ void run_script(const char *name, core_t *core)
     const char* base               = os_strrchr(name, '/');
     char        basename[PATH_MAX] = { 0 };
     FILE*       file;
-    int         i;
 
     if (base)
     {
@@ -268,6 +267,8 @@ void run_script(const char *name, core_t *core)
     }
     else
     {
+        int i;
+
         for (i = 0; i < max_script_search_paths; i++)
         {
             char script_path[PATH_MAX] = { 0 };
