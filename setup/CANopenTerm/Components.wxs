@@ -26,10 +26,10 @@
       </ComponentGroup>
     <ComponentGroup Id="LuaComponents" Directory="LUAFOLDER">
         <Component>
-            <File Source="../../export/lua/canopen.lua" />
+            <File Source="../../export/scripts/lua/canopen.lua" />
         </Component>
         <Component>
-            <File Source="../../export/lua/utils.lua" />
+            <File Source="../../export/scripts/lua/utils.lua" />
         </Component>
     </ComponentGroup>
     <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">

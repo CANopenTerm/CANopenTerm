@@ -4,8 +4,8 @@
       <Directory Id="INSTALLFOLDER"     Name="!(bind.Property.ProductName)" />
       <Directory Id="DBCFOLDER"         Name="!(bind.Property.ProductName)\dbc" />
       <Directory Id="EDSFOLDER"         Name="!(bind.Property.ProductName)\eds" />
-      <Directory Id="LUAFOLDER"         Name="!(bind.Property.ProductName)\lua" />
       <Directory Id="SCRIPTSFOLDER"     Name="!(bind.Property.ProductName)\scripts" />
+      <Directory Id="LUAFOLDER"         Name="!(bind.Property.ProductName)\scripts\lua" />
     </StandardDirectory>
   </Fragment>
 </Wix>
