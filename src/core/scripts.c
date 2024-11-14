@@ -348,12 +348,11 @@ static status_t run_script_(const char* name, core_t* core)
         picoc_pdo_init(core);
         picoc_sdo_init(core);
 
-        os_snprintf(script_path, sizeof(script_path), "%s", name);
-
-        file = fopen(script_path, "r");
+        file = os_fopen(name, "r");
         if (file != NULL)
         {
-            fclose(file);
+            os_snprintf(script_path, sizeof(script_path), "%s", name);
+            os_fclose(file);
 
             if (PicocPlatformSetExitPoint(&core->P))
             {
@@ -368,8 +367,6 @@ static status_t run_script_(const char* name, core_t* core)
         {
             status = OS_FILE_NOT_FOUND;
         }
-
-        PicocCleanup(&core->P);
     }
     else
     {
