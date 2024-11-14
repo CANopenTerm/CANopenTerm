@@ -68,6 +68,7 @@ typedef enum status
     OS_INIT_ERROR,
     OS_INVALID_ARGUMENT,
     OS_MEMORY_ALLOCATION_ERROR,
+    SCRIPT_ERROR,
     SCRIPT_INIT_ERROR
 
 } status_t;
@@ -316,6 +317,7 @@ void        os_detach_thread(os_thread* thread);
 const char* os_get_error(void);
 status_t    os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
 uint64      os_get_ticks(void);
+const char* os_get_user_directory(void);
 status_t    os_init(void);
 bool_t      os_key_is_hit(void);
 void        os_log(const log_level_t level, const char* format, ...);

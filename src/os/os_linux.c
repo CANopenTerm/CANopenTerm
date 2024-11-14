@@ -10,6 +10,7 @@
 #include "SDL.h"
 #include "dirent.h"
 #include <fcntl.h>
+#include <limits.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <termios.h>
@@ -77,6 +78,21 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 uint64 os_get_ticks(void)
 {
     return SDL_GetTicks64();
+}
+
+const char *os_get_user_directory(void)
+{
+    static char user_directory[PATH_MAX] = { 0 };
+    if (0 == user_directory[0])
+    {
+        const char *home = getenv("HOME");
+        if (home)
+        {
+            os_strlcpy(user_directory, home, PATH_MAX - 1);
+        }
+    }
+
+    return user_directory;
 }
 
 status_t os_init(void)

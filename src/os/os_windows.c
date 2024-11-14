@@ -8,6 +8,7 @@
  **/
 
 #include <conio.h>
+#include <shlobj.h>
 #include <windows.h>
 #include "buffer.h"
 #include "os.h"
@@ -89,6 +90,17 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 uint64 os_get_ticks(void)
 {
     return SDL_GetTicks64();
+}
+
+const char* os_get_user_directory(void)
+{
+    static char user_directory[MAX_PATH] = { 0 };
+    if (0 == user_directory[0])
+    {
+        SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, user_directory);
+    }
+
+    return user_directory;
 }
 
 status_t os_init(void)
