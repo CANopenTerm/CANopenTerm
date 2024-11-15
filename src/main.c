@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
         else
         {
             os_printf("Usage: %s [OPTION]\n\n", argv[0]);
-            os_printf("    -s SCRIPT         Run script\n");
+            os_printf("    -s SCRIPT         Run script (.lua can be ommited)\n");
             os_printf("    -t EDS            Run EDS conformance test (implies -p)\n");
             os_printf("    -i INTERFACE      Set CAN interface\n");
             os_printf("    -b BAUD           Set baud rate\n");

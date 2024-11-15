@@ -20,14 +20,26 @@ CANopenTerm is an interactive terminal which can be used via a number of
 commands.  You can get a detailed overview of all available command by
 entering `h`.
 
-### Run script from command-line
+### Command-line arguments
 
-It is possible to run or set the CAN interface from the command line.
+It is possible to use a set of command-line arguments:
 
-Usage: `CANopenTerm [-s script] [-i can_interface]`
+```
+$ ./CANopenTerm -h
 
-The `.lua` file extension can be omitted.  
-The `.c` file extension has to be specified.
+Usage: CANopenTerm [OPTION]
+
+    -s SCRIPT         Run script
+    -t EDS            Run EDS conformance test (implies -p)
+    -i INTERFACE      Set CAN interface
+    -b BAUD           Set baud rate
+                        0 = 1 MBit/s
+                        2 = 500 kBit/s
+                        3 = 250 kBit/s
+                        4 = 125 kBit/s
+    -n NODE_ID        Set node ID, default: 0x01
+    -p                Run in plain mode
+```
 
 #### Linux
 
