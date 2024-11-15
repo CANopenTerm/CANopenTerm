@@ -147,11 +147,7 @@ bool_t has_valid_extension(const char* filename)
 {
     const char* dot = os_strrchr(filename, '.');
 
-    if (0 == (dot && os_strcmp(dot, ".c")))
-    {
-        return IS_TRUE;
-    }
-    else if (0 == (dot && os_strcmp(dot, ".lua")))
+    if (dot && (os_strcmp(dot, ".c") == 0 || os_strcmp(dot, ".lua") == 0))
     {
         return IS_TRUE;
     }
@@ -169,60 +165,66 @@ status_t list_scripts(void)
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
-        DIR* dir;
         char* listed_scripts[256];
         int   listed_count = 0;
-        int   i;
+        int   i, j;
 
         table_print_header(&table);
         table_print_row("No.", "Identifier", "Description", &table);
         table_print_divider(&table);
 
-        dir = opendir("./scripts");
-
-        if (dir != NULL)
+        for (i = 0; i < max_script_search_paths; i++)
         {
-            struct dirent* ent;
-            while ((ent = readdir(dir)) != NULL)
+            DIR* dir;
+            char search_path[PATH_MAX] = { 0 };
+
+            os_snprintf(search_path, sizeof(search_path), "%s", script_search_path[i]);
+            dir = os_opendir(search_path);
+
+            if (dir != NULL)
             {
-                if (DT_REG == ent->d_type && has_valid_extension(ent->d_name))
+                struct dirent* ent;
+                while ((ent = readdir(dir)) != NULL)
                 {
-                    char script_name[256] = { 0 };
-
-                    safe_strcpy(script_name, ent->d_name, sizeof(script_name));
-                    script_name[sizeof(script_name) - 1] = '\0';
-                    strip_lua_extension(script_name);
-
-                    if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
+                    if (DT_REG == ent->d_type && has_valid_extension(ent->d_name))
                     {
-                        char  buf[4] = { 0 };
-                        char* script_no = os_itoa(listed_count, buf, 10);
-                        char  script_path[512] = { 0 };
-                        char* description;
+                        char script_name[256] = { 0 };
 
-                        listed_scripts[listed_count++] = os_strdup(script_name);
+                        safe_strcpy(script_name, ent->d_name, sizeof(script_name));
+                        script_name[sizeof(script_name) - 1] = '\0';
+                        strip_lua_extension(script_name);
 
-                        snprintf(script_path, sizeof(script_path), "./scripts/%s", ent->d_name);
-
-                        description = get_script_description(script_path);
-                        if (description != NULL)
+                        if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                         {
-                            table_print_row(script_no, script_name, description, &table);
-                            os_free(description);
-                        }
-                        else
-                        {
-                            table_print_row(script_no, script_name, "-", &table);
+                            char  buf[4] = { 0 };
+                            char* script_no = os_itoa(listed_count, buf, 10);
+                            char  script_path[512] = { 0 };
+                            char* description;
+
+                            listed_scripts[listed_count++] = os_strdup(script_name);
+
+                            snprintf(script_path, sizeof(script_path), "%s/%s", search_path, ent->d_name);
+
+                            description = get_script_description(script_path);
+                            if (description != NULL)
+                            {
+                                table_print_row(script_no, script_name, description, &table);
+                                os_free(description);
+                            }
+                            else
+                            {
+                                table_print_row(script_no, script_name, "-", &table);
+                            }
                         }
                     }
                 }
+                closedir(dir);
             }
-            closedir(dir);
         }
 
-        for (i = 0; i < listed_count; i++)
+        for (j = 0; j < listed_count; j++)
         {
-            os_free(listed_scripts[i]);
+            os_free(listed_scripts[j]);
         }
 
         table_print_footer(&table);
