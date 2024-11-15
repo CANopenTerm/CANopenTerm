@@ -426,45 +426,34 @@ struct IncludeLibrary {
 
 
 /* the entire state of the picoc system */
-struct Picoc_Struct {
-    /* parser global data */
+struct Picoc_Struct
+{
     struct Table GlobalTable;
     struct CleanupTokenNode *CleanupTokenList;
     struct TableEntry *GlobalHashTable[GLOBAL_TABLE_SIZE];
-
-    /* lexer global data */
     struct TokenLine *InteractiveHead;
     struct TokenLine *InteractiveTail;
     struct TokenLine *InteractiveCurrentLine;
     int LexUseStatementPrompt;
+    int PicocExitValue;
+    int BreakpointCount;
+    int DebugManualBreak;
+    int BigEndian;
+    int LittleEndian;
     union AnyValue LexAnyValue;
     struct Value LexValue;
     struct Table ReservedWordTable;
     struct TableEntry *ReservedWordHashTable[RESERVED_WORD_TABLE_SIZE];
-
-    /* the table of string literal values */
     struct Table StringLiteralTable;
     struct TableEntry *StringLiteralHashTable[STRING_LITERAL_TABLE_SIZE];
-
-    /* the stack */
     struct StackFrame *TopStackFrame;
-
-    /* the value passed to exit() */
-    int PicocExitValue;
-
-    /* a list of libraries we can include */
     struct IncludeLibrary *IncludeLibList;
-
-    /* heap memory */
-    unsigned char *HeapMemory;  /* stack memory since our heap is malloc()ed */
-    void *HeapBottom;           /* the bottom of the (downward-growing) heap */
-    void *StackFrame;           /* the current stack frame */
-    void *HeapStackTop;         /* the top of the stack */
-
-    struct AllocNode *FreeListBucket[FREELIST_BUCKETS]; /* we keep a pool of freelist buckets to reduce fragmentation */
-    struct AllocNode *FreeListBig;    /* free memory which doesn't fit in a bucket */
-
-    /* types */
+    unsigned char *HeapMemory;
+    void *HeapBottom;
+    void *StackFrame;
+    void *HeapStackTop;
+    struct AllocNode *FreeListBucket[FREELIST_BUCKETS];
+    struct AllocNode *FreeListBig;
     struct ValueType UberType;
     struct ValueType IntType;
     struct ValueType ShortType;
@@ -485,29 +474,14 @@ struct Picoc_Struct {
     struct ValueType *CharPtrPtrType;
     struct ValueType *CharArrayType;
     struct ValueType *VoidPtrType;
-
-    /* debugger */
     struct Table BreakpointTable;
     struct TableEntry *BreakpointHashTable[BREAKPOINT_TABLE_SIZE];
-    int BreakpointCount;
-    int DebugManualBreak;
-
-    /* C library */
-    int BigEndian;
-    int LittleEndian;
-
     IOFILE *CStdOut;
     IOFILE CStdOutBase;
-
-    /* the picoc version string */
     const char *VersionString;
-
-    /* exit longjump buffer */
 #if defined(UNIX_HOST) || defined(WIN32)
     jmp_buf PicocExitBuf;
 #endif
-
-    /* string table */
     struct Table StringTable;
     struct TableEntry *StringHashTable[STRING_TABLE_SIZE];
     char *StrEmpty;
