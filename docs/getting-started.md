@@ -41,18 +41,6 @@ Usage: CANopenTerm [OPTION]
     -p                Run in plain mode
 ```
 
-#### Linux
-
-```bash
-./CANopenTerm -s hello -i can1
-```
-
-#### Windows
-
-```bash
-CANopenTerm.exe -s hello
-```
-
 ## Compiling
 
 First clone the repository:
