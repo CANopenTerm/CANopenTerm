@@ -21,7 +21,7 @@ ExternalProject_Add(inih_devel
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_inih.cmake" ${INIH_PATH}/CMakeLists.txt)
 
 # Lua
-set(LUA_VERSION     "5.4.6")
+set(LUA_VERSION     "5.4.7")
 set(LUA_DEVEL_PKG   v${LUA_VERSION}.zip)
 set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/lua-${LUA_VERSION}_${PLATFORM})
 set(LUA_INCLUDE_DIR ${LUA_PATH})
@@ -29,7 +29,7 @@ set(LUA_LIBRARY     ${LUA_PATH}/liblua.a)
 
 ExternalProject_Add(Lua_devel
   URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
-  URL_HASH SHA1=96abb80f46e2c6548b47632384205bddfaeb6c37
+  URL_HASH SHA1=1c8e1ff7988e3eb7326b495a83875ea931881090
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
@@ -43,13 +43,13 @@ ExternalProject_Add(Lua_devel
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL2
-set(SDL2_VERSION  "2.30.5")
+set(SDL2_VERSION  "2.30.9")
 set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL2-${SDL2_VERSION})
 set(SDL2_DEVEL_PKG SDL2-${SDL2_VERSION}.tar.gz)
 
 ExternalProject_Add(SDL2_devel
   URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-  URL_HASH SHA1=4bc5fc5e76f0a1e1a88801ac1323a91c8bfee543
+  URL_HASH SHA1=9403df0573d47f62f2de074b582b87576bb4abbc
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
