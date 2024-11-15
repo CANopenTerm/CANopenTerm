@@ -88,6 +88,9 @@ char *PlatformReadFile(Picoc *pc, const char *FileName)
     int BytesRead;
     char *p;
 
+    if (FileName == NULL)
+        ProgramFailNoParser(pc, "no filename set\n");
+
     if (stat(FileName, &FileInfo))
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
 
