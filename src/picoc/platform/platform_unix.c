@@ -92,15 +92,16 @@ char *PlatformReadFile(Picoc *pc, const char *FileName)
     if (FileName == NULL)
         ProgramFailNoParser(pc, "no filename set\n");
 
-    if (stat(FileName, &FileInfo))
+    int fd = open(FileName, O_RDONLY);
+    if (fd == -1)
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
 
-    InFile = fopen(FileName, "r");
+    if (fstat(fd, &FileInfo) != 0)
+        ProgramFailNoParser(pc, "can't get file info for %s\n", FileName);
+
+    InFile = fdopen(fd, "r");
     if (InFile == NULL)
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
-
-    if (fstat(fileno(InFile), &FileInfoAfterOpen) != 0 || FileInfo.st_ino != FileInfoAfterOpen.st_ino)
-        ProgramFailNoParser(pc, "file %s changed since last checked\n", FileName);
 
     ReadText = malloc(FileInfo.st_size + 1);
     if (ReadText == NULL)
