@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include "../picoc.h"
 #include "../interpreter.h"
 
