@@ -34,6 +34,12 @@ void scripts_init(core_t *core)
     }
 
     py_initialize();
+    python_can_init(core);
+    python_dbc_init(core);
+    python_misc_init(core);
+    python_nmt_init(core);
+    python_pdo_init(core);
+    python_sdo_init(core);
 
     core->L = luaL_newstate();
 

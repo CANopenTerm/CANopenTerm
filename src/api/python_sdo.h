@@ -1,4 +1,4 @@
-/** @file python_can.c
+/** @file python_sdo.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,12 +7,11 @@
  *
  **/
 
-#include "can.h"
+#ifndef PYTHON_SDO_H
+#define PYTHON_SDO_H
+
 #include "core.h"
-#include "os.h"
-#include "pocketpy.h"
 
-void python_can_init(core_t *core)
-{
+void python_sdo_init(core_t* core);
 
-}
+#endif /* PYTHON_SDO_H */

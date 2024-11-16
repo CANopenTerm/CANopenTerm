@@ -1,4 +1,4 @@
-/** @file python_can.c
+/** @file python_nmt.c
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,12 +7,12 @@
  *
  **/
 
-#include "can.h"
 #include "core.h"
+#include "nmt.h"
 #include "os.h"
 #include "pocketpy.h"
 
-void python_can_init(core_t *core)
+void python_nmt_init(core_t *core)
 {
 
 }

@@ -1,4 +1,4 @@
-/** @file python_can.c
+/** @file python_dbc.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,12 +7,11 @@
  *
  **/
 
-#include "can.h"
+#ifndef PYTHON_MISC_H
+#define PYTHON_MISC_H
+
 #include "core.h"
-#include "os.h"
-#include "pocketpy.h"
 
-void python_can_init(core_t *core)
-{
+void python_misc_init(core_t* core);
 
-}
+#endif /* PYTHON_MISC_H */

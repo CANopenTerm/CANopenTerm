@@ -61,7 +61,12 @@ set(api_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_sdo.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_can.c)
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_dbc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_misc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_nmt.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_pdo.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_sdo.c)
 
 set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/buffer.c
