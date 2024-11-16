@@ -83,6 +83,7 @@ void PlatformPutc(unsigned char OutCh, union OutputStreamInfo *Stream)
 char *PlatformReadFile(Picoc *pc, const char *FileName)
 {
     struct stat FileInfo;
+    struct stat FileInfoAfterOpen;
     char *ReadText;
     FILE *InFile;
     int BytesRead;
@@ -94,13 +95,16 @@ char *PlatformReadFile(Picoc *pc, const char *FileName)
     if (stat(FileName, &FileInfo))
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
 
-    ReadText = malloc(FileInfo.st_size + 1);
-    if (ReadText == NULL)
-        ProgramFailNoParser(pc, "out of memory\n");
-
     InFile = fopen(FileName, "r");
     if (InFile == NULL)
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
+
+    if (fstat(fileno(InFile), &FileInfoAfterOpen) != 0 || FileInfo.st_ino != FileInfoAfterOpen.st_ino)
+        ProgramFailNoParser(pc, "file %s changed since last checked\n", FileName);
+
+    ReadText = malloc(FileInfo.st_size + 1);
+    if (ReadText == NULL)
+        ProgramFailNoParser(pc, "out of memory\n");
 
     BytesRead = fread(ReadText, 1, FileInfo.st_size, InFile);
     if (BytesRead == 0)
