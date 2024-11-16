@@ -3,8 +3,8 @@
 [![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://app.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-
 [![Continuous Deployment](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/continuous-deployment.yml/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/continuous-deployment.yml)
+[![CodeQL](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/CANopenTerm/CANopenTerm/actions/workflows/github-code-scanning/codeql)
 
 ## Overview
 
