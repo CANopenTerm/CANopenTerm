@@ -419,7 +419,6 @@ static status_t run_script_ex(const char *name, core_t *core)
 
                 os_free(buffer);
                 os_fclose(file);
-                py_resetvm();
             }
         }
         else

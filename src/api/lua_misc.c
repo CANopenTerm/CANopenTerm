@@ -19,7 +19,7 @@ int lua_delay_ms(lua_State *L)
 {
     uint32      delay_in_ms = (uint32)lua_tointeger(L, 1);
     bool_t      show_output = lua_toboolean(L, 2);
-    const char *comment = lua_tostring(L, 3);
+    const char* comment     = lua_tostring(L, 3);
 
     if (0 == delay_in_ms)
     {
