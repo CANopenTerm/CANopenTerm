@@ -55,8 +55,8 @@ Key functionalities include:
   [PicoC](https://canopenterm.de/picoc-api) or
   [Python](https://canopenterm.de/python-api)
   to customize and automate tasks.
-  Both languages are supported by similar APIs, offering equal functionality
-  to cater to your automation needs.
+  All three languages are supported by similar APIs, offering equal
+  functionality to cater to your automation needs.
 
 - **Built-in DBC Parser**:
   Import and utilize
