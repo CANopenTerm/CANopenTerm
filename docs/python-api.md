@@ -16,14 +16,14 @@ cpython, please refer to the official documentation:
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-dbc_decode (can_id, [data])
+str dbc_decode (can_id, [data])
 ```
 
 > **can_id** CAN-ID.
 
 > **data** Data, default is `0`.
 
-**Returns**: Decoded output as a string.
+**Returns**: Decoded output as a `str`.
 
 <!-- tab:Example -->
 ```python
@@ -35,12 +35,12 @@ dbc_decode (can_id, [data])
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-dbc_find_id_by_name (search)
+int dbc_find_id_by_name (search)
 ```
 
-> **search** A case-insensitive substring to search within message names.
+> **search** A case-insensitive sub`str` to search within message names.
 
-**Returns**: CAN-ID or None.
+**Returns**: CAN-ID or `None`.
 
 <!-- tab:Example -->
 ```python
@@ -52,7 +52,7 @@ dbc_find_id_by_name (search)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-dbc_load (filename)
+bool dbc_load (filename)
 ```
 
 > **filename** DBC file name.
@@ -81,7 +81,7 @@ dbc_load (filename)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-nmt_send_command (node_id, command, [show_output], [comment])
+bool nmt_send_command (node_id, command, [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.
@@ -119,7 +119,7 @@ sent cyclically at the specified interval.
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
+bool pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
@@ -146,7 +146,7 @@ pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-pdo_del (can_id)
+bool pdo_del (can_id)
 ```
 
 > **can_id** CAN-ID.
@@ -165,12 +165,12 @@ pdo_del (can_id)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-sdo_lookup_abort_code (abort_code)
+str sdo_lookup_abort_code (abort_code)
 ```
 
 > **abort_code** SDO abort code.
 
-**Returns**: Abort code description (string).
+**Returns**: Abort code description (`str`).
 
 <!-- tab:Example -->
 ```python
@@ -184,7 +184,7 @@ sdo_lookup_abort_code (abort_code)
 Read SDO (expedited or segmented).
 
 ```python
-sdo_read (node_id, index, sub_index, [show_output], [comment])
+tuple sdo_read (node_id, index, sub_index, [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.
@@ -200,9 +200,9 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 
 **Returns**:  
 
-Expedited: (number, None), or (number, string) if printable  
-Segmented: (string, string)  
-On failure: (None, None)
+Expedited: `(int, None)`, or `(int, str)` if printable  
+Segmented: `(str, str)`  
+On failure: `(None, None)`
 
 <!-- tab:Example -->
 ```python
@@ -216,7 +216,7 @@ On failure: (None, None)
 Write expedited SDO.
 
 ```python
-sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
+bool sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.
@@ -247,7 +247,7 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 Write file (block transfer).
 
 ```python
-sdo_write_file (node_id, index, sub_index, filename)
+bool sdo_write_file (node_id, index, sub_index, filename)
 ```
 
 > **node_id** CANopen Node-ID.
@@ -265,14 +265,14 @@ sdo_write_file (node_id, index, sub_index, filename)
 ```
 <!-- tabs:end -->
 
-### sdo_write_string()
+### sdo_write_str()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
 Write string (segmented transfer).
 
 ```python
-sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
+bool sdo_write_str (node_id, index, sub_index, "[data]", [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.
@@ -281,7 +281,7 @@ sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
 
 > **sub_index** Sub-Index.
 
-> **data** The string to be written.
+> **data** The `str` to be written.
 
 > **show_output** Show formatted output, default is `False`.
 
@@ -301,7 +301,7 @@ sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
 Read CANopenTerm from built-in object directory.
 
 ```python
-dict_lookup (index, sub_index)
+str dict_lookup (index, sub_index)
 ```
 
 <!-- tab:Example -->
@@ -313,7 +313,7 @@ dict_lookup (index, sub_index)
 
 > **sub_index** Sub-Index.
 
-**Returns**: a string or None.
+**Returns**: a `str` or `None`.
 
 ## Generic CAN CC interface
 
@@ -322,7 +322,7 @@ dict_lookup (index, sub_index)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-can_read ()
+tuple can_read ()
 ```
 
 <!-- tab:Example -->
@@ -330,14 +330,14 @@ can_read ()
 ```
 <!-- tabs:end -->
 
-**Returns**: (id, length, data, timestamp in μs), or None on failure.
+**Returns**: (id, length, data, timestamp in μs), or `None` on failure.
 
 ### can_write()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
+bool can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
@@ -366,7 +366,7 @@ can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-delay_ms ([delay_in_ms], [show_output], [comment])
+None delay_ms ([delay_in_ms], [show_output], [comment])
 ```
 
 > **delay_in_ms** Delay in milliseconds, default is 1000.
@@ -375,7 +375,7 @@ delay_ms ([delay_in_ms], [show_output], [comment])
 
 > **comment** Comment to show in formatted output.
 
-**Returns**: Nothing.
+**Returns**: `None`.
 
 <!-- tab:Example -->
 ```python
@@ -412,4 +412,4 @@ print_heading (heading)
 
 > Heading to be printed.
 
-**Returns**: Nothing.
+**Returns**: `None`.
