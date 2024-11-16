@@ -23,8 +23,8 @@
 CANopenTerm is an open-source software tool designed for the
 development, testing, and analysis of CANopen CC networks and
 devices. It extends its capabilities to support other CAN CC
-protocols, including SAE J1939 and OBD-II, making it a
-versatile tool for professionals working with CAN CC-based
+protocols, including **SAE J1939** and **OBD-II**, making it
+a versatile tool for professionals working with CAN CC-based
 networks.
 
 Key functionalities include:
@@ -62,8 +62,11 @@ Key functionalities include:
   Automate your workflow with pre-included scripts, such as a
   [PEAK CAN trace](https://www.peak-system.com/produktcd/Pdf/English/PEAK_CAN_TRC_File_Format.pdf)
   record and playback script.  Additionally, you have the flexibility to write
-  your own scripts in either [Lua](https://canopenterm.de/lua-api) or
-  [PicoC](https://canopenterm.de/picoc-api) to customize and automate tasks.
+  your own scripts in either
+  [Lua](https://canopenterm.de/lua-api),
+  [PicoC](https://canopenterm.de/picoc-api) or
+  [Python](https://canopenterm.de/python-api)
+  to customize and automate tasks.
   Both languages are supported by similar APIs, offering equal functionality
   to cater to your automation needs.
 
