@@ -59,7 +59,7 @@ dbc_find_id_by_name (search)
 
 > **search** A case-insensitive substring to search within message names.
 
-**Returns**: CAN-ID or nil.
+**Returns**: CAN-ID or `nil`.
 
 <!-- tab:Example -->
 ```lua
@@ -94,7 +94,7 @@ dbc_load (filename)
 
 > **filename** DBC file name.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -132,7 +132,7 @@ nmt_send_command (node_id, command, [show_output], [comment])
 
 > **comment** Comment to show in formatted output, default is `nil`.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -184,7 +184,7 @@ pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 
 > **comment** Comment to show in formatted output, default is `nil`.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -204,7 +204,7 @@ pdo_del (can_id)
 
 > **can_id** CAN-ID.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -257,9 +257,9 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 
 **Returns**:  
 
-Expedited: number and nil, or number and string (if printable)  
+Expedited: number and `nil`, or number and string (if printable)  
 Segmented: string and string  
-On failure: nil and nil
+On failure: `nil` and `nil`
 
 <!-- tab:Example -->
 ```lua
@@ -301,7 +301,7 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 
 > **comment** Comment to show in formatted output, default is `nil`.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -329,7 +329,7 @@ sdo_write_file (node_id, index, sub_index, filename)
 
 > **filename** The name of the file to be sent.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -361,7 +361,7 @@ sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
 
 > **comment** Comment to show in formatted output, default is `nil`.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -393,7 +393,7 @@ print(dict_lookup, 0x1008, 0x00) -- Manufacturer device name.
 
 > **sub_index** Sub-Index.
 
-**Returns**: a string or nil.
+**Returns**: a string or `nil`.
 
 ## Generic CAN CC interface
 
@@ -417,7 +417,7 @@ end
 ```
 <!-- tabs:end -->
 
-**Returns**: id, length, data and timestamp in μs, or nil on failure.
+**Returns**: id, length, data and timestamp in μs, or `nil` on failure.
 
 ### can_write()
 
@@ -439,7 +439,7 @@ can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
 
 > **comment** Comment to show in formatted output, default is `nil`.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua
@@ -483,7 +483,7 @@ print("Done.")
 key_is_hit ()
 ```
 
-**Returns**: true or false.
+**Returns**: `true` or `false`.
 
 <!-- tab:Example -->
 ```lua

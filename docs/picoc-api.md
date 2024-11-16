@@ -57,7 +57,7 @@ int dbc_find_id_by_name (int* can_id, char* search)
 
 > **search** A case-insensitive substring to search within message names.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -83,7 +83,7 @@ int dbc_load (char* filename)
 
 > **filename** DBC file name.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -131,9 +131,9 @@ int nmt_send_command (int node_id, nmt_command_t command, int show_output, char*
 
 > **show_output** Show output (boolean operation).
 
-> **comment** Comment string or NULL.
+> **comment** Comment string or `NULL`.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -182,9 +182,9 @@ int pdo_add (int can_id, unsigned int event_time_ms, int length, char* data, int
 
 > **show_output** Show output (boolean operation).
 
-> **comment** Comment string or NULL.
+> **comment** Comment string or `NULL`.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -211,9 +211,9 @@ int pdo_del (int can_id, int show_output, char* comment)
 
 > **show_output** Show output (boolean operation).
 
-> **comment** Comment string or NULL.
+> **comment** Comment string or `NULL`.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -315,9 +315,9 @@ char* sdo_read (unsigned int* result, int node_id, int index, int sub_index, int
 
 > **show_output** Show output (boolean operation).
 
-> **comment** Comment string or NULL.
+> **comment** Comment string or `NULL`.
 
-**Returns**: A string (if printable) or NULL.
+**Returns**: A string (if printable) or `NULL`.
 
 <!-- tab:Example -->
 ```c
@@ -350,9 +350,9 @@ int sdo_write (int node_id, int index, int sub_index, int length, char* data, in
 
 > **show_output** Show output (boolean operation).
 
-> **comment** Comment string or NULL.
+> **comment** Comment string or `NULL`.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -380,7 +380,7 @@ int sdo_write_file (int node_id, int index, int sub_index, char* filename)
 
 > **filename** File name.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -406,7 +406,7 @@ int sdo_write_string (int node_id, int index, int sub_index, char* data)
 
 > **data** Data string.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -428,7 +428,7 @@ char* dict_lookup (int index, int sub_index)
 
 > **sub_index** Object sub-index.
 
-**Returns**: A string containing the object description or NULL.
+**Returns**: A string containing the object description or `NULL`.
 
 <!-- tab:Example -->
 ```c
@@ -483,7 +483,7 @@ typedef struct can_message
 can_message_t* message can_read (void)
 ```
 
-**Returns**: A pointer of type [can_message_t](#can_message_t) or NULL on failure.
+**Returns**: A pointer of type [can_message_t](#can_message_t) or `NULL` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -513,7 +513,7 @@ int can_write (can_message_t* message, int show_output, char* comment)
 
 > **comment** Comment string or NULL.
 
-**Returns**: 1 on success, 0 on failure.
+**Returns**: `1` on success, `0` on failure.
 
 <!-- tab:Example -->
 ```c
@@ -565,7 +565,7 @@ while (key_is_hit() == 0) {
 int key_is_hit (void)
 ```
 
-**Returns**: 1 if a key is hit, 0 otherwise.
+**Returns**: `1` if a key is hit, `0` otherwise.
 
 <!-- tab:Example -->
 ```c
