@@ -1,3 +1,24 @@
+# pocketpy
+
+set(POCKETPY_VERSION     "2.0.1")
+set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
+set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
+set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
+set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.so)
+
+ExternalProject_Add(pocketpy_devel
+  URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
+  URL_HASH SHA1=e4991b6f76c48a07ac51d34360f393eacead4e91
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+  DOWNLOAD_NO_PROGRESS true
+  TLS_VERIFY true
+  SOURCE_DIR ${POCKETPY_PATH}/
+  BINARY_DIR ${POCKETPY_PATH}_build/
+  BUILD_BYPRODUCTS ${POCKETPY_LIBRARY}
+
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+  PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step.")
+
 # inih
 set(INIH_VERSION     "58")
 set(INIH_DEVEL_PKG   r${INIH_VERSION}.zip)
@@ -88,6 +109,7 @@ set(PLATFORM_LIBS
   ${SDL2MAIN_LIBRARY}
   ${INIH_LIBRARY}
   ${LUA_LIBRARY}
+  ${POCKETPY_LIBRARY}
   dl
   m
   pthread
@@ -97,9 +119,11 @@ set(PLATFORM_LIBS
 set(PLATFORM_CORE_DEPS
   inih_devel
   Lua_devel
+  pocketpy_devel
   SDL2_devel)
 
 include_directories(
   SYSTEM ${SDL2_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
+  SYSTEM ${POCKETPY_INCLUDE_DIR}
   SYSTEM ${INIH_INCLUDE_DIR})

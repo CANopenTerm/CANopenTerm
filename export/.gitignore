@@ -4,4 +4,5 @@
 !tests
 !*.c
 !*.lua
+!*.py
 !.gitignore

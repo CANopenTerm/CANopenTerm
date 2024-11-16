@@ -26,6 +26,10 @@ PicoC is licensed under the
 "[New BSD License](https://github.com/CANopenTerm/CANopenTerm/blob/main/src/picoc/LICENSE)".  
 Copyright (c) 2009-2011, Zik Saleeba, Copyright (c) 2015, Joseph Poirier, All rights reserved.
 
+pocketpy is licensed under the
+"[MIT License]("https://github.com/pocketpy/pocketpy/blob/main/LICENSE)".  
+Copyright (c) 2024, blueloveTH
+
 inih is licensed under the
 "[New BSD License](https://github.com/benhoyt/inih/blob/master/LICENSE.txt)".  
 Copyright (c) 2009, Ben Hoyt, All rights reserved.

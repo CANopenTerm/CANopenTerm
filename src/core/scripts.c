@@ -13,6 +13,7 @@
 #include "dirent.h"
 #include "core.h"
 #include "os.h"
+#include "pocketpy.h"
 #include "scripts.h"
 #include "table.h"
 
@@ -31,6 +32,8 @@ void scripts_init(core_t *core)
     {
         return;
     }
+
+    py_initialize();
 
     core->L = luaL_newstate();
 
@@ -88,12 +91,14 @@ void scripts_deinit(core_t* core)
     {
         lua_close(core->L);
     }
+
+    py_finalize();
 }
 
-static char* get_script_description(const char* script_path)
+static char *get_script_description(const char *script_path)
 {
     static  char description[256] = { 0 };
-    FILE_t* file = os_fopen(script_path, "r");
+    FILE_t *file = os_fopen(script_path, "r");
 
     if (NULL == file)
     {
@@ -102,7 +107,7 @@ static char* get_script_description(const char* script_path)
 
     if (os_fgets(description, sizeof(description), file) != NULL)
     {
-        char* desc_ptr;
+        char *desc_ptr;
 
         description[os_strcspn(description, "\r\n")] = '\0';
 
@@ -129,6 +134,10 @@ static char* get_script_description(const char* script_path)
         {
             os_memmove(desc_ptr, desc_ptr + 2, os_strlen(desc_ptr) - 1);
         }
+        else if (os_strncmp(desc_ptr, "#", 1) == 0)
+        {
+            os_memmove(desc_ptr, desc_ptr + 1, os_strlen(desc_ptr));
+        }
 
         while ((*desc_ptr == ' ') || (*desc_ptr == '\t'))
         {
@@ -143,11 +152,11 @@ static char* get_script_description(const char* script_path)
     return NULL;
 }
 
-bool_t has_valid_extension(const char* filename)
+bool_t has_valid_extension(const char *filename)
 {
-    const char* dot = os_strrchr(filename, '.');
+    const char *dot = os_strrchr(filename, '.');
 
-    if (dot && (os_strcmp(dot, ".c") == 0 || os_strcmp(dot, ".lua") == 0))
+    if (dot && (os_strcmp(dot, ".c") == 0 || os_strcmp(dot, ".lua") == 0 || os_strcmp(dot, ".py") == 0))
     {
         return IS_TRUE;
     }
@@ -307,6 +316,7 @@ static status_t run_script_(const char* name, core_t* core)
     const char* extension         = os_strrchr(name, '.');
     bool_t      has_c_extension   = extension && os_strcmp(extension, ".c")   == 0;
     bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
+    bool_t      has_py_extension = extension && os_strcmp(extension, ".py")   == 0;
     char        script_path[1024] = { 0 };
     FILE*       file;
 
@@ -369,6 +379,10 @@ static status_t run_script_(const char* name, core_t* core)
         {
             status = OS_FILE_NOT_FOUND;
         }
+    }
+    else if (IS_TRUE == has_py_extension)
+    {
+        /* tbd. */
     }
     else
     {

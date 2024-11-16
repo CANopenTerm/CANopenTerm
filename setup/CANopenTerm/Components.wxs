@@ -7,7 +7,10 @@
       <Component>
         <File Source="../../export/PCANBasic.dll" />
       </Component>
-      <Component>
+        <Component>
+            <File Source="../../export/pocketpy.dll" />
+        </Component>
+        <Component>
         <File Source="../../export/SDL2.dll" />
       </Component>
       <Component>
