@@ -21,8 +21,11 @@
 #define os_atoi      SDL_atoi
 #define os_calloc    SDL_calloc
 #define os_closedir  closedir
+#define os_fread     fread
 #define os_free      SDL_free
 #define os_freopen   freopen
+#define os_fseek     fseek
+#define os_ftell     ftell
 #define os_fclose    fclose
 #define os_fgets     fgets
 #define os_fopen     fopen

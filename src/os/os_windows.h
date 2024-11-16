@@ -24,8 +24,11 @@
 #define os_fclose    fclose
 #define os_fgets     fgets
 #define os_fopen     fopen
+#define os_fread     fread
 #define os_free      SDL_free
 #define os_freopen   freopen
+#define os_fseek     fseek
+#define os_ftell     ftell
 #define os_isdigit   SDL_isdigit
 #define os_isprint   SDL_isprint
 #define os_isspace   SDL_isspace

@@ -21,7 +21,7 @@ extern const uint8 max_script_search_paths;
 extern const char *script_search_path[];
 
 static char*    get_script_description(const char* script_path);
-static status_t run_script_(const char *name, core_t *core);
+static status_t run_script_ex(const char *name, core_t *core);
 static size_t   safe_strcpy(char* dest, const char* src, size_t size);
 static bool_t   script_already_listed(char** listed_scripts, int count, const char* script_name);
 static void     strip_lua_extension(char* filename);
@@ -274,7 +274,7 @@ void run_script(const char *name, core_t *core)
     if (NULL != file)
     {
         fclose(file);
-        status = run_script_(name, core);
+        status = run_script_ex(name, core);
     }
     else
     {
@@ -286,7 +286,7 @@ void run_script(const char *name, core_t *core)
 
             os_snprintf(script_path, sizeof(script_path), "%s/%s", script_search_path[i], name);
 
-            status = run_script_(script_path, core);
+            status = run_script_ex(script_path, core);
             if (ALL_OK == status)
             {
                 break;
@@ -300,7 +300,7 @@ void run_script(const char *name, core_t *core)
 
             os_snprintf(script_path, sizeof(script_path), "%s/CANopenTerm/scripts/%s", user_directory, name);
 
-            status = run_script_(script_path, core);
+            status = run_script_ex(script_path, core);
         }
     }
 
@@ -310,19 +310,19 @@ void run_script(const char *name, core_t *core)
     }
 }
 
-static status_t run_script_(const char* name, core_t* core)
+static status_t run_script_ex(const char *name, core_t *core)
 {
-    status_t    status            = ALL_OK;
-    const char* extension         = os_strrchr(name, '.');
-    bool_t      has_c_extension   = extension && os_strcmp(extension, ".c")   == 0;
+    status_t    status = ALL_OK;
+    const char *extension = os_strrchr(name, '.');
+    bool_t      has_c_extension = extension && os_strcmp(extension, ".c") == 0;
     bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
-    bool_t      has_py_extension = extension && os_strcmp(extension, ".py")   == 0;
+    bool_t      has_py_extension = extension && os_strcmp(extension, ".py") == 0;
     char        script_path[1024] = { 0 };
-    FILE*       file;
+    FILE *file;
 
     if (NULL == core)
     {
-        status = OS_INVALID_ARGUMENT;
+        return OS_INVALID_ARGUMENT;
     }
 
     if (IS_TRUE == has_lua_extension)
@@ -382,7 +382,44 @@ static status_t run_script_(const char* name, core_t* core)
     }
     else if (IS_TRUE == has_py_extension)
     {
-        /* tbd. */
+        os_snprintf(script_path, sizeof(script_path), "%s", name);
+
+        file = os_fopen(script_path, "r");
+        if (file != NULL)
+        {
+            os_fclose(file);
+
+            file = fopen(script_path, "rb");
+            if (file == NULL)
+            {
+                status = OS_FILE_NOT_FOUND;
+            }
+            else
+            {
+                size_t size;
+                char *buffer;
+
+                os_fseek(file, 0, SEEK_END);
+                size = os_ftell(file);
+                os_fseek(file, 0, SEEK_SET);
+                buffer = os_calloc(size + 1, sizeof(char));
+                size = os_fread(buffer, 1, size, file);
+                buffer[size] = 0;
+
+                if (IS_FALSE == py_exec(buffer, script_path, EXEC_MODE, NULL))
+                {
+                    py_printexc();
+                }
+
+                os_free(buffer);
+                os_fclose(file);
+                py_resetvm();
+            }
+        }
+        else
+        {
+            status = OS_FILE_NOT_FOUND;
+        }
     }
     else
     {
