@@ -30,46 +30,6 @@
             "inheritEnvironments": [ "msvc_x64_x64" ]
         },
         {
-            "name": "x64-Clang-Debug",
-            "generator": "Ninja",
-            "configurationType": "Debug",
-            "buildRoot": "${projectDir}\\out\\build\\${name}",
-            "installRoot": "${projectDir}\\out\\install\\${name}",
-            "buildCommandArgs": "",
-            "ctestCommandArgs": "",
-            "inheritEnvironments": [ "clang_cl_x64_x64" ],
-            "variables": [
-                {
-                    "name": "BUILD_TESTS",
-                    "value": "False",
-                    "type": "BOOL"
-                }
-            ]
-        },
-        {
-            "name": "x64-Clang-Release",
-            "generator": "Ninja",
-            "configurationType": "Release",
-            "buildRoot": "${projectDir}\\out\\build\\${name}",
-            "installRoot": "${projectDir}\\out\\install\\${name}",
-            "cmakeCommandArgs": "",
-            "buildCommandArgs": "",
-            "ctestCommandArgs": "",
-            "inheritEnvironments": [ "clang_cl_x64_x64" ],
-            "variables": [
-                {
-                    "name": "BUILD_TESTS",
-                    "value": "False",
-                    "type": "BOOL"
-                },
-                {
-                    "name": "ENABLE_ADDRESS_SANITIZER",
-                    "value": "False",
-                    "type": "BOOL"
-                }
-            ]
-        },
-        {
             "name": "Linux-GCC-Debug",
             "generator": "Ninja",
             "configurationType": "Debug",
