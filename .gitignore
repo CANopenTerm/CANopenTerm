@@ -1,5 +1,5 @@
 .vs
-deps_*
+deps*
 out
 build
 tmp

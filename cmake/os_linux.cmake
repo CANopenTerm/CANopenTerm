@@ -15,6 +15,8 @@ ExternalProject_Add(pocketpy_devel
   SOURCE_DIR ${POCKETPY_PATH}/
   BINARY_DIR ${POCKETPY_PATH}_build/
   BUILD_BYPRODUCTS ${POCKETPY_LIBRARY}
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
   PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step.")
@@ -35,6 +37,8 @@ ExternalProject_Add(inih_devel
   SOURCE_DIR ${INIH_PATH}/
   BINARY_DIR ${INIH_PATH}_build/
   BUILD_BYPRODUCTS ${INIH_LIBRARY}
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
@@ -56,6 +60,8 @@ ExternalProject_Add(Lua_devel
   TLS_VERIFY true
   SOURCE_DIR ${LUA_PATH}/
   BUILD_BYPRODUCTS ${LUA_LIBRARY}
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
   BUILD_IN_SOURCE 1
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
@@ -78,6 +84,8 @@ ExternalProject_Add(SDL2_devel
   BINARY_DIR ${SDL2_PATH}_build
   BUILD_BYPRODUCTS ${SDL2_PATH}_build/libSDL2.a
   BUILD_BYPRODUCTS ${SDL2_PATH}_build/libSDL2main.a
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
   PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step.")
