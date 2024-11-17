@@ -15,16 +15,20 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include "cmocka.h"
+#include "core.h"
 #include "os.h"
 #include "scripts.h"
 #include "test_scripts.h"
 
 static int stdout_fd_backup;
+static int stdout_fd;
 
 static void assert_files_equal(const char *file1_path, const char *file2_path);
+static void convert_crlf_to_lf(const char* file_path);
 static void redirect_stdout_to_file(const char* filename);
 static void restore_stdout(void);
 static void test_picoc_script(const char* basename);
+static void test_python_script(const char* basename);
 
 void test_has_valid_extension(void **state)
 {
@@ -1178,9 +1182,9 @@ void test_picoc_rand110(void** state)
     test_picoc_script("tests/rand110.c");
 }
 
-static void assert_files_equal(const char *file1_path, const char *file2_path)
+static void assert_files_equal(const char* file1_path, const char* file2_path)
 {
-    FILE *file1, *file2;
+    FILE* file1, *file2;
     int ch1, ch2;
 
     file1 = fopen(file1_path, "rb");
@@ -1209,7 +1213,7 @@ static void assert_files_equal(const char *file1_path, const char *file2_path)
         }
     } while (ch1 != EOF && ch2 != EOF);
 
-    // Check if both files reached EOF, otherwise they are of different sizes
+    /* Check if both files reached EOF, otherwise they are of different sizes. */
     if (ch1 != ch2)
     {
         fclose(file1);
@@ -1219,6 +1223,63 @@ static void assert_files_equal(const char *file1_path, const char *file2_path)
 
     fclose(file1);
     fclose(file2);
+}
+
+static void convert_crlf_to_lf(const char* file_path)
+{
+    FILE* file;
+    FILE* temp_file;
+    char  temp_file_path[1024];
+    int   ch;
+    int   next_ch;
+
+    file = fopen(file_path, "rb");
+    if (file == NULL)
+    {
+        perror("Failed to open file for reading");
+        return;
+    }
+
+    /* Create a temporary file to write the converted content. */
+    snprintf(temp_file_path, sizeof(temp_file_path), "%s.tmp", file_path);
+    temp_file = fopen(temp_file_path, "wb");
+    if (temp_file == NULL)
+    {
+        perror("Failed to open temporary file for writing");
+        fclose(file);
+        return;
+    }
+
+    while ((ch = fgetc(file)) != EOF)
+    {
+        if (ch == '\r')
+        {
+            next_ch = fgetc(file);
+            if (next_ch != '\n')
+            {
+                ungetc(next_ch, file);
+            }
+            fputc('\n', temp_file);
+        }
+        else
+        {
+            fputc(ch, temp_file);
+        }
+    }
+
+    fclose(file);
+    fclose(temp_file);
+
+    /* Replace the original file with the converted file */
+    if (remove(file_path) != 0)
+    {
+        perror("Failed to remove original file");
+        return;
+    }
+    if (rename(temp_file_path, file_path) != 0)
+    {
+        perror("Failed to rename temporary file");
+    }
 }
 
 static void redirect_stdout_to_file(const char* filename)
@@ -1286,8 +1347,18 @@ static void test_picoc_script(const char* script_path)
     run_script(script_path, &core);
     restore_stdout();
 
+    convert_crlf_to_lf(result_file_path);
     assert_files_equal(result_file_path, expect_file_path);
     remove(result_file_path);
 
+    scripts_deinit(&core);
+}
+
+static void test_python_script(const char* script_path)
+{
+    core_t core = { 0 };
+
+    scripts_init(&core);
+    run_script(script_path, &core);
     scripts_deinit(&core);
 }

@@ -318,13 +318,13 @@ void run_script(const char *name, core_t *core)
 
 static status_t run_script_ex(const char *name, core_t *core)
 {
-    status_t    status = ALL_OK;
-    const char *extension = os_strrchr(name, '.');
-    bool_t      has_c_extension = extension && os_strcmp(extension, ".c") == 0;
+    status_t    status            = ALL_OK;
+    const char* extension         = os_strrchr(name, '.');
+    bool_t      has_c_extension   = extension && os_strcmp(extension, ".c") == 0;
     bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
-    bool_t      has_py_extension = extension && os_strcmp(extension, ".py") == 0;
+    bool_t      has_py_extension  = extension && os_strcmp(extension, ".py") == 0;
     char        script_path[1024] = { 0 };
-    FILE *file;
+    FILE*       file;
 
     if (NULL == core)
     {
