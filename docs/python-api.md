@@ -4,7 +4,7 @@ The Python API offers an alternative to the Lua scripting API.
 It is based on pocketpy, a lightweight Python interpreter.
 For a comprehensive overview of all features with respect to
 cpython, please refer to the official documentation:
-[PocketPy Features](https://pocketpy.dev/features/basic/).
+[pocketpy Features](https://pocketpy.dev/features/basic/).
 
 ## CAN Database File (DBC)
 
