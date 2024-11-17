@@ -1,8 +1,5 @@
 ﻿# Python API
 
-!> Python support is currently under development and may not
-   represent the current state of development.
-
 The Python API offers an alternative to the Lua scripting API.
 It is based on pocketpy, a lightweight Python interpreter.
 For a comprehensive overview of all features with respect to
@@ -269,14 +266,14 @@ bool sdo_write_file (node_id, index, sub_index, filename)
 ```
 <!-- tabs:end -->
 
-### sdo_write_str()
+### sdo_write_string()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
 Write string (segmented transfer).
 
 ```python
-bool sdo_write_str (node_id, index, sub_index, "[data]", [show_output], [comment])
+bool sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.

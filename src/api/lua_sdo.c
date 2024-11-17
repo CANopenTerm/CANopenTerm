@@ -20,7 +20,7 @@ extern bool_t is_printable_string(const char *str, size_t length);
 int lua_sdo_lookup_abort_code(lua_State *L)
 {
     int         abort_code = luaL_checkinteger(L, 1);
-    const char *description = sdo_lookup_abort_code(abort_code);
+    const char* description = sdo_lookup_abort_code(abort_code);
 
     lua_pushstring(L, (const char *)description);
     return 1;
@@ -87,15 +87,15 @@ int lua_sdo_read(lua_State *L)
 int lua_sdo_write(lua_State *L)
 {
     can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
+    disp_mode_t   disp_mode    = SILENT;
     sdo_state_t   sdo_state;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    int           length = luaL_checkinteger(L, 4);
-    int           data = lua_tointeger(L, 5);
-    bool_t        show_output = lua_toboolean(L, 6);
-    const char *comment = lua_tostring(L, 7);
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+    int           length       = luaL_checkinteger(L, 4);
+    int           data         = lua_tointeger(L, 5);
+    bool_t        show_output  = lua_toboolean(L, 6);
+    const char*   comment      = lua_tostring(L, 7);
 
     limit_node_id((uint8 *)&node_id);
 
@@ -130,12 +130,12 @@ int lua_sdo_write(lua_State *L)
 int lua_sdo_write_file(lua_State *L)
 {
     can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
+    disp_mode_t   disp_mode    = SILENT;
     int           status;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    const char *filename = luaL_checkstring(L, 4);
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+    const char*   filename     = luaL_checkstring(L, 4);
 
     if (NULL == filename)
     {
@@ -168,15 +168,15 @@ int lua_sdo_write_file(lua_State *L)
 int lua_sdo_write_string(lua_State *L)
 {
     can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
+    disp_mode_t   disp_mode    = SILENT;
     int           status;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    const char*   data = luaL_checkstring(L, 4);
-    uint32        length = 0;
-    bool_t        show_output = lua_toboolean(L, 5);
-    const char*   comment = lua_tostring(L, 6);
+    int           node_id      = luaL_checkinteger(L, 1);
+    int           index        = luaL_checkinteger(L, 2);
+    int           sub_index    = luaL_checkinteger(L, 3);
+    const char*   data         = luaL_checkstring(L, 4);
+    uint32        length       = 0;
+    bool_t        show_output  = lua_toboolean(L, 5);
+    const char*   comment      = lua_tostring(L, 6);
 
     if (NULL != data)
     {
@@ -218,9 +218,9 @@ int lua_sdo_write_string(lua_State *L)
 
 int lua_dict_lookup(lua_State *L)
 {
-    int         index = luaL_checkinteger(L, 1);
-    int         sub_index = luaL_checkinteger(L, 2);
-    const char *description = dict_lookup(index, sub_index);
+    int         index       = luaL_checkinteger(L, 1);
+    int         sub_index   = luaL_checkinteger(L, 2);
+    const char* description = dict_lookup(index, sub_index);
 
     if (NULL == description)
     {

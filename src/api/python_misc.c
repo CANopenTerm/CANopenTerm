@@ -24,7 +24,7 @@ void python_misc_init(core_t *core)
 
     py_bind(mod, "delay_ms(delay_in_ms, show_output=False, comment=\"\")", py_delay_ms);
 
-    py_bindfunc(mod, "key_is_hit",   py_key_is_hit);
+    py_bindfunc(mod, "key_is_hit",    py_key_is_hit);
     py_bindfunc(mod, "print_heading", py_print_heading);
 }
 

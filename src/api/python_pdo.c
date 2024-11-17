@@ -24,7 +24,7 @@ void python_pdo_init(core_t *core)
     py_GlobalRef mod = py_getmodule("__main__");
 
     py_bind(mod, "pdo_add(can_id, event_time_ms, length, data=0, show_output=False, comment=\"\")", py_pdo_add);
-    py_bind(mod, "pdo_del(can_id, show_output=False, comment=\"\")", py_pdo_del);
+    py_bind(mod, "pdo_del(can_id, show_output=False, comment=\"\")",                                py_pdo_del);
 }
 
 bool py_pdo_add(int argc, py_Ref argv)
