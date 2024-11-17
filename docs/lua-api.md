@@ -511,6 +511,8 @@ print("Exiting.")
 print_heading (heading)
 ```
 
+> **heading** Heading to be printed.
+
 <!-- tab:Example -->
 ```lua
 local device_name = sdo_read(0x123, 0x1008, 0x00)
@@ -523,8 +525,6 @@ sdo_read(0x123, 0x1009, 0x00, true)
 sdo_read(0x123, 0x100A, 0x00, true)
 ```
 <!-- tabs:end -->
-
-> Heading to be printed.
 
 **Returns**: Nothing.
 

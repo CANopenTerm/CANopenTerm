@@ -522,6 +522,8 @@ print("Exiting.")
 print_heading (heading)
 ```
 
+> **heading** Heading to be printed.
+
 <!-- tab:Example -->
 ```python
 node_id  = 0x123
@@ -537,7 +539,5 @@ sdo_read(node_id, 0x1009, 0x00, True)
 sdo_read(node_id, 0x100A, 0x00, True)
 ```
 <!-- tabs:end -->
-
-> Heading to be printed.
 
 **Returns**: `None`.
