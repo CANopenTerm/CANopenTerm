@@ -67,7 +67,6 @@ bool py_nmt_send_command(int argc, py_Ref argv)
             }
             else
             {
-                nmt_print_error(can_get_error_message(status), command, disp_mode);
                 py_newbool(py_retval(), IS_FALSE);
             }
             break;
