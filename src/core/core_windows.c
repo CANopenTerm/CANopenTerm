@@ -19,6 +19,7 @@ BOOL WINAPI handle_ctrl_c(DWORD signal)
     {
         if (core != NULL)
         {
+            printf("\r");
             os_log(LOG_INFO, "Ctrl+C pressed. Cleaning up...");
             fflush(stdout);
             core_deinit(core);
