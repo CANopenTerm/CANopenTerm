@@ -95,8 +95,6 @@ ExternalProject_Add(SDL2_devel
   SOURCE_DIR ${SDL2_PATH}/
   BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib
   BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
   BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
 
@@ -132,8 +130,6 @@ ExternalProject_Add(PCAN_devel
   TLS_VERIFY true
   SOURCE_DIR ${PCAN_PATH}/
   BUILD_BYPRODUCTS ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
   BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
 
@@ -158,8 +154,6 @@ ExternalProject_Add(dirent_devel
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
   SOURCE_DIR ${DIRENT_PATH}/
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
   BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
