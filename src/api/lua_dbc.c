@@ -14,12 +14,11 @@
 #include "lua_dbc.h"
 #include "os.h"
 
-
 int lua_dbc_decode(lua_State *L)
 {
     int         can_id = luaL_checkinteger(L, 1);
-    uint64      data = lua_tointeger(L, 2);
-    const char *result = dbc_decode(can_id, data);
+    uint64      data   = lua_tointeger(L, 2);
+    const char* result = dbc_decode(can_id, data);
 
     lua_pushstring(L, result);
 
@@ -28,7 +27,7 @@ int lua_dbc_decode(lua_State *L)
 
 int lua_dbc_find_id_by_name(lua_State *L)
 {
-    const char *search = luaL_checkstring(L, 1);
+    const char* search = luaL_checkstring(L, 1);
     uint32      id;
     status_t    status;
 
