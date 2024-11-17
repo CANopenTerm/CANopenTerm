@@ -146,10 +146,14 @@ bool pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-bool pdo_del (can_id)
+bool pdo_del (can_id, [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
+
+> **show_output** Show formatted output, default is `False`.
+
+> **comment** Comment to show in formatted output, default is `None`.
 
 **Returns**: `True` on success, `False` on failure.
 

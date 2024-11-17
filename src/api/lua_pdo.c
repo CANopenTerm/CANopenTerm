@@ -48,7 +48,7 @@ int lua_pdo_del(lua_State *L)
 {
     int         can_id      = luaL_checkinteger(L, 1);
     bool_t      show_output = lua_toboolean(L, 2);
-    const char *comment     = lua_tostring(L, 3);
+    const char* comment     = lua_tostring(L, 3);
     disp_mode_t disp_mode   = SILENT;
 
     if (IS_TRUE == show_output)

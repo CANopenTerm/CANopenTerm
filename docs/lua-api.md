@@ -199,10 +199,14 @@ end
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-pdo_del (can_id)
+pdo_del (can_id, [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
+
+> **show_output** Show formatted output, default is `false`.
+
+> **comment** Comment to show in formatted output, default is `nil`.
 
 **Returns**: `true` on success, `false` on failure.
 
