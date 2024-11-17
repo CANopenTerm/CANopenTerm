@@ -259,6 +259,7 @@ str sdo_lookup_abort_code (abort_code)
 
 <!-- tab:Example -->
 ```python
+print(sdo_lookup_abort_code(0x05040005)) # Out of memory.
 ```
 <!-- tabs:end -->
 
@@ -290,6 +291,17 @@ On failure: `(None, None)`
 
 <!-- tab:Example -->
 ```python
+node_id  = 0x123
+result   = sdo_read(node_id, 0x1008, 0x00)
+dev_name = result[1]
+
+if None == dev_name:
+  dev_name = "Unknown device"
+
+print_heading(dev_name)
+sdo_read(node_id, 0x1000, 0x00, True)
+sdo_read(node_id, 0x1009, 0x00, True)
+sdo_read(node_id, 0x100A, 0x00, True)
 ```
 <!-- tabs:end -->
 
@@ -321,6 +333,8 @@ bool sdo_write (node_id, index, sub_index, length, [data], [show_output], [comme
 
 <!-- tab:Example -->
 ```python
+if not sdo_write(0x123, 0x1000, 0x00, 4, 0x12345678, True, "Device type"):
+  print("Failed to write device type. Read-only object.")
 ```
 <!-- tabs:end -->
 
@@ -346,6 +360,8 @@ bool sdo_write_file (node_id, index, sub_index, filename)
 
 <!-- tab:Example -->
 ```python
+if sdo_write_string(0x123, 0x4500, 0x01, "Sup3rS3cuR3P4SSw0rd"):
+  sdo_write_file(0x123, 0x4500, 0x05, "firmware.hex")
 ```
 <!-- tabs:end -->
 
@@ -375,6 +391,9 @@ bool sdo_write_string (node_id, index, sub_index, "[data]", [show_output], [comm
 
 <!-- tab:Example -->
 ```python
+if sdo_write_string(0x123, 0x4600, 0x01, "Hello, world!"):
+  if sdo_read(0x123, 0x4600, 0x01) == "Hello, world!":
+    print("All good!")
 ```
 <!-- tabs:end -->
 
@@ -505,15 +524,17 @@ print_heading (heading)
 
 <!-- tab:Example -->
 ```python
-dev_name = sdo_read(0x123, 0x1008, 0x00)
+node_id  = 0x123
+result   = sdo_read(node_id, 0x1008, 0x00)
+dev_name = result[1]
 
-if dev_name[1] == None:
-    dev_name = "Unknown device"
+if None == dev_name:
+  dev_name = "Unknown device"
 
 print_heading(dev_name)
-sdo_read(0x123, 0x1000, 0x00, True)
-sdo_read(0x123, 0x1009, 0x00, True)
-sdo_read(0x123, 0x100A, 0x00, True)
+sdo_read(node_id, 0x1000, 0x00, True)
+sdo_read(node_id, 0x1009, 0x00, True)
+sdo_read(node_id, 0x100A, 0x00, True)
 ```
 <!-- tabs:end -->
 
