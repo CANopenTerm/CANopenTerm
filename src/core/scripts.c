@@ -262,7 +262,7 @@ void print_heading(const char* heading)
 
 void run_script(const char *name, core_t *core)
 {
-    status_t    status;
+    status_t    status             = ALL_OK;
     const char* base               = os_strrchr(name, '/');
     char        basename[PATH_MAX] = { 0 };
     FILE*       file;
