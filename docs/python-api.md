@@ -24,8 +24,39 @@ str dbc_decode (can_id, [data])
 
 <!-- tab:Example -->
 ```python
+import os
 
+def print_multiline_at_same_position(message, num_lines):
+    buffer = ""
 
+    for _ in range(num_lines):
+        buffer += chr(27) + "[2K"
+        buffer += chr(27) + "[A"
+
+    buffer += "\r"
+    buffer += message
+
+    print(buffer, end='')
+
+if not dbc_load("dbc/j1939.dbc"):
+    print("Failed to load DBC file")
+else:
+    watch_id  = 0x18F01DFE # Steer Angle Sensor
+    output    = dbc_decode(watch_id)
+    num_lines = len(output.split('\n'))
+
+    os.system('cls')
+
+    while not key_is_hit():
+        result = can_read()
+
+        if result:
+            id   = result[0]
+            data = result[2]
+
+        if id == watch_id:
+            output = dbc_decode(watch_id, data)
+            print_multiline_at_same_position(output, num_lines)
 ```
 <!-- tabs:end -->
 
@@ -43,6 +74,39 @@ int dbc_find_id_by_name (search)
 
 <!-- tab:Example -->
 ```python
+import os
+
+def print_multiline_at_same_position(message, num_lines):
+    buffer = ""
+
+    for _ in range(num_lines):
+        buffer += chr(27) + "[2K"
+        buffer += chr(27) + "[A"
+
+    buffer += "\r"
+    buffer += message
+
+    print(buffer, end='')
+
+if not dbc_load("dbc/j1939.dbc"):
+    print("Failed to load DBC file")
+else:
+    watch_id  = dbc_find_id_by_name("sensor")
+    output    = dbc_decode(watch_id)
+    num_lines = len(output.split('\n'))
+
+    os.system('cls')
+
+    while not key_is_hit():
+        result = can_read()
+
+        if result:
+            id   = result[0]
+            data = result[2]
+
+        if id == watch_id:
+            output = dbc_decode(watch_id, data)
+            print_multiline_at_same_position(output, num_lines)
 ```
 <!-- tabs:end -->
 
@@ -60,6 +124,10 @@ bool dbc_load (filename)
 
 <!-- tab:Example -->
 ```python
+if not dbc_load("dbc/j1939.dbc"):
+    print("Failed to load DBC file")
+else:
+    print("Loaded DBC file")
 ```
 <!-- tabs:end -->
 
@@ -95,6 +163,16 @@ bool nmt_send_command (node_id, command, [show_output], [comment])
 
 <!-- tab:Example -->
 ```python
+while not key_is_hit():
+  result = can_read()
+
+  if result:
+    length  = result[1]
+    message = result[2]
+
+  if length == 1 and message == 0x00: # Bootup message.
+    print("Node back online.")
+    break
 ```
 <!-- tabs:end -->
 
@@ -137,6 +215,8 @@ bool pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 
 <!-- tab:Example -->
 ```python
+if pdo_add(0x181, 100, 8, 0x1122334455667788, True, "TPDO1"):
+  print("TPDO1 added.")
 ```
 <!-- tabs:end -->
 
@@ -158,6 +238,8 @@ bool pdo_del (can_id, [show_output], [comment])
 
 <!-- tab:Example -->
 ```python
+if pdo_del(0x181, True, "TPDO1"):
+  print("TPDO1 deleted.")
 ```
 <!-- tabs:end -->
 
@@ -199,7 +281,6 @@ tuple sdo_read (node_id, index, sub_index, [show_output], [comment])
 > **show_output** Show formatted output, default is `False`.
 
 > **comment** Comment to show in formatted output.
-              If ommited, the description from the CANopen object dictionary is used.
 
 **Returns**:  
 
@@ -309,6 +390,7 @@ str dict_lookup (index, sub_index)
 
 <!-- tab:Example -->
 ```python
+print(dict_lookup(0x1008, 0x00)) # Manufacturer device name.
 ```
 <!-- tabs:end -->
 
@@ -330,6 +412,10 @@ tuple can_read ()
 
 <!-- tab:Example -->
 ```python
+while not key_is_hit():
+    result = can_read()
+    if result:
+        print(result)
 ```
 <!-- tabs:end -->
 
@@ -359,6 +445,8 @@ bool can_write (can_id, data_length, [data], [is_extended], [show_output], [comm
 
 <!-- tab:Example -->
 ```python
+if can_write(0x5454, 8, 0x1122334455667788, False, True, "SPAM"):
+    print("Message sent.")
 ```
 <!-- tabs:end -->
 
@@ -382,6 +470,9 @@ None delay_ms ([delay_in_ms], [show_output], [comment])
 
 <!-- tab:Example -->
 ```python
+print("Waiting for 5 seconds.")
+delay_ms(5000)
+print("Done.")
 ```
 <!-- tabs:end -->
 
@@ -397,6 +488,10 @@ key_is_hit ()
 
 <!-- tab:Example -->
 ```python
+while not key_is_hit():
+    print("Waiting for key press.")
+    delay_ms(100)
+print("Exiting.")
 ```
 <!-- tabs:end -->
 
@@ -410,6 +505,15 @@ print_heading (heading)
 
 <!-- tab:Example -->
 ```python
+dev_name = sdo_read(0x123, 0x1008, 0x00)
+
+if dev_name[1] == None:
+    dev_name = "Unknown device"
+
+print_heading(dev_name)
+sdo_read(0x123, 0x1000, 0x00, True)
+sdo_read(0x123, 0x1009, 0x00, True)
+sdo_read(0x123, 0x100A, 0x00, True)
 ```
 <!-- tabs:end -->
 

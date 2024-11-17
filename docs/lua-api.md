@@ -33,7 +33,7 @@ dbc_decode (can_id, [data])
 local utils    = require "lua/utils"
 local watch_id = 0x18F01DFE -- Steer Angle Sensor
 
-if false == dbc_load("j1939.dbc") then
+if false == dbc_load("dbc/j1939.dbc") then
   print("Failed to load DBC file.")
   return
 end
@@ -69,7 +69,7 @@ dbc_find_id_by_name (search)
 ```lua
 local watch_id = 0
 
-if dbc_load("j1939.dbc") then
+if dbc_load("dbc/j1939.dbc") then
   watch_id = dbc_find_id_by_name("sensor")
 else
   print("Failed to load DBC file.")
@@ -102,7 +102,7 @@ dbc_load (filename)
 
 <!-- tab:Example -->
 ```lua
-if false == dbc_load("j1939.dbc") then
+if false == dbc_load("dbc/j1939.dbc") then
   print("Failed to load DBC file.")
 end
 ```
@@ -140,7 +140,7 @@ nmt_send_command (node_id, command, [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
-nmt_send_command(0x123, 0x81) -- Reset.
+nmt_send_command(0x00, 0x81) -- Reset.
 
 while false == key_is_hit() do
   local id, length, message = can_read()
@@ -148,6 +148,7 @@ while false == key_is_hit() do
   if length == 1 and message == 0x00 -- Bootup message.
   then
     print("Node back online.")
+    break
   end
 end
 ```
@@ -216,7 +217,7 @@ pdo_del (can_id, [show_output], [comment])
 
 <!-- tab:Example -->
 ```lua
-if pdo_del(0x181) then
+if pdo_del(0x181, true, "TPDO1") then
   print("TPDO1 deleted.")
 end
 ```
@@ -261,7 +262,6 @@ sdo_read (node_id, index, sub_index, [show_output], [comment])
 > **show_output** Show formatted output, default is `false`.
 
 > **comment** Comment to show in formatted output.
-              If ommited, the description from the CANopen object dictionary is used.
 
 **Returns**:  
 
@@ -393,7 +393,7 @@ dict_lookup (index, sub_index)
 
 <!-- tab:Example -->
 ```lua
-print(dict_lookup, 0x1008, 0x00) -- Manufacturer device name.
+print(dict_lookup(0x1008, 0x00)) -- Manufacturer device name.
 ```
 <!-- tabs:end -->
 

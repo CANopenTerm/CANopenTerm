@@ -75,7 +75,7 @@ int lua_can_write(lua_State *L)
             os_print(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
             os_print(LIGHT_GREEN, "SUCC    ");
             os_print(DARK_MAGENTA, "%s ", buffer);
-            os_print(DEFAULT_COLOR, "Write: 0x%16X%08X\n", data);
+            os_print(DEFAULT_COLOR, "Write: 0x%" PRIx64 "\n", data);
         }
         lua_pushboolean(L, 1);
     }

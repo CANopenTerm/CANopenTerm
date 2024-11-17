@@ -60,7 +60,7 @@ bool py_can_write(int argc, py_Ref argv)
     message.data[3] = (data >> 32) & 0xFF;
     message.data[4] = (data >> 24) & 0xFF;
     message.data[5] = (data >> 16) & 0xFF;
-    message.data[6] = (data >> 8) & 0xFF;
+    message.data[6] = (data >> 8)  & 0xFF;
     message.data[7] = data & 0xFF;
 
     if (IS_TRUE == is_extended)
@@ -95,13 +95,13 @@ bool py_can_write(int argc, py_Ref argv)
             for (i = os_strlen(buffer); i < 33; ++i)
             {
                 buffer[i] = ' ';
-            }
+             }
 
             os_print(LIGHT_BLACK, "CAN ");
             os_print(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
             os_print(LIGHT_GREEN, "SUCC    ");
             os_print(DARK_MAGENTA, "%s ", buffer);
-            os_print(DEFAULT_COLOR, "Write: 0x%16X%08X\n", data);
+            os_print(DEFAULT_COLOR, "Write: 0x%" PRIx64 "\n", data);
         }
         py_newbool(py_retval(), IS_TRUE);
     }

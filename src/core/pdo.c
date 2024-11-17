@@ -182,7 +182,7 @@ void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t w
         }
         else
         {
-            os_print(DEFAULT_COLOR, "0x%08X, %ums\n", data, event_time_ms);
+            os_print(DEFAULT_COLOR, "0x%" PRIx64 ", %ums\n", data, event_time_ms);
         }
     }
 }
