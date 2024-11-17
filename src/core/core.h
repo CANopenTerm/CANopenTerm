@@ -40,6 +40,7 @@ typedef struct core
 } core_t;
 
 status_t core_init(core_t** core, bool_t is_plain_mode);
+void     core_register_ctrl_c_handler(void);
 status_t core_update(core_t *core);
 void     core_deinit(core_t *core);
 
