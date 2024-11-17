@@ -40,6 +40,9 @@
         <File Source="../../export/scripts/hello.c" />
       </Component>
       <Component>
+        <File Source="../../export/scripts/hello.py" />
+      </Component>
+      <Component>
         <File Source="../../export/scripts/replay.lua" />
       </Component>
       <Component>
