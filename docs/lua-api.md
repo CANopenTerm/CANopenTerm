@@ -38,11 +38,15 @@ if false == dbc_load("j1939.dbc") then
   return
 end
 
+local output    = dbc_decode(watch_id)
+local num_lines = select(2, output:gsub('\n', '\n')) + 1
+
 while false == key_is_hit() do
   local id, length, data = can_read()
 
   if id == watch_id then
     output = dbc_decode(watch_id, data)
+
     utils.print_multiline_at_same_position(output, num_lines)
   end
 end

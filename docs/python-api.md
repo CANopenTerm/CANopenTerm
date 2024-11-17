@@ -24,6 +24,8 @@ str dbc_decode (can_id, [data])
 
 <!-- tab:Example -->
 ```python
+
+
 ```
 <!-- tabs:end -->
 
