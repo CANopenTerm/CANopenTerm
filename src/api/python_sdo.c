@@ -63,7 +63,6 @@ bool py_sdo_read(int argc, py_Ref argv)
     int           sub_index;
     bool_t        show_output;
     const char*   comment;
-    char          str_buffer[5] = { 0 };
     uint32        result;
 
     PY_CHECK_ARGC(5);
@@ -86,8 +85,6 @@ bool py_sdo_read(int argc, py_Ref argv)
         disp_mode = SCRIPT_MODE;
     }
 
-    py_newtuple(py_retval(), 2);
-
     sdo_state = sdo_read(
         &sdo_response,
         disp_mode,
@@ -99,34 +96,15 @@ bool py_sdo_read(int argc, py_Ref argv)
     switch (sdo_state)
     {
         case IS_READ_SEGMENTED:
-            py_newstr(py_r0(), (const char*)sdo_response.data);
-            py_newstr(py_r1(), (const char*)sdo_response.data);
-            py_tuple_setitem(py_retval(), 0, py_r0());
-            py_tuple_setitem(py_retval(), 1, py_r1());
+            py_newstr(py_retval(), (const char*)sdo_response.data);
             break;
         case IS_READ_EXPEDITED:
             os_memcpy(&result, &sdo_response.data, sizeof(uint32));
-            os_memcpy(&str_buffer, &sdo_response.data, sizeof(uint32));
-
-            py_newint(py_r0(), result);
-
-            if (is_printable_string(str_buffer, sizeof(uint32)))
-            {
-                py_newstr(py_r1(), (const char*)str_buffer);
-            }
-            else
-            {
-                py_newnone(py_r1());
-            }
-            py_tuple_setitem(py_retval(), 1, py_r1());
+            py_newint(py_retval(), result);
             break;
         default:
         case ABORT_TRANSFER:
-
-            py_newnone(py_r0());
-            py_newnone(py_r1());
-            py_tuple_setitem(py_retval(), 0, py_r0());
-            py_tuple_setitem(py_retval(), 1, py_r1());
+            py_newnone(py_retval());
             break;
     }
 

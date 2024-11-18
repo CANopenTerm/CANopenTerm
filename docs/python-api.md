@@ -285,6 +285,12 @@ tuple sdo_read (node_id, index, sub_index, [show_output], [comment])
 
 **Returns**:  
 
+Expedited: data (integer)
+Segmented: data (string)
+On failure: `None`
+
+Version 1.0.7 (Deprecated):
+
 Expedited: `(int, None)`, or `(int, str)` if printable  
 Segmented: `(str, str)`  
 On failure: `(None, None)`
