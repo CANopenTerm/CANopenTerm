@@ -270,7 +270,7 @@ print(sdo_lookup_abort_code(0x05040005)) # Out of memory.
 Read SDO (expedited or segmented).
 
 ```python
-tuple sdo_read (node_id, index, sub_index, [show_output], [comment])
+int/str sdo_read (node_id, index, sub_index, [show_output], [comment])
 ```
 
 > **node_id** CANopen Node-ID.
