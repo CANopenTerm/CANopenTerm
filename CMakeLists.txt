@@ -5,6 +5,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
 option(BUILD_TESTS              "Build CMocka unit tests"              OFF)
+option(BUILD_YOCTO              "Build in a Yocto build environment"   OFF)
 option(ENABLE_POCKETPY_SUPPORT  "Enable experimental pocketpy support" OFF)
 option(ENABLE_ADDRESS_SANITIZER "Enable address sanitizer (Clang)"     OFF)
 
@@ -29,6 +30,7 @@ else()
   message(FATAL_ERROR "Unsupported platform")
 endif()
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/os_${PLATFORM}.cmake)
 
 if(BUILD_TESTS)

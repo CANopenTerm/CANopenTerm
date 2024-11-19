@@ -1,5 +1,35 @@
-# pocketpy
+# Use system dependencies when building in a Yocto environment.
+if (BUILD_YOCTO)
+    find_package(SDL2 REQUIRED)
+    if (SDL2_FOUND)
+        include_directories(${SDL2_INCLUDE_DIRS})
+        set(PLATFORM_LIBS ${PLATFORM_LIBS} ${SDL2_LIBRARIES})
+    else()
+        message(FATAL_ERROR "SDL2 not found")
+    endif()
 
+    find_package(Lua REQUIRED)
+    if (LUA_FOUND)
+        include_directories(${LUA_INCLUDE_DIR})
+        set(PLATFORM_LIBS ${PLATFORM_LIBS} ${LUA_LIBRARIES})
+    else()
+        message(FATAL_ERROR "Lua not found")
+    endif()
+
+    find_package(inih REQUIRED)
+    if (inih_FOUND)
+        include_directories(${inih_INCLUDE_DIRS})
+        set(PLATFORM_LIBS ${PLATFORM_LIBS} ${inih_LIBRARIES})
+    else()
+        message(FATAL_ERROR "inih not found")
+    endif()
+
+    set(PLATFORM_LIBS ${PLATFORM_LIBS} dl m pthread readline history)
+
+    return()
+endif()
+
+# pocketpy
 set(POCKETPY_VERSION     "2.0.1")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
