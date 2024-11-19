@@ -4,7 +4,7 @@
 find_path(pocketpy_INCLUDE_DIR NAMES pocketpy.h)
 find_library(pocketpy_LIBRARY NAMES libpocketpy)
 
-if (inih_INCLUDE_DIR AND inih_LIBRARY)
+if (pocketpy_INCLUDE_DIR AND pocketpy_LIBRARY)
     set(pocketpy_FOUND TRUE)
     set(pocketpy_INCLUDE_DIRS ${pocketpy_INCLUDE_DIR})
     set(pocketpy_LIBRARIES ${pocketpy_LIBRARY})
