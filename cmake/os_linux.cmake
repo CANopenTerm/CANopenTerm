@@ -12,6 +12,8 @@ if (BUILD_YOCTO)
     if (LUA_FOUND)
         include_directories(${LUA_INCLUDE_DIR})
         set(PLATFORM_LIBS ${PLATFORM_LIBS} ${LUA_LIBRARIES})
+
+        add_compile_definitions(LUA_USE_C89 LUA_USE_LINUX)
     else()
         message(FATAL_ERROR "Lua not found")
     endif()
@@ -32,7 +34,13 @@ if (BUILD_YOCTO)
         message(FATAL_ERROR "pocketpy not found")
     endif()
 
-    set(PLATFORM_LIBS ${PLATFORM_LIBS} dl m pthread readline history)
+    set(PLATFORM_LIBS
+        ${PLATFORM_LIBS}
+        dl
+        m
+        pthread
+        readline
+        history)
 
     return()
 endif()

@@ -101,6 +101,12 @@ add_library(
   ${core_sources}
   ${os_sources})
 
+if(UNIX)
+  target_link_libraries(
+    picoc
+    m)
+endif()
+
 target_link_libraries(
   core
   picoc)
