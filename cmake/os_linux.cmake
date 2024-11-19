@@ -24,6 +24,14 @@ if (BUILD_YOCTO)
         message(FATAL_ERROR "inih not found")
     endif()
 
+    find_package(pocketpy REQUIRED)
+    if (pocketpy_FOUND)
+        include_directories(${pocketpy_INCLUDE_DIRS})
+        set(PLATFORM_LIBS ${PLATFORM_LIBS} ${inih_LIBRARIES})
+    else()
+        message(FATAL_ERROR "pocketpy not found")
+    endif()
+
     set(PLATFORM_LIBS ${PLATFORM_LIBS} dl m pthread readline history)
 
     return()
