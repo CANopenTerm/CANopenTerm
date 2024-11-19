@@ -2,7 +2,7 @@
 # Locate pocketpy library and include directories
 
 find_path(pocketpy_INCLUDE_DIR NAMES cpocketpy.h)
-find_library(pocketpy_LIBRARY NAMES libpocketpy.so)
+find_library(pocketpy_LIBRARY NAMES libpocketpy.so PATHS /usr/lib)
 
 if (pocketpy_INCLUDE_DIR AND pocketpy_LIBRARY)
     set(pocketpy_FOUND TRUE)
