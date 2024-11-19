@@ -1,8 +1,8 @@
-# Findinih.cmake
+# Findpocketpy.cmake
 # Locate pocketpy library and include directories
 
-find_path(pocketpy_INCLUDE_DIR NAMES pocketpy.h)
-find_library(pocketpy_LIBRARY NAMES libpocketpy)
+find_path(pocketpy_INCLUDE_DIR NAMES pocketpy/pocketpy.h)
+find_library(pocketpy_LIBRARY NAMES pocketpy)
 
 if (pocketpy_INCLUDE_DIR AND pocketpy_LIBRARY)
     set(pocketpy_FOUND TRUE)
