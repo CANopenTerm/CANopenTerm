@@ -42,6 +42,33 @@ if (BUILD_YOCTO)
         readline
         history)
 
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/
+            DESTINATION /usr/local/include
+            FILES_MATCHING PATTERN "*.h")
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/
+            DESTINATION /usr/local/lib
+            FILES_MATCHING PATTERN "*.so")
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/dbc/
+            DESTINATION /usr/share/CANopenTerm/dbc
+            FILES_MATCHING PATTERN "*")
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/eds/
+            DESTINATION /usr/share/CANopenTerm/eds
+            FILES_MATCHING PATTERN "*")
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/
+            DESTINATION /usr/share/CANopenTerm/scripts
+            FILES_MATCHING PATTERN "*.c" PATTERN "*.lua" PATTERN "*.py")
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/lua/
+            DESTINATION /usr/share/lua/5.4/lua
+            FILES_MATCHING PATTERN "*")
+
+    install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/export/CANopenTerm
+            DESTINATION /usr/local/bin)
+
     return()
 endif()
 
