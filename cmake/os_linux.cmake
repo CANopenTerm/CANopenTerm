@@ -55,7 +55,7 @@ if (BUILD_YOCTO)
             FILES_MATCHING PATTERN "*.c" PATTERN "*.lua" PATTERN "*.py")
 
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/lua/
-            DESTINATION /usr/share/lua/5.4/lua
+            DESTINATION /usr/share/CANopenTerm/scripts/lua
             FILES_MATCHING PATTERN "*")
 
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/CANopenTerm
