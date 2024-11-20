@@ -80,13 +80,3 @@ cd build
 cmake ..
 make
 ````
-
-### Yocto
-
-CANopenTerm also provides an experimental
-[Yocto layer](https://github.com/CANopenTerm/meta-canopenterm).
-
-```bash
-bitbake-layers add-layer meta-canopenterm
-bitbake canopenterm
-````

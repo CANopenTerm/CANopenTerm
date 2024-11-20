@@ -289,12 +289,6 @@ Expedited: data (integer)
 Segmented: data (string)
 On failure: `None`
 
-Version 1.0.7 (Deprecated):
-
-Expedited: `(int, None)`, or `(int, str)` if printable  
-Segmented: `(str, str)`  
-On failure: `(None, None)`
-
 <!-- tab:Example -->
 ```python
 node_id  = 0x123
