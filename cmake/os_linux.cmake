@@ -59,7 +59,7 @@ if (BUILD_YOCTO)
             FILES_MATCHING PATTERN "*")
 
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/CANopenTerm
-            DESTINATION /usr/local/bin)
+            DESTINATION /usr/bin)
 
     return()
 endif()
