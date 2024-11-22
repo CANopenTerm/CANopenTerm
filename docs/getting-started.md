@@ -69,6 +69,19 @@ cmake ..
 make
 ````
 
+### Yocto
+
+[![CANopenTerm](media/oe-logo-2009.svg)](media/oe-logo-2009.svg "OpenEmbedded")
+
+CANopenTerm is upstreamed to the OpenEmbedded/Yocto project.  The recipe can be found at
+[meta-oe/recipes-extended/canopenterm](https://layers.openembedded.org/layerindex/recipe/421300/).
+
+```bash
+cd ~/poky
+source oe-init-build-env
+bitbake canopenterm
+```
+
 ### Raspberry Pi
 
 To compile CANopenTerm on the Raspberry Pi, another dependency is required.
