@@ -73,7 +73,9 @@ make
 
 [![CANopenTerm](media/oe-logo-2009.svg)](media/oe-logo-2009.svg "OpenEmbedded")
 
-CANopenTerm is upstreamed to the OpenEmbedded/Yocto project.  The recipe can be found at
+CANopenTerm is upstreamed to the
+[OpenEmbedded](https://www.openembedded.org)/[Yocto project](https://www.yoctoproject.org/).
+The recipe can be found at
 [meta-oe/recipes-extended/canopenterm](https://layers.openembedded.org/layerindex/recipe/421300/).
 
 ```bash
