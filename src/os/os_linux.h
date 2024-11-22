@@ -30,6 +30,7 @@
 #define os_fclose    fclose
 #define os_fgets     fgets
 #define os_fopen     fopen
+#define os_fprintf   fprintf
 #define os_isdigit   SDL_isdigit
 #define os_isprint   SDL_isprint
 #define os_isspace   SDL_isspace

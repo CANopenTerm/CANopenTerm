@@ -11,6 +11,7 @@
 #include "command.h"
 #include "core.h"
 #include "dbc.h"
+#include "junit.h"
 #include "lua_can.h"
 #include "lua_dbc.h"
 #include "lua_misc.h"
@@ -100,6 +101,7 @@ void core_deinit(core_t *core)
         return;
     }
 
+    junit_clear_results();
     dbc_unload();
     can_quit(core);
     scripts_deinit(core);

@@ -25,6 +25,7 @@
 #define os_fclose    fclose
 #define os_fgets     fgets
 #define os_fopen     fopen
+#define os_fprintf   fprintf
 #define os_fread     fread
 #define os_free      SDL_free
 #define os_freopen   freopen

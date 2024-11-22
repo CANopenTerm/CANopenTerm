@@ -53,18 +53,21 @@ endfunction()
 set(api_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_dbc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_junit.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_misc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_dbc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_junit.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_misc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_dbc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_junit.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_misc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_pdo.c
@@ -78,6 +81,7 @@ set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dbc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/eds.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/junit.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
