@@ -359,11 +359,16 @@ static char** get_can_interfaces(int* count)
     int                fd;
     char               buf[BUFFER_SIZE] = { 0 };
     struct iovec       iov              = { buf, sizeof(buf) };
-    struct msghdr      msg              = { &sa, sizeof(sa), &iov, 1, NULL, 0, 0 };
+    struct msghdr      msg              = { 0 };
     int                len;
     int                max_interfaces   = 10;
     int                can_count        = 0;
     char**             can_interfaces   = (char**)os_calloc(max_interfaces * sizeof(char*), sizeof(char));
+    
+    msg.msg_name = &sa;
+    msg.msg_namelen = sizeof(sa);
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
 
     struct
     {
