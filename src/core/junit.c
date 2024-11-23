@@ -118,8 +118,8 @@ status_t junit_generate_report(const char* filename)
                 if (results[i]->testsuite_name_hash > results[j]->testsuite_name_hash)
                 {
                     junit_result_t* temp = results[i];
-                    results[i] = results[j];
-                    results[j] = temp;
+                    results[i]           = results[j];
+                    results[j]           = temp;
                 }
             }
         }
