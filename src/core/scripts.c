@@ -14,6 +14,14 @@
 #include "core.h"
 #include "os.h"
 #include "pocketpy.h"
+
+#include "python_can.h"
+#include "python_dbc.h"
+#include "python_junit.h"
+#include "python_misc.h"
+#include "python_nmt.h"
+#include "python_pdo.h"
+#include "python_sdo.h"
 #include "scripts.h"
 #include "table.h"
 
@@ -36,6 +44,7 @@ void scripts_init(core_t *core)
     py_initialize();
     python_can_init(core);
     python_dbc_init(core);
+    python_junit_init(core);
     python_misc_init(core);
     python_nmt_init(core);
     python_pdo_init(core);

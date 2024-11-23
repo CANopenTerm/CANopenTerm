@@ -9,4 +9,9 @@
 
 #ifndef PYTHON_JUNIT_H
 #define PYTHON_JUNIT_H
+
+#include "core.h"
+
+void python_junit_init(core_t* core);
+
 #endif /* PYTHON_JUNIT_H */
