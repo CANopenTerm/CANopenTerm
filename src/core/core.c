@@ -59,6 +59,7 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
     {
         lua_register_can_commands((*core));
         lua_register_dbc_commands((*core));
+        lua_register_junit_commands((*core));
         lua_register_misc_commands((*core));
         lua_register_nmt_command((*core));
         lua_register_pdo_commands((*core));

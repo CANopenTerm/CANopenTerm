@@ -14,14 +14,15 @@
 
 typedef struct
 {
+    bool_t      has_passed;
+    uint64      testsuite_name_hash;
+    float       time;
     const char* package;
     const char* class_name;
+    const char* test_name;
     const char* error_type;
     const char* error_message;
     const char* call_stack;
-    const char* test_name;
-    bool_t      has_passed;
-    float       time;
 
 } junit_result_t;
 
