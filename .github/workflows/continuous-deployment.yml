@@ -62,6 +62,7 @@ jobs:
           path: setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
 
   release:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     steps:
