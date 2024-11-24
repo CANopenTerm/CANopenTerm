@@ -479,7 +479,7 @@ if can_write(0x5454, 8, 0x1122334455667788, False, True, "SPAM"):
 None delay_ms ([delay_in_ms], [show_output], [comment])
 ```
 
-> **delay_in_ms** Delay in milliseconds, default is 1000.
+> **delay_in_ms** Delay in milliseconds, default is 1.
 
 > **show_output** Show formatted output, default is `False`.
 

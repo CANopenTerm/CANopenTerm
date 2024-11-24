@@ -592,7 +592,7 @@ end
 delay_ms ([delay_in_ms], [show_output], [comment])
 ```
 
-> **delay_in_ms** Delay in milliseconds, default is 1000.
+> **delay_in_ms** Delay in milliseconds, default is 1.
 
 > **show_output** Show formatted output, default is `false`.
 

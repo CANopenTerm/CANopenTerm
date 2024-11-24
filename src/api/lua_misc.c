@@ -23,7 +23,7 @@ int lua_delay_ms(lua_State *L)
 
     if (0 == delay_in_ms)
     {
-        delay_in_ms = 1000u;
+        delay_in_ms = 1u;
     }
 
     if (IS_TRUE == show_output)

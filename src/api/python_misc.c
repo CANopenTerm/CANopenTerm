@@ -45,7 +45,7 @@ bool py_delay_ms(int argc, py_Ref argv)
 
     if (0 == delay_in_ms)
     {
-        delay_in_ms = 1000u;
+        delay_in_ms = 1u;
     }
 
     if (IS_TRUE == show_output)
