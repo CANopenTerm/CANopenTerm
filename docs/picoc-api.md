@@ -441,6 +441,8 @@ printf("%s\n", dict_lookup, 0x1008, 0x00);
 
 ## Test Report Generation
 
+!> Upcoming feature, not yet available in the current release version.
+
 To use the test report generator, include the following header file:
 
 ```c
