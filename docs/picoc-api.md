@@ -439,6 +439,163 @@ printf("%s\n", dict_lookup, 0x1008, 0x00);
 ```
 <!-- tabs:end -->
 
+## Test Report Generation
+
+To use the test report generator, include the following header file:
+
+```c
+#include "test_report.h"
+```
+
+```c
+typedef struct test_result
+{
+  int   has_passed;
+  int   reserved_1;
+  int   reserved_2;
+  float time;
+  char* package;
+  char* class_name;
+  char* test_name;
+  char* error_type;
+  char* error_message;
+  char* call_stack;
+
+} test_result_t;
+```
+
+### test_add_result()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+void test_add_result (test_result_t* result)
+```
+
+> **result** A pointer of type `test_result_t`.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```c
+#include "test_report.h"
+
+test_result_t result;
+
+result.has_passed = 1;
+result.time       = 1.22;
+result.package    = "Tests";
+result.class_name = "Registration";
+result.test_name  = "testCase";
+
+test_add_result(&result);
+```
+<!-- tabs:end -->
+
+### test_clear_results()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+!> Implicitly called by `test_generate_report()`
+
+```c
+void test_clear_results (void)
+```
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```c
+#include "test_report.h"
+
+test_result_t result;
+
+result.has_passed = 1;
+result.time       = 1.22;
+result.package    = "Tests";
+result.class_name = "Registration";
+result.test_name  = "testCase";
+
+test_add_result(&result);
+test_clear_results();
+test_generate_report("test_report.xml");
+test_clear_results();
+```
+
+Resulting XML file:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="0.000000">
+</testsuites>
+```
+<!-- tabs:end -->
+
+### test_eds_file()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+void test_eds_file (int node_id, char* file_name)
+```
+
+> **node_id** CANopen Node-ID.
+
+> **file_name** EDS file name.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```c
+#include "test_report.h"
+
+test_eds_file(0x50, "eds/DS301_profile.eds")
+test_generate_report()
+```
+<!-- tabs:end -->
+
+### test_generate_report()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+!> Implicitly calls `test_clear_results()`.
+
+```c
+int test_generate_report (char* file_name)
+```
+
+> **file_name** Report file name.
+
+**Returns**: `1` on success, `0` on failure.
+
+<!-- tab:Example -->
+```c
+#include "test_report.h"
+
+test_result_t result;
+
+result.has_passed = 1;
+result.time       = 1.22;
+result.package    = "Tests";
+result.class_name = "Registration";
+result.test_name  = "testCase";
+
+test_add_result(&result);
+test_generate_report("test_report.xml");
+```
+
+Resulting XML file:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="-0.000050">
+    <testsuite name="Tests.Registration" time="-0.000050">
+        <testcase name="testCase" classname="Tests.Registration" time="-0.000050">
+        </testcase>
+    </testsuite>
+</testsuites>
+```
+
+<!-- tabs:end -->
+
 ## Generic CAN interface
 
 To use the CAN interface, include the following header file:

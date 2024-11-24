@@ -446,7 +446,7 @@ test_add_result(false, 4.34, "Tests", "Registration", "testCase3")
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-!> Implicitly called by `test_generate_report()`.
+!> Implicitly called by `test_generate_report()`
 
 ```lua
 test_clear_results ()
@@ -456,7 +456,7 @@ test_clear_results ()
 
 <!-- tab:Example -->
 ```lua
-test_add_result(true,  1.22, "Tests", "Registration", "testCase1")
+test_add_result(true, 1.22, "Tests", "Registration", "testCase1")
 test_clear_results()
 test_generate_report()
 ```
@@ -474,7 +474,7 @@ Resulting XML file:
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-test_eds_file (file_name)
+test_eds_file (node_id, file_name)
 ```
 
 > **node_id** CANopen Node-ID.
@@ -494,7 +494,7 @@ test_generate_report()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-!> Implicitly calls `test_generate_report()`.
+!> Implicitly calls `test_clear_results()`
 
 ```lua
 test_generate_report ([file_name])
@@ -502,7 +502,7 @@ test_generate_report ([file_name])
 
 > **file_name** Test report output file name, default is `test_report.xml`.
 
-**Returns**: true on success, false on failure.
+**Returns**: `true` on success, `false` on failure.
 
 <!-- tab:Example -->
 ```lua

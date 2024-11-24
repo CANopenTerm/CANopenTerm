@@ -19,7 +19,6 @@
 #include "picoc_pdo.h"
 #include "picoc_sdo.h"
 #include "picoc_test_report.h"
-
 #include "pocketpy.h"
 #include "scripts.h"
 #include "table.h"

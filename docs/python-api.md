@@ -419,6 +419,139 @@ print(dict_lookup(0x1008, 0x00)) # Manufacturer device name.
 
 **Returns**: a `str` or `None`.
 
+## Test Report Generation
+
+!> Upcoming feature, not yet available in the current release version.
+
+### test_add_result()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```python
+test_add_result ([has_passed], [time], [package], [class_name], [test_name], [error_type], [error_message], [call_stack])
+```
+
+> **has_passed** Test result, default is `False`.
+
+> **time** Test execution time in seconds, default is `0.0`.
+
+> **package** Package name, default is `Tests`.
+
+> **class_name** Class name, default is `Generic`.
+
+> **test_name** Test name, default is `UnnamedTest`.
+
+> **error_type** Error type, default is `AssertionError`.
+
+> **error_message** Error message, default is `No error message provided`.
+
+> **call_stack** Call stack, default is `<!-- No call stack provided. -->`.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```python
+test_add_result(True,  1.22, "Tests", "Registration", "testCase1")
+test_add_result(True,  2.34, "Tests", "Registration", "testCase2")
+test_add_result(True,  2.52, "Tests", "Auth",         "testCase1")
+test_add_result(False, 4.34, "Tests", "Registration", "testCase3")
+```
+<!-- tabs:end -->
+
+### test_clear_results()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+!> Implicitly called by `test_generate_report()`
+
+```python
+test_clear_results ()
+```
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```python
+test_add_result(True, 1.22, "Tests", "Registration", "testCase1")
+test_clear_results()
+test_generate_report()
+```
+
+Resulting XML file:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="0.000000">
+</testsuites>
+```
+<!-- tabs:end -->
+
+### test_eds_file()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```python
+test_eds_file (node_id, file_name)
+```
+
+> **node_id** CANopen Node-ID.
+
+> **file_name** EDS file name.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```python
+test_eds_file(0x50, "eds/DS301_profile.eds")
+test_generate_report()
+```
+<!-- tabs:end -->
+
+### test_generate_report()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+!> Implicitly calls `test_clear_results()`
+
+```python
+test_generate_report ([file_name])
+```
+
+> **file_name** Test report output file name, default is `test_report.xml`.
+
+**Returns**: `True` on success, `False` on failure.
+
+<!-- tab:Example -->
+```python
+test_add_result(True,  1.22, "Tests", "Registration", "testCase1")
+test_add_result(True,  2.34, "Tests", "Registration", "testCase2")
+test_add_result(True,  2.52, "Tests", "Auth",         "testCase1")
+test_add_result(False, 4.34, "Tests", "Registration", "testCase3")
+test_generate_report()
+```
+
+Resulting XML file:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="10.420000">
+    <testsuite name="Tests.Auth" time="2.520000">
+        <testcase name="testCase1" classname="Tests.Auth" time="2.520000">
+        </testcase>
+    </testsuite>
+    <testsuite name="Tests.Registration" time="7.900000">
+        <testcase name="testCase2" classname="Tests.Registration" time="2.340000">
+        </testcase>
+        <testcase name="testCase1" classname="Tests.Registration" time="1.220000">
+        </testcase>
+        <testcase name="testCase3" classname="Tests.Registration" time="4.340000">
+            <failure message="No error message provided" type="AssertionError">
+                <!-- No call stack provided. -->
+            </failure>
+        </testcase>
+    </testsuite>
+</testsuites>
+```
+<!-- tabs:end -->
+
 ## Generic CAN CC interface
 
 ### can_read()
