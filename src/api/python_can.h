@@ -10,8 +10,6 @@
 #ifndef PYTHON_CAN_H
 #define PYTHON_CAN_H
 
-#include "core.h"
-
-void python_can_init(core_t* core);
+void python_can_init(void);
 
 #endif /* PYTHON_CAN_H */

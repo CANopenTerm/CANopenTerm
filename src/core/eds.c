@@ -15,6 +15,7 @@
 #include "ini.h"
 #include "sdo.h"
 #include "table.h"
+#include "test_report.h"
 
 static eds_t eds;
 
@@ -63,29 +64,60 @@ void list_eds(void)
     table_flush(&table);
 }
 
-status_t run_conformance_test(const char* eds_path, uint32 node_id)
+status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t disp_mode)
 {
-    status_t status = ALL_OK;
+    status_t status                = ALL_OK;
     char     unavailable_subs[256] = { 0 };
-    int      err_count = 0;
+    char     base_name[64]         = { 0 };
+    int      err_count             = 0;
     int      error;
     int      i;
-    int      last_sub_index = -1;
-    int      range_start = -1;
-    uint16   current_index = 0xFFFF;
+    int      last_sub_index        = -1;
+    int      range_start           = -1;
+    uint16   current_index         = 0xFFFF;
 
-    os_log(LOG_INFO, "Running conformance test for %s...", eds_path);
+    if (disp_mode != SCRIPT_MODE)
+    {
+        os_log(LOG_INFO, "Running conformance test for %s...", eds_path);
+    }
+    else
+    {
+        /* Extract base name from path. */
+        const char* base = os_strrchr(eds_path, '/');
+        char* dot;
+
+        if (base)
+        {
+            base++;
+        }
+        else
+        {
+            base = eds_path;
+        }
+        os_strlcpy(base_name, base, sizeof(base_name));
+        dot = os_strrchr(base_name, '.');
+        if (dot)
+        {
+            *dot = '\0';
+        }
+    }
 
     /* Parse EDS file. */
     error = ini_parse(eds_path, parse_eds, &eds_path);
     if (error < 0)
     {
-        os_log(LOG_ERROR, "Can't load '%s' (%d).", eds_path, error);
+        if (disp_mode != SCRIPT_MODE)
+        {
+            os_log(LOG_ERROR, "Can't load '%s' (%d).", eds_path, error);
+        }
         status = EDS_PARSE_ERROR;
     }
 
-    os_log(LOG_INFO, "Number of objects: %u", eds.num_entries);
-    os_log(LOG_INFO, "Testing object availability...");
+    if (disp_mode != SCRIPT_MODE)
+    {
+        os_log(LOG_INFO, "Number of objects: %u", eds.num_entries);
+        os_log(LOG_INFO, "Testing object availability...");
+    }
 
     for (i = 0; i < eds.num_entries; i++)
     {
@@ -93,55 +125,86 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id)
         {
             can_message_t sdo_response;
             sdo_state_t   state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
+
             if (ABORT_TRANSFER == state)
             {
-                if (eds.entries[i].Index != current_index)
+                if (disp_mode != SCRIPT_MODE)
                 {
-                    if (current_index != 0xFFFF)
+                    if (eds.entries[i].Index != current_index)
                     {
-                        if (range_start != -1)
+                        if (current_index != 0xFFFF)
                         {
-                            if (last_sub_index == range_start)
+                            if (range_start != -1)
                             {
-                                os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d", range_start);
+                                if (last_sub_index == range_start)
+                                {
+                                    os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d", range_start);
+                                }
+                                else
+                                {
+                                    os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d-%d", range_start, last_sub_index);
+                                }
                             }
-                            else
-                            {
-                                os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d-%d", range_start, last_sub_index);
-                            }
+
+                            os_log(LOG_INFO, "  0x%04X sub %s not available.", current_index, unavailable_subs);
                         }
-                        os_log(LOG_INFO, "  0x%04X sub %s not available.", current_index, unavailable_subs);
+                        current_index = eds.entries[i].Index;
+                        os_strlcpy(unavailable_subs, "", sizeof(unavailable_subs));
+                        range_start = -1;
                     }
-                    current_index = eds.entries[i].Index;
-                    os_strlcpy(unavailable_subs, "", sizeof(unavailable_subs));
-                    range_start = -1;
-                }
 
-                if (range_start == -1)
-                {
-                    range_start = eds.entries[i].SubIndex;
-                }
-                else if (eds.entries[i].SubIndex != last_sub_index + 1)
-                {
-                    if (last_sub_index == range_start)
+                    if (range_start == -1)
                     {
-                        os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d, ", range_start);
+                        range_start = eds.entries[i].SubIndex;
                     }
-                    else
+                    else if (eds.entries[i].SubIndex != last_sub_index + 1)
                     {
-                        os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d-%d, ", range_start, last_sub_index);
+                        if (last_sub_index == range_start)
+                        {
+                            os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d, ", range_start);
+                        }
+                        else
+                        {
+                            os_snprintf(unavailable_subs + os_strlen(unavailable_subs), sizeof(unavailable_subs) - os_strlen(unavailable_subs), "%d-%d, ", range_start, last_sub_index);
+                        }
+                        range_start = eds.entries[i].SubIndex;
                     }
-                    range_start = eds.entries[i].SubIndex;
-                }
 
-                last_sub_index = eds.entries[i].SubIndex;
-                err_count++;
+                    last_sub_index = eds.entries[i].SubIndex;
+                    err_count++;
+                }
+                else /* SCRIPT_MODE */
+                {
+                    char          test_name[64] = { 0 };
+                    test_result_t result;
+
+                    os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
+                        eds.entries[i].Index, eds.entries[i].SubIndex);
+
+                    result.has_passed    = IS_FALSE;
+                    result.time          = 0.0f;
+                    result.package       = "EDS";
+                    result.class_name    = base_name;
+                    result.test_name     = test_name;
+                    result.error_type    = "SDORead";
+                    result.error_message = "Object not available.";
+                    result.call_stack    = NULL;
+
+                    test_add_result(&result);
+                }
                 status = EDS_OBJECT_NOT_AVAILABLE;
+            }
+            else
+            {
+                if (disp_mode != SCRIPT_MODE)
+                {
+                    /* Passed. */
+                }
             }
         }
     }
 
-    if (current_index != 0xFFFF)
+    if ((current_index != 0xFFFF) && (disp_mode != SCRIPT_MODE))
     {
         if (range_start != -1)
         {
@@ -155,15 +218,14 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id)
             }
         }
         os_log(LOG_INFO, "  0x%04X sub %s not available.", current_index, unavailable_subs);
+        os_log(LOG_INFO, "Conformity: %.2f%%", 100.f - (100.f / (float)eds.num_entries * (float)err_count));
+        os_log(LOG_INFO, "%d of %d objects not available.", err_count, eds.num_entries);
     }
-
-    os_log(LOG_INFO, "Conformity: %.2f%%", 100.f - (100.f / (float)eds.num_entries * (float)err_count));
-    os_log(LOG_INFO, "%d of %d objects not available.", err_count, eds.num_entries);
 
     if (eds.entries != NULL)
     {
         os_free(eds.entries);
-        eds.entries = NULL;
+        eds.entries     = NULL;
         eds.num_entries = 0;
     }
 
@@ -189,7 +251,7 @@ status_t validate_eds(uint32 file_no, uint32 node_id)
                     char eds_path[50];
                     os_snprintf(eds_path, 50, "eds/%s", dir->d_name);
 
-                    status = run_conformance_test(eds_path, node_id);
+                    status = run_conformance_test(eds_path, node_id, TERM_MODE);
                     break;
                 }
                 found_file_no++;

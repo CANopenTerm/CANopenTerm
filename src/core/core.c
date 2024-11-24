@@ -11,16 +11,24 @@
 #include "command.h"
 #include "core.h"
 #include "dbc.h"
-#include "junit.h"
 #include "lua_can.h"
 #include "lua_dbc.h"
 #include "lua_misc.h"
 #include "lua_nmt.h"
 #include "lua_pdo.h"
 #include "lua_sdo.h"
+#include "lua_test_report.h"
+#include "python_can.h"
+#include "python_dbc.h"
+#include "python_misc.h"
+#include "python_nmt.h"
+#include "python_pdo.h"
+#include "python_sdo.h"
+#include "python_test_report.h"
 #include "nmt.h"
 #include "os.h"
 #include "scripts.h"
+#include "test_report.h"
 #include "version.h"
 
 status_t core_init(core_t **core, bool_t is_plain_mode)
@@ -59,11 +67,20 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
     {
         lua_register_can_commands((*core));
         lua_register_dbc_commands((*core));
-        lua_register_junit_commands((*core));
         lua_register_misc_commands((*core));
         lua_register_nmt_command((*core));
         lua_register_pdo_commands((*core));
         lua_register_sdo_commands((*core));
+        lua_register_test_commands((*core));
+        python_can_init();
+        python_dbc_init();
+        python_misc_init();
+        python_nmt_init();
+        python_pdo_init();
+        python_sdo_init();
+        python_test_init();
+
+        /* PicoC is initialised when calling script_run(). */
     }
     else
     {
@@ -102,7 +119,7 @@ void core_deinit(core_t *core)
         return;
     }
 
-    junit_clear_results();
+    test_clear_results();
     dbc_unload();
     can_quit(core);
     scripts_deinit(core);

@@ -10,8 +10,6 @@
 #ifndef PYTHON_SDO_H
 #define PYTHON_SDO_H
 
-#include "core.h"
-
-void python_sdo_init(core_t* core);
+void python_sdo_init(void);
 
 #endif /* PYTHON_SDO_H */

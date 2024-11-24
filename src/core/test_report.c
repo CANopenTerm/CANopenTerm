@@ -1,4 +1,4 @@
-/** @file junit.c
+/** @file test_report.c
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -8,21 +8,21 @@
  **/
 
 #include "core.h"
-#include "junit.h"
 #include "os.h"
+#include "test_report.h"
 
-static uint32           num_results = 0;
-static junit_result_t** results     = NULL;
+static uint32          num_results = 0;
+static test_result_t** results     = NULL;
 
 static uint64 generate_hash(const unsigned char* name);
 
-status_t junit_init(void)
+status_t test_init(void)
 {
     status_t status = ALL_OK;
 
     if (NULL == results)
     {
-        results = (junit_result_t**)os_calloc(sizeof(junit_result_t*), 1);
+        results = (test_result_t**)os_calloc(sizeof(test_result_t*), 1);
         if (NULL == results)
         {
             status = OS_MEMORY_ALLOCATION_ERROR;
@@ -32,36 +32,87 @@ status_t junit_init(void)
     return status;
 }
 
-void junit_add_result(junit_result_t* result)
+void test_add_result(test_result_t* result)
 {
     num_results = num_results + 1;
-    results     = (junit_result_t**)os_realloc(results, sizeof(junit_result_t*) * (num_results));
+    results = (test_result_t**)os_realloc(results, sizeof(test_result_t*) * (num_results));
 
     if (NULL == results)
     {
         os_log(LOG_ERROR, "Not enough memory to add new test result.");
-        junit_clear_results();
+        test_clear_results();
     }
     else
     {
-        results[num_results - 1] = (junit_result_t*)os_calloc(1, sizeof(junit_result_t));
+        results[num_results - 1] = (test_result_t*)os_calloc(1, sizeof(test_result_t));
         if (NULL == results[num_results - 1])
         {
             os_log(LOG_ERROR, "Not enough memory to allocate for new test result.");
-            junit_clear_results();
+            test_clear_results();
         }
         else
         {
-            os_memcpy(results[num_results - 1], result, sizeof(junit_result_t));
+            results[num_results - 1]->has_passed          = result->has_passed;
+            results[num_results - 1]->testsuite_name_hash = result->testsuite_name_hash;
+            results[num_results - 1]->time                = result->time;
+
+            if (result->package)
+            {
+                results[num_results - 1]->package = os_strdup(result->package);
+            }
+            if (result->class_name)
+            {
+                results[num_results - 1]->class_name = os_strdup(result->class_name);
+            }
+            if (result->test_name)
+            {
+                results[num_results - 1]->test_name = os_strdup(result->test_name);
+            }
+            if (result->error_type)
+            {
+                results[num_results - 1]->error_type = os_strdup(result->error_type);
+            }
+            if (result->error_message)
+            {
+                results[num_results - 1]->error_message = os_strdup(result->error_message);
+            }
+            if (result->call_stack)
+            {
+                results[num_results - 1]->call_stack = os_strdup(result->call_stack);
+            }
         }
     }
 }
 
-void junit_clear_results(void)
+void test_clear_results(void)
 {
     uint32 i;
     for (i = 0; i < num_results; i = i + 1)
     {
+        if (results[i]->package != NULL)
+        {
+            os_free((void*)results[i]->package);
+        }
+        if (results[i]->class_name != NULL)
+        {
+            os_free((void*)results[i]->class_name);
+        }
+        if (results[i]->test_name)
+        {
+            os_free((void*)results[i]->test_name);
+        }
+        if (results[i]->error_type)
+        {
+            os_free((void*)results[i]->error_type);
+        }
+        if (results[i]->error_message)
+        {
+            os_free((void*)results[i]->error_message);
+        }
+        if (results[i]->call_stack)
+        {
+            os_free((void*)results[i]->call_stack);
+        }
         os_free(results[i]);
     }
     os_free(results);
@@ -69,17 +120,17 @@ void junit_clear_results(void)
     num_results = 0;
 }
 
-status_t junit_generate_report(const char* filename)
+status_t test_generate_report(const char* file_name)
 {
     status_t status = ALL_OK;
     FILE_t*  file;
 
-    if (NULL == filename)
+    if (NULL == file_name)
     {
-        filename = "test_report.xml";
+        file_name = "test_report.xml";
     }
 
-    file = os_fopen(filename, "w+");
+    file = os_fopen(file_name, "w+");
     if (NULL == file)
     {
         status = OS_FILE_NOT_FOUND;
@@ -95,12 +146,12 @@ status_t junit_generate_report(const char* filename)
 
             if (NULL == results[i]->package)
             {
-                results[i]->package = "Tests";
+                results[i]->package = os_strdup("Tests");
             }
 
             if (NULL == results[i]->class_name)
             {
-                results[i]->class_name = "Generic";
+                results[i]->class_name = os_strdup("Generic");
             }
 
             os_snprintf(testsuit_name, sizeof(testsuit_name), "%s.%s", results[i]->package, results[i]->class_name);
@@ -117,9 +168,9 @@ status_t junit_generate_report(const char* filename)
             {
                 if (results[i]->testsuite_name_hash > results[j]->testsuite_name_hash)
                 {
-                    junit_result_t* temp = results[i];
-                    results[i]           = results[j];
-                    results[j]           = temp;
+                    test_result_t* temp = results[i];
+                    results[i] = results[j];
+                    results[j] = temp;
                 }
             }
         }
@@ -148,6 +199,11 @@ status_t junit_generate_report(const char* filename)
 
             for (i = current_suite_start; i < current_suite_end; i++)
             {
+                if (NULL == results[i]->test_name)
+                {
+                    results[i]->test_name = os_strdup("Test");
+                }
+
                 os_fprintf(file, "        <testcase name=\"%s\" classname=\"%s.%s\" time=\"%.6f\">\n",
                     results[i]->test_name,
                     results[i]->package,
@@ -158,17 +214,17 @@ status_t junit_generate_report(const char* filename)
                 {
                     if (NULL == results[i]->error_type)
                     {
-                        results[i]->error_type = "AssertionError";
+                        results[i]->error_type = os_strdup("AssertionError");
                     }
 
                     if (NULL == results[i]->error_message)
                     {
-                        results[i]->error_message = "No error message provided";
+                        results[i]->error_message = os_strdup("No error message provided");
                     }
 
                     if (NULL == results[i]->call_stack)
                     {
-                        results[i]->call_stack = "<!-- No call stack provided. -->";
+                        results[i]->call_stack = os_strdup("<!-- No call stack provided. -->");
                     }
 
                     os_fprintf(file, "            <failure message=\"%s\" type=\"%s\">\n",
@@ -185,6 +241,11 @@ status_t junit_generate_report(const char* filename)
         }
         os_fprintf(file, "</testsuites>\n");
         os_fclose(file);
+    }
+
+    if (ALL_OK == status)
+    {
+        test_clear_results();
     }
 
     return status;

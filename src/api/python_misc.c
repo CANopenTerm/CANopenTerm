@@ -18,7 +18,7 @@ bool py_delay_ms(int argc, py_Ref argv);
 bool py_key_is_hit(int argc, py_Ref argv);
 bool py_print_heading(int argc, py_Ref argv);
 
-void python_misc_init(core_t *core)
+void python_misc_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 

@@ -10,8 +10,6 @@
 #ifndef PYTHON_NMT_H
 #define PYTHON_NMT_H
 
-#include "core.h"
-
-void python_nmt_init(core_t* core);
+void python_nmt_init(void);
 
 #endif /* PYTHON_NMT_H */

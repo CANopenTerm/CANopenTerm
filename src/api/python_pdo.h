@@ -10,8 +10,6 @@
 #ifndef PYTHON_PDO_H
 #define PYTHON_PDO_H
 
-#include "core.h"
-
-void python_pdo_init(core_t* core);
+void python_pdo_init(void);
 
 #endif /* PYTHON_PDO_H */

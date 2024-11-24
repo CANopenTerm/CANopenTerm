@@ -10,8 +10,6 @@
 #ifndef PYTHON_DBC_H
 #define PYTHON_DBC_H
 
-#include "core.h"
-
-void python_dbc_init(core_t* core);
+void python_dbc_init(void);
 
 #endif /* PYTHON_DBC_H */

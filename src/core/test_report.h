@@ -1,4 +1,5 @@
-/** @file junit.h
+
+/** @file test_report.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,8 +8,8 @@
  *
  **/
 
-#ifndef JUNIT_H
-#define JUNIT_H
+#ifndef TEST_REPORT_H
+#define TEST_REPORT_H
 
 #include "os.h"
 
@@ -24,11 +25,11 @@ typedef struct
     const char* error_message;
     const char* call_stack;
 
-} junit_result_t;
+} test_result_t;
 
-status_t junit_init(void);
-void     junit_add_result(junit_result_t* result);
-void     junit_clear_results(void);
-status_t junit_generate_report(const char* filename);
+status_t test_init(void);
+void     test_add_result(test_result_t* result);
+void     test_clear_results(void);
+status_t test_generate_report(const char* file_name);
 
-#endif /* JUNIT_H */
+#endif /* TEST_REPORT_H */

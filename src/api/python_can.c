@@ -17,7 +17,7 @@ typedef bool (*py_CFunction)(int argc, py_Ref argv);
 bool py_can_write(int argc, py_Ref argv);
 bool py_can_read(int argc, py_Ref argv);
 
-void python_can_init(core_t *core)
+void python_can_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 

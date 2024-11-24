@@ -19,7 +19,7 @@ extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, b
 bool py_pdo_add(int argc, py_Ref argv);
 bool py_pdo_del(int argc, py_Ref argv);
 
-void python_pdo_init(core_t *core)
+void python_pdo_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 

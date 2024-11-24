@@ -1,4 +1,4 @@
-/** @file python_junit.h
+/** @file python_test_report.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,11 +7,9 @@
  *
  **/
 
-#ifndef PYTHON_JUNIT_H
-#define PYTHON_JUNIT_H
+#ifndef PYTHON_TEST_REPORT_H
+#define PYTHON_TEST_REPORT_H
 
-#include "core.h"
+void python_test_init(void);
 
-void python_junit_init(core_t* core);
-
-#endif /* PYTHON_JUNIT_H */
+#endif /* PYTHON_TEST_REPORT_H */

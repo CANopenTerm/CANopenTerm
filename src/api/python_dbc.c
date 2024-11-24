@@ -18,7 +18,7 @@ bool py_dbc_decode(int argc, py_Ref argv);
 bool py_dbc_find_id_by_name(int argc, py_Ref argv);
 bool py_dbc_load(int argc, py_Ref argv);
 
-void python_dbc_init(core_t *core)
+void python_dbc_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 

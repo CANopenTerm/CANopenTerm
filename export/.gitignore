@@ -1,8 +1,12 @@
 *
-!scripts
+!dbc
+!eds
 !lua
+!scripts
 !tests
 !*.c
+!*.dbc
+!*.eds
 !*.lua
 !*.py
 !.gitignore

@@ -24,7 +24,7 @@ bool py_sdo_write_file(int argc, py_Ref argv);
 bool py_sdo_write_string(int argc, py_Ref argv);
 bool py_dict_lookup(int argc, py_Ref argv);
 
-void python_sdo_init(core_t *core)
+void python_sdo_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 

@@ -19,7 +19,7 @@ extern void nmt_print_error(const char* reason, nmt_command_t command, disp_mode
 
 bool py_nmt_send_command(int argc, py_Ref argv);
 
-void python_nmt_init(core_t *core)
+void python_nmt_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 

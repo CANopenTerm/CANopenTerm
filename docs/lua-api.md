@@ -108,114 +108,6 @@ end
 ```
 <!-- tabs:end -->
 
-## JUnit XML Report
-
-!> Upcoming feature, not yet available in the current release version.
-
-### junit_add_result()
-
-<!-- tabs:start -->
-<!-- tab:Description -->
-```lua
-junit_add_result ([has_passed], [time], [package], [class_name], [test_name], [error_type], [error_message], [call_stack])
-```
-
-> **has_passed** Test result, default is `false`.
-
-> **time** Test execution time in seconds, default is `0.0`.
-
-> **package** Package name, default is `Tests`.
-
-> **class_name** Class name, default is `Generic`.
-
-> **test_name** Test name, default is `UnnamedTest`.
-
-> **error_type** Error type, default is `AssertionError`.
-
-> **error_message** Error message, default is `No error message provided`.
-
-> **call_stack** Call stack, default is `<!-- No call stack provided. -->`.
-
-**Returns**: Nothing.
-
-<!-- tab:Example -->
-```lua
-junit_add_result(true,  1.22, "Tests", "Registration", "testCase1")
-junit_add_result(true,  2.34, "Tests", "Registration", "testCase2")
-junit_add_result(true,  2.52, "Tests", "Auth",         "testCase1")
-junit_add_result(false, 4.34, "Tests", "Registration", "testCase3")
-```
-<!-- tabs:end -->
-
-### junit_clear_results()
-
-<!-- tabs:start -->
-<!-- tab:Description -->
-```lua
-junit_clear_results ()
-```
-
-**Returns**: Nothing.
-
-<!-- tab:Example -->
-```lua
-junit_add_result(true,  1.22, "Tests", "Registration", "testCase1")
-junit_clear_results()
-junit_generate_report()
-```
-
-Resulting XML file:
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites time="0.000000">
-</testsuites>
-```
-<!-- tabs:end -->
-
-### junit_generate_report()
-
-<!-- tabs:start -->
-<!-- tab:Description -->
-```lua
-junit_generate_report ([filename])
-```
-
-> **filename** JUnit XML report file name, default is `test_report.xml`.
-
-**Returns**: true on success, false on failure.
-
-<!-- tab:Example -->
-```lua
-junit_add_result(true,  1.22, "Tests", "Registration", "testCase1")
-junit_add_result(true,  2.34, "Tests", "Registration", "testCase2")
-junit_add_result(true,  2.52, "Tests", "Auth",         "testCase1")
-junit_add_result(false, 4.34, "Tests", "Registration", "testCase3")
-junit_generate_report()
-```
-
-Resulting XML file:
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites time="10.420000">
-    <testsuite name="Tests.Auth" time="2.520000">
-        <testcase name="testCase1" classname="Tests.Auth" time="2.520000">
-        </testcase>
-    </testsuite>
-    <testsuite name="Tests.Registration" time="7.900000">
-        <testcase name="testCase2" classname="Tests.Registration" time="2.340000">
-        </testcase>
-        <testcase name="testCase1" classname="Tests.Registration" time="1.220000">
-        </testcase>
-        <testcase name="testCase3" classname="Tests.Registration" time="4.340000">
-            <failure message="No error message provided" type="AssertionError">
-                <!-- No call stack provided. -->
-            </failure>
-        </testcase>
-    </testsuite>
-</testsuites>
-```
-<!-- tabs:end -->
-
 ## Network management (NMT)
 
 !> The **command** parameter supports the following commands:
@@ -510,6 +402,131 @@ print(dict_lookup(0x1008, 0x00)) -- Manufacturer device name.
 > **sub_index** Sub-Index.
 
 **Returns**: a string or `nil`.
+
+## Test Report Generation
+
+!> Upcoming feature, not yet available in the current release version.
+
+### test_add_result()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+test_add_result ([has_passed], [time], [package], [class_name], [test_name], [error_type], [error_message], [call_stack])
+```
+
+> **has_passed** Test result, default is `false`.
+
+> **time** Test execution time in seconds, default is `0.0`.
+
+> **package** Package name, default is `Tests`.
+
+> **class_name** Class name, default is `Generic`.
+
+> **test_name** Test name, default is `UnnamedTest`.
+
+> **error_type** Error type, default is `AssertionError`.
+
+> **error_message** Error message, default is `No error message provided`.
+
+> **call_stack** Call stack, default is `<!-- No call stack provided. -->`.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```lua
+test_add_result(true,  1.22, "Tests", "Registration", "testCase1")
+test_add_result(true,  2.34, "Tests", "Registration", "testCase2")
+test_add_result(true,  2.52, "Tests", "Auth",         "testCase1")
+test_add_result(false, 4.34, "Tests", "Registration", "testCase3")
+```
+<!-- tabs:end -->
+
+### test_clear_results()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+test_clear_results ()
+```
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```lua
+test_add_result(true,  1.22, "Tests", "Registration", "testCase1")
+test_clear_results()
+test_generate_report()
+```
+
+Resulting XML file:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="0.000000">
+</testsuites>
+```
+<!-- tabs:end -->
+
+### test_eds(node_id, file_name)
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+test_eds (file_name)
+```
+
+> **node_id** CANopen Node-ID.
+
+> **file_name** EDS file name.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+<!-- tabs:end -->
+
+### test_generate_report()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+test_generate_report ([file_name])
+```
+
+> **file_name** Test report output file name, default is `test_report.xml`.
+
+**Returns**: true on success, false on failure.
+
+<!-- tab:Example -->
+```lua
+test_add_result(true,  1.22, "Tests", "Registration", "testCase1")
+test_add_result(true,  2.34, "Tests", "Registration", "testCase2")
+test_add_result(true,  2.52, "Tests", "Auth",         "testCase1")
+test_add_result(false, 4.34, "Tests", "Registration", "testCase3")
+test_generate_report()
+```
+
+Resulting XML file:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="10.420000">
+    <testsuite name="Tests.Auth" time="2.520000">
+        <testcase name="testCase1" classname="Tests.Auth" time="2.520000">
+        </testcase>
+    </testsuite>
+    <testsuite name="Tests.Registration" time="7.900000">
+        <testcase name="testCase2" classname="Tests.Registration" time="2.340000">
+        </testcase>
+        <testcase name="testCase1" classname="Tests.Registration" time="1.220000">
+        </testcase>
+        <testcase name="testCase3" classname="Tests.Registration" time="4.340000">
+            <failure message="No error message provided" type="AssertionError">
+                <!-- No call stack provided. -->
+            </failure>
+        </testcase>
+    </testsuite>
+</testsuites>
+```
+<!-- tabs:end -->
 
 ## Generic CAN CC interface
 

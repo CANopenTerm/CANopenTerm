@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
     }
     else if (eds_file != NULL)
     {
-        run_conformance_test(eds_file, node_id);
+        run_conformance_test(eds_file, node_id, TERM_MODE);
         core->is_running = IS_FALSE;
     }
 

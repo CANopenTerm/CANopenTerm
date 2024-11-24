@@ -13,20 +13,19 @@
 #include "dirent.h"
 #include "core.h"
 #include "os.h"
-#include "pocketpy.h"
+#include "picoc_can.h"
+#include "picoc_misc.h"
+#include "picoc_nmt.h"
+#include "picoc_pdo.h"
+#include "picoc_sdo.h"
+#include "picoc_test_report.h"
 
-#include "python_can.h"
-#include "python_dbc.h"
-#include "python_junit.h"
-#include "python_misc.h"
-#include "python_nmt.h"
-#include "python_pdo.h"
-#include "python_sdo.h"
+#include "pocketpy.h"
 #include "scripts.h"
 #include "table.h"
 
 extern const uint8 max_script_search_paths;
-extern const char *script_search_path[];
+extern const char* script_search_path[];
 
 static char*    get_script_description(const char* script_path);
 static status_t run_script_ex(const char *name, core_t *core);
@@ -42,13 +41,6 @@ void scripts_init(core_t *core)
     }
 
     py_initialize();
-    python_can_init(core);
-    python_dbc_init(core);
-    python_junit_init(core);
-    python_misc_init(core);
-    python_nmt_init(core);
-    python_pdo_init(core);
-    python_sdo_init(core);
 
     core->L = luaL_newstate();
 
@@ -374,6 +366,7 @@ static status_t run_script_ex(const char *name, core_t *core)
         picoc_nmt_init(core);
         picoc_pdo_init(core);
         picoc_sdo_init(core);
+        picoc_test_init(core);
 
         file = os_fopen(name, "r");
         if (file != NULL)

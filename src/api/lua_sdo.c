@@ -28,14 +28,14 @@ int lua_sdo_lookup_abort_code(lua_State *L)
 
 int lua_sdo_read(lua_State *L)
 {
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
+    can_message_t sdo_response  = { 0 };
+    disp_mode_t   disp_mode     = SILENT;
     sdo_state_t   sdo_state;
-    int           node_id = luaL_checkinteger(L, 1);
-    int           index = luaL_checkinteger(L, 2);
-    int           sub_index = luaL_checkinteger(L, 3);
-    bool_t        show_output = lua_toboolean(L, 4);
-    const char*   comment = lua_tostring(L, 5);
+    int           node_id       = luaL_checkinteger(L, 1);
+    int           index         = luaL_checkinteger(L, 2);
+    int           sub_index     = luaL_checkinteger(L, 3);
+    bool_t        show_output   = lua_toboolean(L, 4);
+    const char*   comment       = lua_tostring(L, 5);
     char          str_buffer[5] = { 0 };
     uint32        result;
 
