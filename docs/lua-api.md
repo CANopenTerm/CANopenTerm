@@ -446,6 +446,8 @@ test_add_result(false, 4.34, "Tests", "Registration", "testCase3")
 
 <!-- tabs:start -->
 <!-- tab:Description -->
+!> Implicitly called by `test_generate_report()`.
+
 ```lua
 test_clear_results ()
 ```
@@ -467,12 +469,12 @@ Resulting XML file:
 ```
 <!-- tabs:end -->
 
-### test_eds(node_id, file_name)
+### test_eds_file(node_id, file_name)
 
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-test_eds (file_name)
+test_eds_file (file_name)
 ```
 
 > **node_id** CANopen Node-ID.
@@ -482,12 +484,18 @@ test_eds (file_name)
 **Returns**: Nothing.
 
 <!-- tab:Example -->
+```lua
+test_eds_file(0x50, "eds/DS301_profile.eds")
+test_generate_report()
+```
 <!-- tabs:end -->
 
 ### test_generate_report()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
+!> Implicitly calls `test_generate_report()`.
+
 ```lua
 test_generate_report ([file_name])
 ```

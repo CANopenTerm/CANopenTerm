@@ -198,7 +198,20 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
             {
                 if (disp_mode != SCRIPT_MODE)
                 {
-                    /* Passed. */
+                    char          test_name[64] = { 0 };
+                    test_result_t result;
+
+                    os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
+                        eds.entries[i].Index, eds.entries[i].SubIndex);
+
+                    result.has_passed    = IS_TRUE;
+                    result.time          = 0.0f;
+                    result.package       = "EDS";
+                    result.class_name    = base_name;
+                    result.test_name     = test_name;
+                    result.call_stack    = NULL;
+
+                    test_add_result(&result);
                 }
             }
         }

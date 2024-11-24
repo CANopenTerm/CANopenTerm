@@ -116,7 +116,7 @@ void test_clear_results(void)
         os_free(results[i]);
     }
     os_free(results);
-    results = NULL;
+    results     = NULL;
     num_results = 0;
 }
 

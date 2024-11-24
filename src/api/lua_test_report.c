@@ -8,7 +8,7 @@
  **/
 
 #include "core.h"
-#include "eds.h""
+#include "eds.h"
 #include "lauxlib.h"
 #include "lua.h"
 #include "os.h"
@@ -38,7 +38,7 @@ int lua_test_clear_results(lua_State* L)
     return 0;
 }
 
-int lua_test_eds(lua_State* L)
+int lua_test_eds_file(lua_State* L)
 {
     int         node_id   = luaL_checkinteger(L, 1);
     const char* file_name = lua_tostring(L, 2);
@@ -71,8 +71,8 @@ void lua_register_test_commands(core_t* core)
     lua_setglobal(core->L, "test_add_result");
     lua_pushcfunction(core->L, lua_test_clear_results);
     lua_setglobal(core->L, "test_clear_results");
-    lua_pushcfunction(core->L, lua_test_eds);
-    lua_setglobal(core->L, "test_eds");
+    lua_pushcfunction(core->L, lua_test_eds_file);
+    lua_setglobal(core->L, "test_eds_file");
     lua_pushcfunction(core->L, lua_test_generate_report);
     lua_setglobal(core->L, "test_generate_report");
 }
