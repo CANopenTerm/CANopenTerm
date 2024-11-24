@@ -15,12 +15,14 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "SDL.h"
 #include "SDL_main.h"
 
 #define os_atof      SDL_atof
 #define os_atoi      SDL_atoi
 #define os_calloc    SDL_calloc
+#define os_clock     clock
 #define os_closedir  closedir
 #define os_fclose    fclose
 #define os_fgets     fgets
@@ -85,6 +87,8 @@
 #define CLEAR_CMD "cls"
 
 #define DEFAULT_CAN_INTERFACE ""
+
+#define CLOCKS_PER_SECOND CLOCKS_PER_SEC
 
 #define OS_LAYER_DEFINED
 

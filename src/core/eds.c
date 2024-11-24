@@ -124,7 +124,14 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
         if (WO != eds.entries[i].AccessType)
         {
             can_message_t sdo_response;
-            sdo_state_t   state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
+            sdo_state_t   state;
+            uint64        start, end;
+            float         time;
+
+            start    = os_clock();
+            state    = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
+            end      = os_clock();
+            time     = (float)(end - start) / CLOCKS_PER_SECOND;
 
             if (ABORT_TRANSFER == state)
             {
@@ -182,7 +189,7 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
                         eds.entries[i].Index, eds.entries[i].SubIndex);
 
                     result.has_passed    = IS_FALSE;
-                    result.time          = 0.0f;
+                    result.time          = time;
                     result.package       = "EDS";
                     result.class_name    = base_name;
                     result.test_name     = test_name;
@@ -205,7 +212,7 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
                         eds.entries[i].Index, eds.entries[i].SubIndex);
 
                     result.has_passed    = IS_TRUE;
-                    result.time          = 0.0f;
+                    result.time          = time;
                     result.package       = "EDS";
                     result.class_name    = base_name;
                     result.test_name     = test_name;

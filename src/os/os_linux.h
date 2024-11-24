@@ -15,6 +15,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "SDL.h"
 #include "SDL_main.h"
 
@@ -22,6 +23,7 @@
 #define os_atoi      SDL_atoi
 #define os_calloc    SDL_calloc
 #define os_closedir  closedir
+#define os_clock     clock
 #define os_fread     fread
 #define os_free      SDL_free
 #define os_freopen   freopen
@@ -82,6 +84,8 @@
 #define CLEAR_CMD "clear"
 
 #define DEFAULT_CAN_INTERFACE "can0"
+
+#define CLOCKS_PER_SECOND CLOCKS_PER_SEC
 
 #define OS_LAYER_DEFINED
 

@@ -89,6 +89,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_calloc() not defined
 #endif
 
+#ifndef os_clock
+#error  os_clock() not defined
+#endif
+
 #ifndef os_closedir
 #error  os_closedir() not defined
 #endif
@@ -319,6 +323,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef CLEAR_CMD
 #define CLEAR_CMD ""
+#endif
+
+#ifndef CLOCKS_PER_SECOND
+#define CLOCKS_PER_SECOND 1000
 #endif
 
 #ifndef OS_LAYER_DEFINED
