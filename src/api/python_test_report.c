@@ -24,10 +24,10 @@ void python_test_init(void)
     py_GlobalRef mod = py_getmodule("__main__");
 
     py_bind(mod, "test_add_result(has_passed=False, time=0.0, package=\"Tests\", class_name=\"Generic\", test_name=\"UnnamedTest\", error_type=\"AssertionError\", error_message=\"No error message provided\", call_stack=\"<!-- No call stack provided. -->\")", py_test_add_result);
-    py_bind(mod, "test_eds_file(node_id, file_name=\"test_report.xml\")", py_test_eds_file);
     py_bind(mod, "test_generate_report(file_name=\"test_report.xml\")", py_test_generate_report);
 
-    py_bindfunc(mod, "test_clear_results",   py_test_clear_results);
+    py_bindfunc(mod, "test_eds_file",      py_test_eds_file);
+    py_bindfunc(mod, "test_clear_results", py_test_clear_results);
 }
 
 bool py_test_add_result(int argc, py_Ref argv)
@@ -94,15 +94,23 @@ bool py_test_clear_results(int argc, py_Ref argv)
 
 bool py_test_generate_report(int argc, py_Ref argv)
 {
-    const char* file_name = py_tostr(py_arg(1));
+    const char* file_name;
 
     (void)argc;
     (void)argv;
 
     PY_CHECK_ARGC(1);
 
-    test_generate_report(file_name);
+    file_name = py_tostr(py_arg(0));
+
     py_newnone(py_retval());
 
-    return IS_TRUE;
+    if (ALL_OK == test_generate_report(file_name))
+    {
+        return IS_TRUE;
+    }
+    else
+    {
+        return IS_FALSE;
+    }
 }
