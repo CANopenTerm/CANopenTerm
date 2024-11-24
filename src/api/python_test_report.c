@@ -101,6 +101,7 @@ bool py_test_generate_report(int argc, py_Ref argv)
 
     PY_CHECK_ARGC(1);
 
+    test_generate_report(file_name);
     py_newnone(py_retval());
 
     return IS_TRUE;
