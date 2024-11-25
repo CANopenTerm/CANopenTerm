@@ -203,7 +203,7 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
             }
             else
             {
-                if (disp_mode != SCRIPT_MODE)
+                if (disp_mode == SCRIPT_MODE)
                 {
                     char          test_name[64] = { 0 };
                     test_result_t result;
