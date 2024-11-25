@@ -20,8 +20,6 @@ add_executable(
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/picoc)
-
 if(WIN32)
   set(PLATFORM "windows")
 elseif(UNIX)
@@ -41,8 +39,7 @@ include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/api
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/picoc)
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os)
 
 function(append_platform_files source_list pattern platform)
   file(GLOB platform_files ${pattern}_${platform}.c)
@@ -58,13 +55,6 @@ set(api_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_test_report.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_can.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_dbc.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_misc.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_nmt.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_pdo.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_sdo.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/api/picoc_test_report.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_dbc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_misc.c
@@ -105,15 +95,8 @@ add_library(
   ${core_sources}
   ${os_sources})
 
-if(UNIX)
-  target_link_libraries(
-    picoc
-    m)
-endif()
-
 target_link_libraries(
-  core
-  picoc)
+  core)
 
 target_link_libraries(
   ${PROJECT_NAME}
@@ -126,7 +109,6 @@ add_dependencies(
 
 add_dependencies(
   core
-  picoc
   ${PLATFORM_CORE_DEPS})
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")

@@ -63,11 +63,10 @@ Key functionalities include:
   [PEAK CAN trace](https://www.peak-system.com/produktcd/Pdf/English/PEAK_CAN_TRC_File_Format.pdf)
   record and playback script.  Additionally, you have the flexibility to write
   your own scripts in either
-  [Lua](https://canopenterm.de/lua-api),
-  [PicoC](https://canopenterm.de/picoc-api) or
+  [Lua](https://canopenterm.de/lua-api) or
   [Python](https://canopenterm.de/python-api)
   to customize and automate tasks.
-  All three languages are supported by similar APIs, offering equal
+  Both languages are supported by similar APIs, offering equal
   functionality to cater to your automation needs.
 
 - **Built-in DBC Parser**:

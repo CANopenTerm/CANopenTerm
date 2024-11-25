@@ -13,12 +13,6 @@
 #include "dirent.h"
 #include "core.h"
 #include "os.h"
-#include "picoc_can.h"
-#include "picoc_misc.h"
-#include "picoc_nmt.h"
-#include "picoc_pdo.h"
-#include "picoc_sdo.h"
-#include "picoc_test_report.h"
 #include "pocketpy.h"
 #include "scripts.h"
 #include "table.h"
@@ -162,7 +156,7 @@ bool_t has_valid_extension(const char *filename)
 {
     const char *dot = os_strrchr(filename, '.');
 
-    if (dot && (os_strcmp(dot, ".c") == 0 || os_strcmp(dot, ".lua") == 0 || os_strcmp(dot, ".py") == 0))
+    if ((os_strcmp(dot, ".lua") == 0 || os_strcmp(dot, ".py") == 0))
     {
         return IS_TRUE;
     }
@@ -320,7 +314,6 @@ static status_t run_script_ex(const char *name, core_t *core)
 {
     status_t    status            = ALL_OK;
     const char* extension         = os_strrchr(name, '.');
-    bool_t      has_c_extension   = extension && os_strcmp(extension, ".c") == 0;
     bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
     bool_t      has_py_extension  = extension && os_strcmp(extension, ".py") == 0;
     char        script_path[1024] = { 0 };
@@ -353,38 +346,6 @@ static status_t run_script_ex(const char *name, core_t *core)
                 os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
                 status = SCRIPT_ERROR;
             }
-        }
-    }
-    else if (IS_TRUE == has_c_extension)
-    {
-        PicocInitialize(&core->P, (128000 * 4));
-        PicocIncludeAllSystemHeaders(&core->P);
-        picoc_can_init(core);
-        picoc_dbc_init(core);
-        picoc_misc_init(core);
-        picoc_nmt_init(core);
-        picoc_pdo_init(core);
-        picoc_sdo_init(core);
-        picoc_test_init(core);
-
-        file = os_fopen(name, "r");
-        if (file != NULL)
-        {
-            os_snprintf(script_path, sizeof(script_path), "%s", name);
-            os_fclose(file);
-
-            if (PicocPlatformSetExitPoint(&core->P))
-            {
-                PicocCleanup(&core->P);
-            }
-            else
-            {
-                PicocPlatformScanFile(&core->P, script_path);
-            }
-        }
-        else
-        {
-            status = OS_FILE_NOT_FOUND;
         }
     }
     else if (IS_TRUE == has_py_extension)
