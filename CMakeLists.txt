@@ -96,9 +96,6 @@ add_library(
   ${os_sources})
 
 target_link_libraries(
-  core)
-
-target_link_libraries(
   ${PROJECT_NAME}
   core
   ${PLATFORM_LIBS})
