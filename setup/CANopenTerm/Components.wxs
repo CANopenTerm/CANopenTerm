@@ -37,16 +37,10 @@
     </ComponentGroup>
     <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
       <Component>
-        <File Source="../../export/scripts/hello.c" />
-      </Component>
-      <Component>
         <File Source="../../export/scripts/hello.py" />
       </Component>
       <Component>
         <File Source="../../export/scripts/replay.lua" />
-      </Component>
-      <Component>
-        <File Source="../../export/scripts/scanner.c" />
       </Component>
       <Component>
         <File Source="../../export/scripts/scanner.lua" />
