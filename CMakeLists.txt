@@ -104,9 +104,11 @@ add_dependencies(
   ${PROJECT_NAME}
   core)
 
-add_dependencies(
-  core
-  ${PLATFORM_CORE_DEPS})
+if(NOT BUILD_YOCTO)
+  add_dependencies(
+    core
+    ${PLATFORM_CORE_DEPS})
+endif()
 
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     target_compile_options(
