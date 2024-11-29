@@ -101,7 +101,7 @@ Each object dictionary entry contains the following fields:
     - `1`: MANDATORY
     - `2`: CONDITIONAL
 
-<!-- tab: Sub-Index Object -->
+<!-- tab: Sub-Index -->
 Each sub-index object contains the following fields:
 
 - `index` (integer): The sub-index number.
@@ -113,94 +113,7 @@ Each sub-index object contains the following fields:
 - `data_type` (object): An object representing the data type attributes.
 - `access_type` (object): An object representing the access type attributes.
 
-<!-- tab: Code Object -->
-The code object contains the following fields:
-
-- `type` (integer): The type of the code, one of the following:
-    - `0`: DOMAIN,
-    - `1`: DEFTYPE,
-    - `2`: DEFSTRUCT,
-    - `3`: VAR,
-    - `4`: ARRAY,
-    - `5`: RECORD
-- `attr` (integer): The attribute of the code.
-- `lower` (integer): The lower bound of the code.
-- `upper` (integer): The upper bound of the code.
-
-<!-- tab: Data Type Object -->
-The data type object contains the following fields:
-
-- `type` (integer): The type of the data, one of the following:
-    - `0`: None/Unspecified
-    - `1`: BOOLEAN,
-    - `2`: INTEGER8,
-    - `3`: UNSIGNED8,
-    - `4`: INTEGER16,
-    - `5`: UNSIGNED16,
-    - `6`: INTEGER24,
-    - `7`: UNSIGNED24,
-    - `8`: INTEGER32,
-    - `9`: UNSIGNED32,
-    - `10`: INTEGER48,
-    - `11`: UNSIGNED48,
-    - `12`: INTEGER56,
-    - `13`: UNSIGNED56,
-    - `14`: INTEGER64,
-    - `15`: UNSIGNED64,
-    - `16`: REAL32,
-    - `17`: REAL64,
-    - `18`: FLOAT,
-    - `19`: TIME_OF_DAY,
-    - `20`: VISIBLE_STRING,
-    - `21`: OCTET_STRING,
-    - `22`: DOMAIN
-- `attr` (integer): The attribute of the data.
-- `lower` (integer): The lower bound of the data.
-- `upper` (integer): The upper bound of the data.
-
-<!-- tab: Access Type Object -->
-The access type object contains the following fields:
-
-- `type` (integer): The type of the access, one of the following:
-    - `0`: Unspecified
-    - `1`: const
-    - `2`: ro
-    - `3`: wo
-    - `4`: rw
-    - `5`: wwr
-    - `6`: rww
-- `attr` (integer): The attribute of the access.
-- `lower` (integer): The lower bound of the access.
-- `upper` (integer): The upper bound of the access.
-
-
-
-<!-- tab: Object Dictionary Entry -->
-Each object dictionary entry contains the following fields:
-
-- `id` (string): The hexadecimal identifier of the object, main index.
-- `index` (integer): The decimal index of the object.
-- `sub_indices` (array): An array of sub-index objects.
-- `code` (object): An object representing the object code attributes.
-- `desc` (string): A description of the object.
-- `kind` (integer): The kind of the object, one of the following:
-    - `0`: OPTIONAL
-    - `1`: MANDATORY
-    - `2`: CONDITIONAL
-
-<!-- tab: Sub-Index Object -->
-Each sub-index object contains the following fields:
-
-- `index` (integer): The sub-index number.
-- `desc` (string): A description of the sub-index.
-- `kind` (integer): The kind of the sub-index, one of the following:
-    - `0`: OPTIONAL
-    - `1`: MANDATORY
-    - `2`: CONDITIONAL
-- `data_type` (object): An object representing the data type attributes.
-- `access_type` (object): An object representing the access type attributes.
-
-<!-- tab: Code Object -->
+<!-- tab: Code -->
 The code object contains the following fields:
 
 - `type` (integer): The type of the code, one of the following:
@@ -219,7 +132,7 @@ The code object contains the following fields:
 - `lower` (integer): The lower bound of the code.
 - `upper` (integer): The upper bound of the code.
 
-<!-- tab: Data Type Object -->
+<!-- tab: Data Type -->
 The data type object contains the following fields:
 
 - `type` (integer): The type of the data, one of the following:
@@ -255,7 +168,7 @@ The data type object contains the following fields:
 - `lower` (integer): The lower bound of the data.
 - `upper` (integer): The upper bound of the data.
 
-<!-- tab: Access Type Object -->
+<!-- tab: Access Type -->
 The access type object contains the following fields:
 
 - `type` (integer): The type of the access, one of the following:
@@ -275,7 +188,7 @@ The access type object contains the following fields:
 - `lower` (integer): The lower bound of the access.
 - `upper` (integer): The upper bound of the access.
 
-<!-- tab: Min Elements Object -->
+<!-- tab: Min Elements -->
 The min elements object contains the following fields:
 
 - `value` (integer): The minimum number of elements, 0 to 254.
@@ -288,7 +201,7 @@ The min elements object contains the following fields:
 - `lower` (integer): The lower bound of the minimum elements.
 - `upper` (integer): The upper bound of the minimum elements.
 
-<!-- tab: Max Elements Object -->
+<!-- tab: Max Elements -->
 The max elements object contains the following fields:
 
 - `value` (integer): The maximum number of elements, 0 to 254.
@@ -301,7 +214,7 @@ The max elements object contains the following fields:
 - `lower` (integer): The lower bound of the maximum elements.
 - `upper` (integer): The upper bound of the maximum elements.
 
-<!-- tab: Low Limit Object -->
+<!-- tab: Low Limit -->
 The low limit object contains the following fields:
 
 - `value` (integer): The lower limit value.
@@ -314,7 +227,7 @@ The low limit object contains the following fields:
 - `lower` (integer): The lower bound of the lower limit.
 - `upper` (integer): The upper bound of the lower limit.
 
-<!-- tab: High Limit Object -->
+<!-- tab: High Limit -->
 The high limit object contains the following fields:
 
 - `value` (integer): The upper limit value.
@@ -327,7 +240,7 @@ The high limit object contains the following fields:
 - `lower` (integer): The lower bound of the upper limit.
 - `upper` (integer): The upper bound of the upper limit.
 
-<!-- tab: Default Value Object -->
+<!-- tab: Default Value -->
 The default value object contains the following fields:
 
 - `value` (integer): The default value.
@@ -340,7 +253,7 @@ The default value object contains the following fields:
 - `lower` (integer): The lower bound of the default value.
 - `upper` (integer): The upper bound of the default value.
 
-<!-- tab: Mappable Object -->
+<!-- tab: Mappable -->
 The mappable object contains the following fields:
 
 - `value` (boolean): The mappable value.
@@ -356,8 +269,6 @@ The mappable object contains the following fields:
 
 #### Example
 
-Below is an example of a JSON file generated by `codb2json`:
-
 <!-- tabs:start -->
 <!-- tab:Input CODB file -->
 ```plaintext
@@ -370,6 +281,8 @@ $1001=1000
 1003:01:Standard Error Field:optional::VAR:m:UNSIGNED32:m:ro:m::n::n::::d:0:m:n:m
 ```
 <!-- tab:Output JSON file -->
+Below is an example of a JSON file generated by `codb2json`:
+
 ```json
 [
     {
@@ -629,5 +542,3 @@ $1001=1000
 ]
 ```
 <!-- tabs:end -->
-
-This specification provides a clear structure for the JSON format generated by `codb2json`, ensuring consistency and ease of processing.
