@@ -39,7 +39,7 @@
  * 13. Minimum elements attribute, see attribute description below
  * 14. Maximum elements, 0..254
  * 15. Maximum elements attribute, see attribute description below
- * 16. Low limit, decimal valu or 0x followed by hex value
+ * 16. Low limit, decimal value or 0x followed by hex value
  * 17. Low limit attribute, see attribute description below
  * 18. High limit, decimal value or 0x followed by hex value
  * 19. High limit attribute, see attribute description below
@@ -52,7 +52,7 @@
  * [empty]   - data value, if exists, is a default and can be changed in the range specified by the data type
  * m         - mandatory, data value is mandatory and cannot be changed
  * d         - data value is a default and can be changed in the range specified by the data type
- * d[limits] - data value is a default and can be changed within the limites
+ * d[limits] - data value is a default and can be changed within the limits
  * n         - not applicable for the preceding data field, data field shall be empty
  *
  * A object can be duplicated using the following syntax:
@@ -183,6 +183,42 @@ static bool_t add_sub_index_to_object(cJSON *sub_indices, size_t i)
     cJSON* access_type_lower_limit;
     cJSON* access_type_upper_limit;
 
+    cJSON* min_elements;
+    cJSON* min_elements_value;
+    cJSON* min_elements_attr;
+    cJSON* min_elements_lower_limit;
+    cJSON* min_elements_upper_limit;
+
+    cJSON* max_elements;
+    cJSON* max_elements_value;
+    cJSON* max_elements_attr;
+    cJSON* max_elements_lower_limit;
+    cJSON* max_elements_upper_limit;
+
+    cJSON* low_limit;
+    cJSON* low_limit_value;
+    cJSON* low_limit_attr;
+    cJSON* low_limit_lower_limit;
+    cJSON* low_limit_upper_limit;
+
+    cJSON* high_limit;
+    cJSON* high_limit_value;
+    cJSON* high_limit_attr;
+    cJSON* high_limit_lower_limit;
+    cJSON* high_limit_upper_limit;
+
+    cJSON* default_value;
+    cJSON* default_value_value;
+    cJSON* default_value_attr;
+    cJSON* default_value_lower_limit;
+    cJSON* default_value_upper_limit;
+
+    cJSON* mappable;
+    cJSON* mappable_value;
+    cJSON* mappable_attr;
+    cJSON* mappable_lower_limit;
+    cJSON* mappable_upper_limit;
+
     sub_index = cJSON_CreateObject();
     if (sub_index == NULL)
     {
@@ -214,12 +250,78 @@ static bool_t add_sub_index_to_object(cJSON *sub_indices, size_t i)
     cJSON_AddItemToObject(access_type, "lower", access_type_lower_limit);
     cJSON_AddItemToObject(access_type, "upper", access_type_upper_limit);
 
-    cJSON_AddItemToObject(sub_index, "index",       sub_index_value);
-    cJSON_AddItemToObject(sub_index, "desc",        parameter_name);
-    cJSON_AddItemToObject(sub_index, "kind",        object_kind);
-    cJSON_AddItemToObject(sub_index, "unit",        unit);
-    cJSON_AddItemToObject(sub_index, "data_type",   data_type);
-    cJSON_AddItemToObject(sub_index, "access_type", access_type);
+    min_elements             = cJSON_CreateObject();
+    min_elements_value       = cJSON_CreateNumber(codb_db->entries[i].min_elements);
+    min_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].min_elements_attr.type);
+    min_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.lower_limit);
+    min_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.upper_limit);
+    cJSON_AddItemToObject(min_elements, "value", min_elements_value);
+    cJSON_AddItemToObject(min_elements, "attr",  min_elements_attr);
+    cJSON_AddItemToObject(min_elements, "lower", min_elements_lower_limit);
+    cJSON_AddItemToObject(min_elements, "upper", min_elements_upper_limit);
+
+    max_elements             = cJSON_CreateObject();
+    max_elements_value       = cJSON_CreateNumber(codb_db->entries[i].max_elements);
+    max_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].max_elements_attr.type);
+    max_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.lower_limit);
+    max_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.upper_limit);
+    cJSON_AddItemToObject(max_elements, "value", max_elements_value);
+    cJSON_AddItemToObject(max_elements, "attr",  max_elements_attr);
+    cJSON_AddItemToObject(max_elements, "lower", max_elements_lower_limit);
+    cJSON_AddItemToObject(max_elements, "upper", max_elements_upper_limit);
+
+    low_limit             = cJSON_CreateObject();
+    low_limit_value       = cJSON_CreateNumber(codb_db->entries[i].low_limit);
+    low_limit_attr        = cJSON_CreateNumber(codb_db->entries[i].low_limit_attr.type);
+    low_limit_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].low_limit_attr.lower_limit);
+    low_limit_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].low_limit_attr.upper_limit);
+    cJSON_AddItemToObject(low_limit, "value", low_limit_value);
+    cJSON_AddItemToObject(low_limit, "attr",  low_limit_attr);
+    cJSON_AddItemToObject(low_limit, "lower", low_limit_lower_limit);
+    cJSON_AddItemToObject(low_limit, "upper", low_limit_upper_limit);
+
+    high_limit             = cJSON_CreateObject();
+    high_limit_value       = cJSON_CreateNumber(codb_db->entries[i].high_limit);
+    high_limit_attr        = cJSON_CreateNumber(codb_db->entries[i].high_limit_attr.type);
+    high_limit_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].high_limit_attr.lower_limit);
+    high_limit_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].high_limit_attr.upper_limit);
+    cJSON_AddItemToObject(high_limit, "value", high_limit_value);
+    cJSON_AddItemToObject(high_limit, "attr",  high_limit_attr);
+    cJSON_AddItemToObject(high_limit, "lower", high_limit_lower_limit);
+    cJSON_AddItemToObject(high_limit, "upper", high_limit_upper_limit);
+
+    default_value             = cJSON_CreateObject();
+    default_value_value       = cJSON_CreateNumber(codb_db->entries[i].default_value);
+    default_value_attr        = cJSON_CreateNumber(codb_db->entries[i].default_value_attr.type);
+    default_value_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].default_value_attr.lower_limit);
+    default_value_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].default_value_attr.upper_limit);
+    cJSON_AddItemToObject(default_value, "value", default_value_value);
+    cJSON_AddItemToObject(default_value, "attr",  default_value_attr);
+    cJSON_AddItemToObject(default_value, "lower", default_value_lower_limit);
+    cJSON_AddItemToObject(default_value, "upper", default_value_upper_limit);
+
+    mappable             = cJSON_CreateObject();
+    mappable_value       = cJSON_CreateBool(codb_db->entries[i].mappable);
+    mappable_attr        = cJSON_CreateNumber(codb_db->entries[i].mappable_attr.type);
+    mappable_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].mappable_attr.lower_limit);
+    mappable_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].mappable_attr.upper_limit);
+    cJSON_AddItemToObject(mappable, "value", mappable_value);
+    cJSON_AddItemToObject(mappable, "attr",  mappable_attr);
+    cJSON_AddItemToObject(mappable, "lower", mappable_lower_limit);
+    cJSON_AddItemToObject(mappable, "upper", mappable_upper_limit);
+
+    cJSON_AddItemToObject(sub_index, "index",         sub_index_value);
+    cJSON_AddItemToObject(sub_index, "desc",          parameter_name);
+    cJSON_AddItemToObject(sub_index, "kind",          object_kind);
+    cJSON_AddItemToObject(sub_index, "unit",          unit);
+    cJSON_AddItemToObject(sub_index, "data_type",     data_type);
+    cJSON_AddItemToObject(sub_index, "access_type",   access_type);
+    cJSON_AddItemToObject(sub_index, "min_elements",  min_elements);
+    cJSON_AddItemToObject(sub_index, "max_elements",  max_elements);
+    cJSON_AddItemToObject(sub_index, "low_limit",     low_limit);
+    cJSON_AddItemToObject(sub_index, "high_limit",    high_limit);
+    cJSON_AddItemToObject(sub_index, "default_value", default_value);
+    cJSON_AddItemToObject(sub_index, "mappable",      mappable);
 
     cJSON_AddItemToArray(sub_indices, sub_index);
 

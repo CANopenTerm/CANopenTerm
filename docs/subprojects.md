@@ -80,11 +80,11 @@ The root of the JSON file is an array of objects, each representing a CANopen ob
   {
     "id": "1000",
     "index": 4096,
-    "sub_indices": […],
-    "code": {…},
+    "sub_indices": [...],
+    "code": {...},
     "desc": "Device Type",
     "kind": 0
-  }, …
+  }, ...
 ]
 ```
 
@@ -116,7 +116,13 @@ Each sub-index object contains the following fields:
 <!-- tab: Code Object -->
 The code object contains the following fields:
 
-- `type` (integer): The type of the code.
+- `type` (integer): The type of the code, one of the following:
+    - `0`: DOMAIN,
+    - `1`: DEFTYPE,
+    - `2`: DEFSTRUCT,
+    - `3`: VAR,
+    - `4`: ARRAY,
+    - `5`: RECORD
 - `attr` (integer): The attribute of the code.
 - `lower` (integer): The lower bound of the code.
 - `upper` (integer): The upper bound of the code.
@@ -125,12 +131,29 @@ The code object contains the following fields:
 The data type object contains the following fields:
 
 - `type` (integer): The type of the data, one of the following:
-    - `0`: DOMAIN,
-    - `1`: DEFTYPE,
-    - `2`: DEFSTRUCT,
-    - `3`: VAR,
-    - `4`: ARRAY,
-    - `5`: RECORD
+    - `0`: None/Unspecified
+    - `1`: BOOLEAN,
+    - `2`: INTEGER8,
+    - `3`: UNSIGNED8,
+    - `4`: INTEGER16,
+    - `5`: UNSIGNED16,
+    - `6`: INTEGER24,
+    - `7`: UNSIGNED24,
+    - `8`: INTEGER32,
+    - `9`: UNSIGNED32,
+    - `10`: INTEGER48,
+    - `11`: UNSIGNED48,
+    - `12`: INTEGER56,
+    - `13`: UNSIGNED56,
+    - `14`: INTEGER64,
+    - `15`: UNSIGNED64,
+    - `16`: REAL32,
+    - `17`: REAL64,
+    - `18`: FLOAT,
+    - `19`: TIME_OF_DAY,
+    - `20`: VISIBLE_STRING,
+    - `21`: OCTET_STRING,
+    - `22`: DOMAIN
 - `attr` (integer): The attribute of the data.
 - `lower` (integer): The lower bound of the data.
 - `upper` (integer): The upper bound of the data.
@@ -138,10 +161,197 @@ The data type object contains the following fields:
 <!-- tab: Access Type Object -->
 The access type object contains the following fields:
 
-- `type` (integer): The type of the access.
+- `type` (integer): The type of the access, one of the following:
+    - `0`: Unspecified
+    - `1`: const
+    - `2`: ro
+    - `3`: wo
+    - `4`: rw
+    - `5`: wwr
+    - `6`: rww
 - `attr` (integer): The attribute of the access.
 - `lower` (integer): The lower bound of the access.
 - `upper` (integer): The upper bound of the access.
+
+
+
+<!-- tab: Object Dictionary Entry -->
+Each object dictionary entry contains the following fields:
+
+- `id` (string): The hexadecimal identifier of the object, main index.
+- `index` (integer): The decimal index of the object.
+- `sub_indices` (array): An array of sub-index objects.
+- `code` (object): An object representing the object code attributes.
+- `desc` (string): A description of the object.
+- `kind` (integer): The kind of the object, one of the following:
+    - `0`: OPTIONAL
+    - `1`: MANDATORY
+    - `2`: CONDITIONAL
+
+<!-- tab: Sub-Index Object -->
+Each sub-index object contains the following fields:
+
+- `index` (integer): The sub-index number.
+- `desc` (string): A description of the sub-index.
+- `kind` (integer): The kind of the sub-index, one of the following:
+    - `0`: OPTIONAL
+    - `1`: MANDATORY
+    - `2`: CONDITIONAL
+- `data_type` (object): An object representing the data type attributes.
+- `access_type` (object): An object representing the access type attributes.
+
+<!-- tab: Code Object -->
+The code object contains the following fields:
+
+- `type` (integer): The type of the code, one of the following:
+    - `0`: DOMAIN,
+    - `1`: DEFTYPE,
+    - `2`: DEFSTRUCT,
+    - `3`: VAR,
+    - `4`: ARRAY,
+    - `5`: RECORD
+- `attr` (integer): The attribute of the code.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the code.
+- `upper` (integer): The upper bound of the code.
+
+<!-- tab: Data Type Object -->
+The data type object contains the following fields:
+
+- `type` (integer): The type of the data, one of the following:
+    - `0`: None/Unspecified
+    - `1`: BOOLEAN,
+    - `2`: INTEGER8,
+    - `3`: UNSIGNED8,
+    - `4`: INTEGER16,
+    - `5`: UNSIGNED16,
+    - `6`: INTEGER24,
+    - `7`: UNSIGNED24,
+    - `8`: INTEGER32,
+    - `9`: UNSIGNED32,
+    - `10`: INTEGER48,
+    - `11`: UNSIGNED48,
+    - `12`: INTEGER56,
+    - `13`: UNSIGNED56,
+    - `14`: INTEGER64,
+    - `15`: UNSIGNED64,
+    - `16`: REAL32,
+    - `17`: REAL64,
+    - `18`: FLOAT,
+    - `19`: TIME_OF_DAY,
+    - `20`: VISIBLE_STRING,
+    - `21`: OCTET_STRING,
+    - `22`: DOMAIN
+- `attr` (integer): The attribute of the data.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the data.
+- `upper` (integer): The upper bound of the data.
+
+<!-- tab: Access Type Object -->
+The access type object contains the following fields:
+
+- `type` (integer): The type of the access, one of the following:
+    - `0`: Unspecified
+    - `1`: const
+    - `2`: ro
+    - `3`: wo
+    - `4`: rw
+    - `5`: wwr
+    - `6`: rww
+- `attr` (integer): The attribute of the access.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the access.
+- `upper` (integer): The upper bound of the access.
+
+<!-- tab: Min Elements Object -->
+The min elements object contains the following fields:
+
+- `value` (integer): The minimum number of elements, 0 to 254.
+- `attr` (integer): The attribute of the minimum elements.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the minimum elements.
+- `upper` (integer): The upper bound of the minimum elements.
+
+<!-- tab: Max Elements Object -->
+The max elements object contains the following fields:
+
+- `value` (integer): The maximum number of elements, 0 to 254.
+- `attr` (integer): The attribute of the maximum elements.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the maximum elements.
+- `upper` (integer): The upper bound of the maximum elements.
+
+<!-- tab: Low Limit Object -->
+The low limit object contains the following fields:
+
+- `value` (integer): The lower limit value.
+- `attr` (integer): The attribute of the lower limit.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the lower limit.
+- `upper` (integer): The upper bound of the lower limit.
+
+<!-- tab: High Limit Object -->
+The high limit object contains the following fields:
+
+- `value` (integer): The upper limit value.
+- `attr` (integer): The attribute of the upper limit.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the upper limit.
+- `upper` (integer): The upper bound of the upper limit.
+
+<!-- tab: Default Value Object -->
+The default value object contains the following fields:
+
+- `value` (integer): The default value.
+- `attr` (integer): The attribute of the default value.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the default value.
+- `upper` (integer): The upper bound of the default value.
+
+<!-- tab: Mappable Object -->
+The mappable object contains the following fields:
+
+- `value` (boolean): The mappable value.
+- `attr` (integer): The attribute of the mappable value.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the mappable value.
+- `upper` (integer): The upper bound of the mappable value.
 <!-- tabs:end -->
 
 #### Example
@@ -153,7 +363,7 @@ Below is an example of a JSON file generated by `codb2json`:
 ```plaintext
 1000::Device Type:mandatory::VAR:m:UNSIGNED32:m:ro:d[const,ro]::n::n:::::::n:m
 
-$1001=1001
+$1001=1000
 
 1003::Predefined Error Field:optional::ARRAY:m::m::m:2:m:255:m::m::m::m::m
 1003:00:Number of Errors:optional::VAR:m:UNSIGNED8:m:rw:d[rw,ro]::n::n:::::0:m:n:m
@@ -169,7 +379,7 @@ $1001=1001
             {
                 "index": 0,
                 "desc": "Device Type",
-                "kind": 0,
+                "kind": 1,
                 "data_type": {
                     "type": 9,
                     "attr": 0,
@@ -177,7 +387,43 @@ $1001=1001
                     "upper": 0
                 },
                 "access_type": {
-                    "type": 1,
+                    "type": 2,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "min_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "max_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "low_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "high_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "default_value": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "mappable": {
+                    "value": false,
                     "attr": 0,
                     "lower": 0,
                     "upper": 0
@@ -191,7 +437,7 @@ $1001=1001
             "upper": 0
         },
         "desc": "Device Type",
-        "kind": 0
+        "kind": 1
     },
     {
         "id": "1001",
@@ -200,7 +446,7 @@ $1001=1001
             {
                 "index": 0,
                 "desc": "Device Type",
-                "kind": 0,
+                "kind": 1,
                 "data_type": {
                     "type": 9,
                     "attr": 0,
@@ -208,7 +454,43 @@ $1001=1001
                     "upper": 0
                 },
                 "access_type": {
-                    "type": 1,
+                    "type": 2,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "min_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "max_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "low_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "high_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "default_value": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "mappable": {
+                    "value": false,
                     "attr": 0,
                     "lower": 0,
                     "upper": 0
@@ -222,7 +504,7 @@ $1001=1001
             "upper": 0
         },
         "desc": "Device Type",
-        "kind": 0
+        "kind": 1
     },
     {
         "id": "1003",
@@ -231,7 +513,7 @@ $1001=1001
             {
                 "index": 0,
                 "desc": "Number of Errors",
-                "kind": 1,
+                "kind": 0,
                 "data_type": {
                     "type": 3,
                     "attr": 0,
@@ -239,7 +521,43 @@ $1001=1001
                     "upper": 0
                 },
                 "access_type": {
-                    "type": 3,
+                    "type": 4,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "min_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "max_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "low_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "high_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "default_value": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "mappable": {
+                    "value": false,
                     "attr": 0,
                     "lower": 0,
                     "upper": 0
@@ -248,7 +566,7 @@ $1001=1001
             {
                 "index": 1,
                 "desc": "Standard Error Field",
-                "kind": 1,
+                "kind": 0,
                 "data_type": {
                     "type": 9,
                     "attr": 0,
@@ -256,7 +574,43 @@ $1001=1001
                     "upper": 0
                 },
                 "access_type": {
-                    "type": 1,
+                    "type": 2,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "min_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "max_elements": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "low_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "high_limit": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "default_value": {
+                    "value": 0,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "mappable": {
+                    "value": false,
                     "attr": 0,
                     "lower": 0,
                     "upper": 0
@@ -270,7 +624,7 @@ $1001=1001
             "upper": 0
         },
         "desc": "Predefined Error Field",
-        "kind": 1
+        "kind": 0
     }
 ]
 ```
