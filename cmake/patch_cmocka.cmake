@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 if(NOT DEFINED CMocka_PATH)
-  message(FATAL_ERROR "CMocka_PATH is not defined")
+    message(FATAL_ERROR "CMocka_PATH is not defined")
 endif()
 
 file(READ "${CMocka_PATH}/CMakeLists.txt" _contents)
