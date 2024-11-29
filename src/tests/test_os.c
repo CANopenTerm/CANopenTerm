@@ -109,7 +109,7 @@ void test_os_fclose(void** state)
 
 void test_os_fgets(void** state)
 {
-    FILE_t* file = os_fopen("fgets.txt", "r");
+    FILE_t* file = os_fopen("tests/test.txt", "r");
     char    buffer[20];
     char*   result;
 
