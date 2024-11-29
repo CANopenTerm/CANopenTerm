@@ -69,7 +69,8 @@ file, but with the `.json` extension.
 
 #### Example
 
-Input CODB file:
+<!-- tabs:start -->
+<!-- tab:Input CODB file -->
 ```plaintext
 1000::Device Type:mandatory::VAR:m:UNSIGNED32:m:ro:d[const,ro]::n::n:::::::n:m
 
@@ -79,8 +80,7 @@ $1001=1001
 1003:00:Number of Errors:optional::VAR:m:UNSIGNED8:m:rw:d[rw,ro]::n::n:::::0:m:n:m
 1003:01:Standard Error Field:optional::VAR:m:UNSIGNED32:m:ro:m::n::n::::d:0:m:n:m
 ```
-
-Output JSON file:
+<!-- tab:Output JSON file -->
 ```json
 [
   {
@@ -195,6 +195,7 @@ Output JSON file:
   }
 ]
 ```
+<!-- tabs:end -->
 
 ### File Format Specification
 
