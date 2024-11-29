@@ -8,7 +8,6 @@ option(BUILD_TESTS              "Build CMocka unit tests"              OFF)
 option(BUILD_YOCTO              "Build in a Yocto build environment"   OFF)
 option(ENABLE_POCKETPY_SUPPORT  "Enable experimental pocketpy support" OFF)
 option(ENABLE_ADDRESS_SANITIZER "Enable address sanitizer (Clang)"     OFF)
-option(BUILD_CODB2JSON          "Build codb2json"                      OFF)
 
 set(CMAKE_C_STANDARD 90)
 if (POLICY CMP0135)
@@ -36,18 +35,7 @@ if(BUILD_TESTS)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tests.cmake)
 endif(BUILD_TESTS)
 
-if (BUILD_CODB2JSON)
-    add_executable(
-        codb2json  ${CMAKE_CURRENT_SOURCE_DIR}/src/codb2json.c ${CMAKE_CURRENT_SOURCE_DIR}/src/icon.rc)
-
-    target_link_libraries(
-        codb2json
-        ${CJSON_LIBRARY})
-
-    add_dependencies(
-        codb2json
-        cJSON_devel)
-endif()
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/codb2json.cmake)
 
 include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src

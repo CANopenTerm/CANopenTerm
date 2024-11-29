@@ -97,6 +97,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_closedir() not defined
 #endif
 
+#ifndef os_exit
+#error os_exit() not defined
+#endif
+
 #ifndef os_fclose
 #error  os_fclose() not defined
 #endif
@@ -181,6 +185,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error  os_realloc() not defined
 #endif
 
+#ifndef os_rewind
+#error  os_rewind() not defined
+#endif
+
 #ifndef os_snprintf
 #error  os_snprintf() not defined
 #endif
@@ -243,6 +251,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef os_tolower
 #error  os_tolower() not defined
+#endif
+
+#ifndef os_toupper
+#error  os_toupper() not defined
 #endif
 
 #ifndef os_va_arg

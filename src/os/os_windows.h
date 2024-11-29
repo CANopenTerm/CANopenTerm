@@ -24,6 +24,7 @@
 #define os_calloc    SDL_calloc
 #define os_clock     clock
 #define os_closedir  closedir
+#define os_exit      exit
 #define os_fclose    fclose
 #define os_fgets     fgets
 #define os_fopen     fopen
@@ -45,6 +46,7 @@
 #define os_printf    printf
 #define os_readdir   readdir
 #define os_realloc   SDL_realloc
+#define os_rewind    rewind
 #define os_snprintf  SDL_snprintf
 #define os_strchr    SDL_strchr
 #define os_strcmp    SDL_strcmp
@@ -61,6 +63,7 @@
 #define os_strtoul   SDL_strtoul
 #define os_strtoull  SDL_strtoull
 #define os_tolower   SDL_tolower
+#define os_toupper   SDL_toupper
 #define os_va_arg    va_arg
 #define os_va_end    va_end
 #define os_va_start  va_start

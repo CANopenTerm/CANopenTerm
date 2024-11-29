@@ -7,17 +7,8 @@
  *
  **/
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "os.h"
 #include "cJSON.h"
-
-#ifdef _WIN32
-#define strdup _strdup
-#endif
 
 /* codb file format:
  *
@@ -123,11 +114,10 @@ typedef enum obj_attr_type
 typedef struct obj_attr
 {
     obj_attr_type_t type;
-    uint64_t        lower_limit;
-    uint64_t        upper_limit;
+    uint64          lower_limit;
+    uint64          upper_limit;
 
 } obj_attr_t;
-
 
 typedef enum obj_kind
 {
@@ -139,7 +129,7 @@ typedef enum obj_kind
 
 typedef enum obj_code
 {
-    DOMAIN,
+    DOMAIN_T,
     DEFTYPE,
     DEFSTRUCT,
     VAR,
@@ -151,7 +141,7 @@ typedef enum obj_code
 typedef enum data_type
 {
     NONE,
-    BOOLEAN,
+    BOOLEAN_T,
     INTEGER8,
     UNSIGNED8,
     INTEGER16,
@@ -168,7 +158,7 @@ typedef enum data_type
     UNSIGNED64,
     REAL32,
     REAL64,
-    FLOAT,
+    FLOAT_T,
     TIME_OF_DAY,
     VISIBLE_STRING,
     OCTET_STRING,
@@ -178,7 +168,7 @@ typedef enum data_type
 
 typedef enum acc_type
 {
-    CONST,
+    CONST_T,
     RO,
     WO,
     RW,
@@ -191,8 +181,8 @@ typedef enum acc_type
 typedef struct codb_entry
 {
     char*       object_name;
-    uint16_t    main_index;
-    uint8_t     sub_index;
+    uint16      main_index;
+    uint8       sub_index;
     char*       parameter_name;
     obj_kind_t  object_kind;
     char*       unit;
@@ -202,17 +192,17 @@ typedef struct codb_entry
     obj_attr_t  data_type_attr;
     acc_type_t  access_type;
     obj_attr_t  access_type_attr;
-    uint8_t     min_elements;
+    uint8       min_elements;
     obj_attr_t  min_elements_attr;
-    uint8_t     max_elements;
+    uint8       max_elements;
     obj_attr_t  max_elements_attr;
-    uint64_t    low_limit;
+    uint64      low_limit;
     obj_attr_t  low_limit_attr;
-    uint64_t    high_limit;
+    uint64      high_limit;
     obj_attr_t  high_limit_attr;
-    uint64_t    default_value;
+    uint64      default_value;
     obj_attr_t  default_value_attr;
-    bool        mappable;
+    bool_t      mappable;
     obj_attr_t  mappable_attr;
 
 } codb_entry_t;
@@ -226,51 +216,55 @@ typedef struct codb_database
 
 static codb_database_t* codb_db;
 
-static bool  add_sub_index_to_object(cJSON* sub_indices, size_t i);
-static bool  is_codb_file(const char* input_file_name);
-static void  read_codb(const char* input_file_name);
-static void  write_json(const char* output_file_name);
-static bool  write_json_entry(cJSON* entry, size_t i);
-static void  free_codb_database(codb_database_t* db);
-static void  handle_attribute(obj_attr_t* attr, const char* token);
-static void  handle_value8(uint8_t*  value, const char* token);
-static void  handle_value64(uint64_t* value, const char* token);
-static char* to_upper_case(const char* str);
+static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i);
+static void   init_codb_entry(codb_entry_t* entry);
+static bool_t is_codb_file(const char* input_file_name);
+static void   read_codb(const char* input_file_name);
+static void   write_json(const char* output_file_name);
+static bool_t write_json_entry(cJSON* entry, size_t i);
+static void   free_codb_database(codb_database_t* db);
+static void   handle_attribute(obj_attr_t* attr, const char* token);
+static void   handle_value8(uint8*  value, const char* token);
+static void   handle_value64(uint64* value, const char* token);
+static char*  to_upper_case(const char* str);
 
 int main(int argc, char* argv[])
 {
     char  json_file_name[256] = { 0 };
     char* dot;
 
+    os_printf("<> codb2json\n");
+    os_printf("Copyright (c) 2024, Michael Fitzmayer.\n\n");
+
     if (argc != 2)
     {
-        fprintf(stderr, "Usage: %s <input file>\n", argv[0]);
+        os_fprintf(stderr, "Usage: %s <input file>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
-    if (false == is_codb_file(argv[1]))
+    if (IS_FALSE == is_codb_file(argv[1]))
     {
-        fprintf(stderr, "Error: %s is not a .codb file.\n", argv[1]);
+        os_fprintf(stderr, "Error: %s is not a .codb file.\n", argv[1]);
         return EXIT_FAILURE;
     }
 
-    codb_db = (codb_database_t*)malloc(sizeof(codb_database_t));
+    codb_db = (codb_database_t*)os_calloc(1, sizeof(codb_database_t));
     if (codb_db == NULL)
     {
-        perror("Error allocating memory for codb_db");
+        os_fprintf(stderr, "Error allocating memory for codb_db");
         return EXIT_FAILURE;
     }
     codb_db->entries       = NULL;
     codb_db->total_entries = 0;
 
-    strncpy(json_file_name, argv[1], sizeof(json_file_name) - 1);
+    os_strlcpy(json_file_name, argv[1], sizeof(json_file_name) - 1);
     json_file_name[sizeof(json_file_name) - 1] = '\0';
-    dot = strrchr(json_file_name, '.');
+    dot = os_strrchr(json_file_name, '.');
     if (dot != NULL)
     {
         *dot = '\0';
     }
-    strcat(json_file_name, ".json");
+    os_strlcat(json_file_name, ".json", sizeof(json_file_name));
 
     read_codb(argv[1]);
     write_json(json_file_name);
@@ -281,7 +275,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-static bool add_sub_index_to_object(cJSON *sub_indices, size_t i)
+static bool_t add_sub_index_to_object(cJSON *sub_indices, size_t i)
 {
     cJSON* sub_index;
     cJSON* sub_index_value;
@@ -304,7 +298,7 @@ static bool add_sub_index_to_object(cJSON *sub_indices, size_t i)
     sub_index = cJSON_CreateObject();
     if (sub_index == NULL)
     {
-        return false;
+        return IS_FALSE;
     }
 
     sub_index_value = cJSON_CreateNumber(codb_db->entries[i].sub_index);
@@ -341,21 +335,72 @@ static bool add_sub_index_to_object(cJSON *sub_indices, size_t i)
 
     cJSON_AddItemToArray(sub_indices, sub_index);
 
-    return true;
+    return IS_TRUE;
 }
 
-static bool is_codb_file(const char* input_file_name)
+void init_codb_object(codb_entry_t* entry)
+{
+    if (NULL == entry)
+    {
+        return;
+    }
+
+    entry->object_name                    = NULL;
+    entry->main_index                     = 0;
+    entry->sub_index                      = 0;
+    entry->parameter_name                 = NULL;
+    entry->object_kind                    = IS_OPTIONAL;
+    entry->unit                           = NULL;
+    entry->object_code                    = DOMAIN_T;
+    entry->object_code_attr.type          = EMPTY;
+    entry->object_code_attr.lower_limit   = 0;
+    entry->object_code_attr.upper_limit   = 0;
+    entry->data_type                      = NONE;
+    entry->data_type_attr.type            = EMPTY;
+    entry->data_type_attr.lower_limit     = 0;
+    entry->data_type_attr.upper_limit     = 0;
+    entry->access_type                    = UNSPECIFIED;
+    entry->access_type_attr.type          = EMPTY;
+    entry->access_type_attr.lower_limit   = 0;
+    entry->access_type_attr.upper_limit   = 0;
+    entry->min_elements                   = 0;
+    entry->min_elements_attr.type         = EMPTY;
+    entry->min_elements_attr.lower_limit  = 0;
+    entry->min_elements_attr.upper_limit  = 0;
+    entry->max_elements                   = 0;
+    entry->max_elements_attr.type         = EMPTY;
+    entry->max_elements_attr.lower_limit  = 0;
+    entry->max_elements_attr.upper_limit  = 0;
+    entry->low_limit                      = 0;
+    entry->low_limit_attr.type            = EMPTY;
+    entry->low_limit_attr.lower_limit     = 0;
+    entry->low_limit_attr.upper_limit     = 0;
+    entry->high_limit                     = 0;
+    entry->high_limit_attr.type           = EMPTY;
+    entry->high_limit_attr.lower_limit    = 0;
+    entry->high_limit_attr.upper_limit    = 0;
+    entry->default_value                  = 0;
+    entry->default_value_attr.type        = EMPTY;
+    entry->default_value_attr.lower_limit = 0;
+    entry->default_value_attr.upper_limit = 0;
+    entry->mappable                       = IS_FALSE;
+    entry->mappable_attr.type             = EMPTY;
+    entry->mappable_attr.lower_limit      = 0;
+    entry->mappable_attr.upper_limit      = 0;
+}
+
+static bool_t is_codb_file(const char* input_file_name)
 {
     char line[BUFFER_SIZE] = { 0 };
-    FILE* input_file       = fopen(input_file_name, "rb");
+    FILE* input_file       = os_fopen(input_file_name, "rb");
 
     if (input_file == NULL)
     {
-        perror("Error opening input file.");
-        return false;
+        os_fprintf(stderr, "Error opening input file.");
+        return IS_FALSE;
     }
 
-    while (fgets(line, sizeof(line), input_file) != NULL)
+    while (os_fgets(line, sizeof(line), input_file) != NULL)
     {
         if (line[0] == '\0' || line[0] == '\n' || line[0] == '\r' || isxdigit(line[0]) || line[0] == '#' || line[0] == '$')
         {
@@ -363,19 +408,19 @@ static bool is_codb_file(const char* input_file_name)
         }
         else
         {
-            fclose(input_file);
-            return false;
+            os_fclose(input_file);
+            return IS_FALSE;
         }
     }
 
-    fclose(input_file);
-    return true;
+    os_fclose(input_file);
+    return IS_TRUE;
 }
 
 
 static void read_codb(const char* input_file_name)
 {
-    FILE*  input_file    = fopen(input_file_name, "rb");
+    FILE*  input_file    = os_fopen(input_file_name, "rb");
     char*  line          = NULL;
     size_t entry_count   = 0;
     size_t line_count    = 0;
@@ -384,22 +429,22 @@ static void read_codb(const char* input_file_name)
 
     if (input_file == NULL)
     {
-        perror("Error opening input file.");
-        exit(EXIT_FAILURE);
+        os_fprintf(stderr, "Error opening input file.");
+        os_exit(EXIT_FAILURE);
     }
 
-    line = (char*)malloc(BUFFER_SIZE);
+    line = (char*)os_calloc(BUFFER_SIZE, sizeof(char));
     if (line == NULL)
     {
-        perror("Error allocating memory for line buffer.");
-        fclose(input_file);
-        exit(EXIT_FAILURE);
+        os_fprintf(stderr, "Error allocating memory for line buffer.");
+        os_fclose(input_file);
+        os_exit(EXIT_FAILURE);
     }
 
     /* First pass: count the number of entries. */
-    while (fgets(line, BUFFER_SIZE, input_file) != NULL)
+    while (os_fgets(line, BUFFER_SIZE, input_file) != NULL)
     {
-        if (line[0] == '#' || line[0] == '\n' || line[0] == '\r' || line[0] == '\0')
+        if ('$' == line[0] ||  '#' == line[0] || '\n' == line[0] || '\r' == line[0] || '\0' == line[0])
         {
             continue;
         }
@@ -407,68 +452,27 @@ static void read_codb(const char* input_file_name)
     }
 
     /* Allocate memory for all entries in advance. */
-    codb_db->entries = (codb_entry_t*)malloc(entry_count * sizeof(codb_entry_t));
+    codb_db->entries = (codb_entry_t*)os_calloc(entry_count, sizeof(codb_entry_t));
     if (codb_db->entries == NULL)
     {
-        perror("Error allocating memory for entries.");
-        free(line);
-        fclose(input_file);
-        exit(EXIT_FAILURE);
+        os_fprintf(stderr, "Error allocating memory for entries.");
+        os_free(line);
+        os_fclose(input_file);
+        os_exit(EXIT_FAILURE);
     }
     codb_db->total_entries = entry_count;
 
     /* Initialize all entries to default values. */
     for (i = 0; i < entry_count; i++)
     {
-        codb_db->entries[i].object_name                    = NULL;
-        codb_db->entries[i].main_index                     = 0;
-        codb_db->entries[i].sub_index                      = 0;
-        codb_db->entries[i].parameter_name                 = NULL;
-        codb_db->entries[i].object_kind                    = IS_OPTIONAL;
-        codb_db->entries[i].unit                           = NULL;
-        codb_db->entries[i].object_code                    = DOMAIN;
-        codb_db->entries[i].object_code_attr.type          = EMPTY;
-        codb_db->entries[i].object_code_attr.lower_limit   = 0;
-        codb_db->entries[i].object_code_attr.upper_limit   = 0;
-        codb_db->entries[i].data_type                      = NONE;
-        codb_db->entries[i].data_type_attr.type            = EMPTY;
-        codb_db->entries[i].data_type_attr.lower_limit     = 0;
-        codb_db->entries[i].data_type_attr.upper_limit     = 0;
-        codb_db->entries[i].access_type                    = UNSPECIFIED;
-        codb_db->entries[i].access_type_attr.type          = EMPTY;
-        codb_db->entries[i].access_type_attr.lower_limit   = 0;
-        codb_db->entries[i].access_type_attr.upper_limit   = 0;
-        codb_db->entries[i].min_elements                   = 0;
-        codb_db->entries[i].min_elements_attr.type         = EMPTY;
-        codb_db->entries[i].min_elements_attr.lower_limit  = 0;
-        codb_db->entries[i].min_elements_attr.upper_limit  = 0;
-        codb_db->entries[i].max_elements                   = 0;
-        codb_db->entries[i].max_elements_attr.type         = EMPTY;
-        codb_db->entries[i].max_elements_attr.lower_limit  = 0;
-        codb_db->entries[i].max_elements_attr.upper_limit  = 0;
-        codb_db->entries[i].low_limit                      = 0;
-        codb_db->entries[i].low_limit_attr.type            = EMPTY;
-        codb_db->entries[i].low_limit_attr.lower_limit     = 0;
-        codb_db->entries[i].low_limit_attr.upper_limit     = 0;
-        codb_db->entries[i].high_limit                     = 0;
-        codb_db->entries[i].high_limit_attr.type           = EMPTY;
-        codb_db->entries[i].high_limit_attr.lower_limit    = 0;
-        codb_db->entries[i].high_limit_attr.upper_limit    = 0;
-        codb_db->entries[i].default_value                  = 0;
-        codb_db->entries[i].default_value_attr.type        = EMPTY;
-        codb_db->entries[i].default_value_attr.lower_limit = 0;
-        codb_db->entries[i].default_value_attr.upper_limit = 0;
-        codb_db->entries[i].mappable                       = false;
-        codb_db->entries[i].mappable_attr.type             = EMPTY;
-        codb_db->entries[i].mappable_attr.lower_limit      = 0;
-        codb_db->entries[i].mappable_attr.upper_limit      = 0;
+        init_codb_object(&codb_db->entries[i]);
     }
 
     /* Reset file pointer to the beginning */
-    rewind(input_file);
+    os_rewind(input_file);
 
     current_entry = 0;
-    while (fgets(line, BUFFER_SIZE, input_file) != NULL)
+    while (os_fgets(line, BUFFER_SIZE, input_file) != NULL)
     {
         field_id_t id;
         char*      token = line;
@@ -476,45 +480,94 @@ static void read_codb(const char* input_file_name)
         line_count++;
 
         /* Check if the line is too long. */
-        if (strchr(line, '\n') == NULL && !feof(input_file))
+        if (os_strchr(line, '\n') == NULL && !feof(input_file))
         {
-            fprintf(stderr, "Error: Line too long in input file.\n");
-            free(line);
-            fclose(input_file);
-            free(codb_db->entries);
-            exit(EXIT_FAILURE);
+            os_fprintf(stderr, "Error: Line too long in input file.\n");
+            os_free(line);
+            os_fclose(input_file);
+            os_free(codb_db->entries);
+            os_exit(EXIT_FAILURE);
         }
 
         /* Copy object. */
         if (line[0] == '$')
         {
-            char*    end;
-            uint16_t source_index;
-            uint16_t dest_index;
+            char*  end;
+            uint16 source_index;
+            uint16 dest_index;
+            size_t source_count = 0;
 
-            end = strchr(token, '=');
+            end = os_strchr(token, '=');
             if (end == NULL)
             {
-                fprintf(stderr, "L%zu Error: Invalid object copy syntax.\n", line_count);
-                free(line);
-                fclose(input_file);
-                free(codb_db->entries);
-                exit(EXIT_FAILURE);
+                os_fprintf(stderr, "L%zd Error: Invalid object copy syntax.\n", line_count);
+                os_free(line);
+                os_fclose(input_file);
+                os_free(codb_db->entries);
+                os_exit(EXIT_FAILURE);
             }
             else
             {
                 *end         = '\0';
-                source_index = (uint16_t)strtol(end   + 1, NULL, 16);
-                dest_index   = (uint16_t)strtol(token + 1, NULL, 16);
+                source_index = (uint16)os_strtol(end   + 1, NULL, 16);
+                dest_index   = (uint16)os_strtol(token + 1, NULL, 16);
+            }
+
+            if (source_index == dest_index)
+            {
+                os_fprintf(stderr, "L%zd Error: Source and destination index are the same.\n", line_count);
+                os_free(line);
+                os_fclose(input_file);
+                os_free(codb_db->entries);
+                os_exit(EXIT_FAILURE);
             }
 
             for (i = 0; i < codb_db->total_entries; i++)
             {
                 if (codb_db->entries[i].main_index == source_index)
                 {
-                    char object_name_str[5] = { 0 };
-                    sprintf(object_name_str, "%04X", dest_index);
-                    codb_db->entries[current_entry].object_name    = strdup(object_name_str);
+                    source_count++;
+                }
+            }
+
+            if (0 == source_count)
+            {
+                os_fprintf(stderr, "L%zd Error: Source index not found.\n", line_count);
+                os_free(line);
+                os_fclose(input_file);
+                os_free(codb_db->entries);
+                os_exit(EXIT_FAILURE);
+            }
+            else
+            {
+                codb_db->entries = (codb_entry_t*)os_realloc(codb_db->entries, (codb_db->total_entries + source_count) * sizeof(codb_entry_t));
+                if (NULL == codb_db->entries)
+                {
+                    os_fprintf(stderr, "Error reallocating memory for entries.");
+                    os_free(line);
+                    os_fclose(input_file);
+                    os_exit(EXIT_FAILURE);
+                }
+                else
+                {
+                    for (i = codb_db->total_entries; i < codb_db->total_entries + source_count; i++)
+                    {
+                        init_codb_object(&codb_db->entries[i]);
+                    }
+                }
+            }
+
+            for (i = 0; i < codb_db->total_entries; i++)
+            {
+                if (codb_db->entries[i].main_index == source_index)
+                {
+                    if (codb_db->entries[i].object_name != NULL)
+                    {
+                        char object_name_str[5] = { 0 };
+                        os_snprintf(object_name_str, sizeof(object_name_str), "%04X", dest_index);
+                        codb_db->entries[current_entry].object_name = os_strdup(object_name_str);
+                    }
+
                     codb_db->entries[current_entry].main_index     = dest_index;
                     codb_db->entries[current_entry].sub_index      = codb_db->entries[i].sub_index;
                     codb_db->entries[current_entry].object_kind    = codb_db->entries[i].object_kind;
@@ -530,7 +583,7 @@ static void read_codb(const char* input_file_name)
 
                     if (NULL != codb_db->entries[i].parameter_name)
                     {
-                        codb_db->entries[current_entry].parameter_name = strdup(codb_db->entries[i].parameter_name);
+                        codb_db->entries[current_entry].parameter_name = os_strdup(codb_db->entries[i].parameter_name);
                     }
                     else
                     {
@@ -539,28 +592,28 @@ static void read_codb(const char* input_file_name)
 
                     if (NULL != codb_db->entries[i].unit)
                     {
-                        codb_db->entries[current_entry].unit = strdup(codb_db->entries[i].unit);
+                        codb_db->entries[current_entry].unit = os_strdup(codb_db->entries[i].unit);
                     }
                     else
                     {
                         codb_db->entries[current_entry].unit = NULL;
                     }
 
-                    memcpy(&codb_db->entries[current_entry].object_code_attr,   &codb_db->entries[i].object_code_attr,   sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].data_type_attr,     &codb_db->entries[i].data_type_attr,     sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].access_type_attr,   &codb_db->entries[i].access_type_attr,   sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].min_elements_attr,  &codb_db->entries[i].min_elements_attr,  sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].max_elements_attr,  &codb_db->entries[i].max_elements_attr,  sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].low_limit_attr,     &codb_db->entries[i].low_limit_attr,     sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].high_limit_attr,    &codb_db->entries[i].high_limit_attr,    sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].default_value_attr, &codb_db->entries[i].default_value_attr, sizeof(obj_attr_t));
-                    memcpy(&codb_db->entries[current_entry].mappable_attr,      &codb_db->entries[i].mappable_attr,      sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].object_code_attr,   &codb_db->entries[i].object_code_attr,   sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].data_type_attr,     &codb_db->entries[i].data_type_attr,     sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].access_type_attr,   &codb_db->entries[i].access_type_attr,   sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].min_elements_attr,  &codb_db->entries[i].min_elements_attr,  sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].max_elements_attr,  &codb_db->entries[i].max_elements_attr,  sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].low_limit_attr,     &codb_db->entries[i].low_limit_attr,     sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].high_limit_attr,    &codb_db->entries[i].high_limit_attr,    sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].default_value_attr, &codb_db->entries[i].default_value_attr, sizeof(obj_attr_t));
+                    os_memcpy(&codb_db->entries[current_entry].mappable_attr,      &codb_db->entries[i].mappable_attr,      sizeof(obj_attr_t));
 
                     current_entry++;
-                    break;
+
                 }
             }
-
+            codb_db->total_entries += source_count;
             continue;
         }
 
@@ -578,7 +631,7 @@ static void read_codb(const char* input_file_name)
 
         for (id = MAIN_INDEX; id <= MAPPABLE_ATTR; id++)
         {
-            char* end = strchr(token, ':');
+            char* end = os_strchr(token, ':');
 
             if (end != NULL)
             {
@@ -589,26 +642,26 @@ static void read_codb(const char* input_file_name)
             {
                 case MAIN_INDEX:
                 {
-                    char*    endptr;
-                    uint16_t value = (uint16_t)strtol(token, &endptr, 16);
+                    char*  endptr;
+                    uint16 value = (uint16)os_strtol(token, &endptr, 16);
 
-                    if (*endptr != '\0' || value <= 0x0000 || value >= 0xFFFF)
+                    if (*endptr != '\0' || value == 0x0000 || value >= 0xFFFF)
                     {
-                        fprintf(stderr, "L%zu Error: Invalid MAIN_INDEX value '%s'\n", line_count, token);
-                        free(line);
-                        fclose(input_file);
-                        free(codb_db->entries);
-                        exit(EXIT_FAILURE);
+                        os_fprintf(stderr, "L%zd Error: Invalid MAIN_INDEX value '%s'\n", line_count, token);
+                        os_free(line);
+                        os_fclose(input_file);
+                        os_free(codb_db->entries);
+                        os_exit(EXIT_FAILURE);
                     }
                     else
                     {
-                        if (current_entry >= entry_count)
+                        if (current_entry >= codb_db->total_entries)
                         {
-                            fprintf(stderr, "L%zu Error: More entries than expected.\n", line_count);
-                            free(line);
-                            fclose(input_file);
-                            free(codb_db->entries);
-                            exit(EXIT_FAILURE);
+                            os_fprintf(stderr, "L%zd Error: More entries than expected.\n", line_count);
+                            os_free(line);
+                            os_fclose(input_file);
+                            os_free(codb_db->entries);
+                            os_exit(EXIT_FAILURE);
                         }
 
                         codb_db->entries[current_entry].main_index = value;
@@ -619,17 +672,17 @@ static void read_codb(const char* input_file_name)
                             {
                                 if (codb_db->entries[i].object_name != NULL)
                                 {
-                                    if (0 == strcmp(codb_db->entries[i].object_name, token))
+                                    if (0 == os_strcmp(codb_db->entries[i].object_name, token))
                                     {
-                                        fprintf(stderr, "L%zu Error: Duplicate OBJECT_NAME value '%s'\n", line_count, token);
-                                        free(line);
-                                        fclose(input_file);
-                                        free(codb_db->entries);
-                                        exit(EXIT_FAILURE);
+                                        os_fprintf(stderr, "L%zd Error: Duplicate OBJECT_NAME value '%s'\n", line_count, token);
+                                        os_free(line);
+                                        os_fclose(input_file);
+                                        os_free(codb_db->entries);
+                                        os_exit(EXIT_FAILURE);
                                     }
                                 }
                             }
-                            codb_db->entries[current_entry].object_name = strdup(token);
+                            codb_db->entries[current_entry].object_name = os_strdup(token);
                         }
                         else
                         {
@@ -640,26 +693,26 @@ static void read_codb(const char* input_file_name)
                 }
                 case SUB_INDEX:
                 {
-                    char*   endptr;
-                    uint8_t value = (uint8_t)strtol(token, &endptr, 16);
+                    char* endptr;
+                    uint8 value = (uint8)os_strtol(token, &endptr, 16);
 
                     if (*endptr != '\0')
                     {
-                        fprintf(stderr, "L%ld Error: Invalid SUB_INDEX value '%s'\n", line_count, token);
-                        free(line);
-                        fclose(input_file);
-                        free(codb_db->entries);
-                        exit(EXIT_FAILURE);
+                        os_fprintf(stderr, "L%zd Error: Invalid SUB_INDEX value '%s'\n", line_count, token);
+                        os_free(line);
+                        os_fclose(input_file);
+                        os_free(codb_db->entries);
+                        os_exit(EXIT_FAILURE);
                     }
                     else
                     {
-                        if (current_entry >= entry_count)
+                        if (current_entry >= codb_db->total_entries)
                         {
-                            fprintf(stderr, "L%zu Error: More entries than expected.\n", line_count);
-                            free(line);
-                            fclose(input_file);
-                            free(codb_db->entries);
-                            exit(EXIT_FAILURE);
+                            os_fprintf(stderr, "L%zu Error: More entries than expected.\n", line_count);
+                            os_free(line);
+                            os_fclose(input_file);
+                            os_free(codb_db->entries);
+                            os_exit(EXIT_FAILURE);
                         }
                         codb_db->entries[current_entry].sub_index = value;
                     }
@@ -670,14 +723,14 @@ static void read_codb(const char* input_file_name)
                 {
                     if (token[0] != '\0')
                     {
-                        codb_db->entries[current_entry].parameter_name = strdup(token);
+                        codb_db->entries[current_entry].parameter_name = os_strdup(token);
                         if (codb_db->entries[current_entry].parameter_name == NULL)
                         {
-                            perror("Error duplicating parameter name.");
-                            free(line);
-                            fclose(input_file);
-                            free(codb_db->entries);
-                            exit(EXIT_FAILURE);
+                            os_fprintf(stderr, "Error duplicating parameter name.");
+                            os_free(line);
+                            os_fclose(input_file);
+                            os_free(codb_db->entries);
+                            os_exit(EXIT_FAILURE);
                         }
                     }
                     else
@@ -688,25 +741,25 @@ static void read_codb(const char* input_file_name)
                 }
                 case OBJECT_KIND:
                 {
-                    if (0 == strncmp(token, "mandatory", 9))
+                    if (0 == os_strncmp(token, "mandatory", 9))
                     {
                         codb_db->entries[current_entry].object_kind = IS_MANDATORY;
                     }
-                    else if (0 == strncmp(token, "optional", 8))
+                    else if (0 == os_strncmp(token, "optional", 8))
                     {
                         codb_db->entries[current_entry].object_kind = IS_OPTIONAL;
                     }
-                    else if (0 == strncmp(token, "conditional", 11))
+                    else if (0 == os_strncmp(token, "conditional", 11))
                     {
                         codb_db->entries[current_entry].object_kind = IS_CONDITIONAL;
                     }
                     else
                     {
-                        fprintf(stderr, "L%zu Error: Invalid OBJECT_KIND value '%s'\n", line_count, token);
-                        free(line);
-                        fclose(input_file);
-                        free(codb_db->entries);
-                        exit(EXIT_FAILURE);
+                        os_fprintf(stderr, "L%zd Error: Invalid OBJECT_KIND value '%s'\n", line_count, token);
+                        os_free(line);
+                        os_fclose(input_file);
+                        os_free(codb_db->entries);
+                        os_exit(EXIT_FAILURE);
                     }
                     break;
                 }
@@ -714,14 +767,14 @@ static void read_codb(const char* input_file_name)
                 {
                     if (token[0] != '\0')
                     {
-                        codb_db->entries[current_entry].unit = strdup(token);
+                        codb_db->entries[current_entry].unit = os_strdup(token);
                         if (codb_db->entries[current_entry].unit == NULL)
                         {
-                            perror("L%zu Error duplicating unit.");
-                            free(line);
-                            fclose(input_file);
-                            free(codb_db->entries);
-                            exit(EXIT_FAILURE);
+                            os_fprintf(stderr, "L%zd Error duplicating unit.");
+                            os_free(line);
+                            os_fclose(input_file);
+                            os_free(codb_db->entries);
+                            os_exit(EXIT_FAILURE);
                         }
                     }
                     else
@@ -734,40 +787,40 @@ static void read_codb(const char* input_file_name)
                 {
                     char* object_code = to_upper_case(token);
 
-                    if (0 == strncmp(object_code, "DOMAIN", 6))
+                    if (0 == os_strncmp(object_code, "DOMAIN", 6))
                     {
-                        codb_db->entries[current_entry].object_code = DOMAIN;
+                        codb_db->entries[current_entry].object_code = DOMAIN_T;
                     }
-                    else if (0 == strncmp(object_code, "DEFTYPE", 7))
+                    else if (0 == os_strncmp(object_code, "DEFTYPE", 7))
                     {
                         codb_db->entries[current_entry].object_code = DEFTYPE;
                     }
-                    else if (0 == strncmp(object_code, "DEFSTRUCT", 9))
+                    else if (0 == os_strncmp(object_code, "DEFSTRUCT", 9))
                     {
                         codb_db->entries[current_entry].object_code = DEFSTRUCT;
                     }
-                    else if (0 == strncmp(object_code, "VAR", 3))
+                    else if (0 == os_strncmp(object_code, "VAR", 3))
                     {
                         codb_db->entries[current_entry].object_code = VAR;
                     }
-                    else if (0 == strncmp(object_code, "ARRAY", 5))
+                    else if (0 == os_strncmp(object_code, "ARRAY", 5))
                     {
                         codb_db->entries[current_entry].object_code = ARRAY;
                     }
-                    else if (0 == strncmp(object_code, "RECORD", 6))
+                    else if (0 == os_strncmp(object_code, "RECORD", 6))
                     {
                         codb_db->entries[current_entry].object_code = RECORD;
                     }
                     else
                     {
-                        fprintf(stderr, "L%zu Error: Invalid OBJECT_CODE value '%s'\n", line_count, token);
-                        free(object_code);
-                        free(line);
-                        fclose(input_file);
-                        free(codb_db->entries);
-                        exit(EXIT_FAILURE);
+                        os_fprintf(stderr, "L%zu Error: Invalid OBJECT_CODE value '%s'\n", line_count, token);
+                        os_free(object_code);
+                        os_free(line);
+                        os_fclose(input_file);
+                        os_free(codb_db->entries);
+                        os_exit(EXIT_FAILURE);
                     }
-                    free(object_code);
+                    os_free(object_code);
                     break;
                 }
                 case OBJECT_CODE_ATTR:
@@ -783,96 +836,96 @@ static void read_codb(const char* input_file_name)
                     {
                         codb_db->entries[current_entry].data_type = NONE;
                     }
-                    else if (0 == strncmp(data_type, "BOOLEAN", 7))
+                    else if (0 == os_strncmp(data_type, "BOOLEAN", 7))
                     {
-                        codb_db->entries[current_entry].data_type = BOOLEAN;
+                        codb_db->entries[current_entry].data_type = BOOLEAN_T;
                     }
-                    else if (0 == strncmp(data_type, "INTEGER8", 8))
+                    else if (0 == os_strncmp(data_type, "INTEGER8", 8))
                     {
                         codb_db->entries[current_entry].data_type = INTEGER8;
                     }
-                    else if (0 == strncmp(data_type, "UNSIGNED8", 9))
+                    else if (0 == os_strncmp(data_type, "UNSIGNED8", 9))
                     {
                         codb_db->entries[current_entry].data_type = UNSIGNED8;
                     }
-                    else if (0 == strncmp(data_type, "INTEGER16", 9))
+                    else if (0 == os_strncmp(data_type, "INTEGER16", 9))
                     {
                         codb_db->entries[current_entry].data_type = INTEGER16;
                     }
-                    else if (0 == strncmp(data_type, "UNSIGNED16", 10))
+                    else if (0 == os_strncmp(data_type, "UNSIGNED16", 10))
                     {
                         codb_db->entries[current_entry].data_type = UNSIGNED16;
                     }
-                    else if (0 == strncmp(data_type, "INTEGER24", 9))
+                    else if (0 == os_strncmp(data_type, "INTEGER24", 9))
                     {
                         codb_db->entries[current_entry].data_type = INTEGER24;
                     }
-                    else if (0 == strncmp(data_type, "UNSIGNED24", 10))
+                    else if (0 == os_strncmp(data_type, "UNSIGNED24", 10))
                     {
                         codb_db->entries[current_entry].data_type = UNSIGNED24;
                     }
-                    else if (0 == strncmp(data_type, "INTEGER32", 9))
+                    else if (0 == os_strncmp(data_type, "INTEGER32", 9))
                     {
                         codb_db->entries[current_entry].data_type = INTEGER32;
                     }
-                    else if (0 == strncmp(data_type, "UNSIGNED32", 10))
+                    else if (0 == os_strncmp(data_type, "UNSIGNED32", 10))
                     {
                         codb_db->entries[current_entry].data_type = UNSIGNED32;
                     }
-                    else if (0 == strncmp(data_type, "INTEGER48", 9))
+                    else if (0 == os_strncmp(data_type, "INTEGER48", 9))
                     {
                         codb_db->entries[current_entry].data_type = INTEGER48;
                     }
-                    else if (0 == strncmp(data_type, "UNSIGNED48", 10))
+                    else if (0 == os_strncmp(data_type, "UNSIGNED48", 10))
                     {
                         codb_db->entries[current_entry].data_type = UNSIGNED48;
                     }
-                    else if (0 == strncmp(data_type, "INTEGER64", 9))
+                    else if (0 == os_strncmp(data_type, "INTEGER64", 9))
                     {
                         codb_db->entries[current_entry].data_type = INTEGER64;
                     }
-                    else if (0 == strncmp(data_type, "UNSIGNED64", 10))
+                    else if (0 == os_strncmp(data_type, "UNSIGNED64", 10))
                     {
                         codb_db->entries[current_entry].data_type = UNSIGNED64;
                     }
-                    else if (0 == strncmp(data_type, "REAL32", 6))
+                    else if (0 == os_strncmp(data_type, "REAL32", 6))
                     {
                         codb_db->entries[current_entry].data_type = REAL32;
                     }
-                    else if (0 == strncmp(data_type, "REAL64", 6))
+                    else if (0 == os_strncmp(data_type, "REAL64", 6))
                     {
                         codb_db->entries[current_entry].data_type = REAL64;
                     }
-                    else if (0 == strncmp(data_type, "TIME_OF_DAY", 11))
+                    else if (0 == os_strncmp(data_type, "TIME_OF_DAY", 11))
                     {
                         codb_db->entries[current_entry].data_type = TIME_OF_DAY;
                     }
-                    else if (0 == strncmp(data_type, "VISIBLE_STRING", 14))
+                    else if (0 == os_strncmp(data_type, "VISIBLE_STRING", 14))
                     {
                         codb_db->entries[current_entry].data_type = VISIBLE_STRING;
                     }
-                    else if (0 == strncmp(data_type, "OCTET_STRING", 12))
+                    else if (0 == os_strncmp(data_type, "OCTET_STRING", 12))
                     {
                         codb_db->entries[current_entry].data_type = OCTET_STRING;
                     }
-                    else if (0 == strncmp(data_type, "DOMAIN", 6))
+                    else if (0 == os_strncmp(data_type, "DOMAIN", 6))
                     {
                         codb_db->entries[current_entry].data_type = DOMAIN_TYPE;
                     }
-                    else if (0 == strncmp(data_type, "FLOAT", 6))
+                    else if (0 == os_strncmp(data_type, "FLOAT", 6))
                     {
-                        codb_db->entries[current_entry].data_type = FLOAT;
+                        codb_db->entries[current_entry].data_type = FLOAT_T;
                     }
                     else
                     {
-                        fprintf(stderr, "L%zu Error: Invalid DATA_TYPE value '%s'\n", line_count, token);
-                        free(data_type);
-                        free(line);
-                        fclose(input_file);
-                        free(codb_db->entries);
-                        exit(EXIT_FAILURE);
+                        os_fprintf(stderr, "L%zu Error: Invalid DATA_TYPE value '%s'\n", line_count, token);
+                        os_free(data_type);
+                        os_free(line);
+                        os_fclose(input_file);
+                        os_free(codb_db->entries);
+                        os_exit(EXIT_FAILURE);
                     }
-                    free(data_type);
+                    os_free(data_type);
                     break;
                 }
                 case DATA_TYPE_ATTR:
@@ -882,27 +935,27 @@ static void read_codb(const char* input_file_name)
                 }
                 case ACCESS_TYPE:
                 {
-                    if (0 == strncmp(token, "const", 5))
+                    if (0 == os_strncmp(token, "const", 5))
                     {
-                        codb_db->entries[current_entry].access_type = CONST;
+                        codb_db->entries[current_entry].access_type = CONST_T;
                     }
-                    else if (0 == strncmp(token, "ro", 2))
+                    else if (0 == os_strncmp(token, "ro", 2))
                     {
                         codb_db->entries[current_entry].access_type = RO;
                     }
-                    else if (0 == strncmp(token, "wo", 2))
+                    else if (0 == os_strncmp(token, "wo", 2))
                     {
                         codb_db->entries[current_entry].access_type = WO;
                     }
-                    else if (0 == strncmp(token, "rw", 2))
+                    else if (0 == os_strncmp(token, "rw", 2))
                     {
                         codb_db->entries[current_entry].access_type = RW;
                     }
-                    else if (0 == strncmp(token, "wwr", 3))
+                    else if (0 == os_strncmp(token, "wwr", 3))
                     {
                         codb_db->entries[current_entry].access_type = WWR;
                     }
-                    else if (0 == strncmp(token, "rww", 3))
+                    else if (0 == os_strncmp(token, "rww", 3))
                     {
                         codb_db->entries[current_entry].access_type = RWW;
                     }
@@ -912,11 +965,11 @@ static void read_codb(const char* input_file_name)
                     }
                     else
                     {
-                        fprintf(stderr, "L%zu Error: Invalid ACCESS_TYPE value '%s'\n", line_count, token);
-                        free(line);
-                        fclose(input_file);
-                        free(codb_db->entries);
-                        exit(EXIT_FAILURE);
+                        os_fprintf(stderr, "L%zu Error: Invalid ACCESS_TYPE value '%s'\n", line_count, token);
+                        os_free(line);
+                        os_fclose(input_file);
+                        os_free(codb_db->entries);
+                        os_exit(EXIT_FAILURE);
                     }
                     break;
                 }
@@ -967,29 +1020,28 @@ static void read_codb(const char* input_file_name)
                 }
                 case DEFAULT_VALUE:
                 {
-                    uint64_t value;
+                    uint64 value;
 
                     if (token[0] == '$')
                     {
-                        if (0 == strncmp(token, "$NODEID", 7))
+                        if (0 == os_strncmp(token, "$NODEID", 7))
                         {
-                            uint64_t data_value = strtoull(token + 7, NULL, 0);
+                            uint64 data_value = os_strtoull(token + 7, NULL, 0);
 
                             value = 0x80000000 | data_value;
-
-                            codb_db->entries[current_entry].default_value = value;
                         }
                         else
                         {
-                            fprintf(stderr, "Error: Invalid value '%s'\n", token);
+                            os_fprintf(stderr, "Error: Invalid value '%s'\n", token);
                             free_codb_database(codb_db);
-                            exit(EXIT_FAILURE);
+                            os_exit(EXIT_FAILURE);
                         }
                     }
                     else
                     {
-                        value = strtoull(token, NULL, 0);
+                        value = os_strtoull(token, NULL, 0);
                     }
+                    codb_db->entries[current_entry].default_value = value;
                     break;
                 }
                 case DEFAULT_VALUE_ATTR:
@@ -999,17 +1051,17 @@ static void read_codb(const char* input_file_name)
                 }
                 case MAPPABLE:
                 {
-                    if (0 == strncmp(token, "y", 1))
+                    if (0 == os_strncmp(token, "y", 1))
                     {
-                        codb_db->entries[current_entry].mappable = true;
+                        codb_db->entries[current_entry].mappable = IS_TRUE;
                     }
-                    else if (0 == strncmp(token, "n", 1))
+                    else if (0 == os_strncmp(token, "n", 1))
                     {
-                        codb_db->entries[current_entry].mappable = false;
+                        codb_db->entries[current_entry].mappable = IS_FALSE;
                     }
                     else if (token[0] == '\0' || token[0] == ' ')
                     {
-                        codb_db->entries[current_entry].mappable = false;
+                        codb_db->entries[current_entry].mappable = IS_FALSE;
                     }
                     break;
                 }
@@ -1032,52 +1084,52 @@ static void read_codb(const char* input_file_name)
         current_entry++;
     }
 
-    free(line);
-    fclose(input_file);
+    os_free(line);
+    os_fclose(input_file);
 }
 
 static void write_json(const char* output_file_name)
 {
-    char*  string = NULL;
-    cJSON* root;
-    FILE*  output_file;
+    char*   string = NULL;
+    cJSON*  root;
+    FILE_t* output_file;
     size_t i;
 
-    output_file = fopen(output_file_name, "wb+");
+    output_file = os_fopen(output_file_name, "wb+");
     if (NULL == output_file)
     {
-        perror("Error opening output file.");
-        exit(EXIT_FAILURE);
+        os_fprintf(stderr, "Error opening output file.");
+        os_exit(EXIT_FAILURE);
     }
 
     root = cJSON_CreateArray();
     if (root == NULL)
     {
-        perror("Error creating JSON array.");
-        fclose(output_file);
-        exit(EXIT_FAILURE);
+        os_fprintf(stderr, "Error creating JSON array.");
+        os_fclose(output_file);
+        os_exit(EXIT_FAILURE);
     }
 
     for (i = 0; i < codb_db->total_entries; i++)
     {
         if (codb_db->entries[i].object_name != NULL)
         {
-            if (false == write_json_entry(root, i))
+            if (IS_FALSE == write_json_entry(root, i))
             {
-                perror("Error writing JSON entry.");
+                os_fprintf(stderr, "Error writing JSON entry.");
                 cJSON_Delete(root);
-                fclose(output_file);
-                exit(EXIT_FAILURE);
+                os_fclose(output_file);
+                os_exit(EXIT_FAILURE);
             }
         }
     }
 
     string = cJSON_Print(root);
-    fprintf(output_file, "%s\n", string);
-    free(string);
+    os_fprintf(output_file, "%s\n", string);
+    os_free(string);
     cJSON_Delete(root);
 
-    fclose(output_file);
+    os_fclose(output_file);
 }
 
 static void free_codb_database(codb_database_t* db)
@@ -1091,29 +1143,28 @@ static void free_codb_database(codb_database_t* db)
             {
                 if (db->entries[i].object_name != NULL)
                 {
-                    free(db->entries[i].object_name);
+                    os_free(db->entries[i].object_name);
                     db->entries[i].object_name = NULL;
                 }
                 if (db->entries[i].parameter_name != NULL)
                 {
-                    free(db->entries[i].parameter_name);
+                    os_free(db->entries[i].parameter_name);
                     db->entries[i].parameter_name = NULL;
                 }
                 if (db->entries[i].unit != NULL)
                 {
-                    free(db->entries[i].unit);
+                    os_free(db->entries[i].unit);
                     db->entries[i].unit = NULL;
                 }
             }
-            free(db->entries);
+            os_free(db->entries);
             db->entries = NULL;
         }
-        free(db);
-        db = NULL;
+        os_free(db);
     }
 }
 
-static bool write_json_entry(cJSON* root, size_t i)
+static bool_t write_json_entry(cJSON* root, size_t i)
 {
     cJSON* id;
     cJSON* index;
@@ -1133,7 +1184,7 @@ static bool write_json_entry(cJSON* root, size_t i)
     entry = cJSON_CreateObject();
     if (entry == NULL)
     {
-        return false;
+        return IS_FALSE;
     }
 
     id    = cJSON_CreateString(codb_db->entries[i].object_name);
@@ -1145,7 +1196,7 @@ static bool write_json_entry(cJSON* root, size_t i)
     if (sub_indices == NULL)
     {
         cJSON_Delete(entry);
-        return false;
+        return IS_FALSE;
     }
     cJSON_AddItemToObject(entry, "sub_indices", sub_indices);
 
@@ -1171,43 +1222,42 @@ static bool write_json_entry(cJSON* root, size_t i)
     /* Object has only one sub-index. */
     if (i + 1 >= codb_db->total_entries || codb_db->entries[i].main_index != codb_db->entries[i + 1].main_index)
     {
-        if (false == add_sub_index_to_object(sub_indices, i))
+        if (IS_FALSE == add_sub_index_to_object(sub_indices, i))
             {
                 cJSON_Delete(entry);
-                return false;
+                return IS_FALSE;
             }
-        i++;
     }
     else
     {
         i++;
         while (i < codb_db->total_entries && codb_db->entries[i - 1].main_index == codb_db->entries[i].main_index)
         {
-            if (false == add_sub_index_to_object(sub_indices, i))
+            if (IS_FALSE == add_sub_index_to_object(sub_indices, i))
             {
                 cJSON_Delete(entry);
-                return false;
+                return IS_FALSE;
             }
             i++;
         }
     }
 
     cJSON_AddItemToArray(root, entry);
-    return true;
+    return IS_TRUE;
 }
 
 static void handle_attribute(obj_attr_t* attr, const char* token)
 {
-    if (0 == strncmp(token, "m", 1))
+    if (0 == os_strncmp(token, "m", 1))
     {
         attr->type = MANDATORY;
     }
-    else if (0 == strncmp(token, "d", 1))
+    else if (0 == os_strncmp(token, "d", 1))
     {
         if (token[1] == '[')
         {
             const char* limits_start = token + 2;
-            const char* limits_end   = strchr(limits_start, ']');
+            const char* limits_end   = os_strchr(limits_start, ']');
             attr->type               = DEFAULT_LIMITS;
 
             if (limits_end != NULL)
@@ -1215,20 +1265,21 @@ static void handle_attribute(obj_attr_t* attr, const char* token)
                 char  limits[256];
                 char* lower_limit_str;
                 char* upper_limit_str;
+                char* saveptr;
 
-                strncpy(limits, limits_start, limits_end - limits_start);
+                os_strlcpy(limits, limits_start, limits_end - limits_start);
                 limits[limits_end - limits_start] = '\0';
 
-                lower_limit_str = strtok(limits, ",");
-                upper_limit_str = strtok(NULL,   ",");
+                lower_limit_str = os_strtokr(limits, ",", &saveptr);
+                upper_limit_str = os_strtokr(NULL,   ",", &saveptr);
 
                 if (lower_limit_str != NULL)
                 {
-                    attr->lower_limit = strtoull(lower_limit_str, NULL, 0);
+                    attr->lower_limit = os_strtoull(lower_limit_str, NULL, 0);
                 }
                 if (upper_limit_str != NULL)
                 {
-                    attr->upper_limit = strtoull(upper_limit_str, NULL, 0);
+                    attr->upper_limit = os_strtoull(upper_limit_str, NULL, 0);
                 }
             }
         }
@@ -1237,7 +1288,7 @@ static void handle_attribute(obj_attr_t* attr, const char* token)
             attr->type = DEFAULT;
         }
     }
-    else if (0 == strncmp(token, "n", 1))
+    else if (0 == os_strncmp(token, "n", 1))
     {
         attr->type = NOT_APPLICABLE;
     }
@@ -1247,30 +1298,30 @@ static void handle_attribute(obj_attr_t* attr, const char* token)
     }
 }
 
-static void handle_value8(uint8_t* value, const char* token)
+static void handle_value8(uint8* value, const char* token)
 {
-    *value = (uint8_t)strtoul(token, NULL, 0);
+    *value = (uint8)os_strtoul(token, NULL, 0);
 }
 
-static void handle_value64(uint64_t* value, const char* token)
+static void handle_value64(uint64* value, const char* token)
 {
-    *value = strtoull(token, NULL, 0);
+    *value = os_strtoull(token, NULL, 0);
 }
 
 static char* to_upper_case(const char* str)
 {
     size_t i;
-    char*  upper_case = strdup(str);
+    char*  upper_case = os_strdup(str);
 
     if (NULL == upper_case)
     {
-        perror("Error duplicating string.");
-        exit(EXIT_FAILURE);
+        os_fprintf(stderr, "Error duplicating string.");
+        os_exit(EXIT_FAILURE);
     }
 
-    for (i = 0; i < strlen(upper_case); i++)
+    for (i = 0; i < os_strlen(upper_case); i++)
     {
-        upper_case[i] = toupper(upper_case[i]);
+        upper_case[i] = os_toupper(upper_case[i]);
     }
 
     return upper_case;
