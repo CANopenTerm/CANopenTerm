@@ -100,7 +100,7 @@ Each object dictionary entry contains the following fields:
 - `max_elements` (object): An object representing the maximum elements attributes.
 - `desc` (string): A description of the object.
 
-<!-- tab: Sub-Index -->
+<!-- tab: Sub-Index Entry -->
 Each sub-index object contains the following fields:
 
 - `index` (integer): The sub-index number.
@@ -130,6 +130,32 @@ The code object contains the following fields:
     - `4`: Not applicable for the preceding data field, data field shall be empty.
 - `lower` (integer): The lower bound of the code.
 - `upper` (integer): The upper bound of the code.
+
+<!-- tab: Min Elements -->
+The min elements object contains the following fields:
+
+- `value` (integer): The minimum number of elements, 0 to 254.
+- `attr` (integer): The attribute of the minimum elements.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the minimum elements.
+- `upper` (integer): The upper bound of the minimum elements.
+
+<!-- tab: Max Elements -->
+The max elements object contains the following fields:
+
+- `value` (integer): The maximum number of elements, 0 to 254.
+- `attr` (integer): The attribute of the maximum elements.
+    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
+    - `1`: Value is mandatory and cannot be changed.
+    - `2`: Value is a default and can be changed in the range specified by the data type.
+    - `3`: Value is a default and can be changed within the limits.
+    - `4`: Not applicable for the preceding data field, data field shall be empty.
+- `lower` (integer): The lower bound of the maximum elements.
+- `upper` (integer): The upper bound of the maximum elements.
 
 <!-- tab: Data Type -->
 The data type object contains the following fields:
@@ -186,32 +212,6 @@ The access type object contains the following fields:
     - `4`: Not applicable for the preceding data field, data field shall be empty.
 - `lower` (integer): The lower bound of the access.
 - `upper` (integer): The upper bound of the access.
-
-<!-- tab: Min Elements -->
-The min elements object contains the following fields:
-
-- `value` (integer): The minimum number of elements, 0 to 254.
-- `attr` (integer): The attribute of the minimum elements.
-    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
-    - `1`: Value is mandatory and cannot be changed.
-    - `2`: Value is a default and can be changed in the range specified by the data type.
-    - `3`: Value is a default and can be changed within the limits.
-    - `4`: Not applicable for the preceding data field, data field shall be empty.
-- `lower` (integer): The lower bound of the minimum elements.
-- `upper` (integer): The upper bound of the minimum elements.
-
-<!-- tab: Max Elements -->
-The max elements object contains the following fields:
-
-- `value` (integer): The maximum number of elements, 0 to 254.
-- `attr` (integer): The attribute of the maximum elements.
-    - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
-    - `1`: Value is mandatory and cannot be changed.
-    - `2`: Value is a default and can be changed in the range specified by the data type.
-    - `3`: Value is a default and can be changed within the limits.
-    - `4`: Not applicable for the preceding data field, data field shall be empty.
-- `lower` (integer): The lower bound of the maximum elements.
-- `upper` (integer): The upper bound of the maximum elements.
 
 <!-- tab: Low Limit -->
 The low limit object contains the following fields:
