@@ -3,6 +3,6 @@
 - [Download](https://github.com/CANopenTerm/CANopenTerm/releases/latest)
 - [Lua API](lua-api.md)
 - [Python API](python-api.md)
-- [CANvenient](CANvenient.md)
+- [Subprojects](subprojects.md)
 - [Report issue](report-issue.md)
 - [Legal information](legal-information.md)
