@@ -100,7 +100,7 @@ Each object dictionary entry contains the following fields:
 - `max_elements` (object): An object representing the maximum elements attributes.
 - `desc` (string): A description of the object.
 
-<!-- tab: Sub-Index Entry -->
+<!-- tab: Sub-Index -->
 Each sub-index object contains the following fields:
 
 - `index` (integer): The sub-index number.
