@@ -103,7 +103,7 @@ typedef enum field_id
 } field_id_t;
 
 static codb_database_t* codb_db;
-
+static cJSON* min_elements;
 static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i);
 static void   init_codb_entry(codb_entry_t* entry);
 static bool_t is_codb_file(const char* input_file_name);
@@ -183,18 +183,6 @@ static bool_t add_sub_index_to_object(cJSON *sub_indices, size_t i)
     cJSON* access_type_lower_limit;
     cJSON* access_type_upper_limit;
 
-    cJSON* min_elements;
-    cJSON* min_elements_value;
-    cJSON* min_elements_attr;
-    cJSON* min_elements_lower_limit;
-    cJSON* min_elements_upper_limit;
-
-    cJSON* max_elements;
-    cJSON* max_elements_value;
-    cJSON* max_elements_attr;
-    cJSON* max_elements_lower_limit;
-    cJSON* max_elements_upper_limit;
-
     cJSON* low_limit;
     cJSON* low_limit_value;
     cJSON* low_limit_attr;
@@ -250,26 +238,6 @@ static bool_t add_sub_index_to_object(cJSON *sub_indices, size_t i)
     cJSON_AddItemToObject(access_type, "lower", access_type_lower_limit);
     cJSON_AddItemToObject(access_type, "upper", access_type_upper_limit);
 
-    min_elements             = cJSON_CreateObject();
-    min_elements_value       = cJSON_CreateNumber(codb_db->entries[i].min_elements);
-    min_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].min_elements_attr.type);
-    min_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.lower_limit);
-    min_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.upper_limit);
-    cJSON_AddItemToObject(min_elements, "value", min_elements_value);
-    cJSON_AddItemToObject(min_elements, "attr",  min_elements_attr);
-    cJSON_AddItemToObject(min_elements, "lower", min_elements_lower_limit);
-    cJSON_AddItemToObject(min_elements, "upper", min_elements_upper_limit);
-
-    max_elements             = cJSON_CreateObject();
-    max_elements_value       = cJSON_CreateNumber(codb_db->entries[i].max_elements);
-    max_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].max_elements_attr.type);
-    max_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.lower_limit);
-    max_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.upper_limit);
-    cJSON_AddItemToObject(max_elements, "value", max_elements_value);
-    cJSON_AddItemToObject(max_elements, "attr",  max_elements_attr);
-    cJSON_AddItemToObject(max_elements, "lower", max_elements_lower_limit);
-    cJSON_AddItemToObject(max_elements, "upper", max_elements_upper_limit);
-
     low_limit             = cJSON_CreateObject();
     low_limit_value       = cJSON_CreateNumber(codb_db->entries[i].low_limit);
     low_limit_attr        = cJSON_CreateNumber(codb_db->entries[i].low_limit_attr.type);
@@ -316,8 +284,6 @@ static bool_t add_sub_index_to_object(cJSON *sub_indices, size_t i)
     cJSON_AddItemToObject(sub_index, "unit",          unit);
     cJSON_AddItemToObject(sub_index, "data_type",     data_type);
     cJSON_AddItemToObject(sub_index, "access_type",   access_type);
-    cJSON_AddItemToObject(sub_index, "min_elements",  min_elements);
-    cJSON_AddItemToObject(sub_index, "max_elements",  max_elements);
     cJSON_AddItemToObject(sub_index, "low_limit",     low_limit);
     cJSON_AddItemToObject(sub_index, "high_limit",    high_limit);
     cJSON_AddItemToObject(sub_index, "default_value", default_value);
@@ -328,7 +294,7 @@ static bool_t add_sub_index_to_object(cJSON *sub_indices, size_t i)
     return IS_TRUE;
 }
 
-void init_codb_object(codb_entry_t* entry)
+static void init_codb_entry(codb_entry_t* entry)
 {
     if (NULL == entry)
     {
@@ -455,7 +421,7 @@ static void read_codb(const char* input_file_name)
     /* Initialize all entries to default values. */
     for (i = 0; i < entry_count; i++)
     {
-        init_codb_object(&codb_db->entries[i]);
+        init_codb_entry(&codb_db->entries[i]);
     }
 
     /* Reset file pointer to the beginning */
@@ -542,7 +508,7 @@ static void read_codb(const char* input_file_name)
                 {
                     for (i = codb_db->total_entries; i < codb_db->total_entries + source_count; i++)
                     {
-                        init_codb_object(&codb_db->entries[i]);
+                        init_codb_entry(&codb_db->entries[i]);
                     }
                 }
             }
@@ -1163,11 +1129,23 @@ static bool_t write_json_entry(cJSON* root, size_t i)
     cJSON* parameter_name;
     cJSON* object_kind;
 
-    cJSON* object_code;
-    cJSON* object_code_type;
+    cJSON* code;
+    cJSON* code_type;
     cJSON* code_attr;
     cJSON* code_attr_lower_limit;
     cJSON* code_attr_upper_limit;
+
+    cJSON* min_elements;
+    cJSON* min_elements_value;
+    cJSON* min_elements_attr;
+    cJSON* min_elements_lower_limit;
+    cJSON* min_elements_upper_limit;
+
+    cJSON* max_elements;
+    cJSON* max_elements_value;
+    cJSON* max_elements_attr;
+    cJSON* max_elements_lower_limit;
+    cJSON* max_elements_upper_limit;
 
     cJSON* sub_indices;
 
@@ -1191,23 +1169,43 @@ static bool_t write_json_entry(cJSON* root, size_t i)
     cJSON_AddItemToObject(entry, "sub_indices", sub_indices);
 
     /* Object root data. */
-    object_code           = cJSON_CreateObject();
-    object_code_type      = cJSON_CreateNumber(codb_db->entries[i].object_code);
+    code                  = cJSON_CreateObject();
+    code_type             = cJSON_CreateNumber(codb_db->entries[i].object_code);
     code_attr             = cJSON_CreateNumber(codb_db->entries[i].object_code_attr.type);
     code_attr_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].object_code_attr.lower_limit);
     code_attr_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].object_code_attr.upper_limit);
-    cJSON_AddItemToObject(object_code, "type",  object_code_type);
-    cJSON_AddItemToObject(object_code, "attr",  code_attr);
-    cJSON_AddItemToObject(object_code, "lower", code_attr_lower_limit);
-    cJSON_AddItemToObject(object_code, "upper", code_attr_upper_limit);
+    cJSON_AddItemToObject(code, "type",  code_type);
+    cJSON_AddItemToObject(code, "attr",  code_attr);
+    cJSON_AddItemToObject(code, "lower", code_attr_lower_limit);
+    cJSON_AddItemToObject(code, "upper", code_attr_upper_limit);
 
-    cJSON_AddItemToObject(entry, "code", object_code);
+    min_elements             = cJSON_CreateObject();
+    min_elements_value       = cJSON_CreateNumber(codb_db->entries[i].min_elements);
+    min_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].min_elements_attr.type);
+    min_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.lower_limit);
+    min_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.upper_limit);
+    cJSON_AddItemToObject(min_elements, "value", min_elements_value);
+    cJSON_AddItemToObject(min_elements, "attr",  min_elements_attr);
+    cJSON_AddItemToObject(min_elements, "lower", min_elements_lower_limit);
+    cJSON_AddItemToObject(min_elements, "upper", min_elements_upper_limit);
+
+    max_elements             = cJSON_CreateObject();
+    max_elements_value       = cJSON_CreateNumber(codb_db->entries[i].max_elements);
+    max_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].max_elements_attr.type);
+    max_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.lower_limit);
+    max_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.upper_limit);
+    cJSON_AddItemToObject(max_elements, "value", max_elements_value);
+    cJSON_AddItemToObject(max_elements, "attr",  max_elements_attr);
+    cJSON_AddItemToObject(max_elements, "lower", max_elements_lower_limit);
+    cJSON_AddItemToObject(max_elements, "upper", max_elements_upper_limit);
+
+    cJSON_AddItemToObject(entry, "code",         code);
+    cJSON_AddItemToObject(entry, "min_elements", min_elements);
+    cJSON_AddItemToObject(entry, "max_elements", max_elements);
 
     parameter_name = cJSON_CreateString(codb_db->entries[i].parameter_name);
-    object_kind    = cJSON_CreateNumber(codb_db->entries[i].object_kind);
 
     cJSON_AddItemToObject(entry, "desc", parameter_name);
-    cJSON_AddItemToObject(entry, "kind", object_kind);
 
     /* Object has only one sub-index. */
     if (i + 1 >= codb_db->total_entries || codb_db->entries[i].main_index != codb_db->entries[i + 1].main_index)
