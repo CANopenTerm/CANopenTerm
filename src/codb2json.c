@@ -770,7 +770,7 @@ static void read_codb(const char* input_file_name)
                         codb_db->entries[current_entry].unit = os_strdup(token);
                         if (codb_db->entries[current_entry].unit == NULL)
                         {
-                            os_fprintf(stderr, "L%zd Error duplicating unit.");
+                            os_fprintf(stderr, "L%zd Error duplicating unit.", line_count);
                             os_free(line);
                             os_fclose(input_file);
                             os_free(codb_db->entries);

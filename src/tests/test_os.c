@@ -137,7 +137,7 @@ void test_os_fopen(void** state)
 
 void test_os_fread(void** state)
 {
-    FILE_t* file = os_fopen("test.txt", "r");
+    FILE_t* file = os_fopen("tests/test.txt", "r");
     char    buffer[20];
     size_t  result;
 
@@ -160,7 +160,7 @@ void test_os_freopen(void** state)
 
     assert_non_null(file);
 
-    file = os_freopen("test.txt", "r", file);
+    file = os_freopen("tests/test.txt", "r", file);
 
     assert_non_null(file);
 
@@ -170,7 +170,7 @@ void test_os_freopen(void** state)
 void test_os_fseek(void** state)
 {
     int     result;
-    FILE_t* file = os_fopen("test.txt", "r");
+    FILE_t* file = os_fopen("tests/test.txt", "r");
 
     (void)state;
 
@@ -186,7 +186,7 @@ void test_os_fseek(void** state)
 void test_os_ftell(void** state)
 {
     long    result;
-    FILE_t* file = os_fopen("test.txt", "r");
+    FILE_t* file = os_fopen("tests/test.txt", "r");
 
     (void)state;
 
@@ -358,7 +358,7 @@ void test_os_realloc(void** state)
 void test_os_rewind(void** state)
 {
     long    result;
-    FILE_t* file = os_fopen("test.txt", "r");
+    FILE_t* file = os_fopen("tests/test.txt", "r");
 
     (void)state;
 
