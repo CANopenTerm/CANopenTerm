@@ -1,5 +1,25 @@
-# pocketpy
+# cJSON
+set(CJSON_VERSION     "1.7.18")
+set(CJSON_DEVEL_PKG   "v${CJSON_VERSION}.zip")
+set(CJSON_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CJSON-${CJSON_VERSION})
+set(CJSON_INCLUDE_DIR ${CJSON_PATH})
+set(CJSON_LIBRARY     ${CJSON_PATH}_build/cjson.lib)
 
+ExternalProject_Add(cJSON_devel
+    URL https://github.com/DaveGamble/cJSON/archive/refs/tags/${CJSON_DEVEL_PKG}
+    URL_HASH SHA1=111ea457d2dbe15116e2a8ccbfe557e047040108
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${CJSON_PATH}/
+    BINARY_DIR ${CJSON_PATH}_build/
+    BUILD_BYPRODUCTS ${CJSON_LIBRARY}
+    CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    INSTALL_COMMAND
+        ${CMAKE_COMMAND} -E copy ${CJSON_PATH}_build/cjson.dll ${CMAKE_CURRENT_SOURCE_DIR}/export)
+
+# pocketpy
 set(POCKETPY_VERSION     "2.0.1")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.zip")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
@@ -21,7 +41,6 @@ ExternalProject_Add(pocketpy_devel
     ${POCKETPY_PATH}_build/pocketpy.dll ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
 # inih
-
 set(INIH_VERSION     "58")
 set(INIH_DEVEL_PKG   r${INIH_VERSION}.zip)
 set(INIH_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/inih-${INIH_VERSION})
@@ -196,6 +215,7 @@ include_directories(
   SYSTEM ${POCKETPY_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${INIH_INCLUDE_DIR}
+  SYSTEM ${CJSON_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR})
 
 add_compile_definitions(

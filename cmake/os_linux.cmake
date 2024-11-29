@@ -64,6 +64,27 @@ if (BUILD_YOCTO)
     return()
 endif()
 
+# cJSON
+set(CJSON_VERSION     "1.7.18")
+set(CJSON_DEVEL_PKG   "v${CJSON_VERSION}.tar.gz")
+set(CJSON_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CJSON-${CJSON_VERSION})
+set(CJSON_INCLUDE_DIR ${CJSON_PATH})
+set(CJSON_LIBRARY     ${CJSON_PATH}_build/libcjson.so.${CJSON_VERSION})
+
+ExternalProject_Add(cJSON_devel
+    URL https://github.com/DaveGamble/cJSON/archive/refs/tags/${CJSON_DEVEL_PKG}
+    URL_HASH SHA1=3e3408c124a2c885e2724ff88d7f5473cda53038
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${CJSON_PATH}/
+    BINARY_DIR ${CJSON_PATH}_build/
+    BUILD_BYPRODUCTS ${CJSON_LIBRARY}
+    CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    INSTALL_COMMAND
+        ${CMAKE_COMMAND} -E echo "Skipping install step.")
+
 # pocketpy
 set(POCKETPY_VERSION     "2.0.1")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
