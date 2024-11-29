@@ -35,9 +35,9 @@
  * 9.  Data type attribute, see attribute description below
  * 10. Access type, one of the following: const, ro, wo, rw, wwr, rww
  * 11. Access type attribute, see attribute description below
- * 12. Minimum elements, 0..254
+ * 12. Minimum elements, 0..255
  * 13. Minimum elements attribute, see attribute description below
- * 14. Maximum elements, 0..254
+ * 14. Maximum elements, 0..255
  * 15. Maximum elements attribute, see attribute description below
  * 16. Low limit, decimal value or 0x followed by hex value
  * 17. Low limit attribute, see attribute description below

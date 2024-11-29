@@ -134,7 +134,7 @@ The code object contains the following fields:
 <!-- tab: Min Elements -->
 The min elements object contains the following fields:
 
-- `value` (integer): The minimum number of elements, 0 to 254.
+- `value` (integer): The minimum number of elements, 0 to 255.
 - `attr` (integer): The attribute of the minimum elements.
     - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
     - `1`: Value is mandatory and cannot be changed.
@@ -147,7 +147,7 @@ The min elements object contains the following fields:
 <!-- tab: Max Elements -->
 The max elements object contains the following fields:
 
-- `value` (integer): The maximum number of elements, 0 to 254.
+- `value` (integer): The maximum number of elements, 0 to 255.
 - `attr` (integer): The attribute of the maximum elements.
     - `0`: Value, if exists, is a default and can be changed in the range specified by the data type.
     - `1`: Value is mandatory and cannot be changed.
