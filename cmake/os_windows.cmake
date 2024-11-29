@@ -72,26 +72,26 @@ set(LUA_INCLUDE_DIR ${LUA_PATH})
 set(LUA_LIBRARY     ${LUA_PATH}_build/lua.lib)
 
 ExternalProject_Add(Lua_devel
-  URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
-  URL_HASH SHA1=1c8e1ff7988e3eb7326b495a83875ea931881090
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
-  DOWNLOAD_NO_PROGRESS true
-  TLS_VERIFY true
-  SOURCE_DIR ${LUA_PATH}/
-  BINARY_DIR ${LUA_PATH}_build/
-  BUILD_BYPRODUCTS ${LUA_LIBRARY}
-  CMAKE_ARGS
-    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-    -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-    -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
-    -DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
+    URL_HASH SHA1=1c8e1ff7988e3eb7326b495a83875ea931881090
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${LUA_PATH}/
+    BINARY_DIR ${LUA_PATH}_build/
+    BUILD_BYPRODUCTS ${LUA_LIBRARY}
+    CMAKE_ARGS
+        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+        -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+        -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+        -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL2
 set(SDL2_VERSION "2.30.9")
@@ -100,28 +100,28 @@ set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
 set(SDL2_PLATFORM  "x64")
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-  set(SDL2_PLATFORM "x86")
+    set(SDL2_PLATFORM "x86")
 endif()
 
 set(SDL2_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL2-${SDL2_VERSION}_${SDL2_PLATFORM})
 
 ExternalProject_Add(SDL2_devel
-  URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-  URL_HASH SHA1=d89a2ad46b98ba08db5ec5877cb2fde46e127825
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
-  DOWNLOAD_NO_PROGRESS true
-  TLS_VERIFY true
-  SOURCE_DIR ${SDL2_PATH}/
-  BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib
-  BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib
+    URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
+    URL_HASH SHA1=d89a2ad46b98ba08db5ec5877cb2fde46e127825
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${SDL2_PATH}/
+    BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib
+    BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib
 
-  BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
+    BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
 
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
-    ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+        ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_sdl2.cmake" ${SDL2_PATH}/CMakeLists.txt)
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_sdl2.cmake" ${SDL2_PATH}/CMakeLists.txt)
 
 set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
 set(SDL2_LIBRARY     ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib)
@@ -134,7 +134,7 @@ set(PCAN_PLATFORM  "x64")
 set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/PCAN-Basic_API_Windows")
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-  set(PCAN_PLATFORM "Win32")
+    set(PCAN_PLATFORM "Win32")
 endif()
 
 set(PCAN_DEVEL_PKG  PCAN-Basic_Windows-${PCAN_VERSION_WINDOWS}.zip)
@@ -142,21 +142,21 @@ set(PCAN_DEVEL_URL  https://canopenterm.de/mirror)
 set(PCAN_DEVEL_HASH 5aa4459340986d921a63f15cc643733ab7d9c011)
 
 ExternalProject_Add(PCAN_devel
-  URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
-  URL_HASH SHA1=${PCAN_DEVEL_HASH}
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
-  DOWNLOAD_NO_PROGRESS true
-  TLS_VERIFY true
-  SOURCE_DIR ${PCAN_PATH}/
-  BUILD_BYPRODUCTS ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib
+    URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
+    URL_HASH SHA1=${PCAN_DEVEL_HASH}
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${PCAN_PATH}/
+    BUILD_BYPRODUCTS ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib
 
-  BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
+    BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
 
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
-  ${PCAN_PATH}/${PCAN_PLATFORM}/PCANBasic.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+    ${PCAN_PATH}/${PCAN_PLATFORM}/PCANBasic.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_pcan.cmake" ${PCAN_PATH}/CMakeLists.txt)
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_pcan.cmake" ${PCAN_PATH}/CMakeLists.txt)
 
 set(PCAN_INCLUDE_DIR ${PCAN_PATH}/Include)
 set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
@@ -167,57 +167,58 @@ set(DIRENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/dirent-${DIREN
 set(DIRENT_DEVEL_PKG ${DIRENT_VERSION}.zip)
 
 ExternalProject_Add(dirent_devel
-  URL https://github.com/tronkko/dirent/archive/refs/tags/${DIRENT_DEVEL_PKG}
-  URL_HASH SHA1=70b02369071572dd1b080057a6b9170dec04868d
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
-  DOWNLOAD_NO_PROGRESS true
-  TLS_VERIFY true
-  SOURCE_DIR ${DIRENT_PATH}/
+    URL https://github.com/tronkko/dirent/archive/refs/tags/${DIRENT_DEVEL_PKG}
+    URL_HASH SHA1=70b02369071572dd1b080057a6b9170dec04868d
+    DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+    DOWNLOAD_NO_PROGRESS true
+    TLS_VERIFY true
+    SOURCE_DIR ${DIRENT_PATH}/
 
-  BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+    BUILD_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping build step."
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_dirent.cmake" ${DIRENT_PATH}/CMakeLists.txt)
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_dirent.cmake" ${DIRENT_PATH}/CMakeLists.txt)
 
 set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
 
 add_dependencies(${PROJECT_NAME} PCAN_devel)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-  set(ADDITIONAL_RUNTIME
-    ucrt
-    legacy_stdio_definitions
-    legacy_stdio_wide_specifiers)
+    set(ADDITIONAL_RUNTIME
+        ucrt
+        legacy_stdio_definitions
+        legacy_stdio_wide_specifiers)
 endif()
 
 set(PLATFORM_LIBS
-  ${PCAN_LIBRARY}
-  ${POCKETPY_LIBRARY}
-  ${SDL2_LIBRARY}
-  ${SDL2MAIN_LIBRARY}
-  ${INIH_LIBRARY}
-  ${LUA_LIBRARY}
-  ${ADDITIONAL_RUNTIME})
+    ${CJSON_LIBRARY}
+    ${PCAN_LIBRARY}
+    ${POCKETPY_LIBRARY}
+    ${SDL2_LIBRARY}
+    ${SDL2MAIN_LIBRARY}
+    ${INIH_LIBRARY}
+    ${LUA_LIBRARY}
+    ${ADDITIONAL_RUNTIME})
 
 set(PLATFORM_CORE_DEPS
-  inih_devel
-  Lua_devel
-  PCAN_devel
-  pocketpy_devel
-  SDL2_devel)
+    inih_devel
+    Lua_devel
+    PCAN_devel
+    pocketpy_devel
+    SDL2_devel)
 
 include_directories(
-  SYSTEM ${SDL2_INCLUDE_DIR}
-  SYSTEM ${PCAN_INCLUDE_DIR}
-  SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
-  SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
-  SYSTEM ${POCKETPY_INCLUDE_DIR}
-  SYSTEM ${LUA_INCLUDE_DIR}
-  SYSTEM ${INIH_INCLUDE_DIR}
-  SYSTEM ${CJSON_INCLUDE_DIR}
-  SYSTEM ${DIRENT_INCLUDE_DIR})
+    SYSTEM ${SDL2_INCLUDE_DIR}
+    SYSTEM ${PCAN_INCLUDE_DIR}
+    SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
+    SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
+    SYSTEM ${POCKETPY_INCLUDE_DIR}
+    SYSTEM ${LUA_INCLUDE_DIR}
+    SYSTEM ${INIH_INCLUDE_DIR}
+    SYSTEM ${CJSON_INCLUDE_DIR}
+    SYSTEM ${DIRENT_INCLUDE_DIR})
 
 add_compile_definitions(
-  _CRT_SECURE_NO_WARNINGS
-  WIN32)
+    _CRT_SECURE_NO_WARNINGS
+    WIN32)
