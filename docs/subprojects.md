@@ -83,116 +83,116 @@ $1001=1001
 <!-- tab:Output JSON file -->
 ```json
 [
-  {
-    "id": "1000",
-    "index": 4096,
-    "sub_indices": [
-      {
-        "index": 0,
+    {
+        "id": "1000",
+        "index": 4096,
+        "sub_indices": [
+            {
+                "index": 0,
+                "desc": "Device Type",
+                "kind": 0,
+                "data_type": {
+                    "type": 9,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "access_type": {
+                    "type": 1,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                }
+            }
+        ],
+        "code": {
+            "type": 3,
+            "attr": 1,
+            "lower": 0,
+            "upper": 0
+        },
         "desc": "Device Type",
-        "kind": 0,
-        "data_type": {
-          "type": 9,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
-        },
-        "access_type": {
-          "type": 1,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
-        }
-      }
-    ],
-    "code": {
-      "type": 3,
-      "attr": 1,
-      "lower": 0,
-      "upper": 0
+        "kind": 0
     },
-    "desc": "Device Type",
-    "kind": 0
-  },
-  {
-    "id": "1001",
-    "index": 4097,
-    "sub_indices": [
-      {
-        "index": 0,
+    {
+        "id": "1001",
+        "index": 4097,
+        "sub_indices": [
+            {
+                "index": 0,
+                "desc": "Device Type",
+                "kind": 0,
+                "data_type": {
+                    "type": 9,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "access_type": {
+                    "type": 1,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                }
+            }
+        ],
+        "code": {
+            "type": 3,
+            "attr": 1,
+            "lower": 0,
+            "upper": 0
+        },
         "desc": "Device Type",
-        "kind": 0,
-        "data_type": {
-          "type": 9,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
-        },
-        "access_type": {
-          "type": 1,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
-        }
-      }
-    ],
-    "code": {
-      "type": 3,
-      "attr": 1,
-      "lower": 0,
-      "upper": 0
+        "kind": 0
     },
-    "desc": "Device Type",
-    "kind": 0
-  },
-  {
-    "id": "1003",
-    "index": 4099,
-    "sub_indices": [
-      {
-        "index": 0,
-        "desc": "Number of Errors",
-        "kind": 1,
-        "data_type": {
-          "type": 3,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
+    {
+        "id": "1003",
+        "index": 4099,
+        "sub_indices": [
+            {
+                "index": 0,
+                "desc": "Number of Errors",
+                "kind": 1,
+                "data_type": {
+                    "type": 3,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "access_type": {
+                    "type": 3,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                }
+            },
+            {
+                "index": 1,
+                "desc": "Standard Error Field",
+                "kind": 1,
+                "data_type": {
+                    "type": 9,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                },
+                "access_type": {
+                    "type": 1,
+                    "attr": 0,
+                    "lower": 0,
+                    "upper": 0
+                }
+            }
+        ],
+        "code": {
+            "type": 4,
+            "attr": 1,
+            "lower": 0,
+            "upper": 0
         },
-        "access_type": {
-          "type": 3,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
-        }
-      },
-      {
-        "index": 1,
-        "desc": "Standard Error Field",
-        "kind": 1,
-        "data_type": {
-          "type": 9,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
-        },
-        "access_type": {
-          "type": 1,
-          "attr": 0,
-          "lower": 0,
-          "upper": 0
-        }
-      }
-    ],
-    "code": {
-      "type": 4,
-      "attr": 1,
-      "lower": 0,
-      "upper": 0
-    },
-    "desc": "Predefined Error Field",
-    "kind": 1
-  }
+        "desc": "Predefined Error Field",
+        "kind": 1
+    }
 ]
 ```
 <!-- tabs:end -->
