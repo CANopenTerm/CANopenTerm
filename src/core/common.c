@@ -8,7 +8,6 @@
  **/
 
 #include <dirent.h>
-#include "common.h"
 #include "core.h"
 #include "table.h"
 #include "os.h"

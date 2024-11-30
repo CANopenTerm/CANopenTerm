@@ -69,6 +69,7 @@ set(common_core_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/buffer.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/can.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/command.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/common.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/codb.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/core.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/dbc.c
