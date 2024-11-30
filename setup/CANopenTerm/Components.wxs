@@ -23,6 +23,12 @@
         <File Source="../../export/vcruntime140.dll" />
       </Component>
     </ComponentGroup>
+    <ComponentGroup Id="CodbComponents" Directory="CODBFOLDER">
+      <Component>
+        <File Source="../../export/codb/ds301.json" />
+        <File Source="../../export/codb/ds401.json" />
+      </Component>
+    </ComponentGroup>
     <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
       <Component>
         <File Source="../../export/dbc/j1939.dbc" />
