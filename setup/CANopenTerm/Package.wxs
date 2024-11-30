@@ -6,6 +6,7 @@
 
         <Feature Id="Main">
             <ComponentGroupRef Id="MainComponents" />
+            <ComponentGroupRef Id="CodbComponents" />
             <ComponentGroupRef Id="DbcComponents" />
             <ComponentGroupRef Id="EdsComponents" />
             <ComponentGroupRef Id="LuaComponents" />
