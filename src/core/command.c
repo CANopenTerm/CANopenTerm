@@ -378,7 +378,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(IS_TRUE);
             return;
         }
         run_script(token, core);
@@ -391,7 +391,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(IS_TRUE);
             return;
         }
         convert_token_to_uint(token, &node_id);
