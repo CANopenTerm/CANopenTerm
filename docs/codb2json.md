@@ -81,7 +81,7 @@ The root of the JSON file is an array of objects, each representing a CANopen ob
 ]
 ```
 
-<!-- tab: Object Dictionary Entry -->
+<!-- tab: Entry -->
 Each object dictionary entry contains the following fields:
 
 - `id` (string): The hexadecimal identifier of the object, main index.
@@ -231,7 +231,7 @@ The high limit object contains the following fields:
 - `lower` (integer): The lower bound of the upper limit.
 - `upper` (integer): The upper bound of the upper limit.
 
-<!-- tab: Default Value -->
+<!-- tab: Default -->
 The default value object contains the following fields:
 
 - `value` (integer): The default value.
