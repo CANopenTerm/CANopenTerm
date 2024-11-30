@@ -1,4 +1,4 @@
-/** @file codb.c
+/** @file common.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -7,12 +7,9 @@
  *
  **/
 
-#include "cJSON.h"
-#include "common.h"
-#include "core.h"
-#include "os.h"
+#ifndef COMMON_H
+#define COMMON_H
 
-void list_codb(void)
-{
-    list_file_type("codb", "json");
-}
+void list_file_type(const char* dir, const char* ext);
+
+#endif /* COMMON_H */

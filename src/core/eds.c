@@ -7,14 +7,13 @@
  *
  **/
 
-#include <string.h>
-#include <dirent.h>
 #include "can.h"
+#include "common.h"
 #include "core.h"
 #include "eds.h"
 #include "ini.h"
+#include "os.h"
 #include "sdo.h"
-#include "table.h"
 #include "test_report.h"
 
 static eds_t eds;
@@ -23,45 +22,7 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
 
 void list_eds(void)
 {
-    DIR_t*   d      = os_opendir("eds");
-    table_t  table  = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
-    status_t status = table_init(&table, 1024);
-
-    if (ALL_OK != status)
-    {
-        return;
-    }
-
-    if (d)
-    {
-        struct dirent_t* dir;
-        int    file_no = 1;
-
-        table_print_header(&table);
-        table_print_row("No.", "File name", "-", &table);
-        table_print_divider(&table);
-
-        while ((dir = os_readdir(d)) != NULL)
-        {
-            if (os_strstr(dir->d_name, ".eds") != NULL)
-            {
-                char file_no_str[4] = { 0 };
-
-                os_snprintf(file_no_str, 4, "%3d", file_no);
-
-                table_print_row(file_no_str, dir->d_name, "-", &table);
-                file_no++;
-            }
-        }
-        os_closedir(d);
-    }
-    else
-    {
-        os_log(LOG_WARNING, "Could not open eds directory.");
-    }
-
-    table_print_footer(&table);
-    table_flush(&table);
+    list_file_type("eds", "eds");
 }
 
 status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t disp_mode)

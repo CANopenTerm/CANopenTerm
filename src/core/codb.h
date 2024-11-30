@@ -125,4 +125,6 @@ typedef struct codb_database
 
 } codb_database_t;
 
+void list_codb(void);
+
 #endif /* CODB_H */
