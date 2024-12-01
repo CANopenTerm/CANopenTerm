@@ -29,7 +29,7 @@ jobs:
     - name: Run unit tests
       run: |
         cp -r ${{github.workspace}}/export/tests ${{github.workspace}}/build/tests
-        ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --output-on-failure
+        ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --verbose
 
   build:
     needs:   test
@@ -45,7 +45,7 @@ jobs:
           cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
           cmake --build build
           xcopy export\tests build\tests /E /I
-          ctest --test-dir build -C Release --output-on-failure
+          ctest --test-dir build -C Release --verbose
 
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
