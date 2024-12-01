@@ -21,7 +21,6 @@ extern const uint8 max_script_search_paths;
 extern const char* script_search_path[];
 
 static char*    get_script_description(const char* script_path);
-static status_t run_script_ex(const char *name, core_t *core);
 static size_t   safe_strcpy(char* dest, const char* src, size_t size);
 static bool_t   script_already_listed(char** listed_scripts, int count, const char* script_name);
 static void     strip_lua_extension(char* filename);
@@ -310,7 +309,7 @@ void run_script(const char *name, core_t *core)
     }
 }
 
-static status_t run_script_ex(const char *name, core_t *core)
+status_t run_script_ex(const char *name, core_t *core)
 {
     status_t    status            = ALL_OK;
     const char* extension         = os_strrchr(name, '.');
@@ -377,6 +376,7 @@ static status_t run_script_ex(const char *name, core_t *core)
                 if (IS_FALSE == py_exec(buffer, script_path, EXEC_MODE, NULL))
                 {
                     py_printexc();
+                    status = SCRIPT_ERROR;
                 }
 
                 os_free(buffer);

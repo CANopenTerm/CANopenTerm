@@ -14,10 +14,6 @@
 #else
 #    include <sys/stat.h>
 #    include <sys/types.h>
-#    define _close close
-#    define _dup dup
-#    define _dup2 dup2
-#    define _fileno fileno
 #    define _mkdir(dir, mode) mkdir(dir, mode)
 #endif
 
@@ -36,10 +32,7 @@
 static int stdout_fd_backup;
 static int stdout_fd;
 
-static void convert_crlf_to_lf(const char* file_path);
-static void redirect_stdout_to_file(const char* filename);
-static void restore_stdout(void);
-static void test_python_script(const char* basename);
+static status_t test_python_script(const char* file_name);
 
 void test_has_valid_extension(void **state)
 {
@@ -57,7 +50,7 @@ void test_lua(void** state)
 
     (void)state;
 
-    if (_mkdir("scripts", 0777) != 0)
+    if (_mkdir("tests", 0777) != 0)
     {
         if (errno != EEXIST)
         {
@@ -66,7 +59,7 @@ void test_lua(void** state)
         }
     }
 
-    lua_file = os_fopen("scripts/test.lua", "w+");
+    lua_file = os_fopen("tests/test.lua", "w+");
 
     if (lua_file == NULL)
     {
@@ -119,91 +112,357 @@ void test_lua(void** state)
     os_fprintf(lua_file, "assert(result == 12.5, 'Result should be 12.5')\n");
 
     os_fclose(lua_file);
-    run_script("test.lua", &core);
+    assert_true(run_script_ex("tests/test.lua", &core) == ALL_OK);
 
     scripts_deinit(&core);
 }
 
-static void convert_crlf_to_lf(const char* file_path)
+void test_python_01_int(void** state)
 {
-    FILE_t* file;
-    FILE_t* temp_file;
-    char    temp_file_path[1024];
-    int     ch;
-    int     next_ch;
-
-    file = os_fopen(file_path, "rb");
-    if (file == NULL)
-    {
-        perror("Failed to open file for reading");
-        return;
-    }
-
-    /* Create a temporary file to write the converted content. */
-    os_snprintf(temp_file_path, sizeof(temp_file_path), "%s.tmp", file_path);
-    temp_file = fopen(temp_file_path, "wb");
-    if (temp_file == NULL)
-    {
-        perror("Failed to open temporary file for writing");
-        os_fclose(file);
-        return;
-    }
-
-    while ((ch = fgetc(file)) != EOF)
-    {
-        if (ch == '\r')
-        {
-            next_ch = fgetc(file);
-            if (next_ch != '\n')
-            {
-                ungetc(next_ch, file);
-            }
-            fputc('\n', temp_file);
-        }
-        else
-        {
-            fputc(ch, temp_file);
-        }
-    }
-
-    os_fclose(file);
-    os_fclose(temp_file);
-
-    /* Replace the original file with the converted file */
-    if (remove(file_path) != 0)
-    {
-        perror("Failed to remove original file");
-        return;
-    }
-    if (rename(temp_file_path, file_path) != 0)
-    {
-        perror("Failed to rename temporary file");
-    }
+    assert_true(test_python_script("01_int.py") == ALL_OK);
 }
 
-static void redirect_stdout_to_file(const char* filename)
+void test_python_02_float(void** state)
 {
-    fflush(stdout);
-    stdout_fd_backup = _dup(_fileno(stdout));
-    if (NULL == freopen(filename, "w", stdout))
-    {
-        perror("Failed to redirect stdout to file");
-        exit(EXIT_FAILURE);
-     }
+    assert_true(test_python_script("02_float.py") == ALL_OK);
 }
 
-static void restore_stdout(void)
+void test_python_03_bool(void** state)
 {
-    fflush(stdout);
-    _dup2(stdout_fd_backup, _fileno(stdout));
-    _close(stdout_fd_backup);
+    assert_true(test_python_script("03_bool.py") == ALL_OK);
 }
 
-static void test_python_script(const char* script_path)
+void test_python_04_line_continue(void** state)
 {
-    core_t core = { 0 };
+    assert_true(test_python_script("04_line_continue.py") == ALL_OK);
+}
+
+void test_python_04_str(void** state)
+{
+    assert_true(test_python_script("04_str.py") == ALL_OK);
+}
+
+void test_python_05_list(void** state)
+{
+    assert_true(test_python_script("05_list.py") == ALL_OK);
+}
+
+void test_python_06_tuple(void** state)
+{
+    assert_true(test_python_script("06_tuple.py") == ALL_OK);
+}
+
+void test_python_07_listcomp(void** state)
+{
+    assert_true(test_python_script("07_listcomp.py") == ALL_OK);
+}
+
+void test_python_08_dictcomp(void** state)
+{
+    assert_true(test_python_script("08_dictcomp.py") == ALL_OK);
+}
+
+void test_python_08_dict(void** state)
+{
+    assert_true(test_python_script("08_dict.py") == ALL_OK);
+}
+
+void test_python_15_assign(void** state)
+{
+    assert_true(test_python_script("15_assign.py") == ALL_OK);
+}
+
+void test_python_15_cmp(void** state)
+{
+    assert_true(test_python_script("15_cmp.py") == ALL_OK);
+}
+
+void test_python_15_controlflow(void** state)
+{
+    assert_true(test_python_script("15_controlflow.py") == ALL_OK);
+}
+
+void test_python_16_functions(void** state)
+{
+    assert_true(test_python_script("16_functions.py") == ALL_OK);
+}
+
+void test_python_16_typehints(void** state)
+{
+    assert_true(test_python_script("16_typehints.py") == ALL_OK);
+}
+
+void test_python_24_inline_blocks(void** state)
+{
+    assert_true(test_python_script("24_inline_blocks.py") == ALL_OK);
+}
+
+void test_python_25_rfstring(void** state)
+{
+    assert_true(test_python_script("25_rfstring.py") == ALL_OK);
+}
+
+void test_python_26_multiline(void** state)
+{
+    assert_true(test_python_script("26_multiline.py") == ALL_OK);
+}
+
+void test_python_28_exception(void** state)
+{
+    assert_true(test_python_script("28_exception.py") == ALL_OK);
+}
+
+void test_python_29_iter(void** state)
+{
+    assert_true(test_python_script("29_iter.py") == ALL_OK);
+}
+
+void test_python_30_import(void** state)
+{
+    assert_true(test_python_script("30_import.py") == ALL_OK);
+}
+
+void test_python_40_class(void** state)
+{
+    assert_true(test_python_script("40_class.py") == ALL_OK);
+}
+
+void test_python_41_class_ex(void** state)
+{
+    assert_true(test_python_script("41_class_ex.py") == ALL_OK);
+}
+
+void test_python_42_decorator(void** state)
+{
+    assert_true(test_python_script("42_decorator.py") == ALL_OK);
+}
+
+void test_python_43_closure(void** state)
+{
+    assert_true(test_python_script("43_closure.py") == ALL_OK);
+}
+
+void test_python_44_star(void** state)
+{
+    assert_true(test_python_script("44_star.py") == ALL_OK);
+}
+
+void test_python_46_bytes(void** state)
+{
+    assert_true(test_python_script("46_bytes.py") == ALL_OK);
+}
+
+void test_python_47_set(void** state)
+{
+    assert_true(test_python_script("47_set.py") == ALL_OK);
+}
+
+void test_python_48_setcomp(void** state)
+{
+    assert_true(test_python_script("48_setcomp.py") == ALL_OK);
+}
+
+void test_python_50_reflection(void** state)
+{
+    assert_true(test_python_script("50_reflection.py") == ALL_OK);
+}
+
+void test_python_51_yield(void** state)
+{
+    assert_true(test_python_script("51_yield.py") == ALL_OK);
+}
+
+void test_python_52_context(void** state)
+{
+    assert_true(test_python_script("52_context.py") == ALL_OK);
+}
+
+void test_python_66_eval(void** state)
+{
+    assert_true(test_python_script("66_eval.py") == ALL_OK);
+}
+
+void test_python_70_bisect(void** state)
+{
+    assert_true(test_python_script("70_bisect.py") == ALL_OK);
+}
+
+void test_python_70_builtins(void** state)
+{
+    assert_true(test_python_script("70_builtins.py") == ALL_OK);
+}
+
+void test_python_70_heapq(void** state)
+{
+    assert_true(test_python_script("70_heapq.py") == ALL_OK);
+}
+
+void test_python_70_math(void** state)
+{
+    assert_true(test_python_script("70_math.py") == ALL_OK);
+}
+
+void test_python_70_random(void** state)
+{
+    assert_true(test_python_script("70_random.py") == ALL_OK);
+}
+
+void test_python_71_cmath(void** state)
+{
+    assert_true(test_python_script("71_cmath.py") == ALL_OK);
+}
+
+void test_python_71_gc(void** state)
+{
+    assert_true(test_python_script("71_gc.py") == ALL_OK);
+}
+
+void test_python_72_collections(void** state)
+{
+    assert_true(test_python_script("72_collections.py") == ALL_OK);
+}
+
+void test_python_72_json(void** state)
+{
+    assert_true(test_python_script("72_json.py") == ALL_OK);
+}
+
+void test_python_73_functools(void** state)
+{
+    assert_true(test_python_script("73_functools.py") == ALL_OK);
+}
+
+void test_python_73_json_alt(void** state)
+{
+    assert_true(test_python_script("73_json_alt.py") == ALL_OK);
+}
+
+void test_python_73_typing(void** state)
+{
+    assert_true(test_python_script("73_typing.py") == ALL_OK);
+}
+
+void test_python_74_operator(void** state)
+{
+    assert_true(test_python_script("74_operator.py") == ALL_OK);
+}
+
+void test_python_75_compile(void** state)
+{
+    assert_true(test_python_script("75_compile.py") == ALL_OK);
+}
+
+void test_python_76_dna(void** state)
+{
+    assert_true(test_python_script("76_dna.py") == ALL_OK);
+}
+
+void test_python_76_misc(void** state)
+{
+    assert_true(test_python_script("76_misc.py") == ALL_OK);
+}
+
+void test_python_76_prime(void** state)
+{
+    assert_true(test_python_script("76_prime.py") == ALL_OK);
+}
+
+void test_python_77_builtin_func(void** state)
+{
+    assert_true(test_python_script("77_builtin_func.py") == ALL_OK);
+}
+
+void test_python_79_datetime(void** state)
+{
+    assert_true(test_python_script("79_datetime.py") == ALL_OK);
+}
+
+void test_python_79_easing(void** state)
+{
+    assert_true(test_python_script("79_easing.py") == ALL_OK);
+}
+
+void test_python_79_file(void** state)
+{
+    assert_true(test_python_script("79_file.py") == ALL_OK);
+}
+
+void test_python_80_linalg(void** state)
+{
+    assert_true(test_python_script("80_linalg.py") == ALL_OK);
+}
+
+void test_python_80_sys(void** state)
+{
+    assert_true(test_python_script("80_sys.py") == ALL_OK);
+}
+
+void test_python_80_traceback(void** state)
+{
+    assert_true(test_python_script("80_traceback.py") == ALL_OK);
+}
+
+void test_python_81_dataclasses(void** state)
+{
+    assert_true(test_python_script("81_dataclasses.py") == ALL_OK);
+}
+
+void test_python_82_enum(void** state)
+{
+    assert_true(test_python_script("82_enum.py") == ALL_OK);
+}
+
+void test_python_90_array2d(void** state)
+{
+    assert_true(test_python_script("90_array2d.py") == ALL_OK);
+}
+
+void test_python_90_pickle(void** state)
+{
+    assert_true(test_python_script("90_pickle.py") == ALL_OK);
+}
+
+void test_python_91_line_profiler(void** state)
+{
+    assert_true(test_python_script("91_line_profiler.py") == ALL_OK);
+}
+
+void test_python_91_pdb(void** state)
+{
+    assert_true(test_python_script("91_pdb.py") == ALL_OK);
+}
+
+void test_python_95_bugs(void** state)
+{
+    assert_true(test_python_script("95_bugs.py") == ALL_OK);
+}
+
+void test_python_95_dis(void** state)
+{
+    assert_true(test_python_script("95_dis.py") == ALL_OK);
+}
+
+void test_python_96_pep695_py312(void** state)
+{
+    assert_true(test_python_script("96_pep695_py312.py") == ALL_OK);
+}
+
+void test_python_99_extras(void** state)
+{
+    assert_true(test_python_script("99_extras.py") == ALL_OK);
+}
+
+static status_t test_python_script(const char* script_name)
+{
+    status_t status;
+    core_t   core = { 0 };
+    char     script_path[1024] = { 0 };
+
+    os_snprintf(script_path, sizeof(script_path), "tests/%s", script_name);
 
     scripts_init(&core);
-    run_script(script_path, &core);
+    status = run_script_ex(script_path, &core);
     scripts_deinit(&core);
+
+    return status;
 }
