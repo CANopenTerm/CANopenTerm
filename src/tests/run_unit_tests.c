@@ -51,7 +51,7 @@ int main(void)
         cmocka_unit_test(test_python_26_multiline),
         cmocka_unit_test(test_python_28_exception),
         cmocka_unit_test(test_python_29_iter),
-        //cmocka_unit_test(test_python_30_import),
+        /* cmocka_unit_test(test_python_30_import), */
         cmocka_unit_test(test_python_40_class),
         cmocka_unit_test(test_python_41_class_ex),
         cmocka_unit_test(test_python_42_decorator),
