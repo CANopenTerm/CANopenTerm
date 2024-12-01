@@ -1,0 +1,6 @@
+*
+!.gitignore
+!test.codb
+!test.json.expected
+!test.txt
+!*.py
