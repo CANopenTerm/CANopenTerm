@@ -14,6 +14,7 @@ add_executable(
 add_dependencies(
     run_unit_tests
     core
+    cJSON_devel
     CMocka_devel
     SDL2_devel
     Lua_devel)
