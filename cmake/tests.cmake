@@ -38,3 +38,6 @@ include_directories(
     SYSTEM ${CMocka_INCLUDE_DIR}
     SYSTEM ${SDL2_INCLUDE_DIR}
     SYSTEM ${LUA_INCLUDE_DIR})
+
+enable_testing()
+add_test(NAME run_unit_tests COMMAND $<TARGET_FILE:run_unit_tests>)

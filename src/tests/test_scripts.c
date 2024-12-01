@@ -17,6 +17,7 @@
 #    define _close close
 #    define _dup dup
 #    define _dup2 dup2
+#    define _fileno fileno
 #    define _mkdir(dir, mode) mkdir(dir, mode)
 #endif
 

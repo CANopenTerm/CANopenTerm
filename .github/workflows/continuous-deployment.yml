@@ -28,7 +28,7 @@ jobs:
 
     - name: Run unit tests
       working-directory: ${{github.workspace}}/export
-      run: ./run_unit_tests
+      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure
 
   build:
     needs:   test
@@ -41,8 +41,11 @@ jobs:
           arch: x64
       - name: Build
         run: |
-          cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
           cmake --build build
+
+      - name: Run unit tests
+          ctest -C Release --output-on-failure
 
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
