@@ -32,7 +32,7 @@ jobs:
         ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --verbose
 
   windows:
-    needs:   test
+    needs:   linux
     runs-on: windows-latest
 
     steps:
