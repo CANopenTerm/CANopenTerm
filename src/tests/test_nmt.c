@@ -18,14 +18,26 @@
 
 void test_nmt_send_command(void** state)
 {
+    int result;
+
     (void)state;
 
-    assert_true(nmt_send_command(0x20, NMT_OPERATIONAL,     SILENT, NULL) == (ALL_OK | CAN_WRITE_ERROR));
-    assert_true(nmt_send_command(0x20, NMT_STOP,            SILENT, NULL) == (ALL_OK | CAN_WRITE_ERROR));
-    assert_true(nmt_send_command(0x20, NMT_PRE_OPERATIONAL, SILENT, NULL) == (ALL_OK | CAN_WRITE_ERROR));
-    assert_true(nmt_send_command(0x20, NMT_RESET_NODE,      SILENT, NULL) == (ALL_OK | CAN_WRITE_ERROR));
-    assert_true(nmt_send_command(0x20, NMT_RESET_COMM,      SILENT, NULL) == (ALL_OK | CAN_WRITE_ERROR));
-    assert_true(nmt_send_command(0x20, 0x03,                SILENT, NULL) == NMT_UNKNOWN_COMMAND);
+    result = nmt_send_command(0x20, NMT_OPERATIONAL, SILENT, NULL);
+    assert_true(result == ALL_OK || result == CAN_WRITE_ERROR);
+
+    result = nmt_send_command(0x20, NMT_STOP, SILENT, NULL);
+    assert_true(result == ALL_OK || result == CAN_WRITE_ERROR);
+
+    result = nmt_send_command(0x20, NMT_PRE_OPERATIONAL, SILENT, NULL);
+    assert_true(result == ALL_OK || result == CAN_WRITE_ERROR);
+
+    result = nmt_send_command(0x20, NMT_RESET_NODE, SILENT, NULL);
+    assert_true(result == ALL_OK || result == CAN_WRITE_ERROR);
+
+    result = nmt_send_command(0x20, NMT_RESET_COMM, SILENT, NULL);
+    assert_true(result == ALL_OK || result == CAN_WRITE_ERROR);
+
+    assert_true(nmt_send_command(0x20, 0x03, SILENT, NULL) == NMT_UNKNOWN_COMMAND);
 }
 
 void test_nmt_print_help(void** state)
