@@ -7,6 +7,7 @@
  *
  **/
 
+#include <stdlib.h>
 #include "codb.h"
 #include "os.h"
 #include "cJSON.h"
@@ -147,7 +148,8 @@ typedef enum field_id
 } field_id_t;
 
 static codb_database_t* codb_db;
-static cJSON* min_elements;
+static cJSON*           min_elements;
+
 static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i);
 static void   init_codb_entry(codb_entry_t* entry);
 static bool_t is_codb_file(const char* input_file_name);
@@ -160,13 +162,10 @@ static void   handle_value8(uint8*  value, const char* token);
 static void   handle_value64(uint64* value, const char* token);
 static char*  to_upper_case(const char* str);
 
-int main(int argc, char* argv[])
+int codb2json(int argc, char* argv[])
 {
     char  json_file_name[256] = { 0 };
     char* dot;
-
-    os_printf("<> codb2json\n");
-    os_printf("Copyright (c) 2024, Michael Fitzmayer.\n\n");
 
     if (argc != 2)
     {
@@ -202,7 +201,6 @@ int main(int argc, char* argv[])
     write_json(json_file_name);
 
     free_codb_database(codb_db);
-    printf("File conversion completed successfully.\n");
 
     return EXIT_SUCCESS;
 }

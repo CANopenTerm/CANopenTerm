@@ -40,6 +40,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/codb2json.cmake)
 include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/api
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/codb2json
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os)
 

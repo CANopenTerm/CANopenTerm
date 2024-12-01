@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include "cmocka.h"
 #include "test_buffer.h"
+#include "test_codb.h"
 #include "test_dict.h"
 #include "test_nmt.h"
 #include "test_os.h"
@@ -24,6 +25,7 @@ int main(void)
     const struct CMUnitTest tests[] =
     {
         cmocka_unit_test(test_buffer_init),
+        cmocka_unit_test(test_codb2json),
         cmocka_unit_test(test_use_buffer),
         cmocka_unit_test(test_dict_lookup),
         cmocka_unit_test(test_has_valid_extension),

@@ -1,0 +1,9 @@
+1000::Device Type:mandatory::VAR:m:UNSIGNED32:m:ro:d[const,ro]::n::n:::::::n:m
+
+$1001=1000
+
+1003::Predefined Error Field:optional::ARRAY:m::m::m:2:m:255:m::m::m::m::m
+1003:00:Number of Errors:optional::VAR:m:UNSIGNED8:m:rw:d[rw,ro]::n::n:::::0:m:n:m
+1003:01:Standard Error Field:optional::VAR:m:UNSIGNED32:m:ro:m::n::n::::d:0:m:n:m
+
+$1004=1003
