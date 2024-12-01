@@ -30,7 +30,6 @@ int main(void)
         cmocka_unit_test(test_dict_lookup),
         cmocka_unit_test(test_has_valid_extension),
         cmocka_unit_test(test_lua),
-        //cmocka_unit_test(test_nmt_send_command),
         cmocka_unit_test(test_nmt_print_help),
         cmocka_unit_test(test_os_atof),
         cmocka_unit_test(test_os_atoi),

@@ -43,7 +43,7 @@ jobs:
         run: |
           cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
           cmake --build build
-          ctest -C Release --output-on-failure
+          ctest --test-dir build --C Release --output-on-failure
 
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
