@@ -28,6 +28,7 @@ jobs:
 
     - name: Run unit tests
       run: |
+        cp -r ${{github.workspace}}/export/tests ${{github.workspace}}/build/tests
         ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --output-on-failure
 
   build:
