@@ -33,6 +33,10 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/os_${PLATFORM}.cmake)
 
 if(BUILD_TESTS)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tests.cmake)
+    include(CTest)
+    enable_testing()
+    add_test(NAME run_unit_tests COMMAND run_unit_tests)
+    set_tests_properties(run_unit_tests PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export)
 endif(BUILD_TESTS)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/codb2json.cmake)

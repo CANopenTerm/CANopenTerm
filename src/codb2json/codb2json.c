@@ -1122,7 +1122,7 @@ static void write_json(const char* output_file_name)
         }
     }
 
-    string = cJSON_Print(root);
+    string = cJSON_PrintUnformatted(root);
     os_fprintf(output_file, "%s\n", string);
     os_free(string);
     cJSON_Delete(root);
