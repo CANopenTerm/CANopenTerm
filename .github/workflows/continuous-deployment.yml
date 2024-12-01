@@ -10,7 +10,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  linux:
+  Linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,8 +31,8 @@ jobs:
         cp -r ${{github.workspace}}/export/tests ${{github.workspace}}/build/tests
         ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --verbose
 
-  windows:
-    needs:   linux
+  Windows:
+    needs:   Linux
     runs-on: windows-latest
 
     steps:
@@ -64,9 +64,9 @@ jobs:
           name: build-artifacts
           path: setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
 
-  release:
+  Release:
     if: github.event_name != 'pull_request'
-    needs: windows
+    needs: Windows
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
