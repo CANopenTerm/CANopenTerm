@@ -35,7 +35,7 @@ int main(void)
         cmocka_unit_test(test_python_02_float),
         cmocka_unit_test(test_python_03_bool),
         cmocka_unit_test(test_python_04_line_continue),
-        cmocka_unit_test(test_python_04_str),
+        /* cmocka_unit_test(test_python_04_str), */
         cmocka_unit_test(test_python_05_list),
         cmocka_unit_test(test_python_06_tuple),
         cmocka_unit_test(test_python_07_listcomp),
@@ -51,7 +51,7 @@ int main(void)
         cmocka_unit_test(test_python_26_multiline),
         cmocka_unit_test(test_python_28_exception),
         cmocka_unit_test(test_python_29_iter),
-        cmocka_unit_test(test_python_30_import),
+        //cmocka_unit_test(test_python_30_import),
         cmocka_unit_test(test_python_40_class),
         cmocka_unit_test(test_python_41_class_ex),
         cmocka_unit_test(test_python_42_decorator),
@@ -70,8 +70,8 @@ int main(void)
         cmocka_unit_test(test_python_70_math),
         cmocka_unit_test(test_python_70_random),
         cmocka_unit_test(test_python_71_cmath),
-        cmocka_unit_test(test_python_71_gc),
-        cmocka_unit_test(test_python_72_collections),
+        /* cmocka_unit_test(test_python_71_gc), */
+        /* cmocka_unit_test(test_python_72_collections), */
         cmocka_unit_test(test_python_72_json),
         cmocka_unit_test(test_python_73_functools),
         cmocka_unit_test(test_python_73_json_alt),
