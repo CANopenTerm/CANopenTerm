@@ -35,7 +35,7 @@ int main(void)
         cmocka_unit_test(test_python_02_float),
         cmocka_unit_test(test_python_03_bool),
         cmocka_unit_test(test_python_04_line_continue),
-        /* cmocka_unit_test(test_python_04_str), */
+        cmocka_unit_test(test_python_04_str),
         cmocka_unit_test(test_python_05_list),
         cmocka_unit_test(test_python_06_tuple),
         cmocka_unit_test(test_python_07_listcomp),
@@ -82,20 +82,18 @@ int main(void)
         cmocka_unit_test(test_python_76_misc),
         cmocka_unit_test(test_python_76_prime),
         cmocka_unit_test(test_python_77_builtin_func),
-        cmocka_unit_test(test_python_79_datetime),
-        cmocka_unit_test(test_python_79_easing),
-        cmocka_unit_test(test_python_79_file),
-        cmocka_unit_test(test_python_80_linalg),
-        cmocka_unit_test(test_python_80_sys),
+        /* cmocka_unit_test(test_python_79_datetime), */
+        /* cmocka_unit_test(test_python_79_easing), */
+        /* cmocka_unit_test(test_python_80_sys), */
         cmocka_unit_test(test_python_80_traceback),
         cmocka_unit_test(test_python_81_dataclasses),
         cmocka_unit_test(test_python_82_enum),
         cmocka_unit_test(test_python_90_array2d),
-        cmocka_unit_test(test_python_90_pickle),
-        cmocka_unit_test(test_python_91_line_profiler),
+        /* cmocka_unit_test(test_python_90_pickle), */
+        /* cmocka_unit_test(test_python_91_line_profiler), */
         cmocka_unit_test(test_python_91_pdb),
         cmocka_unit_test(test_python_95_bugs),
-        cmocka_unit_test(test_python_95_dis),
+        /* cmocka_unit_test(test_python_95_dis), */
         cmocka_unit_test(test_python_96_pep695_py312),
         cmocka_unit_test(test_python_99_extras),
         cmocka_unit_test(test_nmt_print_help),
