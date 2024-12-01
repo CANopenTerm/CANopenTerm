@@ -44,6 +44,7 @@ jobs:
         run: |
           cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
           cmake --build build
+          xcopy export\tests build\tests /E /I
           ctest --test-dir build -C Release --output-on-failure
 
       - name: Setup MSBuild.exe
