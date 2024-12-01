@@ -23,46 +23,35 @@ void test_codb2json(void** state)
     (void)state;
 
     assert_true(codb2json(2, (char* []) { "codb2json", "tests/test.codb" }) == 0);
-    //assert_files_equal("tests/test.json", "tests/test.json.expected");
+    assert_files_equal("tests/test.json", "tests/test.json.expected");
 }
 
 static void assert_files_equal(const char* file1_path, const char* file2_path)
 {
     FILE_t* file1, * file2;
-    int ch1, ch2;
+    char line1[256], line2[256];
 
-    file1 = os_fopen(file1_path, "rb");
+    file1 = os_fopen(file1_path, "r");
     if (file1 == NULL)
     {
         fail_msg("Failed to open %s for reading.", file1_path);
     }
 
-    file2 = os_fopen(file2_path, "rb");
+    file2 = os_fopen(file2_path, "r");
     if (file2 == NULL)
     {
         os_fclose(file1);
         fail_msg("Failed to open %s for reading.", file2_path);
     }
 
-    do
+    while (fgets(line1, sizeof(line1), file1) != NULL && fgets(line2, sizeof(line2), file2) != NULL)
     {
-        ch1 = fgetc(file1);
-        ch2 = fgetc(file2);
-
-        if (ch1 != ch2)
+        if (strcmp(line1, line2) != 0)
         {
             os_fclose(file1);
             os_fclose(file2);
             fail_msg("Files %s and %s are not equal.", file1_path, file2_path);
         }
-    } while (ch1 != EOF && ch2 != EOF);
-
-    /* Check if both files reached EOF, otherwise they are of different sizes. */
-    if (ch1 != ch2)
-    {
-        os_fclose(file1);
-        os_fclose(file2);
-        fail_msg("Files %s and %s have different sizes.", file1_path, file2_path);
     }
 
     os_fclose(file1);
