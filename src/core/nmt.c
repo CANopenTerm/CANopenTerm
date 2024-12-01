@@ -37,60 +37,56 @@ status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp
             break;
         default:
             nmt_print_help(disp_mode);
-            status = NMT_UNKNOWN_COMMAND;
-            break;
+            return NMT_UNKNOWN_COMMAND;
     }
 
-    if (ALL_OK == status)
+    can_status = can_write(&can_message, SILENT, NULL);
+    if (0 != can_status)
     {
-        can_status = can_write(&can_message, SILENT, NULL);
-        if (0 != can_status)
+        nmt_print_error(can_get_error_message(can_status), command, disp_mode);
+        status = CAN_WRITE_ERROR;
+    }
+    else
+    {
+        if (SCRIPT_MODE == disp_mode)
         {
-            nmt_print_error(can_get_error_message(can_status), command, disp_mode);
-            status = CAN_WRITE_ERROR;
-        }
-        else
-        {
-            if (SCRIPT_MODE == disp_mode)
+            int  i;
+            char buffer[34] = { 0 };
+
+            os_print(DARK_CYAN, "NMT  ");
+            os_print(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
+            os_print(LIGHT_GREEN, "SUCC    ");
+
+            if (NULL == comment)
             {
-                int  i;
-                char buffer[34] = { 0 };
+                comment = "-";
+            }
 
-                os_print(DARK_CYAN, "NMT  ");
-                os_print(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
-                os_print(LIGHT_GREEN, "SUCC    ");
+            os_strlcpy(buffer, comment, 33);
+            for (i = os_strlen(buffer); i < 33; ++i)
+            {
+                buffer[i] = ' ';
+            }
 
-                if (NULL == comment)
-                {
-                    comment = "-";
-                }
+            os_print(DARK_MAGENTA, "%s ", buffer);
 
-                os_strlcpy(buffer, comment, 33);
-                for (i = os_strlen(buffer); i < 33; ++i)
-                {
-                    buffer[i] = ' ';
-                }
-
-                os_print(DARK_MAGENTA, "%s ", buffer);
-
-                switch (command)
-                {
-                    case 0x01:
-                        os_print(DEFAULT_COLOR, "Start (go to Operational)\n");
-                        break;
-                    case 0x02:
-                        os_print(DEFAULT_COLOR, "Stop (go to Stopped)\n");
-                        break;
-                    case 0x80:
-                        os_print(DEFAULT_COLOR, "Go to Pre-operational\n");
-                        break;
-                    case 0x81:
-                        os_print(DEFAULT_COLOR, "Reset node (Application reset)\n");
-                        break;
-                    case 0x82:
-                        os_print(DEFAULT_COLOR, "Reset communication\n");
-                        break;
-                }
+            switch (command)
+            {
+                case 0x01:
+                    os_print(DEFAULT_COLOR, "Start (go to Operational)\n");
+                    break;
+                case 0x02:
+                    os_print(DEFAULT_COLOR, "Stop (go to Stopped)\n");
+                    break;
+                case 0x80:
+                    os_print(DEFAULT_COLOR, "Go to Pre-operational\n");
+                    break;
+                case 0x81:
+                    os_print(DEFAULT_COLOR, "Reset node (Application reset)\n");
+                    break;
+                case 0x82:
+                    os_print(DEFAULT_COLOR, "Reset communication\n");
+                    break;
             }
         }
     }

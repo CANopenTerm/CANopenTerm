@@ -1,3 +1,37 @@
+if(BUILD_TESTS)
+    # CMocka
+    set(CMocka_VERSION     "1.1.7")
+    set(CMocka_DEVEL_PKG   cmocka-${CMocka_VERSION}.tar.xz)
+    set(CMocka_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/cmocka-${CMocka_VERSION})
+    set(CMocka_BUILD_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/cmocka-${CMocka_VERSION}_build)
+    set(CMocka_INCLUDE_DIR ${CMocka_PATH}/include)
+    set(CMocka_LIBRARY     ${CMocka_BUILD_PATH}/src/cmocka.lib)
+
+    ExternalProject_Add(CMocka_devel
+        URL https://cmocka.org/files/1.1/${CMocka_DEVEL_PKG}
+        URL_HASH SHA1=04cf44545a22e7182803a092a30af5c1a42c31bc
+        DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+        DOWNLOAD_NO_PROGRESS true
+        TLS_VERIFY true
+        SOURCE_DIR ${CMocka_PATH}
+        BINARY_DIR ${CMocka_BUILD_PATH}
+        BUILD_BYPRODUCTS ${CMocka_LIBRARY}
+
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+            -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+            -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
+            -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON
+            -DBUILD_SHARED_LIBS=ON
+            -DWITH_EXAMPLES=OFF
+
+        PATCH_COMMAND ${CMAKE_COMMAND} -DCMocka_PATH=${CMocka_PATH} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch_cmocka.cmake
+
+        INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMocka_PATH}_build/src/cmocka.dll ${CMAKE_CURRENT_SOURCE_DIR}/export)
+endif(BUILD_TESTS)
+
 # cJSON
 set(CJSON_VERSION     "1.7.18")
 set(CJSON_DEVEL_PKG   "v${CJSON_VERSION}.zip")

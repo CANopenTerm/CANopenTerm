@@ -16,6 +16,7 @@ bool_t   has_valid_extension(const char* filename);
 void     scripts_init(core_t* core);
 void     scripts_deinit(core_t* core);
 status_t list_scripts(void);
+void     print_heading(const char* heading);
 void     run_script(const char* name, core_t* core);
 
 #endif /* SCRIPTS_H */

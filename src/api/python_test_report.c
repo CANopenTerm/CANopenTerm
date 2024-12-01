@@ -8,6 +8,7 @@
  **/
 
 #include "core.h"
+#include "eds.h"
 #include "os.h"
 #include "pocketpy.h"
 #include "test_report.h"

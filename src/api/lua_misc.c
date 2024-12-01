@@ -12,6 +12,7 @@
 #include "lua.h"
 #include "lua_misc.h"
 #include "os.h"
+#include "scripts.h"
 
 extern void print_heading(const char *heading);
 

@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
         {
             char* endptr;
 
-            node_id = os_strtol(argv[++i], &endptr, 0);
+            node_id = (uint32)os_strtol(argv[++i], &endptr, 0);
             if (node_id < 1 || node_id > 127 || *endptr != '\0')
             {
                 os_printf("Invalid node ID.  Must be between 0x01 and 0x7F.\n");
