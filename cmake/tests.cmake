@@ -23,6 +23,7 @@ target_link_libraries(
     run_unit_tests
     core
     ${CMocka_LIBRARY}
+    ${CJSON_LIBRARY}
     ${SDL2_LIBRARY}
     ${SDL2MAIN_LIBRARY}
     ${LUA_LIBRARY}
