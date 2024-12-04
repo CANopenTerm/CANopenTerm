@@ -63,8 +63,7 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
     if (buffer != NULL)
     {
         add_history(buffer);
-        os_memcpy(prompt, buffer, PROMPT_BUFFER_SIZE - 1);
-        prompt[PROMPT_BUFFER_SIZE - 1] = '\0';
+        os_strlcpy(prompt, buffer, PROMPT_BUFFER_SIZE);
     }
     else
     {
