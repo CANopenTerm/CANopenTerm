@@ -232,6 +232,7 @@ if(EXISTS "/proc/cpuinfo")
 endif()
 
 set(PLATFORM_LIBS
+    ${CJSON_LIBRARY}
     ${SDL2_LIBRARY}
     ${SDL2MAIN_LIBRARY}
     ${INIH_LIBRARY}
