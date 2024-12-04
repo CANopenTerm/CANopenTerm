@@ -11,6 +11,7 @@
 #include "codb.h"
 #include "core.h"
 #include "dict.h"
+#include "sdo.h"
 
 static const dict_entry_t dictionary[] =
 {
@@ -237,4 +238,91 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
     }
 
     return NULL;
+}
+
+const char* dict_lookup_raw(can_message_t * message)
+{
+    uint32 id;
+    uint32 length;
+    uint8* data;
+
+    if (message == NULL)
+    {
+        return "Invalid message";
+    }
+
+    id     = message->id;
+    length = message->length;
+    data   = message->data;
+
+    /* NMT messages. */
+    if (id == 0x0000)
+    {
+        switch (data[0])
+        {
+            case 0x01: return "NMT Start Remote Node";
+            case 0x02: return "NMT Stop Remote Node";
+            case 0x80: return "NMT Enter Pre-Operational";
+            case 0x81: return "NMT Reset Node";
+            case 0x82: return "NMT Reset Communication";
+            default: return "Unknown NMT Command";
+        }
+    }
+
+    /* Heartbeat messages. */
+    if ((id & 0x700) == 0x700 && 1 == length)
+    {
+        switch (data[0])
+        {
+            case 0x00: return "Boot-up Message";
+            case 0x04: return "Heartbeat: Stopped.";
+            case 0x05: return "Heartbeat: Operational";
+            case 0x07: return "Heartbeat: Pre-operational";
+            default: return "Heartbeat Message";
+        }
+
+        return "Heartbeat Message";
+    }
+
+    /* SDO messages. */
+    if ((id & 0x600) == 0x600)
+    {
+        static char  buffer[256] = { 0 };
+        char*        desc        = NULL;
+        uint16       index       = (data[2] << 8) | data[1];
+        uint8        sub_index   = data[3];
+
+        desc = (char*)dict_lookup(index, sub_index);
+        if (NULL == desc)
+        {
+            os_snprintf(buffer, sizeof(buffer), "SDO request, %04Xh sub %02Xh", index, sub_index);
+        }
+        else
+        {
+            os_snprintf(buffer, sizeof(buffer), "SDO request: %04Xh sub %02Xh, %s", index, sub_index, dict_lookup(index, sub_index));
+        }
+        return buffer;
+    }
+
+    /* Abort codes. */
+    if ((id & 0x580) == 0x580 && data[0] == ABORT_TRANSFER && 8 == length)
+    {
+        static char buffer[256] = { 0 };
+        uint32      abort_code = (data[4] << 24) | (data[5] << 16) | (data[6] << 8) | data[7];
+
+        os_snprintf(buffer, sizeof(buffer), "SDO Abort Message %08Xh, %s", abort_code, sdo_lookup_abort_code(abort_code));
+        return buffer;
+    }
+    else if ((id & 0x580) == 0x580)
+    {
+        return "SDO Response";
+    }
+
+    /* EMCY messages. */
+    if ((id & 0x080) == 0x080)
+    {
+        return "Emergency Message";
+    }
+
+    return "Unknown CAN Message";
 }

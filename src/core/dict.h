@@ -10,8 +10,9 @@
 #ifndef DICT_H
 #define DICT_H
 
-#include "os.h"
+#include "can.h"
 #include "core.h"
+#include "os.h"
 
 typedef struct dict_entry
 {
@@ -24,5 +25,6 @@ typedef struct dict_entry
 } dict_entry_t;
 
 const char* dict_lookup(uint16 index, uint8 sub_index);
+const char* dict_lookup_raw(can_message_t* message);
 
 #endif /* DICT_H */

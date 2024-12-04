@@ -36,14 +36,6 @@ typedef enum
 
 typedef enum
 {
-    UNSIGNED8  = 1,
-    UNSIGNED16 = 2,
-    UNSIGNED32 = 4
-
-} data_type_t;
-
-typedef enum
-{
     UPLOAD_RESPONSE_SEGMENT_NO_SIZE       = 0x40, /* Upload response, segment transfer, no size indicated */
     UPLOAD_RESPONSE_SEGMENT_SIZE_IN_DATA  = 0x41, /* Upload response, segment transfer, size in data */
     UPLOAD_RESPONSE_EXPEDITED_NO_SIZE     = 0x42, /* Upload response, EXPEDITED transfer, no size indicated */

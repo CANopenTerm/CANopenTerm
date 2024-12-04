@@ -9,6 +9,7 @@
 
 #include "can.h"
 #include "core.h"
+#include "dict.h"
 #include "lua.h"
 #include "lauxlib.h"
 #include "lua_can.h"
@@ -120,10 +121,46 @@ int lua_can_read(lua_State *L)
     }
 }
 
+int lua_dict_lookup_raw(lua_State* L)
+{
+    uint32        can_status;
+    int           can_id      = luaL_checkinteger(L, 1);
+    int           length      = luaL_checkinteger(L, 2);
+    uint64        data        = lua_tointeger(L, 3);
+    can_message_t message     = { 0 };
+    const char*   description;
+
+    message.id      = can_id;
+    message.length  = length;
+    message.data[0] = (data >> 56) & 0xFF;
+    message.data[1] = (data >> 48) & 0xFF;
+    message.data[2] = (data >> 40) & 0xFF;
+    message.data[3] = (data >> 32) & 0xFF;
+    message.data[4] = (data >> 24) & 0xFF;
+    message.data[5] = (data >> 16) & 0xFF;
+    message.data[6] = (data >> 8)  & 0xFF;
+    message.data[7] = data         & 0xFF;
+
+    description = dict_lookup_raw(&message);
+
+    if (NULL == description)
+    {
+        lua_pushnil(L);
+    }
+    else
+    {
+        lua_pushstring(L, description);
+    }
+
+    return 1;
+}
+
 void lua_register_can_commands(core_t *core)
 {
     lua_pushcfunction(core->L, lua_can_write);
     lua_setglobal(core->L, "can_write");
     lua_pushcfunction(core->L, lua_can_read);
     lua_setglobal(core->L, "can_read");
+    lua_pushcfunction(core->L, lua_dict_lookup_raw);
+    lua_setglobal(core->L, "dict_lookup_raw");
 }

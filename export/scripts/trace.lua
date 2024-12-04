@@ -30,6 +30,9 @@ function print_data(data, length)
         local byte = (data >> (8 * i)) & 0xFF
         io.write(string.format("%02X ", byte))
     end
+    for i = length, 7 do
+        io.write("   ")
+    end
 end
 
 local function write_trc_header(start_time)
@@ -76,7 +79,7 @@ local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, 
     end
 end
 
-print("\nTime         CAN-ID  Length  Data")
+print("\nTime         CAN-ID  Length  Data                     Description")
 
 trace_filename = generate_trace_filename()
 
@@ -98,6 +101,7 @@ while not key_is_hit() do
 
         io.write(string.format("%6d.%03d   %03X     %1d       ", timestamp_ms, timestamp_fraction, id, length))
         print_data(data, length)
+        io.write(string.format(" " .. dict_lookup_raw(id, length, data)))
         io.write("\n")
 
         -- Write to .trc file

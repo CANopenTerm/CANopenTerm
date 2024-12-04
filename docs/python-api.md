@@ -401,7 +401,7 @@ if sdo_write_string(0x123, 0x4600, 0x01, "Hello, world!"):
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Read CANopenTerm from built-in object directory.
+Read from built-in object directory.
 
 ```python
 str dict_lookup (index, sub_index)

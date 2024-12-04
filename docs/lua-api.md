@@ -385,10 +385,10 @@ end
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Read CANopenTerm from built-in object directory.
+Read from built-in object directory.
 
 ```lua
-dict_lookup (index, sub_index)
+dict_lookup_raw (id, length, data)
 ```
 
 <!-- tab:Example -->
@@ -587,6 +587,28 @@ can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
 if can_write(0x5454, 8, 0x1122334455667788, false, true, "SPAM") then
   print("Message sent.")
 end
+```
+<!-- tabs:end -->
+
+### dict_lookup_raw()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Interpret raw CAN message.
+
+```lua
+dict_lookup_raw (can_id, data_length, [data])
+```
+
+> **can_id** CAN-ID.
+
+> **length** Data length in bytes.
+
+> **data** Data, default is `0x0000000000000000`.
+
+<!-- tab:Example -->
+```lua
+print(dict_lookup_raw(0x730, 1, 0x05)) -- Heartbeat: Operational.
 ```
 <!-- tabs:end -->
 
