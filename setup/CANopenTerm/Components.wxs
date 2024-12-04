@@ -30,6 +30,9 @@
       <Component>
           <File Source="../../export/codb/ds401.json" />
       </Component>
+      <Component>
+          <File Source="../../export/codb/ds417.json" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
       <Component>
