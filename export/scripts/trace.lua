@@ -10,6 +10,7 @@ local utils = require "lua/utils"
 local initial_timestamp_us
 local trace_filename
 local message_number = 1
+local write_trace    = true
 
 local function generate_trace_filename()
     local  timestamp = os.date("%Y%m%d_%H%M%S")
@@ -50,23 +51,29 @@ local function write_trc_header(start_time)
 end
 
 local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, message_number)
-    local file = assert(io.open(trace_filename, "a"))
+    local success, err = pcall(function()
+        local file = assert(io.open(trace_filename, "a"))
 
-    local line = string.format("%5d) %10.1f  Rx     %08X  %d  ", message_number, timestamp_ms + (timestamp_fraction or 0) / 1000, id, length)
+        local line = string.format("%5d) %10.1f  Rx     %08X  %d  ", message_number, timestamp_ms + (timestamp_fraction or 0) / 1000, id, length)
 
-    if data and length >= 1 and length <= 8 then
-        local bytes = {}
-        for i = length-1, 0, -1 do
-            local byte = (data >> (8 * i)) & 0xFF
-            table.insert(bytes, string.format("%02X", byte))
+        if data and length >= 1 and length <= 8 then
+            local bytes = {}
+            for i = length-1, 0, -1 do
+                local byte = (data >> (8 * i)) & 0xFF
+                table.insert(bytes, string.format("%02X", byte))
+            end
+
+            line = line .. table.concat(bytes, " ") .. " "
         end
 
-        line = line .. table.concat(bytes, " ") .. " "
-    end
+        line = line .. "\n"
+        file:write(line)
+        file:close()
+    end)
 
-    line = line .. "\n"
-    file:write(line)
-    file:close()
+    if not success then
+        write_trace = false
+    end
 end
 
 print("\nTime         CAN-ID  Length  Data")
@@ -94,9 +101,15 @@ while not key_is_hit() do
         io.write("\n")
 
         -- Write to .trc file
-        write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, message_number)
+        if write_trace then
+            write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, message_number)
+        end
         message_number = message_number + 1
     end
 end
 
-print(string.format("\nSaved as %s", trace_filename))
+if write_trace then
+    print(string.format("\nSaved as %s", trace_filename))
+else
+    print("\nCould not write trace file %s", trace_filename)
+end
