@@ -128,6 +128,7 @@ int main(int argc, char* argv[])
             case CAN_NO_HARDWARE_FOUND:
             case CAN_READ_ERROR:
             case CAN_WRITE_ERROR:
+            case CODB_PARSE_ERROR:
             case EDS_OBJECT_NOT_AVAILABLE:
             case EDS_PARSE_ERROR:
             case ITEM_NOT_FOUND:

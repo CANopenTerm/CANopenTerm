@@ -8,6 +8,7 @@
  **/
 
 #include "can.h"
+#include "codb.h"
 #include "command.h"
 #include "core.h"
 #include "dbc.h"
@@ -119,6 +120,7 @@ void core_deinit(core_t *core)
         return;
     }
 
+    (void)unload_codb();
     test_clear_results();
     dbc_unload();
     can_quit(core);

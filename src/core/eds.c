@@ -22,7 +22,7 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
 
 void list_eds(void)
 {
-    list_file_type("eds", "eds");
+    list_file_type("eds", "eds", 0);
 }
 
 status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t disp_mode)

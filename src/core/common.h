@@ -10,6 +10,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-void list_file_type(const char* dir, const char* ext);
+#include "os.h"
+
+void list_file_type(const char* dir, const char* ext, uint32 active_no);
 
 #endif /* COMMON_H */

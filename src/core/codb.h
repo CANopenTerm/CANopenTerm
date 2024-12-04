@@ -10,6 +10,8 @@
 #ifndef CODB_H
 #define CODB_H
 
+#include "os.h"
+
 typedef enum obj_attr_type
 {
     EMPTY,
@@ -63,7 +65,7 @@ typedef enum data_type
     TIME_OF_DAY,
     VISIBLE_STRING,
     OCTET_STRING,
-    DOMAIN_T
+    DOMAIN_T,
 
 } data_type_t;
 
@@ -79,6 +81,9 @@ typedef enum acc_type
 
 } acc_type_t;
 
-void list_codb(void);
+void     list_codb(void);
+status_t load_codb(uint32 file_no);
+status_t load_codb_ex(const char* file_name);
+status_t unload_codb(void);
 
 #endif /* CODB_H */

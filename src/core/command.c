@@ -84,6 +84,21 @@ void parse_command(char* input, core_t* core)
             os_log(LOG_WARNING, "Could not clear screen");
         }
     }
+    else if (0 == os_strncmp(token, "d", 1))
+    {
+        uint32 file_no;
+
+        token = os_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            list_codb();
+            return;
+        }
+
+        convert_token_to_uint(token, &file_no);
+
+        load_codb(file_no);
+    }
     else if (0 == os_strncmp(token, "q", 1))
     {
         core->is_running = IS_FALSE;
@@ -450,6 +465,7 @@ status_t print_usage_information(bool_t show_all)
     if (IS_TRUE == show_all)
     {
         table_print_row(" b ", "(identifer)",                               "Set baud rate",    &table);
+        table_print_row(" d ", "[file_no]",                                 "Load data base",   &table);
         table_print_row(" y ", "(identifer)",                               "Set CAN channel",  &table);
         table_print_row(" c ", " ",                                         "Clear output",     &table);
         table_print_row(" l ", " ",                                         "List scripts",     &table);

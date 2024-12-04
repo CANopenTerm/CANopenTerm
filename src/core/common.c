@@ -12,11 +12,20 @@
 #include "table.h"
 #include "os.h"
 
-void list_file_type(const char* dir, const char* ext)
+void list_file_type(const char* dir, const char* ext, uint32 active_no)
 {
-    DIR_t*   d      = os_opendir(dir);
-    table_t  table  = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
-    status_t status = table_init(&table, 1024);
+    DIR_t*   d            = os_opendir(dir);
+    table_t  table        = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
+    status_t status;
+    uint32   status_width = 1;
+
+    if (active_no > 0)
+    {
+        status_width = 6;
+    }
+
+    table.column_c_width = status_width;
+    status               = table_init(&table, 1024);
 
     if (ALL_OK != status)
     {
@@ -26,10 +35,17 @@ void list_file_type(const char* dir, const char* ext)
     if (d)
     {
         struct dirent_t* dir;
-        int    file_no = 1;
+        uint32 file_no = 1;
 
         table_print_header(&table);
-        table_print_row("No.", "File name", "-", &table);
+        if (0 == active_no)
+        {
+            table_print_row("No.", "File name", "-", &table);
+        }
+        else
+        {
+            table_print_row("No.", "File name", "Status", &table);
+        }
         table_print_divider(&table);
 
         while ((dir = os_readdir(d)) != NULL)
@@ -42,9 +58,20 @@ void list_file_type(const char* dir, const char* ext)
             {
                 char file_no_str[4] = { 0 };
 
-                os_snprintf(file_no_str, 4, "%3d", file_no);
+                os_snprintf(file_no_str, 4, "%3u", file_no);
 
-                table_print_row(file_no_str, dir->d_name, "-", &table);
+                if ((active_no > 0) && (active_no == file_no))
+                {
+                    table_print_row(file_no_str, dir->d_name, "Active", &table);
+                }
+                else if (0 == active_no)
+                {
+                    table_print_row(file_no_str, dir->d_name, "-", &table);
+                }
+                else
+                {
+                    table_print_row(file_no_str, dir->d_name, " ", &table);
+                }
                 file_no++;
             }
         }
