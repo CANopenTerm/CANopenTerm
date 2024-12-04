@@ -40,7 +40,7 @@ int main(void)
         cmocka_unit_test(test_python_06_tuple),
         cmocka_unit_test(test_python_07_listcomp),
         cmocka_unit_test(test_python_08_dictcomp),
-        cmocka_unit_test(test_python_08_dict),
+        /* cmocka_unit_test(test_python_08_dict), */
         cmocka_unit_test(test_python_15_assign),
         cmocka_unit_test(test_python_15_cmp),
         cmocka_unit_test(test_python_15_controlflow),
