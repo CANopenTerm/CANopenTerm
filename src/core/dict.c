@@ -8,6 +8,7 @@
  **/
 
 #include "os.h"
+#include "codb.h"
 #include "core.h"
 #include "dict.h"
 
@@ -205,6 +206,12 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
 {
     size_t i;
 
+    if (IS_TRUE == is_codb_loaded())
+    {
+        return codb_desc_lookup(index, sub_index);
+    }
+
+    /* Fallback dictionary. */
     for (i = 0; i < sizeof(dictionary) / sizeof(dict_entry_t); ++i)
     {
         uint16 index_start     = dictionary[i].index_start;

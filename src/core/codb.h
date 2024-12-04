@@ -77,13 +77,15 @@ typedef enum acc_type
     WO,
     RW,
     WWR,
-    RWW
+    RWW,
 
 } acc_type_t;
 
-void     list_codb(void);
-status_t load_codb(uint32 file_no);
-status_t load_codb_ex(const char* file_name);
-status_t unload_codb(void);
+const char* codb_desc_lookup(uint16 index, uint8 sub_index);
+bool_t      is_codb_loaded(void);
+void        list_codb(void);
+status_t    load_codb(uint32 file_no);
+status_t    load_codb_ex(const char* file_name);
+status_t    unload_codb(void);
 
 #endif /* CODB_H */

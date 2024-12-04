@@ -144,5 +144,6 @@ int main(int argc, char* argv[])
     }
 
     core_deinit(core);
+    os_quit();
     return status;
 }

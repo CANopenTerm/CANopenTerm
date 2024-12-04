@@ -8,12 +8,68 @@
  **/
 
 #include "cJSON.h"
+#include "codb.h"
 #include "common.h"
 #include "core.h"
 #include "os.h"
 
 static uint32 active_no = 0;
 static cJSON* codb      = NULL;
+
+const char* codb_desc_lookup(uint16 index, uint8 sub_index)
+{
+    static char desc[128] = { 0 };
+
+    cJSON* object;
+
+    if (NULL == codb)
+    {
+        return NULL;
+    }
+
+    object = NULL;
+    cJSON_ArrayForEach(object, codb)
+    {
+        cJSON* json_index = cJSON_GetObjectItem(object, "index");
+        if (json_index != NULL && json_index->valueint == index)
+        {
+            cJSON* sub_indices = cJSON_GetObjectItem(object, "sub_indices");
+            cJSON* obj_desc    = cJSON_GetObjectItem(object, "desc");
+            char*  desc_str    = os_strdup(obj_desc->valuestring);
+
+            if (sub_indices != NULL)
+            {
+                cJSON* sub_index_item = cJSON_GetArrayItem(sub_indices, sub_index);
+                if (sub_index_item != NULL)
+                {
+                    cJSON* sub_desc = cJSON_GetObjectItem(sub_index_item, "desc");
+                    if (desc != NULL)
+                    {
+                        if (0 == os_strcmp(desc_str, (char*)sub_desc->valuestring))
+                        {
+                            os_snprintf(desc, sizeof(desc), "%s", desc_str);
+                        }
+                        else
+                        {
+                            os_snprintf(desc, sizeof(desc), "%s, %s", desc_str, (char*)sub_desc->valuestring);
+                        }
+                        os_free(desc_str);
+                        return (const char*)desc;
+                    }
+                }
+            }
+
+            os_free(desc_str);
+        }
+    }
+
+    return NULL;
+}
+
+bool_t is_codb_loaded(void)
+{
+    return (codb != NULL) ? IS_TRUE : IS_FALSE;
+}
 
 void list_codb(void)
 {
@@ -29,6 +85,7 @@ status_t load_codb(uint32 file_no)
     {
         struct dirent_t* dir;
         uint32 current_file_no = 1;
+        bool_t found           = IS_FALSE;
 
         while ((dir = os_readdir(d)) != NULL)
         {
@@ -46,6 +103,7 @@ status_t load_codb(uint32 file_no)
                     }
                     else
                     {
+                        found     = IS_TRUE;
                         active_no = file_no;
                     }
                 }
@@ -53,6 +111,11 @@ status_t load_codb(uint32 file_no)
             }
         }
         os_closedir(d);
+        if (IS_FALSE == found)
+        {
+            status = OS_FILE_NOT_FOUND;
+            list_codb();
+        }
     }
     else
     {
