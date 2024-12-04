@@ -43,7 +43,7 @@ const char* codb_desc_lookup(uint16 index, uint8 sub_index)
                 if (sub_index_item != NULL)
                 {
                     cJSON* sub_desc = cJSON_GetObjectItem(sub_index_item, "desc");
-                    if (desc != NULL)
+                    if (sub_desc != NULL)
                     {
                         if (0 == os_strcmp(desc_str, (char*)sub_desc->valuestring))
                         {
