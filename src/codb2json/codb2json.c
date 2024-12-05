@@ -85,12 +85,12 @@ typedef struct obj_attr
 
 typedef struct codb_entry
 {
-    char* object_name;
+    char*       object_name;
     uint16      main_index;
     uint8       sub_index;
-    char* parameter_name;
+    char*       parameter_name;
     obj_kind_t  object_kind;
-    char* unit;
+    char*       unit;
     obj_code_t  object_code;
     obj_attr_t  object_code_attr;
     data_type_t data_type;

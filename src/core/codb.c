@@ -12,6 +12,9 @@
 #include "common.h"
 #include "core.h"
 #include "os.h"
+#include "table.h"
+
+static const char* file_name_to_profile_desc(const char* file_name);
 
 static uint32 active_no = 0;
 static cJSON* codb      = NULL;
@@ -73,7 +76,74 @@ bool_t is_codb_loaded(void)
 
 void list_codb(void)
 {
-    list_file_type("codb", "json", active_no);
+    DIR_t*   d            = os_opendir("codb");
+    table_t  table        = { DARK_CYAN, DARK_WHITE, 3, 45, 1 };
+    status_t status;
+    uint32   status_width = 1;
+
+    if (active_no > 0)
+    {
+        status_width = 6;
+    }
+
+    table.column_c_width = status_width;
+    status               = table_init(&table, 1024);
+
+    if (ALL_OK != status)
+    {
+        return;
+    }
+
+    if (d)
+    {
+        struct dirent_t* dir;
+        uint32 file_no = 1;
+
+        table_print_header(&table);
+        if (0 == active_no)
+        {
+            table_print_row("No.", "Profile", "-", &table);
+        }
+        else
+        {
+            table_print_row("No.", "Profile", "Status", &table);
+        }
+        table_print_divider(&table);
+
+        while ((dir = os_readdir(d)) != NULL)
+        {
+            char* extension = ".json";
+
+            if (os_strstr(dir->d_name, extension) != NULL)
+            {
+                char file_no_str[4] = { 0 };
+
+                os_snprintf(file_no_str, 4, "%3u", file_no);
+
+                if ((active_no > 0) && (active_no == file_no))
+                {
+                    table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Active", &table);
+                }
+                else if (0 == active_no)
+                {
+                    table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "-", &table);
+                }
+                else
+                {
+                    table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), " ", &table);
+                }
+                file_no++;
+            }
+        }
+        os_closedir(d);
+    }
+    else
+    {
+        os_log(LOG_WARNING, "Could not open codb directory.");
+    }
+
+    table_print_footer(&table);
+    table_flush(&table);
 }
 
 status_t load_codb(uint32 file_no)
@@ -187,4 +257,54 @@ status_t unload_codb(void)
     }
 
     return ALL_OK;
+}
+
+static const char* file_name_to_profile_desc(const char* file_name)
+{
+    if (0 == os_strcmp(file_name, "ds301.json"))
+    {
+        return "[CiA 301] Application layer and communication";
+    }
+    else if (0 == os_strcmp(file_name, "ds401.json"))
+    {
+        return "[CiA 401] I/O devices";
+    }
+    else if (0 == os_strcmp(file_name, "ds402.json"))
+    {
+        return "[CiA 402] Drives and motion control";
+    }
+    else if (0 == os_strcmp(file_name, "ds405.json"))
+    {
+        return "[CiA 405] IEC 61131-3 programmable devices";
+    }
+    else if (0 == os_strcmp(file_name, "ds406.json"))
+    {
+        return "[CiA 406] Encoders";
+    }
+    else if (0 == os_strcmp(file_name, "ds408.json"))
+    {
+        return "[CiA 408] Fluid Power Technology";
+    }
+    else if (0 == os_strcmp(file_name, "ds410.json"))
+    {
+        return "[CiA 410] Inclinometer";
+    }
+    else if (0 == os_strcmp(file_name, "ds415.json"))
+    {
+        return "[CiA 415] Road construction machinery";
+    }
+    else if (0 == os_strcmp(file_name, "ds416.json"))
+    {
+        return "[CiA 416] Building door control";
+    }
+    else if (0 == os_strcmp(file_name, "ds418.json"))
+    {
+        return "[CiA 418] Battery modules";
+    }
+    else if (0 == os_strcmp(file_name, "ds419.json"))
+    {
+        return "[CiA 419] Battery chargers";
+    }
+
+    return file_name;
 }
