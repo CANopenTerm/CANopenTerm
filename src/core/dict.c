@@ -248,7 +248,7 @@ const char* dict_lookup_raw(can_message_t * message)
 
     if (message == NULL)
     {
-        return "Invalid message";
+        return "";
     }
 
     id     = message->id;
@@ -272,7 +272,7 @@ const char* dict_lookup_raw(can_message_t * message)
     /* Heartbeat messages. */
     if ((id & 0x700) == 0x700 && 1 == length)
     {
-        switch (data[0])
+        switch (data[7])
         {
             case 0x00: return "Boot-up Message";
             case 0x04: return "Heartbeat: Stopped.";
@@ -324,5 +324,5 @@ const char* dict_lookup_raw(can_message_t * message)
         return "Emergency Message";
     }
 
-    return "Unknown CAN Message";
+    return "";
 }
