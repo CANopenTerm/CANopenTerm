@@ -1,12 +1,12 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-    <StandardDirectory Id="ProgramFiles6432Folder">
-      <Directory Id="INSTALLFOLDER"     Name="!(bind.Property.ProductName)" />
-      <Directory Id="CODBFOLDER"        Name="!(bind.Property.ProductName)\codb" />
-      <Directory Id="DBCFOLDER"         Name="!(bind.Property.ProductName)\dbc" />
-      <Directory Id="EDSFOLDER"         Name="!(bind.Property.ProductName)\eds" />
-      <Directory Id="SCRIPTSFOLDER"     Name="!(bind.Property.ProductName)\scripts" />
-      <Directory Id="LUAFOLDER"         Name="!(bind.Property.ProductName)\scripts\lua" />
-    </StandardDirectory>
-  </Fragment>
+    <Fragment>
+        <StandardDirectory Id="ProgramFiles6432Folder">
+            <Directory Id="INSTALLFOLDER"     Name="!(bind.Property.ProductName)" />
+            <Directory Id="CODBFOLDER"        Name="!(bind.Property.ProductName)\codb" />
+            <Directory Id="DBCFOLDER"         Name="!(bind.Property.ProductName)\dbc" />
+            <Directory Id="EDSFOLDER"         Name="!(bind.Property.ProductName)\eds" />
+            <Directory Id="SCRIPTSFOLDER"     Name="!(bind.Property.ProductName)\scripts" />
+            <Directory Id="LUAFOLDER"         Name="!(bind.Property.ProductName)\scripts\lua" />
+        </StandardDirectory>
+    </Fragment>
 </Wix>

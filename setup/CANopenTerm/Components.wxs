@@ -1,70 +1,94 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-    <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
-      <Component>
-        <File Source="../../export/codb2json.exe" />
-      </Component>
-      <Component>
-        <File Source="../../export/CANopenTerm.exe" />
-      </Component>
-      <Component>
-        <File Source="../../export/cjson.dll" />
-      </Component>
-      <Component>
-        <File Source="../../export/PCANBasic.dll" />
-      </Component>
-        <Component>
-            <File Source="../../export/pocketpy.dll" />
-        </Component>
-        <Component>
-        <File Source="../../export/SDL2.dll" />
-      </Component>
-      <Component>
-        <File Source="../../export/vcruntime140.dll" />
-      </Component>
-    </ComponentGroup>
-    <ComponentGroup Id="CodbComponents" Directory="CODBFOLDER">
-      <Component>
-        <File Source="../../export/codb/ds301.json" />
-      </Component>
-      <Component>
-          <File Source="../../export/codb/ds401.json" />
-      </Component>
-      <Component>
-          <File Source="../../export/codb/ds417.json" />
-      </Component>
-    </ComponentGroup>
-    <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
-      <Component>
-        <File Source="../../export/dbc/j1939.dbc" />
-      </Component>
-    </ComponentGroup>
-      <ComponentGroup Id="EdsComponents" Directory="EDSFOLDER">
-          <Component>
-              <File Source="../../export/eds/DS301_profile.eds" />
-          </Component>
-      </ComponentGroup>
-    <ComponentGroup Id="LuaComponents" Directory="LUAFOLDER">
-        <Component>
-            <File Source="../../export/scripts/lua/canopen.lua" />
-        </Component>
-        <Component>
-            <File Source="../../export/scripts/lua/utils.lua" />
-        </Component>
-    </ComponentGroup>
-    <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
-      <Component>
-        <File Source="../../export/scripts/replay.lua" />
-      </Component>
-      <Component>
-        <File Source="../../export/scripts/scanner.lua" />
-      </Component>
-      <Component>
-        <File Source="../../export/scripts/trace.lua" />
-      </Component>
-      <Component>
-        <File Source="../../export/scripts/watch.lua" />
-      </Component>
-    </ComponentGroup>
-  </Fragment>
+    <Fragment>
+        <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
+            <Component>
+                <File Source="../../export/codb2json.exe" />
+            </Component>
+            <Component>
+                <File Source="../../export/CANopenTerm.exe" />
+            </Component>
+            <Component>
+                <File Source="../../export/cjson.dll" />
+            </Component>
+            <Component>
+                <File Source="../../export/PCANBasic.dll" />
+            </Component>
+            <Component>
+                <File Source="../../export/pocketpy.dll" />
+            </Component>
+            <Component>
+                <File Source="../../export/SDL2.dll" />
+            </Component>
+            <Component>
+                <File Source="../../export/vcruntime140.dll" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="CodbComponents" Directory="CODBFOLDER">
+            <Component>
+                <File Source="../../export/codb/ds301.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds401.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds402.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds405.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds406.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds408.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds410.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds415.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds416.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds418.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds419.json" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
+            <Component>
+                <File Source="../../export/dbc/j1939.dbc" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="EdsComponents" Directory="EDSFOLDER">
+            <Component>
+                <File Source="../../export/eds/DS301_profile.eds" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="LuaComponents" Directory="LUAFOLDER">
+            <Component>
+                <File Source="../../export/scripts/lua/canopen.lua" />
+            </Component>
+            <Component>
+                <File Source="../../export/scripts/lua/utils.lua" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
+            <Component>
+                <File Source="../../export/scripts/replay.lua" />
+            </Component>
+            <Component>
+                <File Source="../../export/scripts/scanner.lua" />
+            </Component>
+            <Component>
+                <File Source="../../export/scripts/trace.lua" />
+            </Component>
+            <Component>
+                <File Source="../../export/scripts/watch.lua" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
 </Wix>
