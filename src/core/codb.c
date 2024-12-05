@@ -261,49 +261,29 @@ status_t unload_codb(void)
 
 static const char* file_name_to_profile_desc(const char* file_name)
 {
-    if (0 == os_strcmp(file_name, "ds301.json"))
+    const struct {
+        const char* file_name;
+        const char* description;
+    } lookup_table[] = {
+        { "ds301.json", "[CiA 301] Application layer and communication" },
+        { "ds401.json", "[CiA 401] I/O devices" },
+        { "ds402.json", "[CiA 402] Drives and motion control" },
+        { "ds405.json", "[CiA 405] IEC 61131-3 programmable devices" },
+        { "ds406.json", "[CiA 406] Encoders" },
+        { "ds408.json", "[CiA 408] Fluid Power Technology" },
+        { "ds410.json", "[CiA 410] Inclinometer" },
+        { "ds415.json", "[CiA 415] Road construction machinery" },
+        { "ds416.json", "[CiA 416] Building door control" },
+        { "ds418.json", "[CiA 418] Battery modules" },
+        { "ds419.json", "[CiA 419] Battery chargers" },
+    };
+
+    for (size_t i = 0; i < sizeof(lookup_table) / sizeof(lookup_table[0]); ++i)
     {
-        return "[CiA 301] Application layer and communication";
-    }
-    else if (0 == os_strcmp(file_name, "ds401.json"))
-    {
-        return "[CiA 401] I/O devices";
-    }
-    else if (0 == os_strcmp(file_name, "ds402.json"))
-    {
-        return "[CiA 402] Drives and motion control";
-    }
-    else if (0 == os_strcmp(file_name, "ds405.json"))
-    {
-        return "[CiA 405] IEC 61131-3 programmable devices";
-    }
-    else if (0 == os_strcmp(file_name, "ds406.json"))
-    {
-        return "[CiA 406] Encoders";
-    }
-    else if (0 == os_strcmp(file_name, "ds408.json"))
-    {
-        return "[CiA 408] Fluid Power Technology";
-    }
-    else if (0 == os_strcmp(file_name, "ds410.json"))
-    {
-        return "[CiA 410] Inclinometer";
-    }
-    else if (0 == os_strcmp(file_name, "ds415.json"))
-    {
-        return "[CiA 415] Road construction machinery";
-    }
-    else if (0 == os_strcmp(file_name, "ds416.json"))
-    {
-        return "[CiA 416] Building door control";
-    }
-    else if (0 == os_strcmp(file_name, "ds418.json"))
-    {
-        return "[CiA 418] Battery modules";
-    }
-    else if (0 == os_strcmp(file_name, "ds419.json"))
-    {
-        return "[CiA 419] Battery chargers";
+        if (0 == os_strcmp(file_name, lookup_table[i].file_name))
+        {
+            return lookup_table[i].description;
+        }
     }
 
     return file_name;
