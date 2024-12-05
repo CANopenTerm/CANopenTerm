@@ -11,5 +11,6 @@
 #define TEST_DICT_H
 
 void test_dict_lookup(void** state);
+void test_dict_lookup_raw(void** state);
 
 #endif /* TEST_DICT_H */

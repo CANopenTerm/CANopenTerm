@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include <setjmp.h>
 #include <stdint.h>
+#include "can.h"
 #include "cmocka.h"
 #include "dict.h"
 #include "test_dict.h"
@@ -254,4 +255,83 @@ void test_dict_lookup(void** state)
     assert_string_equal(dict_lookup(0xBFFF, 0xFF), "Standardized system variable area");
     assert_string_equal(dict_lookup(0xC000, 0x00), "Reserved");
     assert_string_equal(dict_lookup(0xFFFF, 0xFF), "Reserved");
+}
+
+void test_dict_lookup_raw(void** state)
+{
+    can_message_t message;
+    uint32        id;
+    size_t        i;
+
+    (void)state;
+
+    /* NMT messages. */
+    message.id      = 0x0000;
+    message.length  = 2;
+
+    for (i = 0; i <= 0xff; i++)
+    {
+        message.data[7] = i;
+
+        switch (message.data[7])
+        {
+            case 0x01:
+                assert_string_equal(dict_lookup_raw(&message), "NMT Start Remote Node");
+                break;
+            case 0x02:
+                assert_string_equal(dict_lookup_raw(&message), "NMT Stop Remote Node");
+                break;
+            case 0x80:
+                assert_string_equal(dict_lookup_raw(&message), "NMT Enter Pre-Operational");
+                break;
+            case 0x81:
+                assert_string_equal(dict_lookup_raw(&message), "NMT Reset Node");
+                break;
+            case 0x82:
+                assert_string_equal(dict_lookup_raw(&message), "NMT Reset Communication");
+                break;
+            default:
+                assert_null(dict_lookup_raw(&message));
+                break;
+        }
+    }
+
+    /* Heartbeat messages. */
+    message.length = 1;
+
+    for (id = 0x00; id <= 0x7f; id++)
+    {
+        message.id = id | 0x700;
+
+        for (i = 0; i <= 0xff; i++)
+        {
+            message.data[7] = i;
+
+            switch (message.data[7])
+            {
+                case 0x00:
+                    assert_string_equal(dict_lookup_raw(&message), "Boot-up Message");
+                    break;
+                case 0x04:
+                    assert_string_equal(dict_lookup_raw(&message), "Heartbeat: Stopped.");
+                    break;
+                case 0x05:
+                    assert_string_equal(dict_lookup_raw(&message), "Heartbeat: Operational");
+                    break;
+                case 0x07:
+                    assert_string_equal(dict_lookup_raw(&message), "Heartbeat: Pre-operational");
+                    break;
+                default:
+                    assert_null(dict_lookup_raw(&message));
+                    break;
+            }
+        }
+    }
+
+    /* SDO messages. */
+    /* Abort codes. */
+    /* EMCY messages. */
+    /* PDO messages. */
+
+    /* ... tbd. */
 }

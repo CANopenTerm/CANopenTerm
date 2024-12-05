@@ -297,9 +297,9 @@ const char* dict_lookup_raw(can_message_t * message)
     data   = message->data;
 
     /* NMT messages. */
-    if (id == 0x0000)
+    if ((0x0000 == id) && (2 == length))
     {
-        switch (data[0])
+        switch (data[7])
         {
             case 0x01:
                 return "NMT Start Remote Node";

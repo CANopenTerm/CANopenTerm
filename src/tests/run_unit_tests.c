@@ -28,6 +28,7 @@ int main(void)
         cmocka_unit_test(test_codb2json),
         cmocka_unit_test(test_use_buffer),
         cmocka_unit_test(test_dict_lookup),
+        cmocka_unit_test(test_dict_lookup_raw),
         cmocka_unit_test(test_has_valid_extension),
         cmocka_unit_test(test_lua),
         cmocka_unit_test(test_python_01_int),
