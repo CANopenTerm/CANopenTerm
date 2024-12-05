@@ -281,7 +281,7 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
 
 const char* dict_lookup_raw(can_message_t * message)
 {
-    static char buffer[256] = { 0 };
+    static char buffer[1024] = { 0 };
 
     uint32 id;
     uint32 length;
