@@ -203,6 +203,45 @@ static const dict_entry_t dictionary[] =
     { 0xC000, 0xFFFF, 0x00, 0xFF, "Reserved" }
 };
 
+static const emcy_entry_t emcy_table[] =
+{
+    { 0x0000, "Error Reset or No Error" },
+    { 0x1000, "Generic Error" },
+    { 0x2000, "Current" },
+    { 0x2100, "Current, device input side" },
+    { 0x2200, "Current, inside the device" },
+    { 0x2300, "Current, device output side" },
+    { 0x3000, "Voltage" },
+    { 0x3100, "Mains Voltage" },
+    { 0x3200, "Voltage inside the device" },
+    { 0x3300, "Output Voltage" },
+    { 0x4000, "Temperature" },
+    { 0x4100, "Ambient Temperature" },
+    { 0x4200, "Device Temperature" },
+    { 0x5000, "Device Hardware" },
+    { 0x6000, "Device Software" },
+    { 0x6100, "Internal Software" },
+    { 0x6200, "User Software" },
+    { 0x6300, "Data Set" },
+    { 0x7000, "Additional Modules" },
+    { 0x8000, "Monitoring" },
+    { 0x8100, "Communication" },
+    { 0x8110, "CAN Overrun (Objects lost)" },
+    { 0x8120, "CAN in Error (Passive Mode)" },
+    { 0x8130, "Life Guard Error or Heartbeat Error" },
+    { 0x8140, "Recovered from Bus-Off" },
+    { 0x8150, "Transmit COB-ID collision" },
+    { 0x8200, "Protocol Error" },
+    { 0x8210, "PDO not processed due to length error" },
+    { 0x8220, "PDO length exceeded" },
+    { 0x9000, "External Error" },
+    { 0xF000, "Additional Functions" },
+    { 0xFF00, "Device Specific" },
+    { 0x9000, "External Error" },
+    { 0xF000, "Additional Functions" },
+    { 0xFF00, "Device Specific" }
+};
+
 const char* dict_lookup(uint16 index, uint8 sub_index)
 {
     size_t i;
@@ -242,6 +281,8 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
 
 const char* dict_lookup_raw(can_message_t * message)
 {
+    static char buffer[256] = { 0 };
+
     uint32 id;
     uint32 length;
     uint8* data;
@@ -260,12 +301,18 @@ const char* dict_lookup_raw(can_message_t * message)
     {
         switch (data[0])
         {
-            case 0x01: return "NMT Start Remote Node";
-            case 0x02: return "NMT Stop Remote Node";
-            case 0x80: return "NMT Enter Pre-Operational";
-            case 0x81: return "NMT Reset Node";
-            case 0x82: return "NMT Reset Communication";
-            default: return "Unknown NMT Command";
+            case 0x01:
+                return "NMT Start Remote Node";
+            case 0x02:
+                return "NMT Stop Remote Node";
+            case 0x80:
+                return "NMT Enter Pre-Operational";
+            case 0x81:
+                return "NMT Reset Node";
+            case 0x82:
+                return "NMT Reset Communication";
+            default:
+                return "";
         }
     }
 
@@ -274,23 +321,25 @@ const char* dict_lookup_raw(can_message_t * message)
     {
         switch (data[7])
         {
-            case 0x00: return "Boot-up Message";
-            case 0x04: return "Heartbeat: Stopped.";
-            case 0x05: return "Heartbeat: Operational";
-            case 0x07: return "Heartbeat: Pre-operational";
-            default: return "Heartbeat Message";
+            case 0x00:
+                return "Boot-up Message";
+            case 0x04:
+                return "Heartbeat: Stopped.";
+            case 0x05:
+                return "Heartbeat: Operational";
+            case 0x07:
+                return "Heartbeat: Pre-operational";
+            default:
+                return "";
         }
-
-        return "Heartbeat Message";
     }
 
     /* SDO messages. */
     if ((id & 0x600) == 0x600)
     {
-        static char  buffer[256] = { 0 };
-        char*        desc        = NULL;
-        uint16       index       = (data[2] << 8) | data[1];
-        uint8        sub_index   = data[3];
+        char*        desc      = NULL;
+        uint16       index     = (data[2] << 8) | data[1];
+        uint8        sub_index = data[3];
 
         desc = (char*)dict_lookup(index, sub_index);
         if (NULL == desc)
@@ -307,8 +356,7 @@ const char* dict_lookup_raw(can_message_t * message)
     /* Abort codes. */
     if ((id & 0x580) == 0x580 && data[0] == ABORT_TRANSFER && 8 == length)
     {
-        static char buffer[256] = { 0 };
-        uint32      abort_code = (data[4] << 24) | (data[5] << 16) | (data[6] << 8) | data[7];
+        uint32 abort_code = (data[4] << 24) | (data[5] << 16) | (data[6] << 8) | data[7];
 
         os_snprintf(buffer, sizeof(buffer), "SDO Abort Message %08Xh, %s", abort_code, sdo_lookup_abort_code(abort_code));
         return buffer;
@@ -321,8 +369,42 @@ const char* dict_lookup_raw(can_message_t * message)
     /* EMCY messages. */
     if ((id & 0x080) == 0x080)
     {
-        return "Emergency Message";
+        uint16 code = (data[1] << 8) | data[0];
+        os_snprintf(buffer, sizeof(buffer), "EMCY %04Xh, %s", code, emcy_lookup(code));
+
+        return buffer;
     }
 
     return "";
+}
+
+const char* emcy_lookup(uint16 code)
+{
+    uint8  low_byte  = code & 0xFF;
+    uint8  high_byte = (code >> 8) & 0xFF;
+    size_t i;
+
+    for (i = 0; i < sizeof(emcy_table) / sizeof(emcy_entry_t); ++i)
+    {
+        uint16 emcy_code      = emcy_table[i].code;
+        uint8  emcy_low_byte  = emcy_code & 0xFF;
+        uint8  emcy_high_byte = (emcy_code >> 8) & 0xFF;
+
+        if (emcy_high_byte != 0x00)
+        {
+            if (emcy_code == code)
+            {
+                return emcy_table[i].description;
+            }
+        }
+        else
+        {
+            if (emcy_low_byte == low_byte)
+            {
+                return emcy_table[i].description;
+            }
+        }
+    }
+
+    return "Unknown";
 }

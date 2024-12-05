@@ -24,7 +24,7 @@ dbc_decode (can_id, [data])
 
 > **can_id** CAN-ID.
 
-> **data** Data, default is `0x0000000000000000`.
+> **data** Data, default is `0`.
 
 **Returns**: Decoded output as a string.
 
@@ -183,7 +183,7 @@ pdo_add (can_id, event_time_ms, length, [data], [show_output], [comment])
 
 > **length** Data length in bytes.
 
-> **data** Data, default is `0x0000000000000000`.
+> **data** Data, default is `0`.
 
 > **show_output** Show formatted output, default is `false`.
 
@@ -303,7 +303,7 @@ sdo_write (node_id, index, sub_index, length, [data], [show_output], [comment])
 
 > **length** Data length in bytes.
 
-> **data** Data, default is `0x0000000000000000`.
+> **data** Data, default is `0`.
 
 > **show_output** Show formatted output, default is `false`.
 
@@ -572,7 +572,7 @@ can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
 
 > **length** Data length in bytes.
 
-> **data** Data, default is `0x0000000000000000`.
+> **data** Data, default is `0`.
 
 > **is_extended** Extended frame, default is `false`.
 
@@ -604,7 +604,7 @@ dict_lookup_raw (can_id, data_length, [data])
 
 > **length** Data length in bytes.
 
-> **data** Data, default is `0x0000000000000000`.
+> **data** Data, default is `0`.
 
 <!-- tab:Example -->
 ```lua
