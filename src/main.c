@@ -135,6 +135,7 @@ int main(int argc, char* argv[])
             case NMT_UNKNOWN_COMMAND:
             case NOTHING_TO_DO:
             case OS_FILE_NOT_FOUND:
+            case OS_FILE_READ_ERROR:
             case OS_INVALID_ARGUMENT:
             case SCRIPT_ERROR:
                 continue;

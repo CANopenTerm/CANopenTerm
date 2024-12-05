@@ -229,7 +229,12 @@ status_t load_codb_ex(const char* file_name)
         return OS_MEMORY_ALLOCATION_ERROR;
     }
 
-    os_fread(file_content, 1, file_size, file);
+    if (os_fread(file_content, 1, file_size, file) != file_size)
+    {
+        os_free(file_content);
+        os_fclose(file);
+        return OS_FILE_READ_ERROR;
+    }
     file_content[file_size] = '\0';
     os_fclose(file);
 
@@ -261,6 +266,7 @@ status_t unload_codb(void)
 
 static const char* file_name_to_profile_desc(const char* file_name)
 {
+    size_t i;
     const struct {
         const char* file_name;
         const char* description;
@@ -278,7 +284,7 @@ static const char* file_name_to_profile_desc(const char* file_name)
         { "ds419.json", "[CiA 419] Battery chargers" },
     };
 
-    for (size_t i = 0; i < sizeof(lookup_table) / sizeof(lookup_table[0]); ++i)
+    for (i = 0; i < sizeof(lookup_table) / sizeof(lookup_table[0]); ++i)
     {
         if (0 == os_strcmp(file_name, lookup_table[i].file_name))
         {
