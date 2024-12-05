@@ -55,7 +55,7 @@ static const dict_entry_t dictionary[] =
     { 0x0022, 0x0000, 0x01, 0x00, "SDO parameter record specification, COB-ID client -> server" },
     { 0x0022, 0x0000, 0x02, 0x00, "SDO parameter record specification, COB-ID server -> client" },
     { 0x0022, 0x0000, 0x03, 0x00, "SDO parameter record specification, Node-ID of SDO's client resp. server" },
-    { 0x0023, 0x0000, 0x00, 0x00, "Identity record specification, Highest sub-index supported" },
+    { 0x0023, 0x0000, 0x00, 0x00, "Identity record specification,   est sub-index supported" },
     { 0x0023, 0x0000, 0x01, 0x00, "Identity record specification, Vendor-ID" },
     { 0x0023, 0x0000, 0x02, 0x00, "Identity record specification, Product code" },
     { 0x0023, 0x0000, 0x03, 0x00, "Identity record specification, Revision number" },
@@ -380,8 +380,6 @@ const char* dict_lookup_raw(can_message_t * message)
 
 const char* emcy_lookup(uint16 code)
 {
-    uint8  low_byte  = code & 0xFF;
-    uint8  high_byte = (code >> 8) & 0xFF;
     size_t i;
 
     for (i = 0; i < sizeof(emcy_table) / sizeof(emcy_entry_t); ++i)
@@ -399,6 +397,8 @@ const char* emcy_lookup(uint16 code)
         }
         else
         {
+            uint8 low_byte = code & 0xFF;
+
             if (emcy_low_byte == low_byte)
             {
                 return emcy_table[i].description;
