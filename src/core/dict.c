@@ -55,7 +55,7 @@ static const dict_entry_t dictionary[] =
     { 0x0022, 0x0000, 0x01, 0x00, "SDO parameter record specification, COB-ID client -> server" },
     { 0x0022, 0x0000, 0x02, 0x00, "SDO parameter record specification, COB-ID server -> client" },
     { 0x0022, 0x0000, 0x03, 0x00, "SDO parameter record specification, Node-ID of SDO's client resp. server" },
-    { 0x0023, 0x0000, 0x00, 0x00, "Identity record specification,   est sub-index supported" },
+    { 0x0023, 0x0000, 0x00, 0x00, "Identity record specification, Highest sub-index supported" },
     { 0x0023, 0x0000, 0x01, 0x00, "Identity record specification, Vendor-ID" },
     { 0x0023, 0x0000, 0x02, 0x00, "Identity record specification, Product code" },
     { 0x0023, 0x0000, 0x03, 0x00, "Identity record specification, Revision number" },
@@ -289,7 +289,7 @@ const char* dict_lookup_raw(can_message_t * message)
 
     if (message == NULL)
     {
-        return "";
+        return NULL;
     }
 
     id     = message->id;
@@ -312,7 +312,7 @@ const char* dict_lookup_raw(can_message_t * message)
             case 0x82:
                 return "NMT Reset Communication";
             default:
-                return "";
+                return NULL;
         }
     }
 
@@ -330,7 +330,7 @@ const char* dict_lookup_raw(can_message_t * message)
             case 0x07:
                 return "Heartbeat: Pre-operational";
             default:
-                return "";
+                return NULL;
         }
     }
 
@@ -375,7 +375,50 @@ const char* dict_lookup_raw(can_message_t * message)
         return buffer;
     }
 
-    return "";
+    /* PDO messages.
+     * 0x181 - 0x1FF : PDO1 (tx)
+     * 0x201 - 0x27F : PDO1 (rx)
+     * 0x281 - 0x2FF : PDO2 (tx)
+     * 0x301 - 0x37F : PDO2 (rx)
+     * 0x381 - 0x3FF : PDO3 (tx)
+     * 0x401 - 0x47F : PDO3 (rx)
+     * 0x481 - 0x4FF : PDO4 (tx)
+     * 0x501 - 0x57F : PDO4 (rx)
+     */
+    if ((id >= 0x181) && (id <= 0x1FF))
+    {
+        return "PDO1 (tx)";
+    }
+    else if ((id >= 0x201) && (id <= 0x27F))
+    {
+        return "PDO1 (rx)";
+    }
+    else if ((id >= 0x281) && (id <= 0x2FF))
+    {
+        return "PDO2 (tx)";
+    }
+    else if ((id >= 0x301) && (id <= 0x37F))
+    {
+        return "PDO2 (rx)";
+    }
+    else if ((id >= 0x381) && (id <= 0x3FF))
+    {
+        return "PDO3 (tx)";
+    }
+    else if ((id >= 0x401) && (id <= 0x47F))
+    {
+        return "PDO3 (rx)";
+    }
+    else if ((id >= 0x481) && (id <= 0x4FF))
+    {
+        return "PDO4 (tx)";
+    }
+    else if ((id >= 0x501) && (id <= 0x57F))
+    {
+        return "PDO4 (rx)";
+    }
+
+    return NULL;
 }
 
 const char* emcy_lookup(uint16 code)

@@ -21,7 +21,7 @@ local function generate_trace_filename()
         local  filepath  = user_path .. "\\" .. filename
         return filepath
     else
-        return string.format("trace_%s.trc", timestamp)
+        return string.format("/tmp/trace_%s.trc", timestamp)
     end
 end
 
@@ -98,10 +98,15 @@ while not key_is_hit() do
 
         local timestamp_ms       = math.floor(elapsed_us / 1000)
         local timestamp_fraction = math.floor(((elapsed_us / 1000) % 1) * 1000)
+        local can_data_desc      = dict_lookup_raw(id, length, data)
+
+        if can_data_desc == nil then
+            can_data_desc = " "
+        end
 
         io.write(string.format("%6d.%03d   %03X     %1d       ", timestamp_ms, timestamp_fraction, id, length))
         print_data(data, length)
-        io.write(string.format(" " .. dict_lookup_raw(id, length, data)))
+        io.write(string.format(" " .. can_data_desc))
         io.write("\n")
 
         -- Write to .trc file

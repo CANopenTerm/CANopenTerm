@@ -119,6 +119,8 @@ end
 local trc_path = ""
 if os.getenv("OS") == "Windows_NT" then
     trc_path = os.getenv("USERPROFILE") .. "\\"
+else
+    trc_path = "/tmp/"
 end
 
 trc_file = utils.get_file_by_selection("Enter the number of the file you want to choose", "trc", trc_path)
