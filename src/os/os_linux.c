@@ -54,14 +54,15 @@ const char* os_find_data_path(void)
 {
     size_t i;
 
-    const char* search_paths[] = {
+    const char* search_paths[] =
+    {
         "/usr/share/CANopenTerm",
         "/usr/local/share/CANopenTerm"
     };
 
     for (i = 0; i < sizeof(search_paths) / sizeof(search_paths[0]); i++)
     {
-        DIR_t* d = (intptr_t)os_opendir(search_paths[i]);
+        DIR_t* d = os_opendir(search_paths[i]);
         if (d)
         {
             os_closedir(d);
