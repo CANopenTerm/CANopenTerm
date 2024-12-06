@@ -18,8 +18,6 @@
 #include "sdo.h"
 #include "table.h"
 
-#include "dict.h"
-
 static void   convert_token_to_uint(char* token, uint32* result);
 static void   convert_token_to_uint64(char* token, uint64* result);
 status_t      print_usage_information(bool_t show_all);
@@ -88,26 +86,6 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == os_strncmp(token, "d", 1))
     {
-        int index;
-        int sub_index;
-
-        // create file
-        FILE* file = os_fopen("temp.c", "w+");
-
-        for (index = 0x1000; index < 0x2000; index++)
-        {
-            for (sub_index = 0; sub_index <= 0xFF; ++sub_index)
-            {
-                char* desc = (char*)dict_lookup(index, sub_index);
-                if ('\0' != desc[0])
-                {
-                    // append line to file
-                    os_fprintf(file, "assert_string_equal(dict_lookup(0x%4x, 0x%2x), \"%s\");\n", index, sub_index, desc);
-                }
-            }
-        }
-        os_fclose(file);
-#if 0
         uint32 file_no;
 
         token = os_strtokr(input_savptr, delim, &input_savptr);
@@ -120,7 +98,6 @@ void parse_command(char* input, core_t* core)
         convert_token_to_uint(token, &file_no);
 
         load_codb(file_no);
-#endif
     }
     else if (0 == os_strncmp(token, "q", 1))
     {
