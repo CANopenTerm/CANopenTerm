@@ -40,12 +40,19 @@ jobs:
       - uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
           arch: x64
-      - name: Build & Run unit tests
+
+      - name: Build unit tests
         run: |
           cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
           cmake --build build
+
+      - name: Copy necessary files
+        run: |
           xcopy export\tests build\tests /E /I
           xcopy export\codb build\codb /E /I
+
+      - name: Run unit tests
+        run: |
           ctest --test-dir build -C Release --verbose
 
       - name: Setup MSBuild.exe
