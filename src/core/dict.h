@@ -14,16 +14,6 @@
 #include "core.h"
 #include "os.h"
 
-typedef struct dict_entry
-{
-    uint16      index_start;
-    uint16      index_end;
-    uint8       sub_index_start;
-    uint8       sub_index_end;
-    const char* description;
-
-} dict_entry_t;
-
 typedef struct emcy_entry
 {
     uint16      code;

@@ -334,17 +334,13 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
         {
             eds.entries[eds.num_entries - 1].AccessType = RW;
         }
-        else if (0 == os_strcmp(value, "rwr"))
-        {
-            eds.entries[eds.num_entries - 1].AccessType = RWR;
-        }
         else if (0 == os_strcmp(value, "rww"))
         {
             eds.entries[eds.num_entries - 1].AccessType = RWW;
         }
         else if (0 == os_strcmp(value, "const"))
         {
-            eds.entries[eds.num_entries - 1].AccessType = RO_CONST;
+            eds.entries[eds.num_entries - 1].AccessType = CONST_T;
         }
     }
     else if (0 == os_strcmp(name, "DefaultValue"))

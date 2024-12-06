@@ -153,7 +153,18 @@ static char *get_script_description(const char *script_path)
 
 bool_t has_valid_extension(const char *filename)
 {
-    const char *dot = os_strrchr(filename, '.');
+    const char *dot;
+
+    if (NULL == filename)
+    {
+        return IS_FALSE;
+    }
+
+    dot = os_strrchr(filename, '.');
+    if (NULL == dot)
+    {
+        return IS_FALSE;
+    }
 
     if ((os_strcmp(dot, ".lua") == 0 || os_strcmp(dot, ".py") == 0))
     {

@@ -352,6 +352,7 @@ status_t    os_console_init(bool_t is_plain_mode);
 os_thread*  os_create_thread(os_thread_func fn, const char* name, void* data);
 void        os_delay(uint32 delay_in_ms);
 void        os_detach_thread(os_thread* thread);
+const char* os_find_data_path(void);
 const char* os_get_error(void);
 status_t    os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
 uint64      os_get_ticks(void);

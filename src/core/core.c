@@ -91,6 +91,9 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
     /* Initialise CAN. */
     can_init((*core));
 
+    /* Initialise base database. */
+    codb_init();
+
     (*core)->is_running = IS_TRUE;
     return status;
 }
@@ -120,7 +123,7 @@ void core_deinit(core_t *core)
         return;
     }
 
-    (void)unload_codb();
+    codb_deinit();
     test_clear_results();
     dbc_unload();
     can_quit(core);

@@ -17,28 +17,95 @@
 static const char* file_name_to_profile_desc(const char* file_name);
 
 static uint32 active_no = 0;
+static cJSON* ds301     = NULL;
 static cJSON* codb      = NULL;
 
-const char* codb_desc_lookup(uint16 index, uint8 sub_index)
+void codb_init(void)
 {
-    static char desc[128] = { 0 };
+    FILE_t*     file;
+    char        file_path[512] = { 0 };
+    const char* data_path      = os_find_data_path();
 
-    cJSON* object;
+    if (NULL == data_path)
+    {
+        os_log(LOG_ERROR, "Data path not found.");
+        return;
+    }
 
-    if (NULL == codb)
+    os_snprintf(file_path, sizeof(file_path), "%s/codb/ds301.json", data_path);
+
+    file = fopen(file_path, "r");
+    if (NULL == file)
+    {
+        os_log(LOG_ERROR, "Failed to open file: %s", file_path);
+        return;
+    }
+
+    os_fseek(file, 0, SEEK_END);
+    size_t file_size = os_ftell(file);
+    os_fseek(file, 0, SEEK_SET);
+
+    char* file_content = (char*)os_calloc(file_size + 1, sizeof(char));
+    if (NULL == file_content)
+    {
+        os_log(LOG_ERROR, "Memory allocation failed for file content.");
+        os_fclose(file);
+        return;
+    }
+
+    if (os_fread(file_content, 1, file_size, file) != file_size)
+    {
+        os_log(LOG_ERROR, "Failed to read file: %s", file_path);
+        os_free(file_content);
+        os_fclose(file);
+        return;
+    }
+    file_content[file_size] = '\0';
+    os_fclose(file);
+
+    ds301 = cJSON_Parse(file_content);
+    os_free(file_content);
+
+    if (ds301 == NULL)
+    {
+        os_log(LOG_ERROR, "Failed to parse JSON content from file: %s", file_path);
+    }
+}
+
+void codb_deinit(void)
+{
+    if (ds301 != NULL)
+    {
+        cJSON_Delete(ds301);
+        ds301 = NULL;
+    }
+
+    unload_codb();
+}
+
+const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)
+{
+    cJSON*      object    = NULL;
+    static char desc[256] = { 0 };
+
+    if (NULL == db)
     {
         return NULL;
     }
 
     object = NULL;
-    cJSON_ArrayForEach(object, codb)
+    cJSON_ArrayForEach(object, db)
     {
         cJSON* json_index = cJSON_GetObjectItem(object, "index");
         if (json_index != NULL && json_index->valueint == index)
         {
             cJSON* sub_indices = cJSON_GetObjectItem(object, "sub_indices");
-            cJSON* obj_desc    = cJSON_GetObjectItem(object, "desc");
-            char*  desc_str    = os_strdup(obj_desc->valuestring);
+            cJSON* obj_desc = cJSON_GetObjectItem(object, "desc");
+
+            if (obj_desc == NULL || obj_desc->valuestring == NULL)
+            {
+                continue;
+            }
 
             if (sub_indices != NULL)
             {
@@ -46,27 +113,46 @@ const char* codb_desc_lookup(uint16 index, uint8 sub_index)
                 if (sub_index_item != NULL)
                 {
                     cJSON* sub_desc = cJSON_GetObjectItem(sub_index_item, "desc");
-                    if (sub_desc != NULL)
+                    if (sub_desc != NULL && sub_desc->valuestring != NULL)
                     {
-                        if (0 == os_strcmp(desc_str, (char*)sub_desc->valuestring))
+                        if (0 == os_strcmp(obj_desc->valuestring, sub_desc->valuestring))
                         {
-                            os_snprintf(desc, sizeof(desc), "%s", desc_str);
+                            os_snprintf(desc, sizeof(desc), "%s", obj_desc->valuestring);
                         }
                         else
                         {
-                            os_snprintf(desc, sizeof(desc), "%s, %s", desc_str, (char*)sub_desc->valuestring);
+                            os_snprintf(desc, sizeof(desc), "%s, %s", obj_desc->valuestring, sub_desc->valuestring);
                         }
-                        os_free(desc_str);
-                        return (const char*)desc;
+                        return desc;
                     }
+                }
+                else
+                {
+                    return NULL;
                 }
             }
 
-            os_free(desc_str);
+            os_snprintf(desc, sizeof(desc), "%s", obj_desc->valuestring);
+            return desc;
         }
     }
 
     return NULL;
+}
+
+codb_t* codb_get_ds301_profile(void)
+{
+    return (codb_t*)ds301;
+}
+
+codb_t* codb_get_profile(void)
+{
+    return (codb_t*)codb;
+}
+
+bool_t is_ds301_loaded(void)
+{
+    return (ds301 != NULL) ? IS_TRUE : IS_FALSE;
 }
 
 bool_t is_codb_loaded(void)
@@ -76,18 +162,29 @@ bool_t is_codb_loaded(void)
 
 void list_codb(void)
 {
-    DIR_t*   d            = os_opendir("codb");
-    table_t  table        = { DARK_CYAN, DARK_WHITE, 3, 45, 1 };
-    status_t status;
-    uint32   status_width = 1;
+    const char* data_path      = os_find_data_path();
+    char        file_path[512] = { 0 };
+    DIR_t*      d;
+    table_t     table          = { DARK_CYAN, DARK_WHITE, 3, 45, 1 };
+    status_t    status;
 
-    if (active_no > 0)
+    os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
+
+    d = os_opendir(file_path);
+    if (NULL == d)
     {
-        status_width = 6;
+        os_log(LOG_WARNING, "Could not open codb directory.");
+        return;
     }
 
-    table.column_c_width = status_width;
+    table.column_c_width = 6;
     status               = table_init(&table, 1024);
+    if (ALL_OK != status)
+    {
+        os_log(LOG_ERROR, "Failed to initialize table.");
+        os_closedir(d);
+        return;
+    }
 
     if (ALL_OK != status)
     {
@@ -100,14 +197,7 @@ void list_codb(void)
         uint32 file_no = 1;
 
         table_print_header(&table);
-        if (0 == active_no)
-        {
-            table_print_row("No.", "Profile", "-", &table);
-        }
-        else
-        {
-            table_print_row("No.", "Profile", "Status", &table);
-        }
+        table_print_row("No.", "Profile", "Status", &table);
         table_print_divider(&table);
 
         while ((dir = os_readdir(d)) != NULL)
@@ -120,13 +210,15 @@ void list_codb(void)
 
                 os_snprintf(file_no_str, 4, "%3u", file_no);
 
-                if ((active_no > 0) && (active_no == file_no))
+                if (0 == os_strcmp(dir->d_name, "ds301.json"))
+                {
+                    table.text_color = LIGHT_GREEN;
+                    table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Active", &table);
+                    table.text_color = DARK_WHITE;
+                }
+                else if ((active_no > 0) && (active_no == file_no))
                 {
                     table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Active", &table);
-                }
-                else if (0 == active_no)
-                {
-                    table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "-", &table);
                 }
                 else
                 {
@@ -148,8 +240,13 @@ void list_codb(void)
 
 status_t load_codb(uint32 file_no)
 {
-    status_t status = ALL_OK;
-    DIR_t*   d      = os_opendir("codb");
+    status_t    status         = ALL_OK;
+    const char* data_path      = os_find_data_path();
+    char        file_path[512] = { 0 };
+    DIR_t*      d;
+
+    os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
+    d = os_opendir(file_path);
 
     if (d)
     {
@@ -164,6 +261,13 @@ status_t load_codb(uint32 file_no)
                 if (file_no == current_file_no)
                 {
                     char file_path[128] = { 0 };
+
+                    if ((0 == os_strcmp(dir->d_name, "ds301.json")) && (ds301 != NULL))
+                    {
+                        unload_codb();
+                        break;
+                    }
+
                     os_snprintf(file_path, 128, "codb/%s", dir->d_name);
 
                     if (load_codb_ex(file_path) != ALL_OK)
@@ -198,23 +302,25 @@ status_t load_codb(uint32 file_no)
 status_t load_codb_ex(const char* file_name)
 {
     status_t status = ALL_OK;
-    FILE_t*  file;
-    char*    file_content;
+    FILE_t* file;
+    char* file_content;
     size_t   file_size;
 
     if (NULL == file_name)
     {
-        return status;
+        os_log(LOG_ERROR, "File name is NULL.");
+        return OS_INVALID_ARGUMENT;
     }
 
     if (codb != NULL)
     {
-        (void)unload_codb();
+        unload_codb();
     }
 
     file = fopen(file_name, "r");
     if (NULL == file)
     {
+        os_log(LOG_ERROR, "Failed to open file: %s", file_name);
         return OS_FILE_NOT_FOUND;
     }
 
@@ -225,12 +331,14 @@ status_t load_codb_ex(const char* file_name)
     file_content = (char*)os_calloc(file_size + 1, sizeof(char));
     if (NULL == file_content)
     {
+        os_log(LOG_ERROR, "Memory allocation failed for file content.");
         os_fclose(file);
         return OS_MEMORY_ALLOCATION_ERROR;
     }
 
     if (os_fread(file_content, 1, file_size, file) != file_size)
     {
+        os_log(LOG_ERROR, "Failed to read file: %s", file_name);
         os_free(file_content);
         os_fclose(file);
         return OS_FILE_READ_ERROR;
@@ -241,18 +349,16 @@ status_t load_codb_ex(const char* file_name)
     codb = cJSON_Parse(file_content);
     os_free(file_content);
 
-    if (codb == NULL)
+    if (NULL == codb)
     {
+        os_log(LOG_ERROR, "Failed to parse JSON content from file: %s", file_name);
         status = CODB_PARSE_ERROR;
     }
 
     return status;
 }
 
-/* When declared and defined as a void-function, compilation fails.  Why?!
- * C2371: 'unload_codb': redefinition; different basic types
- */
-status_t unload_codb(void)
+void unload_codb(void)
 {
     if (codb != NULL)
     {
@@ -260,14 +366,13 @@ status_t unload_codb(void)
         active_no = 0;
         codb      = NULL;
     }
-
-    return ALL_OK;
 }
 
 static const char* file_name_to_profile_desc(const char* file_name)
 {
     size_t i;
-    const struct {
+    const struct
+    {
         const char* file_name;
         const char* description;
     } lookup_table[] = {
@@ -286,7 +391,7 @@ static const char* file_name_to_profile_desc(const char* file_name)
 
     for (i = 0; i < sizeof(lookup_table) / sizeof(lookup_table[0]); ++i)
     {
-        if (0 == os_strcmp(file_name, lookup_table[i].file_name))
+        if (0 == os_strncmp(file_name, lookup_table[i].file_name, 10))
         {
             return lookup_table[i].description;
         }

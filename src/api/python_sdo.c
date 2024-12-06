@@ -300,7 +300,7 @@ bool py_dict_lookup(int argc, py_Ref argv)
     sub_index   = py_toint(py_arg(1));
     description = dict_lookup(index, sub_index);
 
-    if (NULL == description)
+    if ('\0' == description[0])
     {
         py_newnone(py_retval());
     }

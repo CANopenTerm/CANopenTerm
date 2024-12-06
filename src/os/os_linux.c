@@ -49,6 +49,28 @@ void os_detach_thread(os_thread* thread)
     SDL_DetachThread(thread);
 }
 
+const char* os_find_data_path(void)
+{
+    size_t i;
+
+    const char* search_paths[] = {
+        "/usr/share/CANopenTerm",
+        "/usr/local/share/CANopenTerm"
+    };
+
+    for (i = 0; i < sizeof(search_paths) / sizeof(search_paths[0]); i++)
+    {
+        DIR_t* d = os_opendir(search_paths[i]);
+        if (d)
+        {
+            os_closedir(d);
+            return search_paths[i];
+        }
+    }
+
+    return ".";
+}
+
 const char* os_get_error(void)
 {
     return SDL_GetError();

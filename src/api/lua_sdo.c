@@ -222,7 +222,7 @@ int lua_dict_lookup(lua_State *L)
     int         sub_index   = luaL_checkinteger(L, 2);
     const char* description = dict_lookup(index, sub_index);
 
-    if (NULL == description)
+    if ('\0' == description[0])
     {
         lua_pushnil(L);
     }

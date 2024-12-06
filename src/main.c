@@ -14,6 +14,8 @@
 #include "os.h"
 #include "scripts.h"
 
+#include "codb.h"
+
 core_t* core = NULL;
 
 int main(int argc, char* argv[])

@@ -67,6 +67,11 @@ void os_detach_thread(os_thread* thread)
     SDL_DetachThread(thread);
 }
 
+const char* os_find_data_path(void)
+{
+    return ".";
+}
+
 const char* os_get_error(void)
 {
     return SDL_GetError();

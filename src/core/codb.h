@@ -10,6 +10,7 @@
 #ifndef CODB_H
 #define CODB_H
 
+#include "cJSON.h"
 #include "os.h"
 
 typedef enum obj_attr_type
@@ -81,11 +82,18 @@ typedef enum acc_type
 
 } acc_type_t;
 
-const char* codb_desc_lookup(uint16 index, uint8 sub_index);
+typedef cJSON codb_t;
+
+void        codb_init(void);
+void        codb_deinit(void);
+const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index);
+codb_t*     codb_get_ds301_profile(void);
+codb_t*     codb_get_profile(void);
+bool_t      is_ds301_loaded(void);
 bool_t      is_codb_loaded(void);
 void        list_codb(void);
 status_t    load_codb(uint32 file_no);
 status_t    load_codb_ex(const char* file_name);
-status_t    unload_codb(void);
+void        unload_codb(void);
 
 #endif /* CODB_H */
