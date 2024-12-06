@@ -13,6 +13,7 @@
 #include <limits.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <stdint.h>
 #include <termios.h>
 #include <unistd.h>
 #include "os.h"
@@ -60,7 +61,7 @@ const char* os_find_data_path(void)
 
     for (i = 0; i < sizeof(search_paths) / sizeof(search_paths[0]); i++)
     {
-        DIR_t* d = os_opendir(search_paths[i]);
+        DIR_t* d = (intptr)os_opendir(search_paths[i]);
         if (d)
         {
             os_closedir(d);
