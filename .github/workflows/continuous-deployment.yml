@@ -45,6 +45,7 @@ jobs:
           cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
           cmake --build build
           xcopy export\tests build\tests /E /I
+          xcopy export\codb build\codb /E /I
           ctest --test-dir build -C Release --verbose
 
       - name: Setup MSBuild.exe
