@@ -66,7 +66,7 @@ typedef enum data_type
     TIME_OF_DAY,
     VISIBLE_STRING,
     OCTET_STRING,
-    DOMAIN_T,
+    DOMAIN_T
 
 } data_type_t;
 
@@ -78,7 +78,7 @@ typedef enum acc_type
     WO,
     RW,
     WWR,
-    RWW,
+    RWW
 
 } acc_type_t;
 
