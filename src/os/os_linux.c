@@ -188,7 +188,7 @@ void os_log(const log_level_t level, const char* format, ...)
             break;
     }
 
-    os_print(DARK_WHITE, "%s\r\n", buffer);
+    os_print(DEFAULT_COLOR, "%s\r\n", buffer);
 }
 
 void os_print(const color_t color, const char* format, ...)

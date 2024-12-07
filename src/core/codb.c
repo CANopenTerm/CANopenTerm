@@ -191,7 +191,7 @@ void list_codb(void)
         return;
     }
 
-    os_print(LIGHT_RED, "\n  The accuracy of the content has not been completely verified.\n");
+    os_print(LIGHT_RED, "\n  The accuracy of the data has not been completely verified.\n");
 
     if (d)
     {

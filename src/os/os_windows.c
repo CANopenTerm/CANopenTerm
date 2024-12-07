@@ -31,19 +31,19 @@ status_t os_console_init(bool_t is_plain_mode)
 
     if (NULL != console)
     {
-        return 0;
+        return ALL_OK;
     }
 
     console = GetStdHandle(STD_OUTPUT_HANDLE);
 
     if ((INVALID_HANDLE_VALUE == console) || (NULL == console))
     {
-        return 1;
+        return OS_CONSOLE_INIT_ERROR;
     }
 
     if (0 == GetConsoleScreenBufferInfo(console, &info))
     {
-        return 2;
+        return OS_CONSOLE_INIT_ERROR;
     }
 
     default_attr          = info.wAttributes;
@@ -168,7 +168,7 @@ void os_log(const log_level_t level, const char* format, ...)
             os_print(LIGHT_RED, "[ERROR]   ");
             break;
     }
-    os_print(DARK_WHITE, "%s\r\n", buffer);
+    os_print(DEFAULT_COLOR, "%s\r\n", buffer);
 }
 
 void os_print(const color_t color, const char* format, ...)
@@ -260,7 +260,7 @@ void os_print(const color_t color, const char* format, ...)
 
 void os_print_prompt(void)
 {
-    os_print(LIGHT_WHITE, "\r: ");
+    os_print(DEFAULT_COLOR, "\r: ");
 }
 
 bool_t os_remove_timer(os_timer_id id)
