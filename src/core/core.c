@@ -88,13 +88,13 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
         return SCRIPT_INIT_ERROR;
     }
 
-    /* Initialise CAN. */
-    can_init((*core));
-
     /* Initialise base database. */
     codb_init();
 
+    /* Initialise CAN. */
     (*core)->is_running = IS_TRUE;
+    can_init((*core));
+
     return status;
 }
 
@@ -123,10 +123,10 @@ void core_deinit(core_t *core)
         return;
     }
 
-    codb_deinit();
     test_clear_results();
-    dbc_unload();
     can_quit(core);
+    codb_deinit();
+    dbc_unload();
     scripts_deinit(core);
     os_quit();
     os_free(core);
