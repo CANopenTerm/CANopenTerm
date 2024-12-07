@@ -25,6 +25,7 @@ void codb_init(void)
     FILE_t*     file;
     char        file_path[512] = { 0 };
     const char* data_path      = os_find_data_path();
+    char*       file_content;
 
     if (NULL == data_path)
     {
@@ -45,7 +46,7 @@ void codb_init(void)
     size_t file_size = os_ftell(file);
     os_fseek(file, 0, SEEK_SET);
 
-    char* file_content = (char*)os_calloc(file_size + 1, sizeof(char));
+    file_content = (char*)os_calloc(file_size + 1, sizeof(char));
     if (NULL == file_content)
     {
         os_log(LOG_ERROR, "Memory allocation failed for file content.");
