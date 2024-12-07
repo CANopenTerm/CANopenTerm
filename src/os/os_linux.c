@@ -265,7 +265,7 @@ uint32 os_swap_be_32(uint32 n)
 
 void os_quit(void)
 {
-#ifdef USE_VALGRIND
+#ifdef ENABLE_VALGRIND_SUPPORT
     /* This is useful as a debug tool to validate memory leaks,
      * but shouldn't ever be set in production applications, as
      * other libraries used by the application might use dbus
