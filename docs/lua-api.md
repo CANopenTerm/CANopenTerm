@@ -405,8 +405,6 @@ print(dict_lookup(0x1008, 0x00)) -- Manufacturer device name.
 
 ## Test Report Generation
 
-!> Upcoming feature, not yet available in the current release version.
-
 ### test_add_result()
 
 <!-- tabs:start -->

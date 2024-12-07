@@ -41,6 +41,9 @@ Usage: CANopenTerm [OPTION]
     -p                Run in plain mode
 ```
 
+Setting the baud rate on Linux has no effect, as the CAN bus is
+configured via the `ip` command.
+
 ## Compiling
 
 First clone the repository:
@@ -56,19 +59,6 @@ Windows](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-stu
 installed.  Simply open the cloned repository via `File -> Open ->
 Folder`.  All required dependencies are fetched at compile time.
 
-### Linux
-
-CANopenTerm can also be compiled on Linux with the included CMake
-configuration.  
-
-```bash
-sudo apt-get install libreadline-dev libsocketcan-dev
-mkdir build
-cd build
-cmake ..
-make
-````
-
 ### Yocto
 
 [![CANopenTerm](media/oe-logo-2009.svg)](media/oe-logo-2009.svg "OpenEmbedded")
@@ -83,6 +73,19 @@ cd ~/poky
 source oe-init-build-env
 bitbake canopenterm
 ```
+
+### Linux
+
+CANopenTerm can also be compiled on Linux with the included CMake
+configuration.  
+
+```bash
+sudo apt-get install libreadline-dev libsocketcan-dev
+mkdir build
+cd build
+cmake ..
+make
+````
 
 ### Raspberry Pi
 
