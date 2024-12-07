@@ -119,7 +119,7 @@ ExternalProject_Add(cJSON_devel
         ${CMAKE_COMMAND} -E echo "Skipping install step.")
 
 # pocketpy
-set(POCKETPY_VERSION     "2.0.1")
+set(POCKETPY_VERSION     "2.0.3")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
@@ -127,7 +127,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.so)
 
 ExternalProject_Add(pocketpy_devel
     URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-    URL_HASH SHA1=e4991b6f76c48a07ac51d34360f393eacead4e91
+    URL_HASH SHA1=72ed6f61c9c21f13d4d1882505c101aaa82b9a25
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
