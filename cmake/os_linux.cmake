@@ -75,6 +75,10 @@ if (BUILD_YOCTO)
         readline
         history)
 
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/codb/
+            DESTINATION /usr/share/CANopenTerm/codb
+            FILES_MATCHING PATTERN "*")
+
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/dbc/
             DESTINATION /usr/share/CANopenTerm/dbc
             FILES_MATCHING PATTERN "*")
