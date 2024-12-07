@@ -28,10 +28,16 @@
                 <File Source="../../export/codb/ds301.json" />
             </Component>
             <Component>
+                <File Source="../../export/codb/ds302.json" />
+            </Component>
+            <Component>
                 <File Source="../../export/codb/ds401.json" />
             </Component>
             <Component>
                 <File Source="../../export/codb/ds402.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds404.json" />
             </Component>
             <Component>
                 <File Source="../../export/codb/ds405.json" />
@@ -46,6 +52,9 @@
                 <File Source="../../export/codb/ds410.json" />
             </Component>
             <Component>
+                <File Source="../../export/codb/ds413.json" />
+            </Component>
+            <Component>
                 <File Source="../../export/codb/ds415.json" />
             </Component>
             <Component>
@@ -56,6 +65,9 @@
             </Component>
             <Component>
                 <File Source="../../export/codb/ds419.json" />
+            </Component>
+            <Component>
+                <File Source="../../export/codb/ds447.json" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
