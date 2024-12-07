@@ -165,7 +165,7 @@ void list_codb(void)
     const char* data_path      = os_find_data_path();
     char        file_path[512] = { 0 };
     DIR_t*      d;
-    table_t     table          = { DARK_CYAN, DARK_WHITE, 3, 45, 1 };
+    table_t     table          = { DARK_CYAN, DARK_WHITE, 3, 57, 1 };
     status_t    status;
 
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
@@ -379,16 +379,21 @@ static const char* file_name_to_profile_desc(const char* file_name)
         const char* description;
     } lookup_table[] = {
         { "ds301.json", "[CiA 301] Application layer and communication" },
+        { "ds302.json", "[CiA 302] Programmable CANopen Devices" },
         { "ds401.json", "[CiA 401] I/O devices" },
         { "ds402.json", "[CiA 402] Drives and motion control" },
+        { "ds404.json", "[CiA 404] Measurement Devices and Closed Loop Controllers" },
         { "ds405.json", "[CiA 405] IEC 61131-3 programmable devices" },
         { "ds406.json", "[CiA 406] Encoders" },
         { "ds408.json", "[CiA 408] Fluid Power Technology" },
         { "ds410.json", "[CiA 410] Inclinometer" },
+        { "ds413.json", "[CiA 413] Truck Gateways" },
         { "ds415.json", "[CiA 415] Road construction machinery" },
         { "ds416.json", "[CiA 416] Building door control" },
+        { "ds417.json", "[CiA 417] Lift control systems" },
         { "ds418.json", "[CiA 418] Battery modules" },
         { "ds419.json", "[CiA 419] Battery chargers" },
+        { "ds447.json", "[CiA 447] Special-purpose car add-on devices" }
     };
 
     for (i = 0; i < sizeof(lookup_table) / sizeof(lookup_table[0]); ++i)
