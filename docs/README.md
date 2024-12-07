@@ -58,6 +58,10 @@ Key functionalities include:
   [DBC files](https://www.csselectronics.com/pages/can-dbc-file-database-intro)
   for efficient CAN CC network analysis.
 
+- **CANopen Profiles**:
+  Includes several common application and device profiles in a well-documented
+  [JSON-based file format](https://canopenterm.de/codb2json?id=file-format-specification).
+
 - **Conformance Testing**:
   Verify the object dictionary of your CANopen CC devices with the built-in
   electronic data sheet (EDS) parser.
