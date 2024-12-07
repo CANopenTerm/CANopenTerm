@@ -265,6 +265,20 @@ uint32 os_swap_be_32(uint32 n)
 
 void os_quit(void)
 {
+#ifdef USE_VALGRIND
+    /* This is useful as a debug tool to validate memory leaks,
+     * but shouldn't ever be set in production applications, as
+     * other libraries used by the application might use dbus
+     * under the hood and this cause cause crashes if they
+     * continue after SDL_Quit().
+     *
+     * This variable can be set to the following values :
+     *
+     * "0" : SDL will not call dbus_shutdown() on quit(default)
+     * "1" : SDL will call dbus_shutdown() on quit
+     */
+    SDL_SetHintWithPriority(SDL_HINT_SHUTDOWN_DBUS_ON_QUIT, "1", SDL_HINT_OVERRIDE);
+#endif
     SDL_Quit();
 }
 
