@@ -41,7 +41,7 @@ int main(void)
         cmocka_unit_test(test_python_06_tuple),
         cmocka_unit_test(test_python_07_listcomp),
         cmocka_unit_test(test_python_08_dictcomp),
-        /* cmocka_unit_test(test_python_08_dict), */
+        cmocka_unit_test(test_python_08_dict),
         cmocka_unit_test(test_python_15_assign),
         cmocka_unit_test(test_python_15_cmp),
         cmocka_unit_test(test_python_15_controlflow),
@@ -71,8 +71,8 @@ int main(void)
         cmocka_unit_test(test_python_70_math),
         cmocka_unit_test(test_python_70_random),
         cmocka_unit_test(test_python_71_cmath),
-        /* cmocka_unit_test(test_python_71_gc), */
-        /* cmocka_unit_test(test_python_72_collections), */
+        cmocka_unit_test(test_python_71_gc),
+        cmocka_unit_test(test_python_72_collections),
         cmocka_unit_test(test_python_72_json),
         cmocka_unit_test(test_python_73_functools),
         cmocka_unit_test(test_python_73_json_alt),
@@ -83,15 +83,15 @@ int main(void)
         cmocka_unit_test(test_python_76_misc),
         cmocka_unit_test(test_python_76_prime),
         cmocka_unit_test(test_python_77_builtin_func),
-        /* cmocka_unit_test(test_python_79_datetime), */
-        /* cmocka_unit_test(test_python_79_easing), */
+        cmocka_unit_test(test_python_79_datetime),
+        cmocka_unit_test(test_python_79_easing),
         /* cmocka_unit_test(test_python_80_sys), */
         cmocka_unit_test(test_python_80_traceback),
         cmocka_unit_test(test_python_81_dataclasses),
         cmocka_unit_test(test_python_82_enum),
         cmocka_unit_test(test_python_90_array2d),
         /* cmocka_unit_test(test_python_90_pickle), */
-        /* cmocka_unit_test(test_python_91_line_profiler), */
+        cmocka_unit_test(test_python_91_line_profiler),
         cmocka_unit_test(test_python_91_pdb),
         cmocka_unit_test(test_python_95_bugs),
         /* cmocka_unit_test(test_python_95_dis), */
