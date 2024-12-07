@@ -602,6 +602,28 @@ if can_write(0x5454, 8, 0x1122334455667788, False, True, "SPAM"):
 ```
 <!-- tabs:end -->
 
+### dict_lookup_raw()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Interpret raw CAN message.
+
+```python
+dict_lookup_raw (can_id, data_length, [data])
+```
+
+> **can_id** CAN-ID.
+
+> **length** Data length in bytes.
+
+> **data** Data, default is `0`.
+
+<!-- tab:Example -->
+```python
+print(dict_lookup_raw(0x730, 1, 0x05)) -- Heartbeat: Operational.
+```
+<!-- tabs:end -->
+
 ## Miscellaneous
 
 ### delay_ms()

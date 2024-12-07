@@ -388,7 +388,7 @@ end
 Read from built-in object directory.
 
 ```lua
-dict_lookup_raw (id, length, data)
+dict_lookup (index, sub_index)
 ```
 
 <!-- tab:Example -->

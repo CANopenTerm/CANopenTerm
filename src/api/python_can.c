@@ -9,11 +9,13 @@
 
 #include "can.h"
 #include "core.h"
+#include "dict.h"
 #include "os.h"
 #include "pocketpy.h"
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
+bool py_dict_lookup_raw(int argc, py_Ref argv);
 bool py_can_write(int argc, py_Ref argv);
 bool py_can_read(int argc, py_Ref argv);
 
@@ -21,9 +23,52 @@ void python_can_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 
+    py_bind(mod, "dict_lookup_raw(can_id, data_length, data=0)", py_dict_lookup_raw);
     py_bind(mod, "can_write(can_id, data_length, data=0, is_extended=False, show_output=False, comment=\"\")", py_can_write);
 
     py_bindfunc(mod, "can_read", py_can_read);
+}
+
+
+bool py_dict_lookup_raw(int argc, py_Ref argv)
+{
+    uint32        can_status;
+    int           can_id;
+    int           length;
+    uint64        data;
+    can_message_t message     = { 0 };
+    const char*   description = NULL;
+
+    PY_CHECK_ARGC(3);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+
+    can_id          = py_toint(py_arg(0));
+    length          = py_toint(py_arg(1));
+    data            = py_toint(py_arg(2));
+    message.id      = can_id;
+    message.length  = length;
+    message.data[0] = (data >> 56) & 0xFF;
+    message.data[1] = (data >> 48) & 0xFF;
+    message.data[2] = (data >> 40) & 0xFF;
+    message.data[3] = (data >> 32) & 0xFF;
+    message.data[4] = (data >> 24) & 0xFF;
+    message.data[5] = (data >> 16) & 0xFF;
+    message.data[6] = (data >> 8) & 0xFF;
+    message.data[7] = data & 0xFF;
+    description     = dict_lookup_raw(&message);
+
+    if (NULL == description)
+    {
+        py_newnone(py_retval());
+    }
+    else
+    {
+        py_newstr(py_retval(), description);
+    }
+
+    return IS_TRUE;
 }
 
 bool py_can_write(int argc, py_Ref argv)
