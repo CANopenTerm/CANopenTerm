@@ -29,9 +29,11 @@ target_link_libraries(
     ${LUA_LIBRARY}
     ${PLATFORM_LIBS})
 
-add_link_options(
-    -Wl,--wrap=can_read
-    -Wl,--wrap=can_write)
+if(NOT MSVC)
+    add_link_options(
+        -Wl,--wrap=can_read
+        -Wl,--wrap=can_write)
+endif()
 
 include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src

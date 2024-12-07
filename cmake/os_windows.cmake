@@ -100,35 +100,30 @@ ExternalProject_Add(inih_devel
 
 # Lua
 set(LUA_VERSION     "5.4.7")
-set(LUA_DEVEL_PKG   v${LUA_VERSION}.zip)
+set(LUA_DEVEL_PKG   lua-${LUA_VERSION}.tar.gz)
 set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/lua-${LUA_VERSION}_${PLATFORM})
-set(LUA_INCLUDE_DIR ${LUA_PATH})
-set(LUA_LIBRARY     ${LUA_PATH}_build/lua.lib)
+set(LUA_INCLUDE_DIR ${LUA_PATH}/src)
+set(LUA_LIBRARY     ${LUA_PATH}/lua.lib)
 
 ExternalProject_Add(Lua_devel
-    URL https://github.com/lua/lua/archive/refs/tags/${LUA_DEVEL_PKG}
-    URL_HASH SHA1=1c8e1ff7988e3eb7326b495a83875ea931881090
+    URL https://www.lua.org/ftp/${LUA_DEVEL_PKG}
+    URL_HASH SHA1=29b54f97dab8631f52ee21a44871622eaefbe235
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
     SOURCE_DIR ${LUA_PATH}/
-    BINARY_DIR ${LUA_PATH}_build/
     BUILD_BYPRODUCTS ${LUA_LIBRARY}
     CMAKE_ARGS
-        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-        -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-        -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-        -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
-        -DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
+    BUILD_IN_SOURCE 1
     INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL2
-set(SDL2_VERSION "2.30.9")
+set(SDL2_VERSION "2.30.10")
 
 set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
 set(SDL2_PLATFORM  "x64")
@@ -141,7 +136,7 @@ set(SDL2_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL2-${SDL2_VERSION}_
 
 ExternalProject_Add(SDL2_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=d89a2ad46b98ba08db5ec5877cb2fde46e127825
+    URL_HASH SHA1=42378fd090d547d03dca8c9df584ba8f38555809
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
