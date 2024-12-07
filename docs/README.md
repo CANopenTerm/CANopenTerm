@@ -43,15 +43,12 @@ Key functionalities include:
   For non-CANopen needs, offering flexibility and control.
 
 - **Workflow Automation**:
-  Automate your workflow with pre-included scripts, such as a
-  [PEAK CAN trace](https://www.peak-system.com/produktcd/Pdf/English/PEAK_CAN_TRC_File_Format.pdf)
-  record and playback script.  Additionally, you have the flexibility to write
-  your own scripts in either
-  [Lua](https://canopenterm.de/lua-api) or
-  [Python](https://canopenterm.de/python-api)
-  to customize and automate tasks.
-  Both languages are supported by similar APIs, offering equal
-  functionality to cater to your automation needs.
+  Automate your workflow with built-in scripts or create custom ones using
+  [Lua](https://canopenterm.de/lua-api) or [Python](https://canopenterm.de/python-api).
+  Both languages are supported with similar APIs, allowing you to tailor
+  and streamline tasks efficiently.
+
+## Additional Features
 
 - **Built-in DBC Parser**:
   Import and utilize
