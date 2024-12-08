@@ -2,7 +2,9 @@
 # Locate cJSON library and include directories
 
 find_path(CJSON_INCLUDE_DIRS NAMES cJSON.h)
-find_library(CJSON_LIBRARY NAMES cjson)
+message(STATUS "cJSON_INCLUDE_DIR: ${cJSON_INCLUDE_DIR}")
+find_library(CJSON_LIBRARY NAMES cjson HINTS /usr/lib)
+message(STATUS "cJSON_LIBRARY: ${cJSON_LIBRARY}")
 
 if (CJSON_INCLUDE_DIR AND CJSON_LIBRARY)
     set(cJSON_FOUND TRUE)
