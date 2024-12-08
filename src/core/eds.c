@@ -215,9 +215,14 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
 
 status_t validate_eds(uint32 file_no, uint32 node_id)
 {
-    status_t status = ALL_OK;
-    DIR_t*   d      = os_opendir("eds");
+    status_t    status         = ALL_OK;
+    const char* data_path      = os_find_data_path();
+    char        file_path[512] = { 0 };
+    DIR_t*      d;
 
+    os_snprintf(file_path, sizeof(file_path), "%s/eds", data_path);
+
+    d = os_opendir(file_path);
     if (d)
     {
         struct dirent_t* dir;
@@ -229,10 +234,9 @@ status_t validate_eds(uint32 file_no, uint32 node_id)
             {
                 if (file_no == found_file_no)
                 {
-                    char eds_path[50];
-                    os_snprintf(eds_path, 50, "eds/%s", dir->d_name);
+                    os_snprintf(file_path, sizeof(file_path), "%s/eds/%s", data_path, dir->d_name);
 
-                    status = run_conformance_test(eds_path, node_id, TERM_MODE);
+                    status = run_conformance_test(file_path, node_id, TERM_MODE);
                     break;
                 }
                 found_file_no++;
@@ -242,7 +246,7 @@ status_t validate_eds(uint32 file_no, uint32 node_id)
     }
     else
     {
-        os_log(LOG_WARNING, "Could not open eds directory.");
+        os_log(LOG_WARNING, "Could not open %s directory.", file_path);
     }
 
     return status;

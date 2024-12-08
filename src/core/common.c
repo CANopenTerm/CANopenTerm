@@ -14,10 +14,14 @@
 
 void list_file_type(const char* dir, const char* ext, uint32 active_no)
 {
-    DIR_t*   d            = os_opendir(dir);
-    table_t  table        = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
-    status_t status;
-    uint32   status_width = 1;
+    const char* data_path      = os_find_data_path();
+    char        file_path[512] = { 0 };
+    DIR_t*      d;
+    table_t     table          = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
+    status_t    status;
+    uint32      status_width   = 1;
+
+    os_snprintf(file_path, sizeof(file_path), "%s/%s", data_path, dir);
 
     if (active_no > 0)
     {
@@ -32,6 +36,7 @@ void list_file_type(const char* dir, const char* ext, uint32 active_no)
         return;
     }
 
+    d = os_opendir(file_path);
     if (d)
     {
         struct dirent_t* dir;
@@ -79,7 +84,7 @@ void list_file_type(const char* dir, const char* ext, uint32 active_no)
     }
     else
     {
-        os_log(LOG_WARNING, "Could not open %s directory.", dir);
+        os_log(LOG_WARNING, "Could not open %s directory.", file_path);
     }
 
     table_print_footer(&table);
