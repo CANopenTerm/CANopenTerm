@@ -108,6 +108,9 @@ if (BUILD_YOCTO)
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/CANopenTerm
             DESTINATION /usr/bin)
 
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/codb2json
+            DESTINATION /usr/bin)
+
     return()
 endif()
 
