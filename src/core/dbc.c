@@ -124,7 +124,7 @@ status_t dbc_find_id_by_name(uint32* id, const char* search)
     return ITEM_NOT_FOUND;
 }
 
-status_t dbc_load(const char* filename)
+status_t dbc_load(char* filename)
 {
     FILE_t*    file;
     char       line[1024]      = { 0 };
@@ -146,6 +146,7 @@ status_t dbc_load(const char* filename)
         dbc->messages = NULL;
     }
 
+    os_fix_path(filename);
     file = os_fopen(filename, "r");
 
     if (NULL == file)

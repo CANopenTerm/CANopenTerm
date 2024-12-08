@@ -9,6 +9,18 @@
 
 #include "os.h"
 
+char* os_fix_path(char* path)
+{
+    for (size_t i = 0; i < os_strlen(path); ++i)
+    {
+        if (path[i] == '\\')
+        {
+            path[i] = '/';
+        }
+    }
+    return path;
+}
+
 #ifndef os_strlcpy
 static size_t safe_strnlen(const char* s, size_t maxlen);
 

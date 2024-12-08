@@ -26,6 +26,7 @@ void codb_init(void)
     char        file_path[512] = { 0 };
     const char* data_path      = os_find_data_path();
     char*       file_content;
+    size_t      file_size;
 
     if (NULL == data_path)
     {
@@ -34,16 +35,20 @@ void codb_init(void)
     }
 
     os_snprintf(file_path, sizeof(file_path), "%s/codb/ds301.json", data_path);
+    os_fix_path(file_path);
 
-    file = fopen(file_path, "r");
+    os_log(LOG_INFO, "Attempting to open file: %s", file_path);
+
+    file = os_fopen(file_path, "r");
     if (NULL == file)
     {
-        os_log(LOG_ERROR, "Failed to open file: %s", file_path);
+        os_log(LOG_ERROR, "Failed to open file: %s. Error: %s", file_path, strerror(errno));
+        //os_log(LOG_ERROR, "Failed to open file: %s", file_path);
         return;
     }
 
     os_fseek(file, 0, SEEK_END);
-    size_t file_size = os_ftell(file);
+    file_size = os_ftell(file);
     os_fseek(file, 0, SEEK_SET);
 
     file_content = (char*)os_calloc(file_size + 1, sizeof(char));
@@ -56,7 +61,8 @@ void codb_init(void)
 
     if (os_fread(file_content, 1, file_size, file) != file_size)
     {
-        os_log(LOG_ERROR, "Failed to read file: %s", file_path);
+        os_log(LOG_ERROR, "Failed to read file: %s. Error: %s", file_path, strerror(errno));
+        //os_log(LOG_ERROR, "Failed to read file: %s", file_path);
         os_free(file_content);
         os_fclose(file);
         return;
@@ -304,7 +310,7 @@ status_t load_codb(uint32 file_no)
     return status;
 }
 
-status_t load_codb_ex(const char* file_name)
+status_t load_codb_ex(char* file_name)
 {
     status_t status = ALL_OK;
     FILE_t* file;
@@ -322,7 +328,8 @@ status_t load_codb_ex(const char* file_name)
         unload_codb();
     }
 
-    file = fopen(file_name, "r");
+    os_fix_path(file_name);
+    file = os_fopen(file_name, "r");
     if (NULL == file)
     {
         os_log(LOG_ERROR, "Failed to open file: %s", file_name);

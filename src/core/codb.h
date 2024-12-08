@@ -93,7 +93,7 @@ bool_t      is_ds301_loaded(void);
 bool_t      is_codb_loaded(void);
 void        list_codb(void);
 status_t    load_codb(uint32 file_no);
-status_t    load_codb_ex(const char* file_name);
+status_t    load_codb_ex(char* file_name);
 void        unload_codb(void);
 
 #endif /* CODB_H */

@@ -69,7 +69,27 @@ void os_detach_thread(os_thread* thread)
 
 const char* os_find_data_path(void)
 {
-    return ".";
+    size_t      len;
+    static char data_path[MAX_PATH] = { 0 };
+    char*       base_path           = SDL_GetBasePath();
+
+    if (base_path == NULL)
+    {
+        return ".";
+    }
+
+    len = os_strlen(base_path);
+    if (len > 0 && base_path[len - 1] == '\\')
+    {
+        base_path[len - 1] = '\0';
+    }
+
+    os_strlcpy(data_path, base_path, MAX_PATH - 1);
+    data_path[MAX_PATH - 1] = '\0';
+
+    SDL_free(base_path);
+
+    return data_path;
 }
 
 const char* os_get_error(void)

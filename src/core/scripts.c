@@ -20,7 +20,7 @@
 extern const uint8 max_script_search_paths;
 extern const char* script_search_path[];
 
-static char*  get_script_description(const char* script_path);
+static char*  get_script_description(char* script_path);
 static size_t safe_strcpy(char* dest, const char* src, size_t size);
 static bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
 static void   strip_lua_extension(char* filename);
@@ -94,11 +94,13 @@ void scripts_deinit(core_t* core)
     py_finalize();
 }
 
-static char *get_script_description(const char *script_path)
+static char *get_script_description(char* script_path)
 {
     static  char description[256] = { 0 };
-    FILE_t *file = os_fopen(script_path, "r");
+    FILE_t* file;
 
+    os_fix_path(script_path);
+    file = os_fopen(script_path, "r");
     if (NULL == file)
     {
         return NULL;
@@ -264,7 +266,7 @@ void print_heading(const char* heading)
     os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 }
 
-void run_script(const char *name, core_t *core)
+void run_script(char *name, core_t *core)
 {
     status_t    status             = ALL_OK;
     const char* base               = os_strrchr(name, '/');
@@ -280,6 +282,7 @@ void run_script(const char *name, core_t *core)
         os_strlcpy(basename, name, sizeof(basename) - 1);
     }
 
+    os_fix_path(name);
     file = os_fopen(name, "r");
     if (NULL != file)
     {
@@ -320,7 +323,7 @@ void run_script(const char *name, core_t *core)
     }
 }
 
-status_t run_script_ex(const char *name, core_t *core)
+status_t run_script_ex(char *name, core_t *core)
 {
     status_t    status            = ALL_OK;
     const char* extension         = os_strrchr(name, '.');
@@ -338,6 +341,7 @@ status_t run_script_ex(const char *name, core_t *core)
     {
         os_snprintf(script_path, sizeof(script_path), "%s", name);
 
+        os_fix_path(script_path);
         file = os_fopen(script_path, "r");
         if (NULL == file)
         {
@@ -362,12 +366,14 @@ status_t run_script_ex(const char *name, core_t *core)
     {
         os_snprintf(script_path, sizeof(script_path), "%s", name);
 
+        os_fix_path(script_path);
         file = os_fopen(script_path, "r");
         if (file != NULL)
         {
             os_fclose(file);
 
-            file = fopen(script_path, "rb");
+            os_fix_path(script_path);
+            file = os_fopen(script_path, "rb");
             if (file == NULL)
             {
                 status = OS_FILE_NOT_FOUND;
@@ -403,6 +409,7 @@ status_t run_script_ex(const char *name, core_t *core)
     {
         os_snprintf(script_path, sizeof(script_path), "%s.lua", name);
 
+        os_fix_path(script_path);
         file = os_fopen(script_path, "r");
         if (NULL == file)
         {
