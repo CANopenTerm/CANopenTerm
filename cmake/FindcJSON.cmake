@@ -1,7 +1,7 @@
 # FindcJSON.cmake
 # Locate cJSON library and include directories
 
-find_pathCJSON_INCLUDE_DIRS NAMES cJSON.h)
+find_path(CJSON_INCLUDE_DIRS NAMES cJSON.h)
 find_library(CJSON_LIBRARY NAMES cjson)
 
 if (CJSON_INCLUDE_DIR AND CJSON_LIBRARY)
