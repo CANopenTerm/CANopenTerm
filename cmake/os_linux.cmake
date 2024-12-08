@@ -43,7 +43,7 @@ if (BUILD_YOCTO)
 
     find_package(cJSON REQUIRED)
     if (cJSON_FOUND)
-        include_directories(${CJSON_INCLUDE_DIR})
+        include_directories(${cJSON_INCLUDE_DIR})
         set(PLATFORM_LIBS ${PLATFORM_LIBS} ${cJSON_LIBRARIES})
     else()
         message(FATAL_ERROR "cJSON not found")
