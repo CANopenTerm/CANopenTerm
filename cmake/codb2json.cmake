@@ -13,7 +13,9 @@ target_link_libraries(
     ${SDL2MAIN_LIBRARY}
     ${PLATFORM_LIBS})
 
-add_dependencies(
-    codb2json
-    cJSON_devel
-    SDL2_devel)
+if(NOT BUILD_YOCTO)
+    add_dependencies(
+        codb2json
+        cJSON_devel
+        SDL2_devel)
+endif()

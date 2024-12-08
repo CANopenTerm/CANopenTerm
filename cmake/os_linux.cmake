@@ -41,6 +41,16 @@ if (BUILD_YOCTO)
         message(FATAL_ERROR "SDL2 not found")
     endif()
 
+    find_package(cJSON REQUIRED)
+    if (cJSON_FOUND)
+        include_directories(${CJSON_INCLUDE_DIR})
+        set(PLATFORM_LIBS ${PLATFORM_LIBS} ${CJSON_LIBRARIES})
+
+        add_compile_definitions(LUA_USE_C89 LUA_USE_LINUX)
+    else()
+        message(FATAL_ERROR "cJSON not found")
+    endif()
+
     find_package(Lua REQUIRED)
     if (LUA_FOUND)
         include_directories(${LUA_INCLUDE_DIR})
