@@ -46,8 +46,8 @@ int lua_dbc_find_id_by_name(lua_State *L)
 
 int lua_dbc_load(lua_State *L)
 {
-    const char *filename = luaL_checkstring(L, 1);
-    status_t    status;
+    char*    filename = luaL_checkstring(L, 1);
+    status_t status;
 
     dbc_unload();
     status = dbc_load(filename);

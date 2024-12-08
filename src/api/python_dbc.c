@@ -73,8 +73,8 @@ bool py_dbc_find_id_by_name(int argc, py_Ref argv)
 
 bool py_dbc_load(int argc, py_Ref argv)
 {
-    const char* filename;
-    status_t    status;
+    char*    filename;
+    status_t status;
 
     PY_CHECK_ARGC(1);
     PY_CHECK_ARG_TYPE(0, tp_str);
