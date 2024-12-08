@@ -263,7 +263,7 @@ status_t load_codb(uint32 file_no)
             {
                 if (file_no == current_file_no)
                 {
-                    char file_path[128] = { 0 };
+                    const char* data_path = os_find_data_path();
 
                     if ((0 == os_strcmp(dir->d_name, "ds301.json")) && (ds301 != NULL))
                     {
@@ -271,7 +271,13 @@ status_t load_codb(uint32 file_no)
                         break;
                     }
 
-                    os_snprintf(file_path, 128, "codb/%s", dir->d_name);
+                    if (NULL == data_path)
+                    {
+                        os_log(LOG_ERROR, "Data path not found.");
+                        return OS_FILE_NOT_FOUND;
+                    }
+
+                    os_snprintf(file_path, sizeof(file_path), "%s/codb/%s", data_path, dir->d_name);
 
                     if (load_codb_ex(file_path) != ALL_OK)
                     {

@@ -400,7 +400,7 @@ static bool_t is_codb_file(const char* input_file_name)
 
     while (os_fgets(line, sizeof(line), input_file) != NULL)
     {
-        if (line[0] == '\0' || line[0] == '\n' || line[0] == '\r' || isxdigit(line[0]) || line[0] == '#' || line[0] == '$')
+        if (line[0] == '\0' || line[0] == '\n' || line[0] == '\r' || os_isxdigit(line[0]) || line[0] == '#' || line[0] == '$')
         {
             continue;
         }
