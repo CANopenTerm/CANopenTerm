@@ -2,7 +2,7 @@
 # Locate cJSON library and include directories
 
 find_path(cJSON_INCLUDE_DIR NAMES cJSON.h)
-find_library(cJSON_LIBRARY NAMES cJSON)
+find_library(cJSON_LIBRARY NAMES cjson)
 
 if (cJSON_INCLUDE_DIR AND cJSON_LIBRARY)
     set(cJSON_FOUND TRUE)
