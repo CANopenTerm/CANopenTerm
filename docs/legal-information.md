@@ -18,6 +18,14 @@ dem Urheberrecht.  Alle Rechte sind dem Autor vorbehalten.
 
 CANopen® is a trademark of the CAN in Automation User's Group
 
+cJSON is licensed under the
+"[MIT License](https://github.com/DaveGamble/cJSON/blob/master/LICENSE)".  
+Copyright (c) 2009-2017 Dave Gamble and cJSON contributors
+
+inih is licensed under the
+"[New BSD License](https://github.com/benhoyt/inih/blob/master/LICENSE.txt)".  
+Copyright (c) 2009, Ben Hoyt, All rights reserved.
+
 J1939 DBC from
 [Haskell.org](https://hackage.haskell.org/package/ecu-0.0.8/src/src/j1939_utf8.dbc),
 original author unknown.
@@ -29,10 +37,6 @@ Copyright (c) 2009-2011, Zik Saleeba, Copyright (c) 2015, Joseph Poirier, All ri
 pocketpy is licensed under the
 "[MIT License]("https://github.com/pocketpy/pocketpy/blob/main/LICENSE)".  
 Copyright (c) 2024, blueloveTH
-
-inih is licensed under the
-"[New BSD License](https://github.com/benhoyt/inih/blob/master/LICENSE.txt)".  
-Copyright (c) 2009, Ben Hoyt, All rights reserved.
 
 ## Datenschutzerklärung
 
