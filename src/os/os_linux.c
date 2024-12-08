@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include <termios.h>
 #include <unistd.h>
+#include "buffer.h"
 #include "os.h"
 
 static bool_t console_is_plain_mode;
