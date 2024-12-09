@@ -37,7 +37,7 @@ void codb_init(void)
     os_snprintf(file_path, sizeof(file_path), "%s/codb/ds301.json", data_path);
     os_fix_path(file_path);
 
-    file = os_fopen(file_path, "r");
+    file = os_fopen(file_path, "rb");
     if (NULL == file)
     {
         os_log(LOG_ERROR, "Failed to open file: %s", file_path);
@@ -325,7 +325,7 @@ status_t load_codb_ex(char* file_name)
     }
 
     os_fix_path(file_name);
-    file = os_fopen(file_name, "r");
+    file = os_fopen(file_name, "rb");
     if (NULL == file)
     {
         os_log(LOG_ERROR, "Failed to open file: %s", file_name);
