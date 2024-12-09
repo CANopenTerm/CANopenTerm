@@ -223,24 +223,10 @@ const char* emcy_lookup(uint16 code)
     for (i = 0; i < sizeof(emcy_table) / sizeof(emcy_entry_t); ++i)
     {
         uint16 emcy_code = emcy_table[i].code;
-        uint8  emcy_low_byte = emcy_code & 0xFF;
-        uint8  emcy_high_byte = (emcy_code >> 8) & 0xFF;
 
-        if (emcy_high_byte != 0x00)
+        if (emcy_code == code)
         {
-            if (emcy_code == code)
-            {
-                return emcy_table[i].description;
-            }
-        }
-        else
-        {
-            uint8 low_byte = code & 0xFF;
-
-            if (emcy_low_byte == low_byte)
-            {
-                return emcy_table[i].description;
-            }
+            return emcy_table[i].description;
         }
     }
 
