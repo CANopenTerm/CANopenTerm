@@ -94,7 +94,7 @@ const char* dict_lookup_raw(can_message_t* message)
     /* NMT messages. */
     if ((0x0000 == id) && (2 == length))
     {
-        switch (data[7])
+        switch (data[6])
         {
             case 0x01:
                 return "NMT Start Remote Node";
