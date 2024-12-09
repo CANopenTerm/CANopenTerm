@@ -35,7 +35,7 @@
 
         <Upgrade Id="$(var.UpgradeCode)">
             <!-- Detect older product versions -->
-            <UpgradeVersion OnlyDetect="no" IncludeMinimum="yes" IncludeMaximum="yes" Minimum="1.0.0" Maximum="1.0.8" Property="PREVIOUSVERSIONSINSTALLED"/>
+            <UpgradeVersion OnlyDetect="no" IncludeMinimum="yes" IncludeMaximum="yes" Minimum="1.0.0" Maximum="1.0.9" Property="PREVIOUSVERSIONSINSTALLED"/>
         </Upgrade>
 
     </Package>
