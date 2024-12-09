@@ -158,7 +158,7 @@ const char* dict_lookup_raw(can_message_t* message)
     }
     else if ((id & 0x580) == 0x580)
     {
-        return "SDO Response";
+        return "SDO response";
     }
 
     /* PDO messages.
