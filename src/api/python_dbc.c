@@ -79,7 +79,7 @@ bool py_dbc_load(int argc, py_Ref argv)
     PY_CHECK_ARGC(1);
     PY_CHECK_ARG_TYPE(0, tp_str);
 
-    filename = py_tostr(py_arg(0));
+    filename = (char*)py_tostr(py_arg(0));
 
     dbc_unload();
     status = dbc_load(filename);
