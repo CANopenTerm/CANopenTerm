@@ -107,22 +107,28 @@ function print_multiline_at_same_position(message, num_lines)
     io.flush()
 end
 
-function select_number(prompt)
-  io.write("\n" .. prompt .. " (or 'q' to quit): ")
-  local choice = io.read()
+function select_number(prompt, default)
+    default = default or 0
 
-  if choice == 'q' then
-    return nil
-  else
-    choice = tonumber(choice)
+    io.write("\n" .. prompt .. " (or 'q' to quit): ")
+    local choice = io.read()
 
-    if choice >= 0 then
-      return choice
+    if choice == 'q' then
+        return nil
     else
-      print("Please provide a non-negative integer.")
-      select_number()
+        choice = tonumber(choice)
+
+        if choice == nil then
+            return default
+        end
+
+        if choice >= 0 then
+            return choice
+        else
+            print("Please provide a non-negative integer.")
+            select_number()
+        end
     end
-  end
 end
 
 function select_variable(prompt)

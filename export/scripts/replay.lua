@@ -108,8 +108,9 @@ function get_time()
     end
 end
 
-local num_loops = utils.select_number("How often should the playback be looped?")
-local trc_file  = nil
+local num_loops   = utils.select_number("How often should the playback be looped?")
+local trc_file    = nil
+local filtered_id = utils.select_number("Enter the CAN ID to filter for (0 to disable):")
 
 if num_loops == nil then
   print("Exiting.")
@@ -155,9 +156,12 @@ for loop = 1, num_loops + 1 do
                 delay_ms(delay)
             end
 
-            can_write(tonumber(message.can_id, 16), message.dlc, data)
-            print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
-                format_float(message.time_offset), message.msg_type, message.can_id, message.dlc, message.data_bytes))
+            if filtered_id == 0 or tonumber(message.can_id, 16) ~= filtered_id then
+                can_write(tonumber(message.can_id, 16), message.dlc, data)
+                local formatted_can_id = string.format("%5s", message.can_id:match("0*(%x+)") .. "h")
+                print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
+                    format_float(message.time_offset), message.msg_type, formatted_can_id, message.dlc, message.data_bytes))
+            end
         else
             print("Invalid message format or nil value detected.")
             print("message: ", message)
