@@ -80,11 +80,6 @@
                 <File Source="../../export/eds/DS301_profile.eds" />
             </Component>
         </ComponentGroup>
-        <ComponentGroup Id="UtilsComponents" Directory="UTILSFOLDER">
-            <Component>
-                <File Source="../../export/scripts/utils/init.lua" />
-            </Component>
-        </ComponentGroup>
         <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
             <Component>
                 <File Source="../../export/scripts/replay.lua" />
@@ -97,6 +92,11 @@
             </Component>
             <Component>
                 <File Source="../../export/scripts/watch.lua" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="UtilsComponents" Directory="UTILSFOLDER">
+            <Component>
+                <File Source="../../export/scripts/utils/init.lua" />
             </Component>
         </ComponentGroup>
     </Fragment>

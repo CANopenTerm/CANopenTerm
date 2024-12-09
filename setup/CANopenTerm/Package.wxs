@@ -9,8 +9,8 @@
             <ComponentGroupRef Id="CodbComponents" />
             <ComponentGroupRef Id="DbcComponents" />
             <ComponentGroupRef Id="EdsComponents" />
-            <ComponentGroupRef Id="LuaComponents" />
             <ComponentGroupRef Id="ScriptsComponents" />
+            <ComponentGroupRef Id="UtilsComponents" />
         </Feature>
 
         <ui:WixUI
