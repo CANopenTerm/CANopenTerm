@@ -122,7 +122,7 @@ const char* dict_lookup_raw(can_message_t* message)
                 return "Heartbeat: Stopped.";
             case 0x05:
                 return "Heartbeat: Operational";
-            case 0x07:
+            case 0x7F:
                 return "Heartbeat: Pre-operational";
             default:
                 return "";
