@@ -52,7 +52,7 @@ void scripts_init(core_t *core)
 
         for (i = 0; i < max_script_search_paths; i++)
         {
-            path_len += os_strlen(script_search_path[i]) + 6; /* Adding space for "?.lua;" */
+            path_len += os_strlen(script_search_path[i]) + 7; /* Adding space for "?.lua;" */
         }
 
         new_path = (char *)os_calloc(path_len, sizeof(char));
