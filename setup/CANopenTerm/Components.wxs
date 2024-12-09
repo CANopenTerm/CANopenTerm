@@ -80,12 +80,9 @@
                 <File Source="../../export/eds/DS301_profile.eds" />
             </Component>
         </ComponentGroup>
-        <ComponentGroup Id="LuaComponents" Directory="LUAFOLDER">
+        <ComponentGroup Id="UtilsComponents" Directory="UTILSFOLDER">
             <Component>
-                <File Source="../../export/scripts/lua/canopen.lua" />
-            </Component>
-            <Component>
-                <File Source="../../export/scripts/lua/utils.lua" />
+                <File Source="../../export/scripts/utils/init.lua" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">

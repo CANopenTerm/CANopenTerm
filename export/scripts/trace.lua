@@ -5,7 +5,7 @@ License: Public domain
 
 --]]
 
-local utils = require "lua/utils"
+local utils = require "utils"
 
 local initial_timestamp_us
 local trace_filename

@@ -2,9 +2,9 @@
 !codb
 !dbc
 !eds
-!lua
 !scripts
 !tests
+!utils
 !.gitignore
 !*.dbc
 !*.eds

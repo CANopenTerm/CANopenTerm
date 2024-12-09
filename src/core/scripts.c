@@ -25,7 +25,7 @@ static size_t safe_strcpy(char* dest, const char* src, size_t size);
 static bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
 static void   strip_lua_extension(char* filename);
 
-void scripts_init(core_t *core)
+void scripts_init(core_t* core)
 {
     if (NULL == core)
     {
@@ -40,22 +40,23 @@ void scripts_init(core_t *core)
     {
         int         i;
         const char* current_path;
-        char*       new_path;
+        char* new_path;
 
         luaL_openlibs(core->L);
 
         lua_getglobal(core->L, "package");
         lua_getfield(core->L, -1, "path");
 
-        current_path    = lua_tostring(core->L, -1);
+        current_path = lua_tostring(core->L, -1);
         size_t path_len = os_strlen(current_path) + 1;
 
         for (i = 0; i < max_script_search_paths; i++)
         {
             path_len += os_strlen(script_search_path[i]) + 7; /* Adding space for "?.lua;" */
+            path_len += os_strlen(script_search_path[i]) + 10; /* Adding space for "?/init.lua;" */
         }
 
-        new_path = (char *)os_calloc(path_len, sizeof(char));
+        new_path = (char*)os_calloc(path_len, sizeof(char));
         if (NULL == new_path)
         {
             lua_pop(core->L, 2);
@@ -69,6 +70,9 @@ void scripts_init(core_t *core)
             os_strlcat(new_path, ";", path_len);
             os_strlcat(new_path, script_search_path[i], path_len);
             os_strlcat(new_path, "/?.lua", path_len);
+            os_strlcat(new_path, ";", path_len);
+            os_strlcat(new_path, script_search_path[i], path_len);
+            os_strlcat(new_path, "/?/init.lua", path_len);
         }
 
         lua_pushstring(core->L, new_path);

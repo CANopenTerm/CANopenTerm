@@ -5,7 +5,7 @@ License: Public domain
 
 --]]
 
-local utils = require "lua/utils"
+local utils = require "utils"
 
 local dbc_file = utils.get_file_by_selection("Select CAN DBC Database File", "dbc", "dbc/")
 if dbc_file == nil then

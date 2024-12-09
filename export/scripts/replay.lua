@@ -6,7 +6,7 @@ Comment: This script currently only works with 11-bit CAN IDs.
 
 --]]
 
-local utils = require "lua/utils"
+local utils = require "utils"
 
 local function convert_data_bytes(data_bytes)
     local bytes = {}

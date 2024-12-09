@@ -681,21 +681,17 @@ sdo_read(0x123, 0x100A, 0x00, true)
 
 **Returns**: Nothing.
 
-### Helper functions
+### Utilities
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-In addition to the integrated API, there are also a couple of helper
+In addition to the integrated API, there are also a couple of utility
 functions that can be imported.
 
 <!-- tab:Example -->
 ```lua
-local canopen = require "lua/canopen"
-local utils   = require "lua/utils"
-
-local node_id   = canopen.get_id_by_name("Device name")
-local hex_files = utils.get_file_list("hex")
-
+local utils      = require "utils"
+local hex_files  = utils.get_file_list("hex")
 local temp, time = utils.measure_time(function() return delay_ms(2) end)
 print(string.format("Elapsed time: %.2f milliseconds.", time))
 ```

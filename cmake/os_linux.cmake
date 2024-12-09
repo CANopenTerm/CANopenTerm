@@ -98,8 +98,8 @@ if (BUILD_YOCTO)
             DESTINATION /usr/share/CANopenTerm/scripts
             FILES_MATCHING PATTERN "*.lua" PATTERN "*.py")
 
-    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/lua/
-            DESTINATION /usr/share/CANopenTerm/scripts/lua
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/utils/
+            DESTINATION /usr/share/CANopenTerm/scripts/utils
             FILES_MATCHING PATTERN "*")
 
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/CANopenTerm

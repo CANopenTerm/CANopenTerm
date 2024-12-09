@@ -6,7 +6,7 @@
             <Directory Id="DBCFOLDER"         Name="!(bind.Property.ProductName)\dbc" />
             <Directory Id="EDSFOLDER"         Name="!(bind.Property.ProductName)\eds" />
             <Directory Id="SCRIPTSFOLDER"     Name="!(bind.Property.ProductName)\scripts" />
-            <Directory Id="LUAFOLDER"         Name="!(bind.Property.ProductName)\scripts\lua" />
+            <Directory Id="UTILSFOLDER"       Name="!(bind.Property.ProductName)\scripts\utils" />
         </StandardDirectory>
     </Fragment>
 </Wix>
