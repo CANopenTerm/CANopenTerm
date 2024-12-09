@@ -114,7 +114,7 @@ const char* dict_lookup_raw(can_message_t* message)
     /* Heartbeat messages. */
     if ((id & 0x700) == 0x700 && 1 == length)
     {
-        switch (data[0])
+        switch (data[7])
         {
             case 0x00:
                 return "Boot-up Message";
@@ -161,15 +161,6 @@ const char* dict_lookup_raw(can_message_t* message)
         return "SDO Response";
     }
 
-    /* EMCY messages. */
-    if ((id & 0x080) == 0x080)
-    {
-        uint16 code = (data[1] << 8) | data[0];
-        os_snprintf(buffer, sizeof(buffer), "EMCY %04Xh, %s", code, emcy_lookup(code));
-
-        return buffer;
-    }
-
     /* PDO messages.
      * 0x181 - 0x1FF : PDO1 (tx)
      * 0x201 - 0x27F : PDO1 (rx)
@@ -211,6 +202,15 @@ const char* dict_lookup_raw(can_message_t* message)
     else if ((id >= 0x501) && (id <= 0x57F))
     {
         return "PDO4 (rx)";
+    }
+
+    /* EMCY messages. */
+    if ((id & 0x080) == 0x080)
+    {
+        uint16 code = (data[1] << 8) | data[0];
+        os_snprintf(buffer, sizeof(buffer), "EMCY %04Xh, %s", code, emcy_lookup(code));
+
+        return buffer;
     }
 
     return "";
