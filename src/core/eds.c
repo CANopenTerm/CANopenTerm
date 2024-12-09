@@ -25,7 +25,7 @@ void list_eds(void)
     list_file_type("eds", "eds", 0);
 }
 
-status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t disp_mode)
+status_t run_conformance_test(const char* eds_path, const char* package, uint32 node_id, disp_mode_t disp_mode)
 {
     status_t status                = ALL_OK;
     char     unavailable_subs[256] = { 0 };
@@ -36,6 +36,11 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
     int      last_sub_index        = -1;
     int      range_start           = -1;
     uint16   current_index         = 0xFFFF;
+
+    if (NULL == package)
+    {
+        package = "EDS";
+    }
 
     if (disp_mode != SCRIPT_MODE)
     {
@@ -151,7 +156,7 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
 
                     result.has_passed    = IS_FALSE;
                     result.time          = time;
-                    result.package       = "EDS";
+                    result.package       = package;
                     result.class_name    = base_name;
                     result.test_name     = test_name;
                     result.error_type    = "SDORead";
@@ -213,7 +218,7 @@ status_t run_conformance_test(const char* eds_path, uint32 node_id, disp_mode_t 
     return status;
 }
 
-status_t validate_eds(uint32 file_no, uint32 node_id)
+status_t validate_eds(uint32 file_no, const char* package, uint32 node_id)
 {
     status_t    status         = ALL_OK;
     const char* data_path      = os_find_data_path();
@@ -236,7 +241,7 @@ status_t validate_eds(uint32 file_no, uint32 node_id)
                 {
                     os_snprintf(file_path, sizeof(file_path), "%s/eds/%s", data_path, dir->d_name);
 
-                    status = run_conformance_test(file_path, node_id, TERM_MODE);
+                    status = run_conformance_test(file_path, package, node_id, TERM_MODE);
                     break;
                 }
                 found_file_no++;

@@ -488,12 +488,14 @@ Resulting XML file:
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-test_eds_file (node_id, file_name)
+test_eds_file (node_id, file_name, [package])
 ```
 
 > **node_id** CANopen Node-ID.
 
 > **file_name** EDS file name.
+
+> **package** Package name or `None` for default, default is "EDS".
 
 **Returns**: Nothing.
 

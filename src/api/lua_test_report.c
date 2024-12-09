@@ -42,8 +42,9 @@ int lua_test_eds_file(lua_State* L)
 {
     int         node_id   = luaL_checkinteger(L, 1);
     const char* file_name = lua_tostring(L, 2);
+    const char* package   = lua_tostring(L, 3);
 
-    run_conformance_test(file_name, node_id, SCRIPT_MODE);
+    run_conformance_test(file_name, package, node_id, SCRIPT_MODE);
 
     return 0;
 }

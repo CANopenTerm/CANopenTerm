@@ -419,7 +419,7 @@ void parse_command(char* input, core_t* core)
         }
         convert_token_to_uint(token, &file_no);
 
-        validate_eds(file_no, node_id);
+        validate_eds(file_no, NULL, node_id);
     }
     else
     {

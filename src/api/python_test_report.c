@@ -25,9 +25,9 @@ void python_test_init(void)
     py_GlobalRef mod = py_getmodule("__main__");
 
     py_bind(mod, "test_add_result(has_passed=False, time=0.0, package=\"Tests\", class_name=\"Generic\", test_name=\"UnnamedTest\", error_type=\"AssertionError\", error_message=\"No error message provided\", call_stack=\"<!-- No call stack provided. -->\")", py_test_add_result);
+    py_bind(mod, "test_eds_file(node_id, file_name, package=None)", py_test_eds_file);
     py_bind(mod, "test_generate_report(file_name=\"test_report.xml\")", py_test_generate_report);
 
-    py_bindfunc(mod, "test_eds_file",      py_test_eds_file);
     py_bindfunc(mod, "test_clear_results", py_test_clear_results);
 }
 
@@ -64,6 +64,7 @@ bool py_test_eds_file(int argc, py_Ref argv)
 {
     int         node_id;
     const char* file_name;
+    const char* package;
 
     (void)argc;
     (void)argv;
@@ -72,8 +73,9 @@ bool py_test_eds_file(int argc, py_Ref argv)
 
     node_id   = py_toint(py_arg(0));
     file_name = py_tostr(py_arg(1));
+    package   = py_tostr(py_arg(2));
 
-    run_conformance_test(file_name, node_id, SCRIPT_MODE);
+    run_conformance_test(file_name, package, node_id, SCRIPT_MODE);
 
     py_newnone(py_retval());
 

@@ -467,17 +467,19 @@ Resulting XML file:
 ```
 <!-- tabs:end -->
 
-### test_eds_file(node_id, file_name)
+### test_eds_file(node_id, file_name, package)
 
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-test_eds_file (node_id, file_name)
+test_eds_file (node_id, file_name, [package])
 ```
 
 > **node_id** CANopen Node-ID.
 
 > **file_name** EDS file name.
+
+> **package** Package name or `nil` for default, default is "EDS".
 
 **Returns**: Nothing.
 

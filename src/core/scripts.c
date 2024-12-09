@@ -40,7 +40,7 @@ void scripts_init(core_t* core)
     {
         int         i;
         const char* current_path;
-        char* new_path;
+        char*       new_path;
 
         luaL_openlibs(core->L);
 
