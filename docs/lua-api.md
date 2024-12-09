@@ -467,7 +467,7 @@ Resulting XML file:
 ```
 <!-- tabs:end -->
 
-### test_eds_file(node_id, file_name, package)
+### test_eds_file()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
