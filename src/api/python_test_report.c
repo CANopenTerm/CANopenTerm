@@ -69,7 +69,7 @@ bool py_test_eds_file(int argc, py_Ref argv)
     (void)argc;
     (void)argv;
 
-    PY_CHECK_ARGC(2);
+    PY_CHECK_ARGC(3);
 
     node_id   = py_toint(py_arg(0));
     file_name = py_tostr(py_arg(1));
