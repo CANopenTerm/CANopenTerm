@@ -11112,9 +11112,9 @@ void test_dict_lookup_raw(void** state)
 
     for (i = 0; i <= 0xff; i++)
     {
-        message.data[7] = i;
+        message.data[6] = i;
 
-        switch (message.data[7])
+        switch (message.data[6])
         {
             case 0x01:
                 assert_string_equal(dict_lookup_raw(&message), "NMT Start Remote Node");
@@ -11146,9 +11146,9 @@ void test_dict_lookup_raw(void** state)
 
         for (i = 0; i <= 0xff; i++)
         {
-            message.data[0] = i;
+            message.data[7] = i;
 
-            switch (message.data[0])
+            switch (message.data[7])
             {
                 case 0x00:
                     assert_string_equal(dict_lookup_raw(&message), "Boot-up Message");
@@ -11159,7 +11159,7 @@ void test_dict_lookup_raw(void** state)
                 case 0x05:
                     assert_string_equal(dict_lookup_raw(&message), "Heartbeat: Operational");
                     break;
-                case 0x07:
+                case 0x7f:
                     assert_string_equal(dict_lookup_raw(&message), "Heartbeat: Pre-operational");
                     break;
                 default:
