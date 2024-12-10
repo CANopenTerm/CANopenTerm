@@ -495,7 +495,7 @@ test_eds_file (node_id, file_name, [package])
 
 > **file_name** EDS file name.
 
-> **package** Package name or `None` for default, default is "EDS".
+> **package** Package name, "EDS" if ommited.
 
 **Returns**: Nothing.
 

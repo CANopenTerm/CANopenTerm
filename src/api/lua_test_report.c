@@ -44,6 +44,11 @@ int lua_test_eds_file(lua_State* L)
     const char* file_name = lua_tostring(L, 2);
     const char* package   = lua_tostring(L, 3);
 
+    if (NULL == package)
+    {
+        package = "EDS";
+    }
+
     run_conformance_test(file_name, package, node_id, SCRIPT_MODE);
 
     return 0;

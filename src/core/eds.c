@@ -39,7 +39,8 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
 
     if (NULL == package)
     {
-        package = "EDS";
+        os_log(LOG_ERROR, "No package name provided: this should not happpen.");
+        return OS_INVALID_ARGUMENT;
     }
 
     if (disp_mode != SCRIPT_MODE)
@@ -179,9 +180,11 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
 
                     result.has_passed    = IS_TRUE;
                     result.time          = time;
-                    result.package       = "EDS";
+                    result.package       = package;
                     result.class_name    = base_name;
                     result.test_name     = test_name;
+                    result.error_type    = NULL;
+                    result.error_message = NULL;
                     result.call_stack    = NULL;
 
                     test_add_result(&result);
