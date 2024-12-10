@@ -31,13 +31,13 @@ static void assert_files_equal(const char* file1_path, const char* file2_path)
     FILE_t* file1, * file2;
     char line1[256], line2[256];
 
-    file1 = os_fopen(file1_path, "r");
+    file1 = os_fopen(file1_path, "rb");
     if (file1 == NULL)
     {
         fail_msg("Failed to open %s for reading.", file1_path);
     }
 
-    file2 = os_fopen(file2_path, "r");
+    file2 = os_fopen(file2_path, "rb");
     if (file2 == NULL)
     {
         os_fclose(file1);
