@@ -55,6 +55,7 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
         os_print(LIGHT_GREEN, ">");
         os_print(DEFAULT_COLOR, " CANopenTerm %u.%u.%u\r\n", VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD);
         os_print(DEFAULT_COLOR, "Copyright (c) 2024, Michael Fitzmayer.\r\n\r\n");
+        os_print(DEFAULT_COLOR, "Loading ..");
     }
 
     status = os_init();
@@ -90,6 +91,10 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
 
     /* Initialise base database. */
     codb_init();
+    if (IS_FALSE == is_plain_mode)
+    {
+        os_print(DEFAULT_COLOR, "\r          ");
+    }
 
     /* Initialise CAN. */
     (*core)->is_running = IS_TRUE;

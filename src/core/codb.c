@@ -399,6 +399,7 @@ static const char* file_name_to_profile_desc(const char* file_name)
         { "ds417.json", "[CiA 417] Lift control systems" },
         { "ds418.json", "[CiA 418] Battery modules" },
         { "ds419.json", "[CiA 419] Battery chargers" },
+        { "ds443.json", "[CiA 443] SIIS level-2 devices" },
         { "ds447.json", "[CiA 447] Special-purpose car add-on devices" }
     };
 
