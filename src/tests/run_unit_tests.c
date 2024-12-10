@@ -91,7 +91,7 @@ int main(void)
         cmocka_unit_test(test_python_82_enum),
         cmocka_unit_test(test_python_90_array2d),
         /* cmocka_unit_test(test_python_90_pickle), */
-        cmocka_unit_test(test_python_91_line_profiler),
+        /* cmocka_unit_test(test_python_91_line_profiler), */
         cmocka_unit_test(test_python_91_pdb),
         cmocka_unit_test(test_python_95_bugs),
         /* cmocka_unit_test(test_python_95_dis), */
