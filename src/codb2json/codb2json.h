@@ -10,6 +10,8 @@
 #ifndef CODB2JSON_H
 #define CODB2JSON_H
 
-int codb2json(int argc, char* argv[]);
+#include "os.h"
+
+int codb2json(int argc, char* argv[], bool_t format_output);
 
 #endif /* CODB2JSON_H */

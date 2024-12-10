@@ -154,7 +154,7 @@ static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i);
 static void   init_codb_entry(codb_entry_t* entry);
 static bool_t is_codb_file(const char* input_file_name);
 static void   read_codb(const char* input_file_name);
-static void   write_json(const char* output_file_name);
+static void   write_json(const char* output_file_name, bool_t format_output);
 static bool_t write_json_entry(cJSON* entry, size_t i);
 static void   free_codb_database(codb_database_t* db);
 static void   handle_attribute(obj_attr_t* attr, const char* token);
@@ -162,12 +162,12 @@ static void   handle_value8(uint8*  value, const char* token);
 static void   handle_value64(uint64* value, const char* token);
 static char*  to_upper_case(const char* str);
 
-int codb2json(int argc, char* argv[])
+int codb2json(int argc, char* argv[], bool_t format_output)
 {
     char  json_file_name[256] = { 0 };
     char* dot;
 
-    if (argc != 2)
+    if (argc < 2)
     {
         os_fprintf(stderr, "Usage: %s <input file>\n", argv[0]);
         return EXIT_FAILURE;
@@ -198,7 +198,7 @@ int codb2json(int argc, char* argv[])
     os_strlcat(json_file_name, ".json", sizeof(json_file_name));
 
     read_codb(argv[1]);
-    write_json(json_file_name);
+    write_json(json_file_name, format_output);
 
     free_codb_database(codb_db);
 
@@ -1086,7 +1086,7 @@ static void read_codb(const char* input_file_name)
     os_fclose(input_file);
 }
 
-static void write_json(const char* output_file_name)
+static void write_json(const char* output_file_name, bool_t format_output)
 {
     char*   string = NULL;
     cJSON*  root;
@@ -1122,7 +1122,15 @@ static void write_json(const char* output_file_name)
         }
     }
 
-    string = cJSON_PrintUnformatted(root);
+    if (IS_FALSE == format_output)
+    {
+        string = cJSON_PrintUnformatted(root);
+    }
+    else
+    {
+        string = cJSON_Print(root);
+    }
+
     os_fprintf(output_file, "%s\n", string);
     os_free(string);
     cJSON_Delete(root);
@@ -1246,8 +1254,10 @@ static bool_t write_json_entry(cJSON* root, size_t i)
     cJSON_AddItemToObject(entry, "max_elements", max_elements);
 
     parameter_name = cJSON_CreateString(codb_db->entries[i].parameter_name);
-
     cJSON_AddItemToObject(entry, "desc", parameter_name);
+
+    object_kind = cJSON_CreateNumber(codb_db->entries[i].object_kind);
+    cJSON_AddItemToObject(entry, "kind", object_kind);
 
     /* Object has only one sub-index. */
     if (i + 1 >= codb_db->total_entries || codb_db->entries[i].main_index != codb_db->entries[i + 1].main_index)
