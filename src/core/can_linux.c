@@ -364,7 +364,7 @@ static char** get_can_interfaces(int* count)
     int                max_interfaces   = 10;
     int                can_count        = 0;
     char**             can_interfaces   = (char**)os_calloc(max_interfaces * sizeof(char*), sizeof(char));
-    
+
     msg.msg_name = &sa;
     msg.msg_namelen = sizeof(sa);
     msg.msg_iov = &iov;

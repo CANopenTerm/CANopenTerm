@@ -15,63 +15,18 @@
 #include "table.h"
 
 static const char* file_name_to_profile_desc(const char* file_name);
+static int         init(void* unused);
 
-static uint32 active_no = 0;
-static cJSON* ds301     = NULL;
-static cJSON* codb      = NULL;
+static uint32     active_no = 0;
+static cJSON*     ds301     = NULL;
+static cJSON*     codb      = NULL;
+static os_thread* init_th   = NULL;
 
 void codb_init(void)
 {
-    FILE_t*     file;
-    char        file_path[512] = { 0 };
-    const char* data_path      = os_find_data_path();
-    char*       file_content;
-    size_t      file_size;
-
-    if (NULL == data_path)
+    if (NULL == init_th)
     {
-        os_log(LOG_ERROR, "Data path not found.");
-        return;
-    }
-
-    os_snprintf(file_path, sizeof(file_path), "%s/codb/ds301.json", data_path);
-    os_fix_path(file_path);
-
-    file = os_fopen(file_path, "rb");
-    if (NULL == file)
-    {
-        os_log(LOG_ERROR, "Failed to open file: %s", file_path);
-        return;
-    }
-
-    os_fseek(file, 0, SEEK_END);
-    file_size = os_ftell(file);
-    os_fseek(file, 0, SEEK_SET);
-
-    file_content = (char*)os_calloc(file_size + 1, sizeof(char));
-    if (NULL == file_content)
-    {
-        os_log(LOG_ERROR, "Memory allocation failed for file content.");
-        os_fclose(file);
-        return;
-    }
-
-    if (os_fread(file_content, 1, file_size, file) != file_size)
-    {
-        os_log(LOG_ERROR, "Failed to read file: %s", file_path);
-        os_free(file_content);
-        os_fclose(file);
-        return;
-    }
-    file_content[file_size] = '\0';
-    os_fclose(file);
-
-    ds301 = cJSON_Parse(file_content);
-    os_free(file_content);
-
-    if (ds301 == NULL)
-    {
-        os_log(LOG_ERROR, "Failed to parse JSON content from file: %s", file_path);
+        init_th = os_create_thread(init, "CODB init thread", NULL);
     }
 }
 
@@ -215,11 +170,17 @@ void list_codb(void)
 
                 os_snprintf(file_no_str, 4, "%3u", file_no);
 
-                if ((0 == os_strcmp(dir->d_name, "ds301.json")) || ((active_no > 0) && (active_no == file_no)))
+                if ((0 == os_strcmp(dir->d_name, "ds301.json") && (IS_TRUE == is_ds301_loaded())) || ((active_no > 0) && (active_no == file_no)))
                 {
                     table.text_color = LIGHT_GREEN;
                     table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Active", &table);
-                    table.text_color = DARK_WHITE;
+                    table.text_color = DEFAULT_COLOR;
+                }
+                else if ((0 == os_strcmp(dir->d_name, "ds301.json") && (IS_FALSE == is_ds301_loaded())))
+                {
+                    table.text_color = LIGHT_YELLOW;
+                    table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Queued", &table);
+                    table.text_color = DEFAULT_COLOR;
                 }
                 else
                 {
@@ -263,7 +224,7 @@ status_t load_codb(uint32 file_no)
                 {
                     const char* data_path = os_find_data_path();
 
-                    if ((0 == os_strcmp(dir->d_name, "ds301.json")) && (ds301 != NULL))
+                    if (0 == os_strcmp(dir->d_name, "ds301.json"))
                     {
                         unload_codb();
                         break;
@@ -412,4 +373,64 @@ static const char* file_name_to_profile_desc(const char* file_name)
     }
 
     return file_name;
+}
+
+static int init(void* unused)
+{
+    FILE_t*     file;
+    char        file_path[512] = { 0 };
+    const char* data_path = os_find_data_path();
+    char* file_content;
+    size_t      file_size;
+
+    (void)unused;
+
+    if (NULL == data_path)
+    {
+        os_log(LOG_ERROR, "Data path not found.");
+        return 1;
+    }
+
+    os_snprintf(file_path, sizeof(file_path), "%s/codb/ds301.json", data_path);
+    os_fix_path(file_path);
+
+    file = os_fopen(file_path, "rb");
+    if (NULL == file)
+    {
+        os_log(LOG_ERROR, "Failed to open file: %s", file_path);
+        return 1;
+    }
+
+    os_fseek(file, 0, SEEK_END);
+    file_size = os_ftell(file);
+    os_fseek(file, 0, SEEK_SET);
+
+    file_content = (char*)os_calloc(file_size + 1, sizeof(char));
+    if (NULL == file_content)
+    {
+        os_log(LOG_ERROR, "Memory allocation failed for file content.");
+        os_fclose(file);
+        return 1;
+    }
+
+    if (os_fread(file_content, 1, file_size, file) != file_size)
+    {
+        os_log(LOG_ERROR, "Failed to read file: %s", file_path);
+        os_free(file_content);
+        os_fclose(file);
+        return 1;
+    }
+    file_content[file_size] = '\0';
+    os_fclose(file);
+
+    ds301 = cJSON_Parse(file_content);
+    os_free(file_content);
+
+    if (ds301 == NULL)
+    {
+        os_log(LOG_ERROR, "Failed to parse JSON content from file: %s", file_path);
+        return 1;
+    }
+
+    return 0;
 }
