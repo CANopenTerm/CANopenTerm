@@ -15,19 +15,80 @@
 #include "table.h"
 
 static const char* file_name_to_profile_desc(const char* file_name);
-static int         init(void* unused);
 
 static uint32     active_no = 0;
 static cJSON*     ds301     = NULL;
 static cJSON*     codb      = NULL;
 static os_thread* init_th   = NULL;
 
+int codb_init_ex(void* unused);
+
 void codb_init(void)
 {
     if (NULL == init_th)
     {
-        init_th = os_create_thread(init, "CODB init thread", NULL);
+        init_th = os_create_thread(codb_init_ex, "CODB init thread", NULL);
     }
+}
+
+int codb_init_ex(void* unused)
+{
+    FILE_t* file;
+    char        file_path[512] = { 0 };
+    const char* data_path = os_find_data_path();
+    char* file_content;
+    size_t      file_size;
+
+    (void)unused;
+
+    if (NULL == data_path)
+    {
+        os_log(LOG_ERROR, "Data path not found.");
+        return 1;
+    }
+
+    os_snprintf(file_path, sizeof(file_path), "%s/codb/ds301.json", data_path);
+    os_fix_path(file_path);
+
+    file = os_fopen(file_path, "rb");
+    if (NULL == file)
+    {
+        os_log(LOG_ERROR, "Failed to open file: %s", file_path);
+        return 1;
+    }
+
+    os_fseek(file, 0, SEEK_END);
+    file_size = os_ftell(file);
+    os_fseek(file, 0, SEEK_SET);
+
+    file_content = (char*)os_calloc(file_size + 1, sizeof(char));
+    if (NULL == file_content)
+    {
+        os_log(LOG_ERROR, "Memory allocation failed for file content.");
+        os_fclose(file);
+        return 1;
+    }
+
+    if (os_fread(file_content, 1, file_size, file) != file_size)
+    {
+        os_log(LOG_ERROR, "Failed to read file: %s", file_path);
+        os_free(file_content);
+        os_fclose(file);
+        return 1;
+    }
+    file_content[file_size] = '\0';
+    os_fclose(file);
+
+    ds301 = cJSON_Parse(file_content);
+    os_free(file_content);
+
+    if (ds301 == NULL)
+    {
+        os_log(LOG_ERROR, "Failed to parse JSON content from file: %s", file_path);
+        return 1;
+    }
+
+    return 0;
 }
 
 void codb_deinit(void)
@@ -373,64 +434,4 @@ static const char* file_name_to_profile_desc(const char* file_name)
     }
 
     return file_name;
-}
-
-static int init(void* unused)
-{
-    FILE_t*     file;
-    char        file_path[512] = { 0 };
-    const char* data_path = os_find_data_path();
-    char* file_content;
-    size_t      file_size;
-
-    (void)unused;
-
-    if (NULL == data_path)
-    {
-        os_log(LOG_ERROR, "Data path not found.");
-        return 1;
-    }
-
-    os_snprintf(file_path, sizeof(file_path), "%s/codb/ds301.json", data_path);
-    os_fix_path(file_path);
-
-    file = os_fopen(file_path, "rb");
-    if (NULL == file)
-    {
-        os_log(LOG_ERROR, "Failed to open file: %s", file_path);
-        return 1;
-    }
-
-    os_fseek(file, 0, SEEK_END);
-    file_size = os_ftell(file);
-    os_fseek(file, 0, SEEK_SET);
-
-    file_content = (char*)os_calloc(file_size + 1, sizeof(char));
-    if (NULL == file_content)
-    {
-        os_log(LOG_ERROR, "Memory allocation failed for file content.");
-        os_fclose(file);
-        return 1;
-    }
-
-    if (os_fread(file_content, 1, file_size, file) != file_size)
-    {
-        os_log(LOG_ERROR, "Failed to read file: %s", file_path);
-        os_free(file_content);
-        os_fclose(file);
-        return 1;
-    }
-    file_content[file_size] = '\0';
-    os_fclose(file);
-
-    ds301 = cJSON_Parse(file_content);
-    os_free(file_content);
-
-    if (ds301 == NULL)
-    {
-        os_log(LOG_ERROR, "Failed to parse JSON content from file: %s", file_path);
-        return 1;
-    }
-
-    return 0;
 }
