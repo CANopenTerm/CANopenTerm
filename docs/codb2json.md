@@ -18,32 +18,27 @@ As this tool is primarily a proprietary Windows tool and there are no
 alternatives on the market, we would like to extend
 [CANopenTerm](https://canopenterm.de) with a similar feature.
 
-To check the conformity of a CANopen CC interface, the CiA tool uses
-the so-called CANopen Profile data base (codb) format. This format is
-not very well documented, antiquated and somewhat difficult to process.
+To check the conformity of a CANopen CC interface, the CiA tool
+uses the so-called CANopen Profile data base (codb) format.
+This format is not very well documented, antiquated, and somewhat
+difficult to process.
 
-That's why we developed a converter that generates the same information
-in JSON format; a robust, easy to process and widely accepted file
-format.
+That's why we developed a converter that generates the same
+information in JSON format. JSON is a robust, easy-to-process,
+and widely accepted file format.
+
+## Why reinvent the wheel?
+
+Although the CODB file format is very compact, it is very
+difficult to maintain and prone to errors.  We believe that a
+database used specifically for conformance testing must be
+syntactically testable.  Therefore, a fresh view on the file
+format is necessary to ensure ease of maintenance and error
+reduction.
 
 ## Installation
 
-To install or build the `codb2json` tool, follow these steps:
-
-1. Clone the repository:
-    
-```bash
-git clone https://github.com/CANopenTerm/codb2json.git
-cd codb2json
-```
-
-2. Build the project using CMake:
-
-```bash
-mkdir build
-cmake -S . -B build
-cmake --build build
-```
+`codb2json` is part of CANopenTerm.
 
 ## Usage
 
