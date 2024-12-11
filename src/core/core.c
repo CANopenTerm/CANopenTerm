@@ -80,8 +80,6 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
         python_pdo_init();
         python_sdo_init();
         python_test_init();
-
-        /* PicoC is initialised when calling script_run(). */
     }
     else
     {
@@ -93,7 +91,7 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
 
     /* Initialise CAN. */
     (*core)->is_running = IS_TRUE;
-    can_init((*core));
+    can_init((*core)); /* Must becalled AFTER is_running has been set to IS_TRUE! */
 
     return status;
 }

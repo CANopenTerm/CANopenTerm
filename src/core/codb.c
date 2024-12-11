@@ -31,6 +31,7 @@ void codb_init(void)
     }
 }
 
+/* Can be used like codb_init(), when no scheduler is available. */
 int codb_init_ex(void* unused)
 {
     FILE_t* file;
