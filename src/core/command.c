@@ -10,6 +10,7 @@
 #include "can.h"
 #include "core.h"
 #include "command.h"
+#include "dict.h"
 #include "eds.h"
 #include "nmt.h"
 #include "os.h"
@@ -87,6 +88,7 @@ void parse_command(char* input, core_t* core)
     else if (0 == os_strncmp(token, "d", 1))
     {
         uint32 file_no;
+        uint32 sub_index;
 
         token = os_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -97,7 +99,16 @@ void parse_command(char* input, core_t* core)
 
         convert_token_to_uint(token, &file_no);
 
-        load_codb(file_no);
+        token = os_strtokr(input_savptr, delim, &input_savptr);
+        if (NULL == token)
+        {
+            load_codb(file_no);
+        }
+        else
+        {
+            convert_token_to_uint(token, &sub_index);
+            os_printf("%s\n", dict_lookup(file_no, sub_index));
+        }
     }
     else if (0 == os_strncmp(token, "q", 1))
     {
@@ -431,7 +442,7 @@ static void convert_token_to_uint64(char* token, uint64* result)
 status_t print_usage_information(bool_t show_all)
 {
     status_t status;
-    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 45, 16 };
+    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 45, 17 };
 
     status = table_init(&table, 1024);
     table_print_header(&table);
@@ -441,12 +452,13 @@ status_t print_usage_information(bool_t show_all)
 
     if (IS_TRUE == show_all)
     {
-        table_print_row(" b ", "(identifer)",                               "Set baud rate",    &table);
-        table_print_row(" d ", "[file_no]",                                 "Load data base",   &table);
-        table_print_row(" y ", "(identifer)",                               "Set CAN channel",  &table);
-        table_print_row(" c ", " ",                                         "Clear output",     &table);
-        table_print_row(" l ", " ",                                         "List scripts",     &table);
-        table_print_row("(s)", "[identifier](.lua)",                        "Run script",       &table);
+        table_print_row(" b ", "(identifer)",                               "Set baud rate",     &table);
+        table_print_row(" d ", "[file_no]",                                 "Load data base",    &table);
+        table_print_row(" d ", "[index] [sub_index]",                       "Lookup dictionary", &table);
+        table_print_row(" y ", "(identifer)",                               "Set CAN channel",   &table);
+        table_print_row(" c ", " ",                                         "Clear output",      &table);
+        table_print_row(" l ", " ",                                         "List scripts",      &table);
+        table_print_row("(s)", "[identifier](.lua)",                        "Run script",        &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);
