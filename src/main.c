@@ -65,6 +65,11 @@ int main(int argc, char* argv[])
         {
             is_plain_mode = IS_TRUE;
         }
+        else if (2 == argc)
+        {
+            script        = argv[1];
+            is_plain_mode = IS_TRUE;
+        }
         else
         {
             os_printf("Usage: %s [OPTION]\n\n", argv[0]);
