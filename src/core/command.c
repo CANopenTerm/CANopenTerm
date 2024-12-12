@@ -398,29 +398,6 @@ void parse_command(char* input, core_t* core)
         }
         run_script(token, core);
     }
-    else if (0 == os_strncmp(token, "t", 1))
-    {
-        uint32 node_id;
-        uint32 file_no;
-
-        token = os_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
-        {
-            print_usage_information(IS_TRUE);
-            return;
-        }
-        convert_token_to_uint(token, &node_id);
-
-        token = os_strtokr(input_savptr, delim, &input_savptr);
-        if (NULL == token)
-        {
-            list_eds();
-            return;
-        }
-        convert_token_to_uint(token, &file_no);
-
-        validate_eds(file_no, NULL, node_id);
-    }
     else
     {
         print_usage_information(IS_FALSE);
@@ -470,7 +447,6 @@ status_t print_usage_information(bool_t show_all)
         table_print_row(" c ", " ",                                         "Clear output",     &table);
         table_print_row(" l ", " ",                                         "List scripts",     &table);
         table_print_row("(s)", "[identifier](.lua)",                        "Run script",       &table);
-        table_print_row(" t ", "[node_id] [file no.]",                      "Conformance test", &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);

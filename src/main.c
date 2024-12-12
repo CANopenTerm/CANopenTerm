@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include "can.h"
 #include "core.h"
-#include "eds.h"
 #include "os.h"
 #include "scripts.h"
 
@@ -22,7 +21,6 @@ int main(int argc, char* argv[])
 {
     bool_t   is_plain_mode   = IS_FALSE;
     char*    can_interface   = DEFAULT_CAN_INTERFACE;
-    char*    eds_file        = NULL;
     char*    script          = NULL;
     int      i;
     int      status          = EXIT_SUCCESS;
@@ -36,12 +34,6 @@ int main(int argc, char* argv[])
         if (0 == os_strcmp(argv[i], "-s") && (i + 1) < argc)
         {
             script = argv[++i];
-        }
-        else if (0 == os_strcmp(argv[i], "-t"))
-        {
-            script        = NULL;
-            eds_file      = argv[++i];
-            is_plain_mode = IS_TRUE;
         }
         else if (0 == os_strcmp(argv[i], "-i") && (i + 1) < argc)
         {
@@ -77,7 +69,6 @@ int main(int argc, char* argv[])
         {
             os_printf("Usage: %s [OPTION]\n\n", argv[0]);
             os_printf("    -s SCRIPT         Run script (.lua can be ommited)\n");
-            os_printf("    -t EDS            Run EDS conformance test (implies -p)\n");
             os_printf("    -i INTERFACE      Set CAN interface\n");
             os_printf("    -b BAUD           Set baud rate\n");
             os_printf("                        0 = 1 MBit/s\n");
@@ -105,11 +96,6 @@ int main(int argc, char* argv[])
     if (script != NULL)
     {
         run_script(script, core);
-        core->is_running = IS_FALSE;
-    }
-    else if (eds_file != NULL)
-    {
-        run_conformance_test(eds_file, NULL, node_id, TERM_MODE);
         core->is_running = IS_FALSE;
     }
 
