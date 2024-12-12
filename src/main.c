@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include "can.h"
+#include "ctt.h"
 #include "core.h"
 #include "os.h"
 #include "scripts.h"
@@ -20,6 +21,7 @@ core_t* core = NULL;
 int main(int argc, char* argv[])
 {
     bool_t   is_plain_mode   = IS_FALSE;
+    bool_t   run_cct         = IS_FALSE;
     char*    can_interface   = DEFAULT_CAN_INTERFACE;
     char*    script          = NULL;
     int      i;
@@ -29,60 +31,73 @@ int main(int argc, char* argv[])
 
     core_register_ctrl_c_handler();
 
-    for (i = 1; i < argc; i++)
+    if (argc > 1 && (argv[1][0] != '-') && (2 == argc))
     {
-        if (0 == os_strcmp(argv[i], "-s") && (i + 1) < argc)
+        script        = argv[1];
+        is_plain_mode = IS_TRUE;
+    }
+    else
+    {
+        for (i = 1; i < argc; i++)
         {
-            script = argv[++i];
-        }
-        else if (0 == os_strcmp(argv[i], "-i") && (i + 1) < argc)
-        {
-            can_interface = argv[++i];
-        }
-        else if (0 == os_strcmp(argv[i], "-b") && (i + 1) < argc)
-        {
-            char* endptr;
-
-            baud_rate_index = (uint8)os_strtol(argv[++i], &endptr, 0);
-            if (baud_rate_index > 13 || *endptr != '\0')
+            if (0 == os_strcmp(argv[i], "-s") && (i + 1) < argc)
             {
-                os_printf("Invalid baud rate.  Must be between 0 and 13.\n");
+                script = argv[++i];
+            }
+            else if (0 == os_strcmp(argv[i], "-i") && (i + 1) < argc)
+            {
+                can_interface = argv[++i];
+            }
+            else if (0 == os_strcmp(argv[i], "-b") && (i + 1) < argc)
+            {
+                char* endptr;
+
+                baud_rate_index = (uint8)os_strtol(argv[++i], &endptr, 0);
+                if (baud_rate_index > 13 || *endptr != '\0')
+                {
+                    os_printf("Invalid baud rate.  Must be between 0 and 13.\n");
+                    exit(EXIT_FAILURE);
+                }
+            }
+            else if (0 == os_strcmp(argv[i], "-n") && (i + 1) < argc)
+            {
+                char* endptr;
+
+                node_id = (uint32)os_strtol(argv[++i], &endptr, 0);
+                if (node_id < 1 || node_id > 127 || *endptr != '\0')
+                {
+                    os_printf("Invalid node ID.  Must be between 0x01 and 0x7F.\n");
+                    exit(EXIT_FAILURE);
+                }
+            }
+            else if (0 == os_strcmp(argv[i], "-p"))
+            {
+                is_plain_mode = IS_TRUE;
+            }
+            else if (0 == os_strcmp(argv[i], "-t"))
+            {
+                run_cct       = IS_TRUE;
+                is_plain_mode = IS_TRUE;
+            }
+            else
+            {
+                os_printf("Usage: %s [OPTION]\n\n", argv[0]);
+                os_printf("    SCRIPT            Run script, implies -p\n");
+                os_printf("                      Can't be combined with other options\n\n");
+                os_printf("    -s SCRIPT         Run script (.lua can be ommited)\n");
+                os_printf("    -i INTERFACE      Set CAN interface\n");
+                os_printf("    -b BAUD           Set baud rate\n");
+                os_printf("                        0 = 1 MBit/s\n");
+                os_printf("                        2 = 500 kBit/s\n");
+                os_printf("                        3 = 250 kBit/s\n");
+                os_printf("                        4 = 125 kBit/s\n");
+                os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
+                os_printf("    -p                Run in plain mode\n");
+                os_printf("    -t                Run conformance test, implies -p\n");
+                /* os_printf("    -e EDS_FILE       Test EDS file, implies -t\n"); */
+
                 exit(EXIT_FAILURE);
             }
-        }
-        else if (0 == os_strcmp(argv[i], "-n") && (i + 1) < argc)
-        {
-            char* endptr;
-
-            node_id = (uint32)os_strtol(argv[++i], &endptr, 0);
-            if (node_id < 1 || node_id > 127 || *endptr != '\0')
-            {
-                os_printf("Invalid node ID.  Must be between 0x01 and 0x7F.\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if (0 == os_strcmp(argv[i], "-p"))
-        {
-            is_plain_mode = IS_TRUE;
-        }
-        else if (2 == argc)
-        {
-            script        = argv[1];
-            is_plain_mode = IS_TRUE;
-        }
-        else
-        {
-            os_printf("Usage: %s [OPTION]\n\n", argv[0]);
-            os_printf("    -s SCRIPT         Run script (.lua can be ommited)\n");
-            os_printf("    -i INTERFACE      Set CAN interface\n");
-            os_printf("    -b BAUD           Set baud rate\n");
-            os_printf("                        0 = 1 MBit/s\n");
-            os_printf("                        2 = 500 kBit/s\n");
-            os_printf("                        3 = 250 kBit/s\n");
-            os_printf("                        4 = 125 kBit/s\n");
-            os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
-            os_printf("    -p                Run in plain mode\n");
-            exit(EXIT_FAILURE);
         }
     }
 
@@ -98,7 +113,12 @@ int main(int argc, char* argv[])
         can_set_baud_rate(baud_rate_index, core);
     }
 
-    if (script != NULL)
+    if (IS_TRUE == run_cct)
+    {
+        cct_run_test(node_id);
+        core->is_running = IS_FALSE;
+    }
+    else if (script != NULL)
     {
         run_script(script, core);
         core->is_running = IS_FALSE;

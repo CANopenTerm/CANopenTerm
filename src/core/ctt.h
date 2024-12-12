@@ -10,4 +10,6 @@
 #ifndef CTT_H
 #define CTT_H
 
+status_t cct_run_test(uint32 node_id);
+
 #endif /* CTT_H */
