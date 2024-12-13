@@ -461,13 +461,13 @@ status_t print_usage_information(bool_t show_all)
         table_print_row("(s)", "[identifier](.lua)",                        "Run script",        &table);
     }
 
-    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command", &table);
-    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",    &table);
-    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",   &table);
-    table_print_row(" w ", "[node_id] [index] [sub_index] [\"data\"]",      "Write SDO",   &table);
-    table_print_row(" p ", "add [can_id] [event_time_ms] [length] [data]",  "Add TPDO",    &table);
-    table_print_row(" p ", "del [can_id]",                                  "Remove TPDO", &table);
-    table_print_row(" q ", " ",                                             "Quit",        &table);
+    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",     &table);
+    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",        &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",       &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [\"data\"]",      "Write SDO",       &table);
+    table_print_row(" p ", "add [can_id] [event_time_ms] [length] [data]",  "Add PDO (tx)",    &table);
+    table_print_row(" p ", "del [can_id]",                                  "Remove PDO (tx)", &table);
+    table_print_row(" q ", " ",                                             "Quit",            &table);
     table_print_footer(&table);
     table_flush(&table);
 
