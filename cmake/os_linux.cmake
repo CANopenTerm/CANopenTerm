@@ -137,7 +137,7 @@ set(POCKETPY_VERSION     "2.0.3")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
-set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.so)
+set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.a)
 
 ExternalProject_Add(pocketpy_devel
     URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
@@ -260,6 +260,7 @@ set(PLATFORM_LIBS
     history)
 
 set(PLATFORM_CORE_DEPS
+    cJSON_devel
     inih_devel
     Lua_devel
     pocketpy_devel
