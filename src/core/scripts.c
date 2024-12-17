@@ -417,7 +417,35 @@ status_t run_script_ex(char *name, core_t *core)
         file = os_fopen(script_path, "r");
         if (NULL == file)
         {
-            status = OS_FILE_NOT_FOUND;
+            os_snprintf(script_path, sizeof(script_path), "%s.py", name);
+
+            os_fix_path(script_path);
+            file = os_fopen(script_path, "r");
+            if (NULL == file)
+            {
+                status = OS_FILE_NOT_FOUND;
+            }
+            else
+            {
+                size_t size;
+                char* buffer;
+
+                os_fseek(file, 0, SEEK_END);
+                size = os_ftell(file);
+                os_fseek(file, 0, SEEK_SET);
+                buffer = os_calloc(size + 1, sizeof(char));
+                size = os_fread(buffer, 1, size, file);
+                buffer[size] = 0;
+
+                if (IS_FALSE == py_exec(buffer, script_path, EXEC_MODE, NULL))
+                {
+                    py_printexc();
+                    status = SCRIPT_ERROR;
+                }
+
+                os_free(buffer);
+                os_fclose(file);
+            }
         }
         else
         {
