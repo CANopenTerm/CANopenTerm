@@ -24,7 +24,6 @@ int main(int argc, char* argv[])
     bool_t   run_cct         = IS_FALSE;
     char*    can_interface   = DEFAULT_CAN_INTERFACE;
     char*    script          = NULL;
-    int      i;
     int      status          = EXIT_SUCCESS;
     uint32   node_id         = 0x01;
     uint8    baud_rate_index = 0;
@@ -38,6 +37,8 @@ int main(int argc, char* argv[])
     }
     else
     {
+        int i;
+
         for (i = 1; i < argc; i++)
         {
             if (0 == os_strcmp(argv[i], "-s") && (i + 1) < argc)

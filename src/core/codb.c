@@ -164,22 +164,17 @@ const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char*
                 }
                 else
                 {
-                    object_desc    = NULL;
-                    sub_index_desc = NULL;
                     return NULL;
                 }
             }
 
             os_snprintf(desc, sizeof(desc), "%s", obj_desc->valuestring);
             os_snprintf(object_desc, CODB_MAX_DESC_LEN, "%s", obj_desc->valuestring);
-            sub_index_desc = NULL;
 
             return desc;
         }
     }
 
-    object_desc    = NULL;
-    sub_index_desc = NULL;
     return NULL;
 }
 
