@@ -89,6 +89,11 @@ void can_deinit(core_t* core)
     CAN_Uninitialize(peak_can_channel);
 }
 
+void can_flush(void)
+{
+    CAN_Reset(peak_can_channel);
+}
+
 status_t can_print_baud_rate_help(core_t* core)
 {
     status_t     status;

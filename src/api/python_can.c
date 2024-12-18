@@ -18,6 +18,7 @@ typedef bool (*py_CFunction)(int argc, py_Ref argv);
 bool py_dict_lookup_raw(int argc, py_Ref argv);
 bool py_can_write(int argc, py_Ref argv);
 bool py_can_read(int argc, py_Ref argv);
+bool py_can_flush(int argc, py_Ref argv);
 
 void python_can_init(void)
 {
@@ -26,7 +27,8 @@ void python_can_init(void)
     py_bind(mod, "dict_lookup_raw(can_id, data_length, data=0)", py_dict_lookup_raw);
     py_bind(mod, "can_write(can_id, data_length, data=0, is_extended=False, show_output=False, comment=\"\")", py_can_write);
 
-    py_bindfunc(mod, "can_read", py_can_read);
+    py_bindfunc(mod, "can_read",  py_can_read);
+    py_bindfunc(mod, "can_flush", py_can_flush);
 }
 
 
@@ -197,5 +199,12 @@ bool py_can_read(int argc, py_Ref argv)
         py_newnone(py_retval());
     }
 
+    return IS_TRUE;
+}
+
+bool py_can_flush(int argc, py_Ref argv)
+{
+    PY_CHECK_ARGC(0);
+    can_flush();
     return IS_TRUE;
 }

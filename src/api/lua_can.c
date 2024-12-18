@@ -121,6 +121,12 @@ int lua_can_read(lua_State *L)
     }
 }
 
+int lua_can_flush(lua_State* L)
+{
+    can_flush();
+    return 0;
+}
+
 int lua_dict_lookup_raw(lua_State* L)
 {
     uint32        can_status;
@@ -161,6 +167,8 @@ void lua_register_can_commands(core_t *core)
     lua_setglobal(core->L, "can_write");
     lua_pushcfunction(core->L, lua_can_read);
     lua_setglobal(core->L, "can_read");
+    lua_pushcfunction(core->L, lua_can_flush);
+    lua_setglobal(core->L, "can_flush");
     lua_pushcfunction(core->L, lua_dict_lookup_raw);
     lua_setglobal(core->L, "dict_lookup_raw");
 }

@@ -79,6 +79,7 @@ local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, 
     end
 end
 
+can_flush()
 print("\nTime         CAN-ID  Length  Data                     Description")
 
 trace_filename = generate_trace_filename()

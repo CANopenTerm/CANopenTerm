@@ -602,6 +602,24 @@ if can_write(0x5454, 8, 0x1122334455667788, False, True, "SPAM"):
 ```
 <!-- tabs:end -->
 
+### can_flush()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Flush receive and transmit queues.
+
+```lua
+can_flush ()
+```
+
+<!-- tab:Example -->
+```lua
+can_flush()
+```
+<!-- tabs:end -->
+
+**Returns**: Nothing.
+
 ### dict_lookup_raw()
 
 <!-- tabs:start -->

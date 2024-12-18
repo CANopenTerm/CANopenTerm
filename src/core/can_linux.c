@@ -59,6 +59,11 @@ void can_deinit(core_t* core)
     close(can_socket);
 }
 
+void can_flush(void)
+{
+    /* To be implemented. */
+}
+
 status_t can_print_baud_rate_help(core_t* core)
 {
     buffer_init(1024);
