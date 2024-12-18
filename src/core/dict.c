@@ -12,6 +12,7 @@
 #include "core.h"
 #include "dict.h"
 #include "sdo.h"
+#include "table.h"
 
 static const emcy_entry_t emcy_table[] =
 {
@@ -72,6 +73,96 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
     }
 
     return "";
+}
+
+status_t dict_lookup_object(uint16 index, uint8 sub_index)
+{
+    status_t        status = ALL_OK;
+
+    char            object_name[CODB_MAX_DESC_LEN] = { 0 };
+    obj_code_t      object_code;
+    data_type_t     object_data_type;
+    obj_kind_t      object_category;
+    obj_attr_type_t object_attribute;
+
+    char            sub_index_name[CODB_MAX_DESC_LEN] = { 0 };
+    acc_type_t      sub_index_access_type;
+    bool_t          sub_index_pdo_mapping;
+    obj_attr_type_t sub_index_attribute;
+
+    table_t         object_table;
+    table_t         sub_index_table;
+
+    if (IS_TRUE == is_codb_loaded())
+    {
+        (void)codb_desc_lookup_ex(codb_get_profile(), index, sub_index, object_name, sub_index_name);
+    }
+
+    if (IS_TRUE == is_ds301_loaded())
+    {
+        (void)codb_desc_lookup_ex(codb_get_ds301_profile(), index, sub_index, object_name, sub_index_name);
+    }
+
+    if ((object_name[0] != '\0') || (sub_index_name[0] != '\0'))
+    {
+        os_printf("\n");
+    }
+
+    if (object_name[0] != '\0')
+    {
+        object_table.frame_color    = DARK_CYAN;
+        object_table.text_color     = DEFAULT_COLOR;
+        object_table.column_a_width = 11;
+        object_table.column_b_width = os_strlen(object_name);
+        object_table.column_c_width = 1;
+
+        status = table_init(&object_table, 1024);
+        if (ALL_OK == status)
+        {
+            char buffer[6] = { 0 };
+            os_printf("OBJECT DESCRIPTION");
+            os_snprintf(buffer, sizeof(buffer), "%04Xh", index);
+
+            table_print_header(&object_table);
+            table_print_row("Index",       buffer,      "O", &object_table);
+            table_print_row("Entry count", " ",         "B", &object_table);
+            table_print_row("Name",        object_name, "J", &object_table);
+            table_print_row("Object code", " ",         "E", &object_table);
+            table_print_row("Data type",   " ",         "C",  &object_table);
+            table_print_row("Category",    " ",         "T",  &object_table);
+            table_print_footer(&object_table);
+            table_flush(&object_table);
+        }
+    }
+
+    if (sub_index_name[0] != '\0')
+    {
+        sub_index_table.frame_color    = DARK_CYAN;
+        sub_index_table.text_color     = DEFAULT_COLOR;
+        sub_index_table.column_a_width = 13;
+        sub_index_table.column_b_width = os_strlen(sub_index_name);
+        sub_index_table.column_c_width = 1;
+
+        status = table_init(&sub_index_table, 1024);
+        if (ALL_OK == status)
+        {
+            char buffer[4] = { 0 };
+            os_printf("ENTRY DESCRIPTION");
+            os_snprintf(buffer, sizeof(buffer), "%02Xh", sub_index);
+
+            table_print_header(&sub_index_table);
+            table_print_row("Sub-index",     buffer,         "E", &sub_index_table);
+            table_print_row("Name",          sub_index_name, "N", &sub_index_table);
+            table_print_row("Access",        " ",            "T", &sub_index_table);
+            table_print_row("PDO mapping",   " ",            "R", &sub_index_table);
+            table_print_row("Value range",   " ",            "Y", &sub_index_table);
+            table_print_row("Default value", " ",            " ", &sub_index_table);
+            table_print_footer(&sub_index_table);
+            table_flush(&sub_index_table);
+        }
+    }
+
+    return status;
 }
 
 const char* dict_lookup_raw(can_message_t* message)

@@ -107,7 +107,7 @@ void parse_command(char* input, core_t* core)
         else
         {
             convert_token_to_uint(token, &sub_index);
-            os_printf("%s\n", dict_lookup(file_no, sub_index));
+            (void)dict_lookup_object(file_no, sub_index);
         }
     }
     else if (0 == os_strncmp(token, "q", 1))

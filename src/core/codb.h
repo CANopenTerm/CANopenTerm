@@ -13,6 +13,8 @@
 #include "cJSON.h"
 #include "os.h"
 
+#define CODB_MAX_DESC_LEN 256
+
 typedef enum obj_attr_type
 {
     EMPTY,
@@ -87,6 +89,7 @@ typedef cJSON codb_t;
 void        codb_init(void);
 void        codb_deinit(void);
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index);
+const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char* object_desc, char* sub_index_desc);
 codb_t*     codb_get_ds301_profile(void);
 codb_t*     codb_get_profile(void);
 bool_t      is_ds301_loaded(void);

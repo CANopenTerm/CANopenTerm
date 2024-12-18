@@ -111,10 +111,18 @@ void codb_deinit(void)
 
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)
 {
+    char object_desc[256] = { 0 };
+    char sub_desc[256]    = { 0 };
+
+    return codb_desc_lookup_ex(db, index, sub_index, object_desc, sub_desc);
+}
+
+const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char* object_desc, char* sub_index_desc)
+{
     cJSON*      object    = NULL;
     static char desc[256] = { 0 };
 
-    if (NULL == db)
+    if (NULL == db || NULL == object_desc || NULL == sub_index_desc)
     {
         return NULL;
     }
@@ -149,20 +157,29 @@ const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)
                         {
                             os_snprintf(desc, sizeof(desc), "%s, %s", obj_desc->valuestring, sub_desc->valuestring);
                         }
+                        os_snprintf(object_desc,    CODB_MAX_DESC_LEN, "%s", obj_desc->valuestring);
+                        os_snprintf(sub_index_desc, CODB_MAX_DESC_LEN, "%s", sub_desc->valuestring);
                         return desc;
                     }
                 }
                 else
                 {
+                    object_desc    = NULL;
+                    sub_index_desc = NULL;
                     return NULL;
                 }
             }
 
             os_snprintf(desc, sizeof(desc), "%s", obj_desc->valuestring);
+            os_snprintf(object_desc, CODB_MAX_DESC_LEN, "%s", obj_desc->valuestring);
+            sub_index_desc = NULL;
+
             return desc;
         }
     }
 
+    object_desc    = NULL;
+    sub_index_desc = NULL;
     return NULL;
 }
 
@@ -191,7 +208,7 @@ void list_codb(void)
     const char* data_path      = os_find_data_path();
     char        file_path[512] = { 0 };
     DIR_t*      d;
-    table_t     table          = { DARK_CYAN, DARK_WHITE, 3, 57, 1 };
+    table_t     table          = { DARK_CYAN, DEFAULT_COLOR, 3, 57, 1 };
     status_t    status;
 
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
