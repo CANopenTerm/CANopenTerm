@@ -80,6 +80,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     status_t        status = ALL_OK;
 
     char            object_name[CODB_MAX_DESC_LEN] = { 0 };
+    uint8           object_entry_count             = 0;
     obj_code_t      object_code;
     data_type_t     object_data_type;
     obj_kind_t      object_category;
@@ -119,13 +120,14 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
         status = table_init(&object_table, 1024);
         if (ALL_OK == status)
         {
-            char buffer[6] = { 0 };
+            char buffer[CODB_MAX_DESC_LEN] = { 0 };
             os_printf("OBJECT DESCRIPTION");
-            os_snprintf(buffer, sizeof(buffer), "%04Xh", index);
 
+            os_snprintf(buffer, sizeof(buffer), "%04Xh", index);
             table_print_header(&object_table);
             table_print_row("Index",       buffer,      "O", &object_table);
-            table_print_row("Entry count", " ",         "B", &object_table);
+            os_snprintf(buffer, sizeof(buffer), "%u", object_entry_count);
+            table_print_row("Entry count", buffer,      "B", &object_table);
             table_print_row("Name",        object_name, "J", &object_table);
             table_print_row("Object code", " ",         "E", &object_table);
             table_print_row("Data type",   " ",         "C",  &object_table);
@@ -146,7 +148,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
         status = table_init(&sub_index_table, 1024);
         if (ALL_OK == status)
         {
-            char buffer[4] = { 0 };
+            char buffer[CODB_MAX_DESC_LEN] = { 0 };
             os_printf("ENTRY DESCRIPTION");
             os_snprintf(buffer, sizeof(buffer), "%02Xh", sub_index);
 
