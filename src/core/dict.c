@@ -133,13 +133,14 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
         os_snprintf(buffer, sizeof(buffer), "%s", object_code_lookup[info.code]);
 
         table_print_row("Object code", buffer, "E", &object_table);
+
         if (IS_VAR == info.code)
         {
             os_snprintf(buffer, sizeof(buffer), "%s", data_type_lookup[info.data_type]);
         }
         else
         {
-            os_snprintf(buffer, sizeof(buffer), " ");
+            os_snprintf(buffer, sizeof(buffer), "-");
         }
 
         table_print_row("Data type", buffer, "C", &object_table);
