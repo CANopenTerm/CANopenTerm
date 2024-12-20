@@ -111,7 +111,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     object_table.frame_color    = DARK_CYAN;
     object_table.text_color     = DEFAULT_COLOR;
     object_table.column_a_width = 11;
-    object_table.column_b_width = os_strlen(info.name);
+    object_table.column_b_width = object_table_width;
     object_table.column_c_width = 1;
 
     status = table_init(&object_table, 1024);

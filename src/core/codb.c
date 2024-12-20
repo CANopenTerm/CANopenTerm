@@ -246,7 +246,6 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
         cJSON* json_index = cJSON_GetObjectItem(object, "index");
         if (json_index != NULL && json_index->valueint == index)
         {
-            int    num_sub_indices;
             cJSON* obj_desc      = cJSON_GetObjectItem(object,   "desc");
             cJSON* sub_indices   = cJSON_GetObjectItem(object,   "sub_indices");
             cJSON* obj_code      = cJSON_GetObjectItem(object,   "code");
@@ -270,9 +269,9 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
 
             if (sub_indices != NULL)
             {
-                cJSON* sub_index_item = cJSON_GetArrayItem(sub_indices, sub_index);
+                cJSON* sub_index_item  = cJSON_GetArrayItem(sub_indices, sub_index);
+                int    num_sub_indices = cJSON_GetArraySize(sub_indices);
 
-                num_sub_indices = cJSON_GetArraySize(sub_indices);
                 if (num_sub_indices > info->entry_count)
                 {
                     info->entry_count = num_sub_indices;
