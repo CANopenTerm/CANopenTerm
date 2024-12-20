@@ -8,6 +8,7 @@
  **/
 
 #include <windows.h>
+
 #include "PCANBasic.h"
 #include "can.h"
 #include "core.h"
@@ -27,8 +28,7 @@ static TPCANBaudrate baud_rates[] = {
     PCAN_BAUD_33K,
     PCAN_BAUD_20K,
     PCAN_BAUD_10K,
-    PCAN_BAUD_5K
-};
+    PCAN_BAUD_5K};
 
 static const char* baud_rate_desc[] = {
     "1 MBit/s",
@@ -44,13 +44,12 @@ static const char* baud_rate_desc[] = {
     "33.333 kBit/s",
     "20 kBit/s",
     "10 kBit/s",
-    "5 kBit/s"
-};
+    "5 kBit/s"};
 
 static TPCANHandle              peak_can_channel;
 static TPCANChannelInformation* pcan_channel_information = NULL;
 static uint32                   pcan_channel_count;
-static char                     err_message[100] = { 0 };
+static char                     err_message[100] = {0};
 
 static int      can_monitor(void* core);
 static status_t search_can_channels(void);
@@ -97,9 +96,9 @@ void can_flush(void)
 status_t can_print_baud_rate_help(core_t* core)
 {
     status_t     status;
-    table_t      table = { DARK_CYAN, DARK_WHITE, 3, 13, 6 };
-    char         br_status[14][7] = { 0 };
-    unsigned int br_status_index = core->baud_rate;
+    table_t      table            = {DARK_CYAN, DARK_WHITE, 3, 13, 6};
+    char         br_status[14][7] = {0};
+    unsigned int br_status_index  = core->baud_rate;
     unsigned int index;
 
     if (br_status_index >= 13)
@@ -123,8 +122,8 @@ status_t can_print_baud_rate_help(core_t* core)
     if (ALL_OK == status)
     {
         int  i;
-        char row_index[4] = { 0 };
-        char row_desc[14] = { 0 };
+        char row_index[4] = {0};
+        char row_desc[14] = {0};
 
         table_print_header(&table);
         table_print_row("Id.", "Description", "Status", &table);
@@ -147,8 +146,8 @@ status_t can_print_baud_rate_help(core_t* core)
 status_t can_print_channel_help(core_t* core)
 {
     status_t     status;
-    table_t      table            = { DARK_CYAN, DARK_WHITE, 3, 30, 6 };
-    char         ch_status[33][7] = { 0 };
+    table_t      table            = {DARK_CYAN, DARK_WHITE, 3, 30, 6};
+    char         ch_status[33][7] = {0};
     unsigned int ch_status_index  = core->can_channel;
     unsigned int index;
 
@@ -179,8 +178,8 @@ status_t can_print_channel_help(core_t* core)
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
-        char row_index[4]                            = { 0 };
-        char row_desc[MAX_LENGTH_HARDWARE_NAME + 16] = { 0 };
+        char row_index[4]                            = {0};
+        char row_desc[MAX_LENGTH_HARDWARE_NAME + 16] = {0};
 
         table_print_header(&table);
         table_print_row("Id.", "Description", "Status", &table);
@@ -231,7 +230,7 @@ void can_quit(core_t* core)
 uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
     int      index;
-    TPCANMsg pcan_message = { 0 };
+    TPCANMsg pcan_message = {0};
 
     /* Not yet implemented. */
     (void)disp_mode;
@@ -261,18 +260,16 @@ uint32 can_read(can_message_t* message)
 {
     int            index;
     uint32         can_status;
-    TPCANMsg       pcan_message   = { 0 };
-    TPCANTimestamp pcan_timestamp = { 0 };
+    TPCANMsg       pcan_message   = {0};
+    TPCANTimestamp pcan_timestamp = {0};
 
     can_status = CAN_Read(peak_can_channel, &pcan_message, &pcan_timestamp);
 
-    message->id           = pcan_message.ID;
-    message->length       = pcan_message.LEN;
-    message->is_extended  = (PCAN_MESSAGE_EXTENDED == pcan_message.MSGTYPE) ? IS_TRUE : IS_FALSE;
+    message->id          = pcan_message.ID;
+    message->length      = pcan_message.LEN;
+    message->is_extended = (PCAN_MESSAGE_EXTENDED == pcan_message.MSGTYPE) ? IS_TRUE : IS_FALSE;
     message->timestamp_us =
-        pcan_timestamp.micros
-        + (1000ULL * pcan_timestamp.millis)
-        + (0x100000000ULL * 1000ULL * pcan_timestamp.millis_overflow);
+        pcan_timestamp.micros + (1000ULL * pcan_timestamp.millis) + (0x100000000ULL * 1000ULL * pcan_timestamp.millis_overflow);
 
     for (index = 0; index < 8; index += 1)
     {

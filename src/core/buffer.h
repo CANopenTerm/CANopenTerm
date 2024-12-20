@@ -14,7 +14,7 @@
 
 typedef struct
 {
-    char* buffer;
+    char*  buffer;
     size_t size;
     size_t capacity;
     bool_t use_buffer;

@@ -7,9 +7,9 @@
  *
  **/
 
+#include "test_report.h"
 #include "core.h"
 #include "os.h"
-#include "test_report.h"
 
 static uint32          num_results = 0;
 static test_result_t** results     = NULL;
@@ -35,7 +35,7 @@ status_t test_init(void)
 void test_add_result(test_result_t* result)
 {
     num_results = num_results + 1;
-    results = (test_result_t**)os_realloc(results, sizeof(test_result_t*) * (num_results));
+    results     = (test_result_t**)os_realloc(results, sizeof(test_result_t*) * (num_results));
 
     if (NULL == results)
     {
@@ -142,7 +142,7 @@ status_t test_generate_report(const char* file_name)
 
         for (i = 0; i < num_results; i++)
         {
-            char testsuit_name[512] = { 0 };
+            char testsuit_name[512] = {0};
 
             if (NULL == results[i]->package)
             {
@@ -156,7 +156,7 @@ status_t test_generate_report(const char* file_name)
 
             os_snprintf(testsuit_name, sizeof(testsuit_name), "%s.%s", results[i]->package, results[i]->class_name);
 
-            total_time = total_time + results[i]->time;
+            total_time                      = total_time + results[i]->time;
             results[i]->testsuite_name_hash = generate_hash((const unsigned char*)testsuit_name);
         }
 
@@ -169,8 +169,8 @@ status_t test_generate_report(const char* file_name)
                 if (results[i]->testsuite_name_hash > results[j]->testsuite_name_hash)
                 {
                     test_result_t* temp = results[i];
-                    results[i] = results[j];
-                    results[j] = temp;
+                    results[i]          = results[j];
+                    results[j]          = temp;
                 }
             }
         }
@@ -186,16 +186,16 @@ status_t test_generate_report(const char* file_name)
             float  suite_time        = 0.f;
 
             while (current_suite_end < num_results &&
-                results[current_suite_end]->testsuite_name_hash == results[current_suite_start]->testsuite_name_hash)
+                   results[current_suite_end]->testsuite_name_hash == results[current_suite_start]->testsuite_name_hash)
             {
                 suite_time += results[current_suite_end]->time;
                 current_suite_end += 1;
             }
 
             os_fprintf(file, "    <testsuite name=\"%s.%s\" time=\"%.6f\">\n",
-                results[current_suite_start]->package,
-                results[current_suite_start]->class_name,
-                suite_time);
+                       results[current_suite_start]->package,
+                       results[current_suite_start]->class_name,
+                       suite_time);
 
             for (i = current_suite_start; i < current_suite_end; i++)
             {
@@ -205,10 +205,10 @@ status_t test_generate_report(const char* file_name)
                 }
 
                 os_fprintf(file, "        <testcase name=\"%s\" classname=\"%s.%s\" time=\"%.6f\">\n",
-                    results[i]->test_name,
-                    results[i]->package,
-                    results[i]->class_name,
-                    results[i]->time);
+                           results[i]->test_name,
+                           results[i]->package,
+                           results[i]->class_name,
+                           results[i]->time);
 
                 if (IS_FALSE == results[i]->has_passed)
                 {
@@ -228,8 +228,8 @@ status_t test_generate_report(const char* file_name)
                     }
 
                     os_fprintf(file, "            <failure message=\"%s\" type=\"%s\">\n",
-                        results[i]->error_message,
-                        results[i]->error_type);
+                               results[i]->error_message,
+                               results[i]->error_type);
                     os_fprintf(file, "                %s\n", results[i]->call_stack);
                     os_fprintf(file, "            </failure>\n");
                 }

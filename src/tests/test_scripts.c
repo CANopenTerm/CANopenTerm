@@ -8,21 +8,22 @@
  **/
 
 #ifdef _WIN32
-#    include <direct.h>
-#    include <io.h>
-#    define _mkdir(dir, mode) _mkdir(dir)
+#include <direct.h>
+#include <io.h>
+#define _mkdir(dir, mode) _mkdir(dir)
 #else
-#    include <sys/stat.h>
-#    include <sys/types.h>
-#    define _mkdir(dir, mode) mkdir(dir, mode)
+#include <sys/stat.h>
+#include <sys/types.h>
+#define _mkdir(dir, mode) mkdir(dir, mode)
 #endif
 
+#include <errno.h>
+#include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <setjmp.h>
 #include <stdint.h>
 #include <string.h>
-#include <errno.h>
+
 #include "cmocka.h"
 #include "core.h"
 #include "os.h"
@@ -34,18 +35,18 @@ static int stdout_fd;
 
 static status_t test_python_script(const char* file_name);
 
-void test_has_valid_extension(void **state)
+void test_has_valid_extension(void** state)
 {
     (void)state;
 
-    assert_true(has_valid_extension("exceptional_script.lua")  == IS_TRUE);
-    assert_true(has_valid_extension("mediocre_script.py")      == IS_TRUE);
+    assert_true(has_valid_extension("exceptional_script.lua") == IS_TRUE);
+    assert_true(has_valid_extension("mediocre_script.py") == IS_TRUE);
     assert_true(has_valid_extension("totally_unsupported.tcl") == IS_FALSE);
 }
 
 void test_lua(void** state)
 {
-    core_t  core = { 0 };
+    core_t  core = {0};
     FILE_t* lua_file;
 
     (void)state;
@@ -455,8 +456,8 @@ void test_python_99_extras(void** state)
 static status_t test_python_script(const char* script_name)
 {
     status_t status;
-    core_t   core = { 0 };
-    char     script_path[1024] = { 0 };
+    core_t   core              = {0};
+    char     script_path[1024] = {0};
 
     os_snprintf(script_path, sizeof(script_path), "tests/%s", script_name);
 

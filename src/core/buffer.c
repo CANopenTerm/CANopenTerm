@@ -10,7 +10,7 @@
 #include "buffer.h"
 #include "os.h"
 
-static buffer_t buffer = { NULL, 0, 0, IS_FALSE };
+static buffer_t buffer = {NULL, 0, 0, IS_FALSE};
 
 void buffer_free()
 {
@@ -54,7 +54,7 @@ void buffer_write(const char* format, ...)
     if (buffer.size + required > buffer.capacity)
     {
         buffer.capacity = buffer.size + required + 1024;
-        buffer.buffer = (char*)os_realloc(buffer.buffer, buffer.capacity);
+        buffer.buffer   = (char*)os_realloc(buffer.buffer, buffer.capacity);
     }
 
     os_va_start(args, format);

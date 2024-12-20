@@ -7,48 +7,46 @@
  *
  **/
 
-#include "os.h"
+#include "dict.h"
 #include "codb.h"
 #include "core.h"
-#include "dict.h"
+#include "os.h"
 #include "sdo.h"
 #include "table.h"
 
-static const emcy_entry_t emcy_table[] =
-{
-    { 0x0000, "Error Reset or No Error" },
-    { 0x1000, "Generic Error" },
-    { 0x2000, "Current" },
-    { 0x2100, "Current, device input side" },
-    { 0x2200, "Current, inside the device" },
-    { 0x2300, "Current, device output side" },
-    { 0x3000, "Voltage" },
-    { 0x3100, "Mains Voltage" },
-    { 0x3200, "Voltage inside the device" },
-    { 0x3300, "Output Voltage" },
-    { 0x4000, "Temperature" },
-    { 0x4100, "Ambient Temperature" },
-    { 0x4200, "Device Temperature" },
-    { 0x5000, "Device Hardware" },
-    { 0x6000, "Device Software" },
-    { 0x6100, "Internal Software" },
-    { 0x6200, "User Software" },
-    { 0x6300, "Data Set" },
-    { 0x7000, "Additional Modules" },
-    { 0x8000, "Monitoring" },
-    { 0x8100, "Communication" },
-    { 0x8110, "CAN Overrun (Objects lost)" },
-    { 0x8120, "CAN in Error (Passive Mode)" },
-    { 0x8130, "Life Guard Error or Heartbeat Error" },
-    { 0x8140, "Recovered from Bus-Off" },
-    { 0x8150, "Transmit COB-ID collision" },
-    { 0x8200, "Protocol Error" },
-    { 0x8210, "PDO not processed due to length error" },
-    { 0x8220, "PDO length exceeded" },
-    { 0x9000, "External Error" },
-    { 0xF000, "Additional Functions" },
-    { 0xFF00, "Device Specific" }
-};
+static const emcy_entry_t emcy_table[] = {
+    {0x0000, "Error Reset or No Error"},
+    {0x1000, "Generic Error"},
+    {0x2000, "Current"},
+    {0x2100, "Current, device input side"},
+    {0x2200, "Current, inside the device"},
+    {0x2300, "Current, device output side"},
+    {0x3000, "Voltage"},
+    {0x3100, "Mains Voltage"},
+    {0x3200, "Voltage inside the device"},
+    {0x3300, "Output Voltage"},
+    {0x4000, "Temperature"},
+    {0x4100, "Ambient Temperature"},
+    {0x4200, "Device Temperature"},
+    {0x5000, "Device Hardware"},
+    {0x6000, "Device Software"},
+    {0x6100, "Internal Software"},
+    {0x6200, "User Software"},
+    {0x6300, "Data Set"},
+    {0x7000, "Additional Modules"},
+    {0x8000, "Monitoring"},
+    {0x8100, "Communication"},
+    {0x8110, "CAN Overrun (Objects lost)"},
+    {0x8120, "CAN in Error (Passive Mode)"},
+    {0x8130, "Life Guard Error or Heartbeat Error"},
+    {0x8140, "Recovered from Bus-Off"},
+    {0x8150, "Transmit COB-ID collision"},
+    {0x8200, "Protocol Error"},
+    {0x8210, "PDO not processed due to length error"},
+    {0x8220, "PDO length exceeded"},
+    {0x9000, "External Error"},
+    {0xF000, "Additional Functions"},
+    {0xFF00, "Device Specific"}};
 
 const char* dict_lookup(uint16 index, uint8 sub_index)
 {
@@ -117,7 +115,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     status = table_init(&object_table, 1024);
     if (ALL_OK == status)
     {
-        char buffer[CODB_MAX_DESC_LEN] = { 0 };
+        char buffer[CODB_MAX_DESC_LEN] = {0};
 
         os_printf("\nThe accuracy of the data has not been completely verified.\n");
         os_printf("\nOBJECT DESCRIPTION");
@@ -173,7 +171,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     status = table_init(&sub_index_table, 1024);
     if (ALL_OK == status)
     {
-        char buffer[CODB_MAX_DESC_LEN] = { 0 };
+        char buffer[CODB_MAX_DESC_LEN] = {0};
         os_printf("ENTRY DESCRIPTION");
         os_snprintf(buffer, sizeof(buffer), "%02Xh", sub_index);
 
@@ -230,7 +228,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
 
 const char* dict_lookup_raw(can_message_t* message)
 {
-    static char buffer[1024] = { 0 };
+    static char buffer[1024] = {0};
 
     uint32 id;
     uint32 length;
@@ -286,9 +284,9 @@ const char* dict_lookup_raw(can_message_t* message)
     /* SDO messages. */
     if ((id & 0x600) == 0x600)
     {
-        char* desc = NULL;
-        uint16       index = (data[2] << 8) | data[1];
-        uint8        sub_index = data[3];
+        char*  desc      = NULL;
+        uint16 index     = (data[2] << 8) | data[1];
+        uint8  sub_index = data[3];
 
         desc = (char*)dict_lookup(index, sub_index);
         if ('\0' == desc[0])

@@ -8,9 +8,10 @@
  **/
 
 #include <stdlib.h>
+
 #include "can.h"
-#include "ctt.h"
 #include "core.h"
+#include "ctt.h"
 #include "os.h"
 #include "scripts.h"
 
@@ -20,13 +21,13 @@ core_t* core = NULL;
 
 int main(int argc, char* argv[])
 {
-    bool_t   is_plain_mode   = IS_FALSE;
-    bool_t   run_cct         = IS_FALSE;
-    char*    can_interface   = DEFAULT_CAN_INTERFACE;
-    char*    script          = NULL;
-    int      status          = EXIT_SUCCESS;
-    uint32   node_id         = 0x01;
-    uint8    baud_rate_index = 0;
+    bool_t is_plain_mode   = IS_FALSE;
+    bool_t run_cct         = IS_FALSE;
+    char*  can_interface   = DEFAULT_CAN_INTERFACE;
+    char*  script          = NULL;
+    int    status          = EXIT_SUCCESS;
+    uint32 node_id         = 0x01;
+    uint8  baud_rate_index = 0;
 
     core_register_ctrl_c_handler();
 

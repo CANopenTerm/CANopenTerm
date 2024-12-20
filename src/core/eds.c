@@ -7,10 +7,10 @@
  *
  **/
 
+#include "eds.h"
 #include "can.h"
 #include "common.h"
 #include "core.h"
-#include "eds.h"
 #include "ini.h"
 #include "os.h"
 #include "sdo.h"
@@ -28,14 +28,14 @@ void list_eds(void)
 status_t run_conformance_test(const char* eds_path, const char* package, uint32 node_id, disp_mode_t disp_mode)
 {
     status_t status                = ALL_OK;
-    char     unavailable_subs[256] = { 0 };
-    char     base_name[64]         = { 0 };
+    char     unavailable_subs[256] = {0};
+    char     base_name[64]         = {0};
     int      err_count             = 0;
     int      error;
     int      i;
-    int      last_sub_index        = -1;
-    int      range_start           = -1;
-    uint16   current_index         = 0xFFFF;
+    int      last_sub_index = -1;
+    int      range_start    = -1;
+    uint16   current_index  = 0xFFFF;
 
     if (NULL == package)
     {
@@ -51,7 +51,7 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
     {
         /* Extract base name from path. */
         const char* base = os_strrchr(eds_path, '/');
-        char* dot;
+        char*       dot;
 
         if (base)
         {
@@ -95,10 +95,10 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
             uint64        start, end;
             float         time;
 
-            start    = os_clock();
-            state    = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
-            end      = os_clock();
-            time     = (float)(end - start) / CLOCKS_PER_SECOND;
+            start = os_clock();
+            state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
+            end   = os_clock();
+            time  = (float)(end - start) / CLOCKS_PER_SECOND;
 
             if (ABORT_TRANSFER == state)
             {
@@ -149,11 +149,11 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
                 }
                 else /* SCRIPT_MODE */
                 {
-                    char          test_name[64] = { 0 };
+                    char          test_name[64] = {0};
                     test_result_t result;
 
                     os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
-                        eds.entries[i].Index, eds.entries[i].SubIndex);
+                                eds.entries[i].Index, eds.entries[i].SubIndex);
 
                     result.has_passed    = IS_FALSE;
                     result.time          = time;
@@ -172,11 +172,11 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
             {
                 if (disp_mode == SCRIPT_MODE)
                 {
-                    char          test_name[64] = { 0 };
+                    char          test_name[64] = {0};
                     test_result_t result;
 
                     os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
-                        eds.entries[i].Index, eds.entries[i].SubIndex);
+                                eds.entries[i].Index, eds.entries[i].SubIndex);
 
                     result.has_passed    = IS_TRUE;
                     result.time          = time;
@@ -225,7 +225,7 @@ status_t validate_eds(uint32 file_no, const char* package, uint32 node_id)
 {
     status_t    status         = ALL_OK;
     const char* data_path      = os_find_data_path();
-    char        file_path[512] = { 0 };
+    char        file_path[512] = {0};
     DIR_t*      d;
 
     os_snprintf(file_path, sizeof(file_path), "%s/eds", data_path);
@@ -234,7 +234,7 @@ status_t validate_eds(uint32 file_no, const char* package, uint32 node_id)
     if (d)
     {
         struct dirent_t* dir;
-        int    found_file_no = 1;
+        int              found_file_no = 1;
 
         while ((dir = os_readdir(d)) != NULL)
         {
@@ -269,18 +269,18 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
         os_isxdigit(section[1]) &&
         os_isxdigit(section[2]) &&
         os_isxdigit(section[3]) &&
-        section[4] == 's'       &&
-        section[5] == 'u'       &&
-        section[6] == 'b'       &&
+        section[4] == 's' &&
+        section[5] == 'u' &&
+        section[6] == 'b' &&
         os_isxdigit(section[7]) &&
-        (len == 8 || (len == 9 && os_isxdigit(section[8]))) )
+        (len == 8 || (len == 9 && os_isxdigit(section[8]))))
     {
         static char prev_section[50] = "";
 
         if (0 != os_strcmp(section, prev_section))
         {
-            char index[5]     = { 0 };
-            char sub_index[3] = { 0 };
+            char index[5]     = {0};
+            char sub_index[3] = {0};
 
             os_strlcpy(index, section, 5);
             os_strlcpy(sub_index, section + 7, 3);

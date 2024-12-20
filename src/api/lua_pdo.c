@@ -7,25 +7,25 @@
  *
  **/
 
-#include "core.h"
-#include "lua.h"
-#include "lauxlib.h"
 #include "lua_pdo.h"
+#include "core.h"
+#include "lauxlib.h"
+#include "lua.h"
 #include "os.h"
 #include "pdo.h"
 
-extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char *comment);
+extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char* comment);
 
-int lua_pdo_add(lua_State *L)
+int lua_pdo_add(lua_State* L)
 {
-    int         can_id          = luaL_checkinteger(L, 1);
-    int         event_time_ms   = luaL_checkinteger(L, 2);
-    int         length          = luaL_checkinteger(L, 3);
-    uint64      data            = lua_tointeger(L, 4);
-    bool_t      show_output     = lua_toboolean(L, 5);
-    const char* comment         = lua_tostring(L, 6);
+    int         can_id        = luaL_checkinteger(L, 1);
+    int         event_time_ms = luaL_checkinteger(L, 2);
+    int         length        = luaL_checkinteger(L, 3);
+    uint64      data          = lua_tointeger(L, 4);
+    bool_t      show_output   = lua_toboolean(L, 5);
+    const char* comment       = lua_tostring(L, 6);
     bool_t      was_successful;
-    disp_mode_t disp_mode       = SILENT;
+    disp_mode_t disp_mode = SILENT;
 
     if (IS_TRUE == show_output)
     {
@@ -44,7 +44,7 @@ int lua_pdo_add(lua_State *L)
     return 1;
 }
 
-int lua_pdo_del(lua_State *L)
+int lua_pdo_del(lua_State* L)
 {
     int         can_id      = luaL_checkinteger(L, 1);
     bool_t      show_output = lua_toboolean(L, 2);
@@ -60,7 +60,7 @@ int lua_pdo_del(lua_State *L)
     return 1;
 }
 
-void lua_register_pdo_commands(core_t *core)
+void lua_register_pdo_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_pdo_add);
     lua_setglobal(core->L, "pdo_add");

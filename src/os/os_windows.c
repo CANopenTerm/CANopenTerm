@@ -10,6 +10,7 @@
 #include <conio.h>
 #include <shlobj.h>
 #include <windows.h>
+
 #include "buffer.h"
 #include "os.h"
 
@@ -70,7 +71,7 @@ void os_detach_thread(os_thread* thread)
 const char* os_find_data_path(void)
 {
     size_t      len;
-    static char data_path[MAX_PATH] = { 0 };
+    static char data_path[MAX_PATH] = {0};
     char*       base_path           = SDL_GetBasePath();
 
     if (base_path == NULL)
@@ -119,7 +120,7 @@ uint64 os_get_ticks(void)
 
 const char* os_get_user_directory(void)
 {
-    static char user_directory[MAX_PATH] = { 0 };
+    static char user_directory[MAX_PATH] = {0};
     if (0 == user_directory[0])
     {
         SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, user_directory);

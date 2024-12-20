@@ -14,11 +14,11 @@
 
 typedef struct table
 {
-    color_t  frame_color;
-    color_t  text_color;
-    uint8    column_a_width;
-    uint8    column_b_width;
-    uint8    column_c_width;
+    color_t frame_color;
+    color_t text_color;
+    uint8   column_a_width;
+    uint8   column_b_width;
+    uint8   column_c_width;
 
 } table_t;
 

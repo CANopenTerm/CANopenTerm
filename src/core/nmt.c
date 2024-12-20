@@ -7,9 +7,9 @@
  *
  **/
 
+#include "nmt.h"
 #include "can.h"
 #include "core.h"
-#include "nmt.h"
 #include "table.h"
 
 void nmt_print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
@@ -18,7 +18,7 @@ status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp
 {
     status_t      status      = ALL_OK;
     uint32        can_status  = 0;
-    can_message_t can_message = { 0 };
+    can_message_t can_message = {0};
 
     limit_node_id(&node_id);
 
@@ -51,7 +51,7 @@ status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp
         if (SCRIPT_MODE == disp_mode)
         {
             int  i;
-            char buffer[34] = { 0 };
+            char buffer[34] = {0};
 
             os_print(DARK_CYAN, "NMT  ");
             os_print(DEFAULT_COLOR, "    0x%02X    -       -         -       ", node_id);
@@ -104,19 +104,19 @@ status_t nmt_print_help(disp_mode_t disp_mode)
     }
     else
     {
-        table_t table = { DARK_CYAN, DARK_WHITE, 4, 5, 30 };
+        table_t table = {DARK_CYAN, DARK_WHITE, 4, 5, 30};
 
         status = table_init(&table, 1024);
         if (ALL_OK == status)
         {
             table_print_header(&table);
-            table_print_row("CMD",  "Alias", "Description", &table);
+            table_print_row("CMD", "Alias", "Description", &table);
             table_print_divider(&table);
-            table_print_row("0x01", "op",    "Start (go to Operational)", &table);
-            table_print_row("0x02", "stop",  "Stop (go to Stopped)", &table);
+            table_print_row("0x01", "op", "Start (go to Operational)", &table);
+            table_print_row("0x02", "stop", "Stop (go to Stopped)", &table);
             table_print_row("0x80", "preop", "Go to Pre-operational", &table);
             table_print_row("0x81", "reset", "Reset node (Application reset)", &table);
-            table_print_row("0x82", " ",     "Reset communication", &table);
+            table_print_row("0x82", " ", "Reset communication", &table);
             table_print_footer(&table);
             table_flush(&table);
         }

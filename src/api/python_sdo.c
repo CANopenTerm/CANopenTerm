@@ -28,13 +28,13 @@ void python_sdo_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 
-    py_bind(mod, "sdo_read(node_id, index, sub_index, show_output=False, comment=\"\")",                    py_sdo_read);
-    py_bind(mod, "sdo_write(node_id, index, sub_index, length, data=0, show_output=False, comment=\"\")",   py_sdo_write);
+    py_bind(mod, "sdo_read(node_id, index, sub_index, show_output=False, comment=\"\")", py_sdo_read);
+    py_bind(mod, "sdo_write(node_id, index, sub_index, length, data=0, show_output=False, comment=\"\")", py_sdo_write);
     py_bind(mod, "sdo_write_string(node_id, index, sub_index, data=\"\", show_output=False, comment=\"\")", py_sdo_write_string);
 
     py_bindfunc(mod, "sdo_lookup_abort_code", py_sdo_lookup_abort_code);
-    py_bindfunc(mod, "sdo_write_file",        py_sdo_write_file);
-    py_bindfunc(mod, "dict_lookup",           py_dict_lookup);
+    py_bindfunc(mod, "sdo_write_file", py_sdo_write_file);
+    py_bindfunc(mod, "dict_lookup", py_dict_lookup);
 }
 
 bool py_sdo_lookup_abort_code(int argc, py_Ref argv)
@@ -55,8 +55,8 @@ bool py_sdo_lookup_abort_code(int argc, py_Ref argv)
 
 bool py_sdo_read(int argc, py_Ref argv)
 {
-    can_message_t sdo_response  = { 0 };
-    disp_mode_t   disp_mode     = SILENT;
+    can_message_t sdo_response = {0};
+    disp_mode_t   disp_mode    = SILENT;
     sdo_state_t   sdo_state;
     int           node_id;
     int           index;
@@ -113,8 +113,8 @@ bool py_sdo_read(int argc, py_Ref argv)
 
 bool py_sdo_write(int argc, py_Ref argv)
 {
-    can_message_t sdo_response = { 0 };
-    disp_mode_t   disp_mode = SILENT;
+    can_message_t sdo_response = {0};
+    disp_mode_t   disp_mode    = SILENT;
     sdo_state_t   sdo_state;
     int           node_id;
     int           index;
@@ -173,7 +173,7 @@ bool py_sdo_write(int argc, py_Ref argv)
 
 bool py_sdo_write_file(int argc, py_Ref argv)
 {
-    can_message_t sdo_response = { 0 };
+    can_message_t sdo_response = {0};
     disp_mode_t   disp_mode    = SILENT;
     int           status;
     int           node_id;
@@ -222,14 +222,14 @@ bool py_sdo_write_file(int argc, py_Ref argv)
 
 bool py_sdo_write_string(int argc, py_Ref argv)
 {
-    can_message_t sdo_response = { 0 };
+    can_message_t sdo_response = {0};
     disp_mode_t   disp_mode    = SILENT;
     int           status;
     int           node_id;
     int           index;
     int           sub_index;
     const char*   data;
-    uint32        length       = 0;
+    uint32        length = 0;
     bool_t        show_output;
     const char*   comment;
 

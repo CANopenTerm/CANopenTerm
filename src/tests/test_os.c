@@ -7,11 +7,12 @@
  *
  **/
 
+#include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <setjmp.h>
 #include <stdint.h>
 #include <string.h>
+
 #include "cmocka.h"
 #include "os.h"
 #include "test_os.h"
@@ -68,7 +69,7 @@ void test_os_clock(void** state)
 
 void test_os_closedir(void** state)
 {
-    int result;
+    int    result;
     DIR_t* dir = os_opendir(".");
 
     (void)state;
@@ -200,7 +201,8 @@ void test_os_ftell(void** state)
     os_fclose(file);
 }
 
-void test_os_free(void** state) {
+void test_os_free(void** state)
+{
     void* ptr = malloc(sizeof(int));
 
     (void)state;
@@ -276,7 +278,7 @@ void test_os_itoa(void** state)
 void test_os_memcpy(void** state)
 {
     const char src[] = "Hello, world!";
-    char dest[sizeof(src)];
+    char       dest[sizeof(src)];
 
     (void)state;
 
@@ -338,7 +340,6 @@ void test_os_readdir(void** state)
     os_closedir(dir);
 }
 
-
 void test_os_realloc(void** state)
 {
     int* ptr;
@@ -385,8 +386,8 @@ void test_os_snprintf(void** state)
 
 void test_os_strchr(void** state)
 {
-    const char* str = "Hello, world!";
-    char* result = os_strchr(str, 'w');
+    const char* str    = "Hello, world!";
+    char*       result = os_strchr(str, 'w');
 
     (void)state;
 
@@ -412,7 +413,7 @@ void test_os_strcspn(void** state)
     (void)state;
 
     {
-        const char* s = "Hello World";
+        const char* s      = "Hello World";
         const char* reject = "aeiou";
         size_t      result = os_strcspn(s, reject);
 
@@ -420,7 +421,7 @@ void test_os_strcspn(void** state)
     }
 
     {
-        const char* s = "Hello World";
+        const char* s      = "Hello World";
         const char* reject = "aeiou";
         size_t      result = os_strcspn(s, reject);
 
@@ -428,7 +429,7 @@ void test_os_strcspn(void** state)
     }
 
     {
-        const char* s = "Hello World";
+        const char* s      = "Hello World";
         const char* reject = "";
         size_t      result = os_strcspn(s, reject);
 
@@ -436,7 +437,7 @@ void test_os_strcspn(void** state)
     }
 
     {
-        const char* s = "Hello";
+        const char* s      = "Hello";
         const char* reject = "xyz";
         size_t      result = os_strcspn(s, reject);
 
@@ -446,8 +447,8 @@ void test_os_strcspn(void** state)
 
 void test_os_strdup(void** state)
 {
-    const char* str = "Hello, world!";
-    char* copy = os_strdup(str);
+    const char* str  = "Hello, world!";
+    char*       copy = os_strdup(str);
 
     (void)state;
 
@@ -460,8 +461,8 @@ void test_os_strdup(void** state)
 void test_os_strlcat(void** state)
 {
     char        dest[20] = "Hello";
-    const char* src = ", world!";
-    size_t      result = os_strlcat(dest, src, sizeof(dest));
+    const char* src      = ", world!";
+    size_t      result   = os_strlcat(dest, src, sizeof(dest));
 
     (void)state;
 
@@ -471,9 +472,9 @@ void test_os_strlcat(void** state)
 
 void test_os_strlcpy(void** state)
 {
-    char dest[20];
+    char        dest[20];
     const char* src = "Hello, world!";
-    size_t result;
+    size_t      result;
 
     (void)state;
 
@@ -508,8 +509,8 @@ void test_os_strncmp(void** state)
 
 void test_os_strrchr(void** state)
 {
-    const char* str = "Hello, world!";
-    char* result = os_strrchr(str, 'o');
+    const char* str    = "Hello, world!";
+    char*       result = os_strrchr(str, 'o');
 
     (void)state;
 
@@ -520,8 +521,8 @@ void test_os_strrchr(void** state)
 void test_os_strstr(void** state)
 {
     const char* haystack = "Hello, world!";
-    const char* needle = "world";
-    char* result;
+    const char* needle   = "world";
+    char*       result;
 
     (void)state;
 
@@ -561,7 +562,7 @@ void test_os_strtokr(void** state)
 void test_os_strtol(void** state)
 {
     const char* str = "12345";
-    char* endptr;
+    char*       endptr;
     long        result = os_strtol(str, &endptr, 10);
 
     (void)state;
@@ -572,8 +573,8 @@ void test_os_strtol(void** state)
 
 void test_os_strtoul(void** state)
 {
-    const char* str = "12345";
-    char* endptr;
+    const char*   str = "12345";
+    char*         endptr;
     unsigned long result;
 
     (void)state;
@@ -586,8 +587,8 @@ void test_os_strtoul(void** state)
 
 void test_os_strtoull(void** state)
 {
-    const char* str = "1234567890";
-    char* endptr;
+    const char*        str = "1234567890";
+    char*              endptr;
     unsigned long long result = os_strtoull(str, &endptr, 10);
 
     (void)state;
@@ -679,7 +680,7 @@ void test_os_vsnprintf(void** state)
 {
     int         result;
     char        buffer[100];
-    const char* format = "%s %d. %s";
+    const char* format  = "%s %d. %s";
     const char* value_1 = "6 by 9.";
     int         value_2 = 42;
     const char* value_3 = "That's it. That's all there is";

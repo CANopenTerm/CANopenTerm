@@ -10,8 +10,8 @@
 #ifndef CAN_H
 #define CAN_H
 
-#include "lua.h"
 #include "core.h"
+#include "lua.h"
 #include "os.h"
 
 #define CAN_BUF_SIZE 0xff

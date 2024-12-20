@@ -7,10 +7,10 @@
  *
  **/
 
+#include "core.h"
 #include "can.h"
 #include "codb.h"
 #include "command.h"
-#include "core.h"
 #include "dbc.h"
 #include "lua_can.h"
 #include "lua_dbc.h"
@@ -19,6 +19,8 @@
 #include "lua_pdo.h"
 #include "lua_sdo.h"
 #include "lua_test_report.h"
+#include "nmt.h"
+#include "os.h"
 #include "python_can.h"
 #include "python_dbc.h"
 #include "python_misc.h"
@@ -26,13 +28,11 @@
 #include "python_pdo.h"
 #include "python_sdo.h"
 #include "python_test_report.h"
-#include "nmt.h"
-#include "os.h"
 #include "scripts.h"
 #include "test_report.h"
 #include "version.h"
 
-status_t core_init(core_t **core, bool_t is_plain_mode)
+status_t core_init(core_t** core, bool_t is_plain_mode)
 {
     status_t status;
 
@@ -98,7 +98,7 @@ status_t core_init(core_t **core, bool_t is_plain_mode)
 
 status_t core_update(core_t* core)
 {
-    char command[COMMAND_BUFFER_SIZE] = { 0 };
+    char command[COMMAND_BUFFER_SIZE] = {0};
 
     if (NULL == core)
     {
@@ -114,7 +114,7 @@ status_t core_update(core_t* core)
     return ALL_OK;
 }
 
-void core_deinit(core_t *core)
+void core_deinit(core_t* core)
 {
     if (NULL == core)
     {

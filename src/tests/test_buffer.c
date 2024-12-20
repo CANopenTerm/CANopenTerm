@@ -7,12 +7,13 @@
  *
  **/
 
+#include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <setjmp.h>
 #include <stdint.h>
-#include "cmocka.h"
+
 #include "buffer.h"
+#include "cmocka.h"
 #include "os.h"
 #include "test_buffer.h"
 

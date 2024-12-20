@@ -88,15 +88,15 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_calloc
-#error  os_calloc() not defined
+#error os_calloc() not defined
 #endif
 
 #ifndef os_clock
-#error  os_clock() not defined
+#error os_clock() not defined
 #endif
 
 #ifndef os_closedir
-#error  os_closedir() not defined
+#error os_closedir() not defined
 #endif
 
 #ifndef os_exit
@@ -104,15 +104,15 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_fclose
-#error  os_fclose() not defined
+#error os_fclose() not defined
 #endif
 
 #ifndef os_fgets
-#error  os_fgets() not defined
+#error os_fgets() not defined
 #endif
 
 #ifndef os_fopen
-#error  os_fopen() not defined
+#error os_fopen() not defined
 #endif
 
 #ifndef os_fprintf
@@ -120,35 +120,35 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_free
-#error  os_free() not defined
+#error os_free() not defined
 #endif
 
 #ifndef os_fread
-#error  os_fread() not defined
+#error os_fread() not defined
 #endif
 
 #ifndef os_freopen
-#error  os_freopen() not defined
+#error os_freopen() not defined
 #endif
 
 #ifndef os_fseek
-#error  os_fseek() not defined
+#error os_fseek() not defined
 #endif
 
 #ifndef os_ftell
-#error  os_ftell() not defined
+#error os_ftell() not defined
 #endif
 
 #ifndef os_isdigit
-#error  os_isdigit() not defined
+#error os_isdigit() not defined
 #endif
 
 #ifndef os_isprint
-#error  os_isprint() not defined
+#error os_isprint() not defined
 #endif
 
 #ifndef os_isspace
-#error  os_isspace() not defined
+#error os_isspace() not defined
 #endif
 
 #ifndef os_isxdigit
@@ -156,139 +156,139 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_itoa
-#error  os_itoa() not defined
+#error os_itoa() not defined
 #endif
 
 #ifndef os_memcpy
-#error  os_memcpy() not defined
+#error os_memcpy() not defined
 #endif
 
 #ifndef os_memmove
-#error  os_memmove() not defined
+#error os_memmove() not defined
 #endif
 
 #ifndef os_memset
-#error  os_memset() not defined
+#error os_memset() not defined
 #endif
 
 #ifndef os_opendir
-#error  os_opendir() not defined
+#error os_opendir() not defined
 #endif
 
 #ifndef os_printf
-#error  os_printf() not defined
+#error os_printf() not defined
 #endif
 
 #ifndef os_readdir
-#error  os_readdir() not defined
+#error os_readdir() not defined
 #endif
 
 #ifndef os_realloc
-#error  os_realloc() not defined
+#error os_realloc() not defined
 #endif
 
 #ifndef os_rewind
-#error  os_rewind() not defined
+#error os_rewind() not defined
 #endif
 
 #ifndef os_snprintf
-#error  os_snprintf() not defined
+#error os_snprintf() not defined
 #endif
 
 #ifndef os_strchr
-#error  os_strchr() not defined
+#error os_strchr() not defined
 #endif
 
 #ifndef os_strcmp
-#error  os_strcmp() not defined
+#error os_strcmp() not defined
 #endif
 
 #ifndef os_strcspn
-#error  os_strcspn() not defined
+#error os_strcspn() not defined
 #endif
 
 #ifndef os_strdup
-#error  os_strdump() not defined
+#error os_strdump() not defined
 #endif
 
 #ifndef os_strlcat
-#error  os_strlcat() not defined
+#error os_strlcat() not defined
 #endif
 
 #ifndef os_strlen
-#error  os_strlen() not defined
+#error os_strlen() not defined
 #endif
 
 #ifndef os_strncmp
-#error  os_strncmp() not defined
+#error os_strncmp() not defined
 #endif
 
 #ifndef os_strlcpy
-#error  os_strlcpy() not defined
+#error os_strlcpy() not defined
 #endif
 
 #ifndef os_strrchr
-#error  os_strrchr() not defined
+#error os_strrchr() not defined
 #endif
 
 #ifndef os_strstr
-#error  os_strstr() not defined
+#error os_strstr() not defined
 #endif
 
 #ifndef os_strtokr
-#error  os_strtokr() not defined
+#error os_strtokr() not defined
 #endif
 
 #ifndef os_strtol
-#error  os_strtol() not defined
+#error os_strtol() not defined
 #endif
 
 #ifndef os_strtoul
-#error  os_strtoul() not defined
+#error os_strtoul() not defined
 #endif
 
 #ifndef os_strtoull
-#error  os_strtoull() not defined
+#error os_strtoull() not defined
 #endif
 
 #ifndef os_tolower
-#error  os_tolower() not defined
+#error os_tolower() not defined
 #endif
 
 #ifndef os_toupper
-#error  os_toupper() not defined
+#error os_toupper() not defined
 #endif
 
 #ifndef os_va_arg
-#error  os_va_arg() not defined
+#error os_va_arg() not defined
 #endif
 
 #ifndef os_va_end
-#error  os_va_end() not defined
+#error os_va_end() not defined
 #endif
 
 #ifndef os_va_start
-#error  os_va_start() not defined
+#error os_va_start() not defined
 #endif
 
 #ifndef os_vsnprintf
-#error  os_vsnprintf() not defined
+#error os_vsnprintf() not defined
 #endif
 
 #ifndef os_thread
-#error  os_thread not defined
+#error os_thread not defined
 #endif
 
 #ifndef os_thread_func
-#error  os_thread_func not defined
+#error os_thread_func not defined
 #endif
 
 #ifndef os_timer_cb
-#error  os_timer_cb not defined
+#error os_timer_cb not defined
 #endif
 
 #ifndef os_timer_id
-#error  os_timer_id not defined
+#error os_timer_id not defined
 #endif
 
 #ifndef bool_t
@@ -296,15 +296,15 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef DIR_t
-#error  DIR_t not defined
+#error DIR_t not defined
 #endif
 
 #ifndef dirent_t
-#error  dirent_t not defined
+#error dirent_t not defined
 #endif
 
 #ifndef FILE_t
-#error  FILE_t not defined
+#error FILE_t not defined
 #endif
 
 #ifndef uint8
@@ -312,19 +312,19 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef uint16
-#error  uint16 not defined
+#error uint16 not defined
 #endif
 
 #ifndef uint32
-#error  uint32 not defined
+#error uint32 not defined
 #endif
 
 #ifndef uint64
-#error  uint64 not defined
+#error uint64 not defined
 #endif
 
 #ifndef va_list_t
-#error  va_list_t not defined
+#error va_list_t not defined
 #endif
 
 #ifndef IS_TRUE

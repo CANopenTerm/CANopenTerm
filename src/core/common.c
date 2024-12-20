@@ -8,18 +8,19 @@
  **/
 
 #include <dirent.h>
+
 #include "core.h"
-#include "table.h"
 #include "os.h"
+#include "table.h"
 
 void list_file_type(const char* dir, const char* ext, uint32 active_no)
 {
     const char* data_path      = os_find_data_path();
-    char        file_path[512] = { 0 };
+    char        file_path[512] = {0};
     DIR_t*      d;
-    table_t     table          = { DARK_CYAN, DARK_WHITE, 3, 25, 1 };
+    table_t     table = {DARK_CYAN, DARK_WHITE, 3, 25, 1};
     status_t    status;
-    uint32      status_width   = 1;
+    uint32      status_width = 1;
 
     os_snprintf(file_path, sizeof(file_path), "%s/%s", data_path, dir);
 
@@ -40,7 +41,7 @@ void list_file_type(const char* dir, const char* ext, uint32 active_no)
     if (d)
     {
         struct dirent_t* dir;
-        uint32 file_no = 1;
+        uint32           file_no = 1;
 
         table_print_header(&table);
         if (0 == active_no)
@@ -55,13 +56,13 @@ void list_file_type(const char* dir, const char* ext, uint32 active_no)
 
         while ((dir = os_readdir(d)) != NULL)
         {
-            char extension[5] = { 0 };
+            char extension[5] = {0};
             os_strlcpy(&extension[1], ext, 4);
             extension[0] = '.';
 
             if (os_strstr(dir->d_name, extension) != NULL)
             {
-                char file_no_str[4] = { 0 };
+                char file_no_str[4] = {0};
 
                 os_snprintf(file_no_str, 4, "%3u", file_no);
 

@@ -25,7 +25,7 @@ void python_dbc_init(void)
     py_bind(mod, "dbc_decode(can_id, data=0)", py_dbc_decode);
 
     py_bindfunc(mod, "dbc_find_id_by_name", py_dbc_find_id_by_name);
-    py_bindfunc(mod, "dbc_load",            py_dbc_load);
+    py_bindfunc(mod, "dbc_load", py_dbc_load);
 }
 
 bool py_dbc_decode(int argc, py_Ref argv)

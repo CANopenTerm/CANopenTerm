@@ -7,14 +7,14 @@
  *
  **/
 
+#include "scripts.h"
+#include "core.h"
+#include "dirent.h"
+#include "lauxlib.h"
 #include "lua.h"
 #include "lualib.h"
-#include "lauxlib.h"
-#include "dirent.h"
-#include "core.h"
 #include "os.h"
 #include "pocketpy.h"
-#include "scripts.h"
 #include "table.h"
 
 extern const uint8 max_script_search_paths;
@@ -47,12 +47,12 @@ void scripts_init(core_t* core)
         lua_getglobal(core->L, "package");
         lua_getfield(core->L, -1, "path");
 
-        current_path = lua_tostring(core->L, -1);
+        current_path    = lua_tostring(core->L, -1);
         size_t path_len = os_strlen(current_path) + 1;
 
         for (i = 0; i < max_script_search_paths; i++)
         {
-            path_len += os_strlen(script_search_path[i]) + 7; /* Adding space for "?.lua;" */
+            path_len += os_strlen(script_search_path[i]) + 7;  /* Adding space for "?.lua;" */
             path_len += os_strlen(script_search_path[i]) + 12; /* Adding space for "?/init.lua;" */
         }
 
@@ -98,10 +98,10 @@ void scripts_deinit(core_t* core)
     py_finalize();
 }
 
-static char *get_script_description(char* script_path)
+static char* get_script_description(char* script_path)
 {
-    static  char description[256] = { 0 };
-    FILE_t* file;
+    static char description[256] = {0};
+    FILE_t*     file;
 
     os_fix_path(script_path);
     file = os_fopen(script_path, "r");
@@ -112,7 +112,7 @@ static char *get_script_description(char* script_path)
 
     if (os_fgets(description, sizeof(description), file) != NULL)
     {
-        char *desc_ptr;
+        char* desc_ptr;
 
         description[os_strcspn(description, "\r\n")] = '\0';
 
@@ -157,9 +157,9 @@ static char *get_script_description(char* script_path)
     return NULL;
 }
 
-bool_t has_valid_extension(const char *filename)
+bool_t has_valid_extension(const char* filename)
 {
-    const char *dot;
+    const char* dot;
 
     if (NULL == filename)
     {
@@ -185,7 +185,7 @@ bool_t has_valid_extension(const char *filename)
 status_t list_scripts(void)
 {
     status_t status;
-    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 10, 40 };
+    table_t  table = {DARK_CYAN, DARK_WHITE, 3, 10, 40};
 
     status = table_init(&table, 1024);
     if (ALL_OK == status)
@@ -201,7 +201,7 @@ status_t list_scripts(void)
         for (i = 0; i < max_script_search_paths; i++)
         {
             DIR* dir;
-            char search_path[PATH_MAX] = { 0 };
+            char search_path[PATH_MAX] = {0};
 
             os_snprintf(search_path, sizeof(search_path), "%s", script_search_path[i]);
             dir = os_opendir(search_path);
@@ -213,7 +213,7 @@ status_t list_scripts(void)
                 {
                     if (DT_REG == ent->d_type && has_valid_extension(ent->d_name))
                     {
-                        char script_name[256] = { 0 };
+                        char script_name[256] = {0};
 
                         safe_strcpy(script_name, ent->d_name, sizeof(script_name));
                         script_name[sizeof(script_name) - 1] = '\0';
@@ -221,9 +221,9 @@ status_t list_scripts(void)
 
                         if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
                         {
-                            char  buf[4] = { 0 };
-                            char* script_no = os_itoa(listed_count, buf, 10);
-                            char  script_path[512] = { 0 };
+                            char  buf[4]           = {0};
+                            char* script_no        = os_itoa(listed_count, buf, 10);
+                            char  script_path[512] = {0};
                             char* description;
 
                             listed_scripts[listed_count++] = os_strdup(script_name);
@@ -270,11 +270,11 @@ void print_heading(const char* heading)
     os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 }
 
-void run_script(char *name, core_t *core)
+void run_script(char* name, core_t* core)
 {
     status_t    status             = ALL_OK;
     const char* base               = os_strrchr(name, '/');
-    char        basename[PATH_MAX] = { 0 };
+    char        basename[PATH_MAX] = {0};
     FILE*       file;
 
     if (base)
@@ -299,7 +299,7 @@ void run_script(char *name, core_t *core)
 
         for (i = 0; i < max_script_search_paths; i++)
         {
-            char script_path[PATH_MAX] = { 0 };
+            char script_path[PATH_MAX] = {0};
 
             os_snprintf(script_path, sizeof(script_path), "%s/%s", script_search_path[i], name);
 
@@ -312,8 +312,8 @@ void run_script(char *name, core_t *core)
 
         if (ALL_OK != status)
         {
-            const char* user_directory = os_get_user_directory();
-            char        script_path[PATH_MAX] = { 0 };
+            const char* user_directory        = os_get_user_directory();
+            char        script_path[PATH_MAX] = {0};
 
             os_snprintf(script_path, sizeof(script_path), "%s/CANopenTerm/scripts/%s", user_directory, name);
 
@@ -327,13 +327,13 @@ void run_script(char *name, core_t *core)
     }
 }
 
-status_t run_script_ex(char *name, core_t *core)
+status_t run_script_ex(char* name, core_t* core)
 {
     status_t    status            = ALL_OK;
     const char* extension         = os_strrchr(name, '.');
     bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
     bool_t      has_py_extension  = extension && os_strcmp(extension, ".py") == 0;
-    char        script_path[1024] = { 0 };
+    char        script_path[1024] = {0};
     FILE*       file;
 
     if (NULL == core)
@@ -385,13 +385,13 @@ status_t run_script_ex(char *name, core_t *core)
             else
             {
                 size_t size;
-                char *buffer;
+                char*  buffer;
 
                 os_fseek(file, 0, SEEK_END);
                 size = os_ftell(file);
                 os_fseek(file, 0, SEEK_SET);
-                buffer = os_calloc(size + 1, sizeof(char));
-                size = os_fread(buffer, 1, size, file);
+                buffer       = os_calloc(size + 1, sizeof(char));
+                size         = os_fread(buffer, 1, size, file);
                 buffer[size] = 0;
 
                 if (IS_FALSE == py_exec(buffer, script_path, EXEC_MODE, NULL))
@@ -428,13 +428,13 @@ status_t run_script_ex(char *name, core_t *core)
             else
             {
                 size_t size;
-                char* buffer;
+                char*  buffer;
 
                 os_fseek(file, 0, SEEK_END);
                 size = os_ftell(file);
                 os_fseek(file, 0, SEEK_SET);
-                buffer = os_calloc(size + 1, sizeof(char));
-                size = os_fread(buffer, 1, size, file);
+                buffer       = os_calloc(size + 1, sizeof(char));
+                size         = os_fread(buffer, 1, size, file);
                 buffer[size] = 0;
 
                 if (IS_FALSE == py_exec(buffer, script_path, EXEC_MODE, NULL))

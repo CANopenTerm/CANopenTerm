@@ -13,9 +13,9 @@
 #include "core.h"
 #include "lua.h"
 
-int  lua_dbc_decode(lua_State *L);
-int  lua_dbc_find_id_by_name(lua_State *L);
-int  lua_dbc_load(lua_State *L);
-void lua_register_dbc_commands(core_t *core);
+int  lua_dbc_decode(lua_State* L);
+int  lua_dbc_find_id_by_name(lua_State* L);
+int  lua_dbc_load(lua_State* L);
+void lua_register_dbc_commands(core_t* core);
 
 #endif /* LUA_DBC_H */

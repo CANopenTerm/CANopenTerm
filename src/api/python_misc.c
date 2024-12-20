@@ -7,10 +7,10 @@
  *
  **/
 
+#include "python_misc.h"
 #include "core.h"
 #include "os.h"
 #include "pocketpy.h"
-#include "python_misc.h"
 #include "scripts.h"
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
@@ -25,7 +25,7 @@ void python_misc_init(void)
 
     py_bind(mod, "delay_ms(delay_in_ms, show_output=False, comment=\"\")", py_delay_ms);
 
-    py_bindfunc(mod, "key_is_hit",    py_key_is_hit);
+    py_bindfunc(mod, "key_is_hit", py_key_is_hit);
     py_bindfunc(mod, "print_heading", py_print_heading);
 }
 
@@ -52,7 +52,7 @@ bool py_delay_ms(int argc, py_Ref argv)
     if (IS_TRUE == show_output)
     {
         int  i;
-        char buffer[34] = { 0 };
+        char buffer[34] = {0};
 
         os_print(LIGHT_BLACK, "Delay ");
         os_print(DEFAULT_COLOR, "   -       -       -         -       -       ");
@@ -86,7 +86,7 @@ bool py_key_is_hit(int argc, py_Ref argv)
 
 bool py_print_heading(int argc, py_Ref argv)
 {
-    const char *heading;
+    const char* heading;
 
     PY_CHECK_ARGC(1);
     PY_CHECK_ARG_TYPE(0, tp_str);

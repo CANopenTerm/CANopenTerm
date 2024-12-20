@@ -7,9 +7,9 @@
  *
  **/
 
+#include "table.h"
 #include "buffer.h"
 #include "os.h"
-#include "table.h"
 
 static void print_frame(const char* left, const char* center, const char* right, table_t* t);
 

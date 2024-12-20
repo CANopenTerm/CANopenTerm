@@ -7,8 +7,8 @@
  *
  **/
 
-#include "cJSON.h"
 #include "codb.h"
+#include "cJSON.h"
 #include "common.h"
 #include "core.h"
 #include "os.h"
@@ -21,8 +21,7 @@ static cJSON*     ds301     = NULL;
 static cJSON*     codb      = NULL;
 static os_thread* init_th   = NULL;
 
-const char* data_type_lookup[] =
-{
+const char* data_type_lookup[] = {
     "-",
     "BOOLEAN_T",
     "INTEGER8",
@@ -45,36 +44,29 @@ const char* data_type_lookup[] =
     "TIME_OF_DAY",
     "VISIBLE_STRING",
     "OCTET_STRING",
-    "DOMAIN_T"
-};
+    "DOMAIN_T"};
 
-const char* object_code_lookup[] =
-{
+const char* object_code_lookup[] = {
     "DOMAIN",
     "DEFTYPE",
     "DEFSTRUCT",
     "VAR",
     "ARRAY",
-    "RECORD"
-};
+    "RECORD"};
 
-const char* object_kind_lookup[] =
-{
+const char* object_kind_lookup[] = {
     "Optional",
     "Mandatory",
-    "Conditional"
-};
+    "Conditional"};
 
-const char* access_type_lookup[] =
-{
+const char* access_type_lookup[] = {
     "-",
     "const",
     "ro",
     "wo",
     "rw",
     "wwr",
-    "rww"
-};
+    "rww"};
 
 int codb_init_ex(void* unused);
 
@@ -90,8 +82,8 @@ void codb_init(void)
 int codb_init_ex(void* unused)
 {
     FILE_t*     file;
-    char        file_path[512] = { 0 };
-    const char* data_path = os_find_data_path();
+    char        file_path[512] = {0};
+    const char* data_path      = os_find_data_path();
     char*       file_content;
     size_t      file_size;
 
@@ -166,8 +158,8 @@ void codb_deinit(void)
 
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)
 {
-    char object_desc[256] = { 0 };
-    char sub_desc[256]    = { 0 };
+    char object_desc[256] = {0};
+    char sub_desc[256]    = {0};
 
     return codb_desc_lookup_ex(db, index, sub_index, object_desc, sub_desc);
 }
@@ -175,7 +167,7 @@ const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)
 const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char* object_desc, char* sub_index_desc)
 {
     cJSON*      object    = NULL;
-    static char desc[256] = { 0 };
+    static char desc[256] = {0};
 
     if (NULL == db || NULL == object_desc || NULL == sub_index_desc)
     {
@@ -211,7 +203,7 @@ const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char*
                         {
                             os_snprintf(desc, sizeof(desc), "%s, %s", obj_desc->valuestring, sub_desc->valuestring);
                         }
-                        os_snprintf(object_desc,    CODB_MAX_DESC_LEN, "%s", obj_desc->valuestring);
+                        os_snprintf(object_desc, CODB_MAX_DESC_LEN, "%s", obj_desc->valuestring);
                         os_snprintf(sub_index_desc, CODB_MAX_DESC_LEN, "%s", sub_desc->valuestring);
                         return desc;
                     }
@@ -246,11 +238,11 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
         cJSON* json_index = cJSON_GetObjectItem(object, "index");
         if (json_index != NULL && json_index->valueint == index)
         {
-            cJSON* obj_desc      = cJSON_GetObjectItem(object,   "desc");
-            cJSON* sub_indices   = cJSON_GetObjectItem(object,   "sub_indices");
-            cJSON* obj_code      = cJSON_GetObjectItem(object,   "code");
+            cJSON* obj_desc      = cJSON_GetObjectItem(object, "desc");
+            cJSON* sub_indices   = cJSON_GetObjectItem(object, "sub_indices");
+            cJSON* obj_code      = cJSON_GetObjectItem(object, "code");
             cJSON* obj_code_type = cJSON_GetObjectItem(obj_code, "type");
-            cJSON* obj_category  = cJSON_GetObjectItem(object,   "kind");
+            cJSON* obj_category  = cJSON_GetObjectItem(object, "kind");
 
             if (obj_desc != NULL && obj_desc->valuestring != NULL)
             {
@@ -384,9 +376,9 @@ bool_t is_codb_loaded(void)
 void list_codb(void)
 {
     const char* data_path      = os_find_data_path();
-    char        file_path[512] = { 0 };
+    char        file_path[512] = {0};
     DIR_t*      d;
-    table_t     table          = { DARK_CYAN, DEFAULT_COLOR, 3, 57, 1 };
+    table_t     table = {DARK_CYAN, DEFAULT_COLOR, 3, 57, 1};
     status_t    status;
 
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
@@ -417,7 +409,7 @@ void list_codb(void)
     if (d)
     {
         struct dirent_t* dir;
-        uint32 file_no = 1;
+        uint32           file_no = 1;
 
         table_print_header(&table);
         table_print_row("No.", "Profile", "Status", &table);
@@ -429,7 +421,7 @@ void list_codb(void)
 
             if (os_strstr(dir->d_name, extension) != NULL)
             {
-                char file_no_str[4] = { 0 };
+                char file_no_str[4] = {0};
 
                 os_snprintf(file_no_str, 4, "%3u", file_no);
 
@@ -467,7 +459,7 @@ status_t load_codb(uint32 file_no)
 {
     status_t    status         = ALL_OK;
     const char* data_path      = os_find_data_path();
-    char        file_path[512] = { 0 };
+    char        file_path[512] = {0};
     DIR_t*      d;
 
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
@@ -476,8 +468,8 @@ status_t load_codb(uint32 file_no)
     if (d)
     {
         struct dirent_t* dir;
-        uint32 current_file_no = 1;
-        bool_t found           = IS_FALSE;
+        uint32           current_file_no = 1;
+        bool_t           found           = IS_FALSE;
 
         while ((dir = os_readdir(d)) != NULL)
         {
@@ -533,8 +525,8 @@ status_t load_codb(uint32 file_no)
 status_t load_codb_ex(char* file_name)
 {
     status_t status = ALL_OK;
-    FILE_t* file;
-    char* file_content;
+    FILE_t*  file;
+    char*    file_content;
     size_t   file_size;
 
     if (NULL == file_name)
@@ -608,24 +600,23 @@ static const char* file_name_to_profile_desc(const char* file_name)
         const char* file_name;
         const char* description;
     } lookup_table[] = {
-        { "ds301.json", "[CiA 301] Application layer and communication" },
-        { "ds302.json", "[CiA 302] Programmable CANopen Devices" },
-        { "ds401.json", "[CiA 401] I/O devices" },
-        { "ds402.json", "[CiA 402] Drives and motion control" },
-        { "ds404.json", "[CiA 404] Measurement Devices and Closed Loop Controllers" },
-        { "ds405.json", "[CiA 405] IEC 61131-3 programmable devices" },
-        { "ds406.json", "[CiA 406] Encoders" },
-        { "ds408.json", "[CiA 408] Fluid Power Technology" },
-        { "ds410.json", "[CiA 410] Inclinometer" },
-        { "ds413.json", "[CiA 413] Truck Gateways" },
-        { "ds415.json", "[CiA 415] Road construction machinery" },
-        { "ds416.json", "[CiA 416] Building door control" },
-        { "ds417.json", "[CiA 417] Lift control systems" },
-        { "ds418.json", "[CiA 418] Battery modules" },
-        { "ds419.json", "[CiA 419] Battery chargers" },
-        { "ds443.json", "[CiA 443] SIIS level-2 devices" },
-        { "ds447.json", "[CiA 447] Special-purpose car add-on devices" }
-    };
+        {"ds301.json", "[CiA 301] Application layer and communication"},
+        {"ds302.json", "[CiA 302] Programmable CANopen Devices"},
+        {"ds401.json", "[CiA 401] I/O devices"},
+        {"ds402.json", "[CiA 402] Drives and motion control"},
+        {"ds404.json", "[CiA 404] Measurement Devices and Closed Loop Controllers"},
+        {"ds405.json", "[CiA 405] IEC 61131-3 programmable devices"},
+        {"ds406.json", "[CiA 406] Encoders"},
+        {"ds408.json", "[CiA 408] Fluid Power Technology"},
+        {"ds410.json", "[CiA 410] Inclinometer"},
+        {"ds413.json", "[CiA 413] Truck Gateways"},
+        {"ds415.json", "[CiA 415] Road construction machinery"},
+        {"ds416.json", "[CiA 416] Building door control"},
+        {"ds417.json", "[CiA 417] Lift control systems"},
+        {"ds418.json", "[CiA 418] Battery modules"},
+        {"ds419.json", "[CiA 419] Battery chargers"},
+        {"ds443.json", "[CiA 443] SIIS level-2 devices"},
+        {"ds447.json", "[CiA 447] Special-purpose car add-on devices"}};
 
     for (i = 0; i < sizeof(lookup_table) / sizeof(lookup_table[0]); ++i)
     {

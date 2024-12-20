@@ -27,10 +27,9 @@ void python_can_init(void)
     py_bind(mod, "dict_lookup_raw(can_id, data_length, data=0)", py_dict_lookup_raw);
     py_bind(mod, "can_write(can_id, data_length, data=0, is_extended=False, show_output=False, comment=\"\")", py_can_write);
 
-    py_bindfunc(mod, "can_read",  py_can_read);
+    py_bindfunc(mod, "can_read", py_can_read);
     py_bindfunc(mod, "can_flush", py_can_flush);
 }
-
 
 bool py_dict_lookup_raw(int argc, py_Ref argv)
 {
@@ -38,7 +37,7 @@ bool py_dict_lookup_raw(int argc, py_Ref argv)
     int           can_id;
     int           length;
     uint64        data;
-    can_message_t message     = { 0 };
+    can_message_t message     = {0};
     const char*   description = NULL;
 
     PY_CHECK_ARGC(3);
@@ -82,7 +81,7 @@ bool py_can_write(int argc, py_Ref argv)
     bool_t        is_extended;
     bool_t        show_output;
     const char*   comment;
-    can_message_t message   = { 0 };
+    can_message_t message   = {0};
     disp_mode_t   disp_mode = SILENT;
 
     PY_CHECK_ARGC(6);
@@ -107,7 +106,7 @@ bool py_can_write(int argc, py_Ref argv)
     message.data[3] = (data >> 32) & 0xFF;
     message.data[4] = (data >> 24) & 0xFF;
     message.data[5] = (data >> 16) & 0xFF;
-    message.data[6] = (data >> 8)  & 0xFF;
+    message.data[6] = (data >> 8) & 0xFF;
     message.data[7] = data & 0xFF;
 
     if (IS_TRUE == is_extended)
@@ -131,7 +130,7 @@ bool py_can_write(int argc, py_Ref argv)
         if (SCRIPT_MODE == disp_mode)
         {
             int  i;
-            char buffer[34] = { 0 };
+            char buffer[34] = {0};
 
             if (NULL == comment)
             {
@@ -142,7 +141,7 @@ bool py_can_write(int argc, py_Ref argv)
             for (i = os_strlen(buffer); i < 33; ++i)
             {
                 buffer[i] = ' ';
-             }
+            }
 
             os_print(LIGHT_BLACK, "CAN ");
             os_print(DEFAULT_COLOR, "     0x%02X   -       -         %03u     ", can_id, length);
@@ -163,10 +162,11 @@ bool py_can_write(int argc, py_Ref argv)
 
 bool py_can_read(int argc, py_Ref argv)
 {
-    can_message_t message = { 0 };
+    can_message_t message = {0};
     status_t      status;
     uint32        length;
-    uint64        data = 0;;
+    uint64        data = 0;
+    ;
 
     PY_CHECK_ARGC(0);
 

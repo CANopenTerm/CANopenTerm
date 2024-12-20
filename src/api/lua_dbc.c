@@ -7,14 +7,14 @@
  *
  **/
 
+#include "lua_dbc.h"
 #include "core.h"
 #include "dbc.h"
 #include "lauxlib.h"
 #include "lua.h"
-#include "lua_dbc.h"
 #include "os.h"
 
-int lua_dbc_decode(lua_State *L)
+int lua_dbc_decode(lua_State* L)
 {
     int         can_id = luaL_checkinteger(L, 1);
     uint64      data   = lua_tointeger(L, 2);
@@ -25,7 +25,7 @@ int lua_dbc_decode(lua_State *L)
     return 1;
 }
 
-int lua_dbc_find_id_by_name(lua_State *L)
+int lua_dbc_find_id_by_name(lua_State* L)
 {
     const char* search = luaL_checkstring(L, 1);
     uint32      id;
@@ -44,7 +44,7 @@ int lua_dbc_find_id_by_name(lua_State *L)
     return 1;
 }
 
-int lua_dbc_load(lua_State *L)
+int lua_dbc_load(lua_State* L)
 {
     char*    filename = (char*)luaL_checkstring(L, 1);
     status_t status;
@@ -63,7 +63,7 @@ int lua_dbc_load(lua_State *L)
     return 1;
 }
 
-void lua_register_dbc_commands(core_t *core)
+void lua_register_dbc_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_dbc_decode);
     lua_setglobal(core->L, "dbc_decode");

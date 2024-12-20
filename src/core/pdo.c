@@ -7,14 +7,14 @@
  *
  **/
 
+#include "pdo.h"
 #include "can.h"
 #include "os.h"
-#include "pdo.h"
 #include "table.h"
 
 static pdo_t pdo[PDO_MAX];
 
-static uint32 pdo_send_callback(uint32 interval, void *param);
+static uint32 pdo_send_callback(uint32 interval, void* param);
 static void   print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id);
 
 bool_t pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, disp_mode_t disp_mode)
@@ -79,12 +79,12 @@ bool_t pdo_del(uint16 can_id, disp_mode_t disp_mode)
     return IS_TRUE;
 }
 
-static uint32 pdo_send_callback(uint32 interval, void *pdo_pt)
+static uint32 pdo_send_callback(uint32 interval, void* pdo_pt)
 {
     int           i;
     int           offset  = 0;
     pdo_t*        pdo     = pdo_pt;
-    can_message_t message = { 0 };
+    can_message_t message = {0};
 
     message.id     = pdo->can_id;
     message.length = pdo->length;
@@ -103,19 +103,19 @@ static uint32 pdo_send_callback(uint32 interval, void *pdo_pt)
 status_t pdo_print_help(void)
 {
     status_t status;
-    table_t  table = { DARK_CYAN, DARK_WHITE, 13, 7, 7 };
+    table_t  table = {DARK_CYAN, DARK_WHITE, 13, 7, 7};
 
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
         table_print_header(&table);
-        table_print_row("CAN-ID",        "Object",  "Spec.",   &table);
+        table_print_row("CAN-ID", "Object", "Spec.", &table);
         table_print_divider(&table);
-        table_print_row("0x000 - 0x07f", "Node-ID", " ",       &table);
-        table_print_row("0x181 - 0x1ff", "TPDO1",   "CiA 301", &table);
-        table_print_row("0x281 - 0x1ff", "TPDO2",   "CiA 301", &table);
-        table_print_row("0x381 - 0x1ff", "TPDO3",   "CiA 301", &table);
-        table_print_row("0x481 - 0x1ff", "TPDO4",   "CiA 301", &table);
+        table_print_row("0x000 - 0x07f", "Node-ID", " ", &table);
+        table_print_row("0x181 - 0x1ff", "TPDO1", "CiA 301", &table);
+        table_print_row("0x281 - 0x1ff", "TPDO2", "CiA 301", &table);
+        table_print_row("0x381 - 0x1ff", "TPDO3", "CiA 301", &table);
+        table_print_row("0x481 - 0x1ff", "TPDO4", "CiA 301", &table);
         table_print_footer(&table);
         table_flush(&table);
     }
@@ -152,10 +152,10 @@ bool_t pdo_is_id_valid(uint16 can_id)
     return IS_FALSE;
 }
 
-void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char *comment)
+void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char* comment)
 {
     int  i;
-    char buffer[34] = { 0 };
+    char buffer[34] = {0};
 
     if (NULL == comment)
     {
@@ -174,7 +174,6 @@ void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t w
         os_print(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);
         os_print(LIGHT_GREEN, "SUCC    ");
         os_print(DARK_MAGENTA, "%s ", buffer);
-
 
         if ((0 == data) && (0 == event_time_ms))
         {

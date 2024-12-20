@@ -7,9 +7,9 @@
  *
  **/
 
+#include "command.h"
 #include "can.h"
 #include "core.h"
-#include "command.h"
 #include "dict.h"
 #include "eds.h"
 #include "nmt.h"
@@ -27,7 +27,7 @@ static bool_t is_numeric(const char* str);
 void parse_command(char* input, core_t* core)
 {
     int    index;
-    char*  delim        = " \n";
+    char*  delim = " \n";
     char*  context;
     char*  token        = NULL;
     char*  input_savptr = input;
@@ -268,10 +268,10 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == os_strncmp(token, "r", 1))
     {
-        can_message_t sdo_response = { 0 };
+        can_message_t sdo_response = {0};
         uint32        node_id;
         uint32        sdo_index;
-        uint32        sub_index    = 0;
+        uint32        sub_index = 0;
 
         token = os_strtokr(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -301,7 +301,7 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == os_strncmp(token, "w", 1))
     {
-        can_message_t sdo_response    = { 0 };
+        can_message_t sdo_response = {0};
         uint32        node_id;
         uint32        sdo_index;
         uint32        sub_index;
@@ -336,7 +336,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr(input_savptr, delim, &input_savptr);
         if (token != NULL)
         {
-            char buffer[256] = { 0 };
+            char buffer[256] = {0};
 
             if (is_numeric(token))
             {
@@ -355,15 +355,15 @@ void parse_command(char* input, core_t* core)
                 size_t len;
 
                 os_strlcpy(buffer, token, sizeof(buffer));
-                len = os_strlen(buffer);
+                len       = os_strlen(buffer);
                 sdo_state = IS_WRITE_SEGMENTED;
-                token = os_strtokr(NULL, delim, &input_savptr);
+                token     = os_strtokr(NULL, delim, &input_savptr);
 
                 while (token != NULL)
                 {
-                    os_strlcat(buffer, " ",   sizeof(buffer));
+                    os_strlcat(buffer, " ", sizeof(buffer));
                     os_strlcat(buffer, token, sizeof(buffer));
-                    len = os_strlen(buffer);
+                    len   = os_strlen(buffer);
                     token = os_strtokr(NULL, delim, &input_savptr);
                 }
 
@@ -442,32 +442,32 @@ static void convert_token_to_uint64(char* token, uint64* result)
 status_t print_usage_information(bool_t show_all)
 {
     status_t status;
-    table_t  table = { DARK_CYAN, DARK_WHITE, 3, 45, 17 };
+    table_t  table = {DARK_CYAN, DARK_WHITE, 3, 45, 17};
 
     status = table_init(&table, 1024);
     table_print_header(&table);
-    table_print_row("CMD", "Parameter(s)",                                  "Function",     &table);
+    table_print_row("CMD", "Parameter(s)", "Function", &table);
     table_print_divider(&table);
-    table_print_row(" h ", " ",                                             "Show full help", &table);
+    table_print_row(" h ", " ", "Show full help", &table);
 
     if (IS_TRUE == show_all)
     {
-        table_print_row(" b ", "(identifer)",                               "Set baud rate",     &table);
-        table_print_row(" d ", "[file_no]",                                 "Load data base",    &table);
-        table_print_row(" d ", "[index] [sub_index]",                       "Lookup dictionary", &table);
-        table_print_row(" y ", "(identifer)",                               "Set CAN channel",   &table);
-        table_print_row(" c ", " ",                                         "Clear output",      &table);
-        table_print_row(" l ", " ",                                         "List scripts",      &table);
-        table_print_row("(s)", "[identifier](.lua)",                        "Run script",        &table);
+        table_print_row(" b ", "(identifer)", "Set baud rate", &table);
+        table_print_row(" d ", "[file_no]", "Load data base", &table);
+        table_print_row(" d ", "[index] [sub_index]", "Lookup dictionary", &table);
+        table_print_row(" y ", "(identifer)", "Set CAN channel", &table);
+        table_print_row(" c ", " ", "Clear output", &table);
+        table_print_row(" l ", " ", "List scripts", &table);
+        table_print_row("(s)", "[identifier](.lua)", "Run script", &table);
     }
 
-    table_print_row(" n ", "[node_id] [command or alias]",                  "NMT command",     &table);
-    table_print_row(" r ", "[node_id] [index] (sub_index)",                 "Read SDO",        &table);
-    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO",       &table);
-    table_print_row(" w ", "[node_id] [index] [sub_index] [\"data\"]",      "Write SDO",       &table);
-    table_print_row(" p ", "add [can_id] [event_time_ms] [length] [data]",  "Add PDO (tx)",    &table);
-    table_print_row(" p ", "del [can_id]",                                  "Remove PDO (tx)", &table);
-    table_print_row(" q ", " ",                                             "Quit",            &table);
+    table_print_row(" n ", "[node_id] [command or alias]", "NMT command", &table);
+    table_print_row(" r ", "[node_id] [index] (sub_index)", "Read SDO", &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [length] (data)", "Write SDO", &table);
+    table_print_row(" w ", "[node_id] [index] [sub_index] [\"data\"]", "Write SDO", &table);
+    table_print_row(" p ", "add [can_id] [event_time_ms] [length] [data]", "Add PDO (tx)", &table);
+    table_print_row(" p ", "del [can_id]", "Remove PDO (tx)", &table);
+    table_print_row(" q ", " ", "Quit", &table);
     table_print_footer(&table);
     table_flush(&table);
 

@@ -7,16 +7,17 @@
  *
  **/
 
-#include "SDL.h"
-#include "dirent.h"
 #include <fcntl.h>
 #include <limits.h>
-#include <readline/readline.h>
 #include <readline/history.h>
+#include <readline/readline.h>
 #include <stdint.h>
 #include <termios.h>
 #include <unistd.h>
+
+#include "SDL.h"
 #include "buffer.h"
+#include "dirent.h"
 #include "os.h"
 
 static bool_t console_is_plain_mode;
@@ -56,10 +57,9 @@ const char* os_find_data_path(void)
     size_t i;
 
     const char* search_paths[2] =
-    {
-        "/usr/share/CANopenTerm",
-        "/usr/local/share/CANopenTerm"
-    };
+        {
+            "/usr/share/CANopenTerm",
+            "/usr/local/share/CANopenTerm"};
 
     for (i = 0; i < sizeof(search_paths) / sizeof(search_paths[0]); i++)
     {
@@ -104,12 +104,12 @@ uint64 os_get_ticks(void)
     return SDL_GetTicks64();
 }
 
-const char *os_get_user_directory(void)
+const char* os_get_user_directory(void)
 {
-    static char user_directory[PATH_MAX] = { 0 };
+    static char user_directory[PATH_MAX] = {0};
     if (0 == user_directory[0])
     {
-        const char *home = getenv("HOME");
+        const char* home = getenv("HOME");
         if (home)
         {
             os_strlcpy(user_directory, home, PATH_MAX - 1);
@@ -135,8 +135,8 @@ status_t os_init(void)
 bool_t os_key_is_hit(void)
 {
     struct termios orig_termios;
-    char buffer = 0;
-    int n;
+    char           buffer = 0;
+    int            n;
 
     set_terminal_raw_mode(&orig_termios);
     set_nonblocking(STDIN_FILENO, 1);
@@ -201,24 +201,60 @@ void os_print(const color_t color, const char* format, ...)
 
     switch (color)
     {
-        case DEFAULT_COLOR:   color_code = "\x1b[0m"; break;
-        case DARK_BLACK:      color_code = "\x1b[30m"; break;
-        case DARK_BLUE:       color_code = "\x1b[34m"; break;
-        case DARK_GREEN:      color_code = "\x1b[32m"; break;
-        case DARK_CYAN:       color_code = "\x1b[36m"; break;
-        case DARK_RED:        color_code = "\x1b[31m"; break;
-        case DARK_MAGENTA:    color_code = "\x1b[35m"; break;
-        case DARK_YELLOW:     color_code = "\x1b[33m"; break;
-        case DARK_WHITE:      color_code = "\x1b[37m"; break;
-        case LIGHT_BLACK:     color_code = "\x1b[90m"; break;
-        case LIGHT_BLUE:      color_code = "\x1b[94m"; break;
-        case LIGHT_GREEN:     color_code = "\x1b[92m"; break;
-        case LIGHT_CYAN:      color_code = "\x1b[96m"; break;
-        case LIGHT_RED:       color_code = "\x1b[91m"; break;
-        case LIGHT_MAGENTA:   color_code = "\x1b[95m"; break;
-        case LIGHT_YELLOW:    color_code = "\x1b[93m"; break;
-        case LIGHT_WHITE:     color_code = "\x1b[97m"; break;
-        default:              color_code = "\x1b[0m"; break;
+        case DEFAULT_COLOR:
+            color_code = "\x1b[0m";
+            break;
+        case DARK_BLACK:
+            color_code = "\x1b[30m";
+            break;
+        case DARK_BLUE:
+            color_code = "\x1b[34m";
+            break;
+        case DARK_GREEN:
+            color_code = "\x1b[32m";
+            break;
+        case DARK_CYAN:
+            color_code = "\x1b[36m";
+            break;
+        case DARK_RED:
+            color_code = "\x1b[31m";
+            break;
+        case DARK_MAGENTA:
+            color_code = "\x1b[35m";
+            break;
+        case DARK_YELLOW:
+            color_code = "\x1b[33m";
+            break;
+        case DARK_WHITE:
+            color_code = "\x1b[37m";
+            break;
+        case LIGHT_BLACK:
+            color_code = "\x1b[90m";
+            break;
+        case LIGHT_BLUE:
+            color_code = "\x1b[94m";
+            break;
+        case LIGHT_GREEN:
+            color_code = "\x1b[92m";
+            break;
+        case LIGHT_CYAN:
+            color_code = "\x1b[96m";
+            break;
+        case LIGHT_RED:
+            color_code = "\x1b[91m";
+            break;
+        case LIGHT_MAGENTA:
+            color_code = "\x1b[95m";
+            break;
+        case LIGHT_YELLOW:
+            color_code = "\x1b[93m";
+            break;
+        case LIGHT_WHITE:
+            color_code = "\x1b[97m";
+            break;
+        default:
+            color_code = "\x1b[0m";
+            break;
     }
 
     os_va_start(varg, format);

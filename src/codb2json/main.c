@@ -8,6 +8,7 @@
  **/
 
 #include <stdlib.h>
+
 #include "codb2json.h"
 #include "os.h"
 

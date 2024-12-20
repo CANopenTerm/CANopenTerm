@@ -8,6 +8,7 @@
  **/
 
 #include <windows.h>
+
 #include "core.h"
 #include "os.h"
 

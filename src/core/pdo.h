@@ -10,6 +10,7 @@
 #ifndef PDO_H
 #define PDO_H
 
+#include "core.h"
 #include "os.h"
 
 #define PDO_MAX 0x1f8 /* TPDO1 - TPDO4 */

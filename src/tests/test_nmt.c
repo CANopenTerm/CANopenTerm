@@ -7,10 +7,11 @@
  *
  **/
 
+#include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <setjmp.h>
 #include <stdint.h>
+
 #include "cmocka.h"
 #include "nmt.h"
 #include "os.h"

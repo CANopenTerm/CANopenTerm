@@ -7,8 +7,8 @@
  *
  **/
 
-#include "codb.h"
 #include "ctt.h"
+#include "codb.h"
 #include "eds.h"
 #include "test_report.h"
 

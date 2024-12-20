@@ -7,16 +7,16 @@
  *
  **/
 
+#include "lua_misc.h"
 #include "core.h"
 #include "lauxlib.h"
 #include "lua.h"
-#include "lua_misc.h"
 #include "os.h"
 #include "scripts.h"
 
-extern void print_heading(const char *heading);
+extern void print_heading(const char* heading);
 
-int lua_delay_ms(lua_State *L)
+int lua_delay_ms(lua_State* L)
 {
     uint32      delay_in_ms = (uint32)lua_tointeger(L, 1);
     bool_t      show_output = lua_toboolean(L, 2);
@@ -30,7 +30,7 @@ int lua_delay_ms(lua_State *L)
     if (IS_TRUE == show_output)
     {
         int  i;
-        char buffer[34] = { 0 };
+        char buffer[34] = {0};
 
         os_print(LIGHT_BLACK, "Delay ");
         os_print(DEFAULT_COLOR, "   -       -       -         -       -       ");
@@ -54,22 +54,22 @@ int lua_delay_ms(lua_State *L)
     return 1;
 }
 
-int lua_key_is_hit(lua_State *L)
+int lua_key_is_hit(lua_State* L)
 {
     lua_pushboolean(L, os_key_is_hit());
     return 1;
 }
 
-int lua_print_heading(lua_State *L)
+int lua_print_heading(lua_State* L)
 {
-    const char *heading = lua_tostring(L, 1);
+    const char* heading = lua_tostring(L, 1);
 
     print_heading(heading);
 
     return 0;
 }
 
-void lua_register_misc_commands(core_t *core)
+void lua_register_misc_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_delay_ms);
     lua_setglobal(core->L, "delay_ms");

@@ -13,10 +13,10 @@
 #include "core.h"
 #include "lua.h"
 
-int  lua_can_write(lua_State *L);
-int  lua_can_read(lua_State *L);
+int  lua_can_write(lua_State* L);
+int  lua_can_read(lua_State* L);
 int  lua_can_flush(lua_State* L);
 int  lua_dict_lookup_raw(lua_State* L);
-void lua_register_can_commands(core_t *core);
+void lua_register_can_commands(core_t* core);
 
 #endif /* LUA_CAN_H */

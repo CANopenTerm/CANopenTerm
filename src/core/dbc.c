@@ -7,22 +7,22 @@
  *
  **/
 
-#include "core.h"
 #include "dbc.h"
+#include "core.h"
 #include "os.h"
 
 static dbc_t* dbc;
 
 static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness);
-static void   parse_message_line(char *line, message_t *message);
-static void   parse_signal_line(char *line, signal_t *signal);
-static bool_t starts_with(const char *str, const char *prefix);
+static void   parse_message_line(char* line, message_t* message);
+static void   parse_signal_line(char* line, signal_t* signal);
+static bool_t starts_with(const char* str, const char* prefix);
 static char*  str_tolower(const char* str);
-static char*  trim_whitespace(char *str);
+static char*  trim_whitespace(char* str);
 
 const char* dbc_decode(uint32 can_id, uint64 data)
 {
-    static char result[4096] = { 0 };
+    static char result[4096] = {0};
     int         pos          = 0;
     int         i;
 
@@ -127,7 +127,7 @@ status_t dbc_find_id_by_name(uint32* id, const char* search)
 status_t dbc_load(char* filename)
 {
     FILE_t*    file;
-    char       line[1024]      = { 0 };
+    char       line[1024]      = {0};
     message_t* current_message = NULL;
 
     dbc_unload();
@@ -143,7 +143,7 @@ status_t dbc_load(char* filename)
     else
     {
         dbc->message_count = 0;
-        dbc->messages = NULL;
+        dbc->messages      = NULL;
     }
 
     os_fix_path(filename);
@@ -210,15 +210,15 @@ void dbc_print(void)
     os_printf("DBC File contains %d messages\n", dbc->message_count);
     for (i = 0; i < dbc->message_count; ++i)
     {
-        const message_t *msg = &dbc->messages[i];
+        const message_t* msg = &dbc->messages[i];
         os_printf("Message %d: ID=%u, Name=%s, DLC=%u, Transmitter=%s\n",
-            i + 1, msg->id, msg->name, msg->dlc, msg->transmitter);
+                  i + 1, msg->id, msg->name, msg->dlc, msg->transmitter);
         os_printf("  Contains %d signals\n", msg->signal_count);
         for (j = 0; j < msg->signal_count; ++j)
         {
-            const signal_t *sig = &msg->signals[j];
+            const signal_t* sig = &msg->signals[j];
             os_printf("  Signal %d: Name=%s, StartBit=%d, Length=%d, Endianness=%d, Scale=%.6f, Offset=%.2f, Min=%.2f, Max=%.2f, Unit=%s, Receiver=%s\n",
-                j + 1, sig->name, sig->start_bit, sig->length, sig->endianness, sig->scale, sig->offset, sig->min_value, sig->max_value, sig->unit, sig->receiver);
+                      j + 1, sig->name, sig->start_bit, sig->length, sig->endianness, sig->scale, sig->offset, sig->min_value, sig->max_value, sig->unit, sig->receiver);
         }
     }
 }
@@ -263,7 +263,7 @@ static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length
     if (ENDIANNESS_MOTOROLA == endianness)
     {
         int bit_pos = 64 - (start_bit + length);
-        raw_value = (can_frame >> bit_pos) & mask;
+        raw_value   = (can_frame >> bit_pos) & mask;
     }
     else
     {
@@ -273,7 +273,7 @@ static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length
     return raw_value;
 }
 
-static void parse_message_line(char *line, message_t *message)
+static void parse_message_line(char* line, message_t* message)
 {
     char* token;
     char* rest = line;
@@ -289,20 +289,20 @@ static void parse_message_line(char *line, message_t *message)
     message->transmitter = os_strdup(trim_whitespace(rest));
 }
 
-static void parse_signal_line(char *line, signal_t *signal)
+static void parse_signal_line(char* line, signal_t* signal)
 {
     char* token;
     char* rest = line;
 
-    signal->name      = NULL;
-    signal->unit      = NULL;
-    signal->receiver  = NULL;
-    signal->start_bit = 0;
-    signal->length    = 0;
-    signal->scale     = 1.0;
-    signal->offset    = 0.0;
-    signal->min_value = 0.0;
-    signal->max_value = 0.0;
+    signal->name       = NULL;
+    signal->unit       = NULL;
+    signal->receiver   = NULL;
+    signal->start_bit  = 0;
+    signal->length     = 0;
+    signal->scale      = 1.0;
+    signal->offset     = 0.0;
+    signal->min_value  = 0.0;
+    signal->max_value  = 0.0;
     signal->endianness = 0;
 
     os_strtokr(rest, " ", &rest);
@@ -317,7 +317,7 @@ static void parse_signal_line(char *line, signal_t *signal)
     if (token != NULL)
     {
         signal->start_bit = os_atoi(token);
-        token = os_strtokr(rest, "@", &rest);
+        token             = os_strtokr(rest, "@", &rest);
         if (token != NULL)
         {
             signal->length = os_atoi(token);
@@ -394,7 +394,7 @@ static void parse_signal_line(char *line, signal_t *signal)
     }
 }
 
-static bool_t starts_with(const char *str, const char *prefix)
+static bool_t starts_with(const char* str, const char* prefix)
 {
     bool_t status;
     size_t len_prefix = os_strlen(prefix);
@@ -436,9 +436,9 @@ static char* str_tolower(const char* str)
     return lower_str;
 }
 
-static char* trim_whitespace(char *str)
+static char* trim_whitespace(char* str)
 {
-    char *end;
+    char* end;
 
     if (NULL == str)
     {
@@ -450,7 +450,7 @@ static char* trim_whitespace(char *str)
         str++;
     }
 
-    if (0  == *str)
+    if (0 == *str)
     {
         return str;
     }

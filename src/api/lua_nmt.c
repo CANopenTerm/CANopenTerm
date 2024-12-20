@@ -7,26 +7,26 @@
  *
  **/
 
+#include "lua_nmt.h"
 #include "can.h"
 #include "core.h"
-#include "lua.h"
 #include "lauxlib.h"
-#include "lua_nmt.h"
+#include "lua.h"
 #include "nmt.h"
 #include "os.h"
 
-extern void nmt_print_error(const char *reason, nmt_command_t command, disp_mode_t disp_mode);
+extern void nmt_print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
 
-int lua_nmt_send_command(lua_State *L)
+int lua_nmt_send_command(lua_State* L)
 {
     uint32      status;
-    disp_mode_t disp_mode = SILENT;
-    int         node_id = luaL_checkinteger(L, 1);
-    int         command = luaL_checkinteger(L, 2);
+    disp_mode_t disp_mode   = SILENT;
+    int         node_id     = luaL_checkinteger(L, 1);
+    int         command     = luaL_checkinteger(L, 2);
     bool_t      show_output = lua_toboolean(L, 3);
-    const char *comment = lua_tostring(L, 4);
+    const char* comment     = lua_tostring(L, 4);
 
-    limit_node_id((uint8 *)&node_id);
+    limit_node_id((uint8*)&node_id);
 
     if (IS_TRUE == show_output)
     {
@@ -60,7 +60,7 @@ int lua_nmt_send_command(lua_State *L)
     return 1;
 }
 
-void lua_register_nmt_command(core_t *core)
+void lua_register_nmt_command(core_t* core)
 {
     lua_pushcfunction(core->L, lua_nmt_send_command);
     lua_setglobal(core->L, "nmt_send_command");

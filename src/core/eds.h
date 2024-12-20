@@ -10,8 +10,8 @@
 #ifndef EDS_H
 #define EDS_H
 
-#include "core.h"
 #include "codb.h"
+#include "core.h"
 
 void     list_eds(void);
 status_t run_conformance_test(const char* eds_path, const char* package, uint32 node_id, disp_mode_t disp_mode);
@@ -19,8 +19,8 @@ status_t validate_eds(uint32 file_no, const char* package, uint32 node_id);
 
 typedef struct eds_entry
 {
-    uint16     Index;
-    uint8      SubIndex;
+    uint16 Index;
+    uint8  SubIndex;
 
     char       ParameterName[242]; /* max. 241 characters, leading \0. */
     uint8      ObjectType;

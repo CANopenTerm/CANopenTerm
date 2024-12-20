@@ -11,9 +11,7 @@
 
 const uint8 max_script_search_paths = 3;
 
-const char* script_search_path[3] =
-{
+const char* script_search_path[3] = {
     "./",
     "./scripts/",
-    "C:/Program Files/CANopenTerm/scripts/"
-};
+    "C:/Program Files/CANopenTerm/scripts/"};

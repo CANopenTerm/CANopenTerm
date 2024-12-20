@@ -33,7 +33,7 @@ void python_test_init(void)
 
 bool py_test_add_result(int argc, py_Ref argv)
 {
-    test_result_t result = { 0 };
+    test_result_t result = {0};
 
     PY_CHECK_ARGC(8);
     PY_CHECK_ARG_TYPE(0, tp_bool);
