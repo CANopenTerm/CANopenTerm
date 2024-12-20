@@ -21,6 +21,61 @@ static cJSON*     ds301     = NULL;
 static cJSON*     codb      = NULL;
 static os_thread* init_th   = NULL;
 
+const char* data_type_lookup[] =
+{
+    " ",
+    "BOOLEAN_T",
+    "INTEGER8",
+    "UNSIGNED8",
+    "INTEGER16",
+    "UNSIGNED16",
+    "INTEGER24",
+    "UNSIGNED24",
+    "INTEGER32",
+    "UNSIGNED32",
+    "INTEGER48",
+    "UNSIGNED48",
+    "INTEGER56",
+    "UNSIGNED56",
+    "INTEGER64",
+    "UNSIGNED64",
+    "REAL32",
+    "REAL64",
+    "FLOAT_T",
+    "TIME_OF_DAY",
+    "VISIBLE_STRING",
+    "OCTET_STRING",
+    "DOMAIN_T"
+};
+
+const char* object_code_lookup[] =
+{
+    "DOMAIN",
+    "DEFTYPE",
+    "DEFSTRUCT",
+    "VAR",
+    "ARRAY",
+    "RECORD"
+};
+
+const char* object_kind_lookup[] =
+{
+    "Optional",
+    "Mandatory",
+    "Conditional"
+};
+
+const char* access_type_lookup[] =
+{
+    " ",
+    "const",
+    "ro",
+    "wo",
+    "rw",
+    "wwr",
+    "rww"
+};
+
 int codb_init_ex(void* unused);
 
 void codb_init(void)
@@ -127,14 +182,13 @@ const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char*
         return NULL;
     }
 
-    object = NULL;
     cJSON_ArrayForEach(object, db)
     {
         cJSON* json_index = cJSON_GetObjectItem(object, "index");
         if (json_index != NULL && json_index->valueint == index)
         {
             cJSON* sub_indices = cJSON_GetObjectItem(object, "sub_indices");
-            cJSON* obj_desc = cJSON_GetObjectItem(object, "desc");
+            cJSON* obj_desc    = cJSON_GetObjectItem(object, "desc");
 
             if (obj_desc == NULL || obj_desc->valuestring == NULL)
             {
@@ -176,6 +230,92 @@ const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char*
     }
 
     return NULL;
+}
+
+void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* info)
+{
+    cJSON* object = NULL;
+
+    if (NULL == db)
+    {
+        return;
+    }
+
+    cJSON_ArrayForEach(object, db)
+    {
+        cJSON* json_index = cJSON_GetObjectItem(object, "index");
+        if (json_index != NULL && json_index->valueint == index)
+        {
+            int    num_sub_indices;
+            cJSON* obj_desc      = cJSON_GetObjectItem(object,   "desc");
+            cJSON* sub_indices   = cJSON_GetObjectItem(object,   "sub_indices");
+            cJSON* obj_code      = cJSON_GetObjectItem(object,   "code");
+            cJSON* obj_code_type = cJSON_GetObjectItem(obj_code, "type");
+            cJSON* obj_category  = cJSON_GetObjectItem(object,   "kind");
+
+            if (obj_desc != NULL && obj_desc->valuestring != NULL)
+            {
+                os_snprintf(info->name, CODB_MAX_DESC_LEN, "%s", obj_desc->valuestring);
+            }
+
+            if (obj_code != NULL)
+            {
+                info->code = obj_code_type->valueint;
+            }
+
+            if (obj_category != NULL)
+            {
+                info->category = obj_category->valueint;
+            }
+
+            if (sub_indices != NULL)
+            {
+                cJSON* sub_index_item = cJSON_GetArrayItem(sub_indices, sub_index);
+
+                num_sub_indices = cJSON_GetArraySize(sub_indices);
+                if (num_sub_indices > info->entry_count)
+                {
+                    info->entry_count = num_sub_indices;
+                }
+
+                if (sub_index_item != NULL)
+                {
+                    cJSON* sub_desc        = cJSON_GetObjectItem(sub_index_item, "desc");
+                    cJSON* sub_data_type   = cJSON_GetObjectItem(sub_index_item, "data_type");
+                    cJSON* sub_category    = cJSON_GetObjectItem(sub_index_item, "kind");
+                    cJSON* sub_access_type = cJSON_GetObjectItem(sub_index_item, "access_type");
+
+                    if (sub_desc != NULL && sub_desc->valuestring != NULL)
+                    {
+                        os_snprintf(info->sub_index_name, CODB_MAX_DESC_LEN, "%s", sub_desc->valuestring);
+                    }
+
+                    if (sub_data_type != NULL)
+                    {
+                        cJSON* sub_data_type_type = cJSON_GetObjectItem(sub_data_type, "type");
+                        info->data_type           = sub_data_type_type->valueint;
+                    }
+
+                    if (sub_category != NULL)
+                    {
+                        info->entry_category = sub_category->valueint;
+                    }
+
+                    if (sub_access_type != NULL)
+                    {
+                        cJSON* sub_access_type_type = cJSON_GetObjectItem(sub_access_type, "type");
+
+                        if (sub_access_type_type != NULL)
+                        {
+                            info->access_type = sub_access_type_type->valueint;
+                        }
+                    }
+
+                    info->does_exist = IS_TRUE;
+                }
+            }
+        }
+    }
 }
 
 codb_t* codb_get_ds301_profile(void)

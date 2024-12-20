@@ -77,91 +77,109 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
 
 status_t dict_lookup_object(uint16 index, uint8 sub_index)
 {
-    status_t        status = ALL_OK;
+    status_t      status = ALL_OK;
+    object_info_t info;
+    table_t       object_table;
+    table_t       sub_index_table;
+    uint8         object_table_width;
+    uint8         sub_index_table_width;
 
-    char            object_name[CODB_MAX_DESC_LEN] = { 0 };
-    uint8           object_entry_count             = 0;
-    obj_code_t      object_code;
-    data_type_t     object_data_type;
-    obj_kind_t      object_category;
-    obj_attr_type_t object_attribute;
+    const char* str[] =
+    {
+        "Profile- or manufacturer-specific"
+    };
 
-    char            sub_index_name[CODB_MAX_DESC_LEN] = { 0 };
-    acc_type_t      sub_index_access_type;
-    bool_t          sub_index_pdo_mapping;
-    obj_attr_type_t sub_index_attribute;
-
-    table_t         object_table;
-    table_t         sub_index_table;
+    os_memset(&info, 0, sizeof(object_info_t));
 
     if (IS_TRUE == is_codb_loaded())
     {
-        (void)codb_desc_lookup_ex(codb_get_profile(), index, sub_index, object_name, sub_index_name);
+        codb_info_lookup(codb_get_profile(), index, sub_index, &info);
     }
 
-    if (IS_TRUE == is_ds301_loaded())
+    if (IS_TRUE == is_ds301_loaded() && IS_FALSE == info.does_exist)
     {
-        (void)codb_desc_lookup_ex(codb_get_ds301_profile(), index, sub_index, object_name, sub_index_name);
+        codb_info_lookup(codb_get_ds301_profile(), index, sub_index, &info);
     }
 
-    if ((object_name[0] != '\0') || (sub_index_name[0] != '\0'))
+    if (IS_FALSE == info.does_exist)
     {
-        os_printf("\n");
+        return status;
     }
 
-    if (object_name[0] != '\0')
-    {
-        object_table.frame_color    = DARK_CYAN;
-        object_table.text_color     = DEFAULT_COLOR;
-        object_table.column_a_width = 11;
-        object_table.column_b_width = os_strlen(object_name);
-        object_table.column_c_width = 1;
+    object_table_width = os_strlen(info.name);
 
-        status = table_init(&object_table, 1024);
-        if (ALL_OK == status)
+    object_table.frame_color    = DARK_CYAN;
+    object_table.text_color     = DEFAULT_COLOR;
+    object_table.column_a_width = 11;
+    object_table.column_b_width = os_strlen(info.name);
+    object_table.column_c_width = 1;
+
+    status = table_init(&object_table, 1024);
+    if (ALL_OK == status)
+    {
+        char buffer[CODB_MAX_DESC_LEN] = { 0 };
+
+        os_printf("\nOBJECT DESCRIPTION");
+        os_snprintf(buffer, sizeof(buffer), "%04Xh", index);
+
+        table_print_header(&object_table);
+        table_print_row("Index", buffer, "O", &object_table);
+
+        os_snprintf(buffer, sizeof(buffer), "%u", info.entry_count);
+
+        table_print_row("Elements", buffer, "B", &object_table);
+        table_print_row("Name", info.name, "J", &object_table);
+
+        os_snprintf(buffer, sizeof(buffer), "%s", object_code_lookup[info.code]);
+
+        table_print_row("Object code", buffer, "E", &object_table);
+        if (IS_VAR == info.code)
         {
-            char buffer[CODB_MAX_DESC_LEN] = { 0 };
-            os_printf("OBJECT DESCRIPTION");
-
-            os_snprintf(buffer, sizeof(buffer), "%04Xh", index);
-            table_print_header(&object_table);
-            table_print_row("Index",       buffer,      "O", &object_table);
-            os_snprintf(buffer, sizeof(buffer), "%u", object_entry_count);
-            table_print_row("Entry count", buffer,      "B", &object_table);
-            table_print_row("Name",        object_name, "J", &object_table);
-            table_print_row("Object code", " ",         "E", &object_table);
-            table_print_row("Data type",   " ",         "C",  &object_table);
-            table_print_row("Category",    " ",         "T",  &object_table);
-            table_print_footer(&object_table);
-            table_flush(&object_table);
+            os_snprintf(buffer, sizeof(buffer), "%s", data_type_lookup[info.data_type]);
         }
+        else
+        {
+            os_snprintf(buffer, sizeof(buffer), " ");
+        }
+
+        table_print_row("Data type", buffer, "C", &object_table);
+
+        os_snprintf(buffer, sizeof(buffer), "%s", object_kind_lookup[info.category]);
+
+        table_print_row("Category", buffer, "T", &object_table);
+        table_print_footer(&object_table);
+        table_flush(&object_table);
     }
 
-    if (sub_index_name[0] != '\0')
+    sub_index_table.frame_color    = DARK_CYAN;
+    sub_index_table.text_color     = DEFAULT_COLOR;
+    sub_index_table.column_a_width = 14;
+    sub_index_table.column_b_width = os_strlen(info.sub_index_name);
+    sub_index_table.column_c_width = 1;
+
+    status = table_init(&sub_index_table, 1024);
+    if (ALL_OK == status)
     {
-        sub_index_table.frame_color    = DARK_CYAN;
-        sub_index_table.text_color     = DEFAULT_COLOR;
-        sub_index_table.column_a_width = 13;
-        sub_index_table.column_b_width = os_strlen(sub_index_name);
-        sub_index_table.column_c_width = 1;
+        char buffer[CODB_MAX_DESC_LEN] = { 0 };
+        os_printf("ENTRY DESCRIPTION");
+        os_snprintf(buffer, sizeof(buffer), "%02Xh", sub_index);
 
-        status = table_init(&sub_index_table, 1024);
-        if (ALL_OK == status)
-        {
-            char buffer[CODB_MAX_DESC_LEN] = { 0 };
-            os_printf("ENTRY DESCRIPTION");
-            os_snprintf(buffer, sizeof(buffer), "%02Xh", sub_index);
+        table_print_header(&sub_index_table);
+        table_print_row("Sub-index", buffer, "E", &sub_index_table);
+        table_print_row("Name", info.sub_index_name, "N", &sub_index_table);
 
-            table_print_header(&sub_index_table);
-            table_print_row("Sub-index",     buffer,         "E", &sub_index_table);
-            table_print_row("Name",          sub_index_name, "N", &sub_index_table);
-            table_print_row("Access",        " ",            "T", &sub_index_table);
-            table_print_row("PDO mapping",   " ",            "R", &sub_index_table);
-            table_print_row("Value range",   " ",            "Y", &sub_index_table);
-            table_print_row("Default value", " ",            " ", &sub_index_table);
-            table_print_footer(&sub_index_table);
-            table_flush(&sub_index_table);
-        }
+        os_snprintf(buffer, sizeof(buffer), "%s", object_kind_lookup[info.entry_category]);
+
+        table_print_row("Entry Category", buffer, "T", &sub_index_table);
+
+        os_snprintf(buffer, sizeof(buffer), "%s", access_type_lookup[info.access_type]);
+
+        table_print_row("Access", buffer, "R", &sub_index_table);
+        table_print_row("PDO mapping", " ", "Y", &sub_index_table);
+        table_print_row("Value range", " ", " ", &sub_index_table);
+        table_print_row("Default value", " ", " ", &sub_index_table);
+        table_print_footer(&sub_index_table);
+        table_flush(&sub_index_table);
     }
 
     return status;

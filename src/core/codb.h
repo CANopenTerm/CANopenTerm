@@ -15,6 +15,11 @@
 
 #define CODB_MAX_DESC_LEN 256
 
+extern const char* data_type_lookup[];
+extern const char* object_code_lookup[];
+extern const char* object_kind_lookup[];
+extern const char* access_type_lookup[];
+
 typedef enum obj_attr_type
 {
     EMPTY,
@@ -84,12 +89,31 @@ typedef enum acc_type
 
 } acc_type_t;
 
+typedef struct object_info
+{
+    int             entry_count;
+    uint16          index;
+    uint8           sub_index;
+    obj_code_t      code;
+    data_type_t     data_type;
+    obj_kind_t      category;
+    obj_kind_t      entry_category;
+    obj_attr_type_t attribute;
+    acc_type_t      access_type;
+    bool_t          pdo_mapping;
+    bool_t          does_exist;
+    char            name[CODB_MAX_DESC_LEN];
+    char            sub_index_name[CODB_MAX_DESC_LEN];
+
+} object_info_t;
+
 typedef cJSON codb_t;
 
 void        codb_init(void);
 void        codb_deinit(void);
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index);
 const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char* object_desc, char* sub_index_desc);
+void        codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* info);
 codb_t*     codb_get_ds301_profile(void);
 codb_t*     codb_get_profile(void);
 bool_t      is_ds301_loaded(void);
