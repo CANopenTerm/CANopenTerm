@@ -85,11 +85,6 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     uint8         object_table_width;
     uint8         sub_index_table_width;
 
-    const char* str[] =
-    {
-        ""
-    };
-
     os_memset(&info, 0, sizeof(object_info_t));
 
     if (IS_TRUE == is_codb_loaded())
@@ -124,6 +119,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     {
         char buffer[CODB_MAX_DESC_LEN] = { 0 };
 
+        os_printf("\nThe accuracy of the data has not been completely verified.\n");
         os_printf("\nOBJECT DESCRIPTION");
         os_snprintf(buffer, sizeof(buffer), "%04Xh", index);
 
@@ -162,7 +158,8 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     {
         sub_index_table_width = min_table_width;
     }
-    else if (0 == info.default_value)
+
+    if (0 == info.default_value)
     {
         sub_index_table_width = 33;
     }
