@@ -1,0 +1,44 @@
+# CANopenTerm Format Style Options
+---
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveBitFields: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: Consecutive
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments: true
+AllowShortBlocksOnASingleLine: Always
+BasedOnStyle: LLVM
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: true
+  IndentBraces: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
+BreakBeforeBraces: Allman
+ColumnLimit: 0
+IndentCaseLabels: true
+IndentWidth: 4
+LineEnding: LF
+MaxEmptyLinesToKeep: 1
+PointerAlignment: Left
+SortIncludes: true
+SpaceAfterLogicalNot: true
+SpaceBeforeAssignmentOperators: true
+SpacesInParentheses: false
+UseCRLF: false
+UseTab: Never
+...
