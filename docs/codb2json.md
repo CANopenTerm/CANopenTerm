@@ -103,6 +103,10 @@ Each sub-index object contains the following fields:
     - `2`: CONDITIONAL
 - `data_type` (object): An object representing the data type attributes.
 - `access_type` (object): An object representing the access type attributes.
+- `low_limit` Low limit.
+- `high_limit` High limit.
+- `default_value` Default value.
+- `mappable` Is mappable.
 
 <!-- tab: Code -->
 The code object contains the following fields:

@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     if (argc < 2)
     {
         os_printf("Usage: %s <input file> [OPTION]\n", argv[0]);
-        os_printf("    -f EDS            Format JSON output\n");
+        os_printf("    -f                 Format JSON output\n");
         return EXIT_SUCCESS;
     }
     else if (argc > 2)
