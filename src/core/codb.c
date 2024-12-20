@@ -23,7 +23,7 @@ static os_thread* init_th   = NULL;
 
 const char* data_type_lookup[] =
 {
-    " ",
+    "-",
     "BOOLEAN_T",
     "INTEGER8",
     "UNSIGNED8",
@@ -67,7 +67,7 @@ const char* object_kind_lookup[] =
 
 const char* access_type_lookup[] =
 {
-    " ",
+    "-",
     "const",
     "ro",
     "wo",
