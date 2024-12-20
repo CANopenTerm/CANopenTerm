@@ -81,12 +81,13 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     object_info_t info;
     table_t       object_table;
     table_t       sub_index_table;
+    const uint8   min_table_width = 14u;
     uint8         object_table_width;
     uint8         sub_index_table_width;
 
     const char* str[] =
     {
-        "Profile- or manufacturer-specific"
+        ""
     };
 
     os_memset(&info, 0, sizeof(object_info_t));
@@ -107,6 +108,10 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
     }
 
     object_table_width = os_strlen(info.name);
+    if (object_table_width < min_table_width)
+    {
+        object_table_width = min_table_width;
+    }
 
     object_table.frame_color    = DARK_CYAN;
     object_table.text_color     = DEFAULT_COLOR;
@@ -152,10 +157,20 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
         table_flush(&object_table);
     }
 
+    sub_index_table_width = os_strlen(info.sub_index_name);
+    if (sub_index_table_width < min_table_width)
+    {
+        sub_index_table_width = min_table_width;
+    }
+    else if (0 == info.default_value)
+    {
+        sub_index_table_width = 33;
+    }
+
     sub_index_table.frame_color    = DARK_CYAN;
     sub_index_table.text_color     = DEFAULT_COLOR;
     sub_index_table.column_a_width = 14;
-    sub_index_table.column_b_width = os_strlen(info.sub_index_name);
+    sub_index_table.column_b_width = sub_index_table_width;
     sub_index_table.column_c_width = 1;
 
     status = table_init(&sub_index_table, 1024);
@@ -176,9 +191,39 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
         os_snprintf(buffer, sizeof(buffer), "%s", access_type_lookup[info.access_type]);
 
         table_print_row("Access", buffer, "R", &sub_index_table);
-        table_print_row("PDO mapping", " ", "Y", &sub_index_table);
-        table_print_row("Value range", " ", " ", &sub_index_table);
-        table_print_row("Default value", " ", " ", &sub_index_table);
+
+        if (SDL_FALSE == info.pdo_mapping)
+        {
+            os_snprintf(buffer, sizeof(buffer), "No");
+        }
+        else
+        {
+            os_snprintf(buffer, sizeof(buffer), "Optional");
+        }
+
+        table_print_row("PDO mapping", buffer, "Y", &sub_index_table);
+
+        if (info.value_range_lower != 0 || info.value_range_upper != 0)
+        {
+            os_snprintf(buffer, sizeof(buffer), "%Xh - %Xh", info.value_range_lower, info.value_range_upper);
+        }
+        else
+        {
+            os_snprintf(buffer, sizeof(buffer), "%s", data_type_lookup[info.data_type]);
+        }
+
+        table_print_row("Value range", buffer, " ", &sub_index_table);
+
+        if (info.default_value != 0)
+        {
+            os_snprintf(buffer, sizeof(buffer), "%Xh", info.default_value);
+        }
+        else
+        {
+            os_snprintf(buffer, sizeof(buffer), "Profile- or manufacturer-specific");
+        }
+
+        table_print_row("Default value", buffer, " ", &sub_index_table);
         table_print_footer(&sub_index_table);
         table_flush(&sub_index_table);
     }

@@ -102,6 +102,9 @@ typedef struct object_info
     acc_type_t      access_type;
     bool_t          pdo_mapping;
     bool_t          does_exist;
+    uint32          value_range_lower;
+    uint32          value_range_upper;
+    uint32          default_value;
     char            name[CODB_MAX_DESC_LEN];
     char            sub_index_name[CODB_MAX_DESC_LEN];
 

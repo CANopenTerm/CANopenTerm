@@ -89,10 +89,10 @@ void codb_init(void)
 /* Can be used like codb_init(), when no scheduler is available. */
 int codb_init_ex(void* unused)
 {
-    FILE_t* file;
+    FILE_t*     file;
     char        file_path[512] = { 0 };
     const char* data_path = os_find_data_path();
-    char* file_content;
+    char*       file_content;
     size_t      file_size;
 
     (void)unused;
@@ -279,10 +279,14 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
 
                 if (sub_index_item != NULL)
                 {
-                    cJSON* sub_desc        = cJSON_GetObjectItem(sub_index_item, "desc");
-                    cJSON* sub_data_type   = cJSON_GetObjectItem(sub_index_item, "data_type");
-                    cJSON* sub_category    = cJSON_GetObjectItem(sub_index_item, "kind");
-                    cJSON* sub_access_type = cJSON_GetObjectItem(sub_index_item, "access_type");
+                    cJSON* sub_desc          = cJSON_GetObjectItem(sub_index_item, "desc");
+                    cJSON* sub_data_type     = cJSON_GetObjectItem(sub_index_item, "data_type");
+                    cJSON* sub_category      = cJSON_GetObjectItem(sub_index_item, "kind");
+                    cJSON* sub_access_type   = cJSON_GetObjectItem(sub_index_item, "access_type");
+                    cJSON* sub_pdo_mapping   = cJSON_GetObjectItem(sub_index_item, "mappable");
+                    cJSON* sub_low_limit     = cJSON_GetObjectItem(sub_index_item, "low_limit");
+                    cJSON* sub_high_limit    = cJSON_GetObjectItem(sub_index_item, "high_limit");
+                    cJSON* sub_default_value = cJSON_GetObjectItem(sub_index_item, "default_value");
 
                     if (sub_desc != NULL && sub_desc->valuestring != NULL)
                     {
@@ -306,7 +310,47 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
 
                         if (sub_access_type_type != NULL)
                         {
-                            info->access_type = sub_access_type_type->valueint;
+                            info->access_type = (bool_t)sub_access_type_type->valueint;
+                        }
+                    }
+
+                    if (sub_pdo_mapping != NULL)
+                    {
+                        cJSON* sub_pdo_mapping_value = cJSON_GetObjectItem(sub_pdo_mapping, "value");
+
+                        if (sub_pdo_mapping_value != NULL)
+                        {
+                            info->pdo_mapping = sub_pdo_mapping_value->valueint;
+                        }
+                    }
+
+                    if (sub_low_limit != NULL)
+                    {
+                        cJSON* sub_low_limit_value = cJSON_GetObjectItem(sub_low_limit, "value");
+
+                        if (sub_low_limit_value != NULL)
+                        {
+                            info->value_range_lower = sub_low_limit_value->valueint;
+                        }
+                    }
+
+                    if (sub_high_limit != NULL)
+                    {
+                        cJSON* sub_high_limit_value = cJSON_GetObjectItem(sub_high_limit, "value");
+
+                        if (sub_high_limit_value != NULL)
+                        {
+                            info->value_range_upper = sub_high_limit_value->valueint;
+                        }
+                    }
+
+                    if (sub_default_value != NULL)
+                    {
+                        cJSON* sub_default_value_value = cJSON_GetObjectItem(sub_default_value, "value");
+
+                        if (sub_default_value_value != NULL)
+                        {
+                            info->default_value = sub_default_value_value->valueint;
                         }
                     }
 
