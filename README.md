@@ -19,15 +19,12 @@
    
 ## Overview
 
-CANopenTerm is an open-source software tool designed for the
-development, testing, and analysis of **CANopen** CC networks
-and devices.  It aims to provide a technical, no-nonsense tool
-for professionals working with CAN CC-based networks, offering
-depth and versatility in its features without the need for
-marketing embellishments.  It extends its capabilities to
-support other CAN CC protocols, including **SAE J1939** and
-**OBD-II**, making it a versatile tool for professionals
-working with CAN CC-based networks.
+CANopenTerm is an open-source tool for developing, testing,
+and analyzing **CANopen** CC networks and devices. It provides
+a technical, no-nonsense solution for professionals working
+with CAN CC-based networks. Additionally, it supports
+**SAE J1939** and **OBD-II** protocols, making it versatile
+for various applications.
 
 Key functionalities include:
 
