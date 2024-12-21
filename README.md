@@ -13,8 +13,6 @@
 
 - [Additional Features](#additional-features)
 
-- [Code Quality and Standards](#code-quality-and-standards)
-
 - [Why Your Support Matters](#why-your-support-matters)
    
 ## Overview
@@ -34,7 +32,7 @@ Key functionalities include:
 
 - **Configuration and Simulation**:
   Tools for configuring CANopen CC devices and simulating nodes
-  under development.
+  in development.
 
 - **Testing**:
   Capabilities to thoroughly test CANopen CC networks and devices.
@@ -58,10 +56,10 @@ Key functionalities include:
   For non-CANopen needs, offering flexibility and control.
 
 - **Workflow Automation**:
-  Automate your workflow with built-in scripts or create custom ones using
-  [Lua](https://canopenterm.de/lua-api) or [Python](https://canopenterm.de/python-api).
-  Both languages are supported with similar APIs, allowing you to tailor
-  and streamline tasks efficiently.
+  Streamline workflows with built-in
+  [Lua](https://canopenterm.de/lua-api) and
+  [Python](https://canopenterm.de/python-api) interpreters,
+  offering similar APIs for flexible task automation.
 
 ## Additional Features
 
@@ -82,26 +80,14 @@ Key functionalities include:
   Generate Test reports for integration with continuous integration (CI) systems
   such as [Jenkins](https://plugins.jenkins.io/junit/).
 
-## Code Quality and Standards
-
-- **ANSI C Source Code**:
-  Ensures robust performance and high portability.
-
-- **Quality Assurance**:
-  Static code analysis and unit tests for reliability.
-
-- **OS Abstraction Layer**:
-  Simplifies the process of porting to different platforms.
-
 ## Why Your Support Matters
 
 **CANopenTerm** is developed to provide a powerful tool for
-professionals at no cost. However, maintaining and improving
-such a project requires resources. Your donations can make a
+professionals at no cost.  However, maintaining and improving
+such a project requires resources.  Your donations can make a
 significant difference, enabling continued development and support.
 
 Your contribution, no matter how small, will be greatly appreciated
-and will help keep CANopenTerm thriving. Together, we can ensure
-this essential tool remains available and continues to evolve.
+and will help keep CANopenTerm thriving.
 
 [Donate Now](https://github.com/sponsors/mupfdev)
