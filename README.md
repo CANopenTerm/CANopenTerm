@@ -15,8 +15,6 @@
 
 - [Code Quality and Standards](#code-quality-and-standards)
 
-- [Open Source Commitment](#open-source-commitment)
-
 - [Why Your Support Matters](#why-your-support-matters)
    
 ## Overview
