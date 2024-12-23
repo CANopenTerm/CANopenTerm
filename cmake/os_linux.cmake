@@ -152,7 +152,7 @@ ExternalProject_Add(pocketpy_devel
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -DPK_BUILD_STATIC_LIB=ON
         -DPK_ENABLE_OS=ON
-
+        -DPK_BUILD_MODULE_LZ4=OFF
     INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
     PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step.")
 
