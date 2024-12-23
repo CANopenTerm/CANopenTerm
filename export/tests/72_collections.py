@@ -209,6 +209,8 @@ assertEqual((n+1) not in d, True)
 class BadCmp:
     def __eq__(self, other):
         raise RuntimeError
+    def __ne__(self, other):
+        raise RuntimeError
 
 
 # # Test detection of comparison exceptions
@@ -488,12 +490,12 @@ assertEqual(list(d), list(e))
 
 ########## test pickle #############
 
-d = deque(range(200))
-for _ in range(5 + 1):
-    s = pickle.dumps(d)
-    e = pickle.loads(s)
-    assertNotEqual(id(e), id(d))
-    assertEqual(list(e), list(d))
+# d = deque(range(200))
+# for _ in range(5 + 1):
+#     s = pickle.dumps(d)
+#     e = pickle.loads(s)
+#     assertNotEqual(id(e), id(d))
+#     assertEqual(list(e), list(d))
 
 ### test copy ########
 

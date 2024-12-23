@@ -2,21 +2,21 @@
 class TestSuperBase():
     def __init__(self):
         self.base_attr = 1
-
+        
     def base_method(self):
         return self.base_attr
-
+    
     def error(self):
         raise Exception('未能拦截错误')
-
+    
 
 class TestSuperChild1(TestSuperBase):
     def __init__(self):
         super(TestSuperChild1, self).__init__()
-
+    
     def child_method(self):
         return super(TestSuperChild1, self).base_method()
-
+    
     def error_handling(self):
         try:
             super(TestSuperChild1, self).error()
@@ -105,11 +105,11 @@ assert type(hash(-456)) is int
 assert type(hash("hello")) is int
 
 # 测试浮点数类型的输入
-assert type(hash(3.14)) is int
+assert type(hash(3.14)) is int 
 assert type(hash(-2.71828)) is int
 
 # 测试边界情况
-# assert type(hash(None)) is int
+# assert type(hash(None)) is int 
 assert hash(True) == 1
 assert hash(False) == 0
 
@@ -382,6 +382,7 @@ a = hash(object())  # object is hashable
 a = hash(A())       # A is hashable
 class B:
     def __eq__(self, o): return True
+    def __ne__(self, o): return False
 
 try:
     hash(B())
@@ -483,7 +484,7 @@ class Vector2:
     @property
     def x(self):
         return self._x
-
+    
     @x.setter
     def x(self, val):
         self._x = val
