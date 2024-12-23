@@ -95,7 +95,7 @@ int main(void)
             /* cmocka_unit_test(test_python_91_line_profiler), */
             cmocka_unit_test(test_python_91_pdb),
             cmocka_unit_test(test_python_95_bugs),
-            /* cmocka_unit_test(test_python_95_dis), */
+            cmocka_unit_test(test_python_95_dis),
             cmocka_unit_test(test_python_96_pep695_py312),
             cmocka_unit_test(test_python_99_extras),
             cmocka_unit_test(test_nmt_print_help),
