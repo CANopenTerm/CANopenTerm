@@ -2,7 +2,7 @@
  *
  *  CANopen Profile data base to JSON converter.
  *
- *  Copyright (c) 2024, Michael Fitzmayer. All rights reserved.
+ *  Copyright (c) 2025, Michael Fitzmayer. All rights reserved.
  *  SPDX-License-Identifier: MIT
  *
  **/

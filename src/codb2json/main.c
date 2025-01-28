@@ -2,7 +2,7 @@
  *
  *  CANopen Profile data base to JSON converter.
  *
- *  Copyright (c) 2024, Michael Fitzmayer. All rights reserved.
+ *  Copyright (c) 2025, Michael Fitzmayer. All rights reserved.
  *  SPDX-License-Identifier: MIT
  *
  **/
@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     bool_t format_output = IS_FALSE;
 
     os_printf("<> codb2json\n");
-    os_printf("Copyright (c) 2024, Michael Fitzmayer.\n\n");
+    os_printf("Copyright (c) 2025, Michael Fitzmayer.\n\n");
 
     if (argc < 2)
     {
