@@ -136,7 +136,7 @@ if os.getenv("OS") == "Windows_NT" then
 end
 
 for loop = 1, num_loops + 1 do
-    local trc_data   = parse_pcan_trc(base_name)
+    local trc_data   = parse_pcan_trc(trc_file)
     local start_time = get_time()
     local quit       = false
 

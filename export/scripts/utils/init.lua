@@ -17,33 +17,25 @@ function clear_screen()
 end
 
 local function get_file_list(extension, directory)
-  directory = directory or ""
-
-  -- Convert directory path separators based on platform
-  local sep = package.config:sub(1, 1)  -- Get platform-specific path separator
-  directory = directory:gsub("/", sep)  -- Replace forward slashes with platform-specific separator
-
   local files = {}
-  local i = 1
-  local command
-
+  local p
+  
   if os.getenv("OS") == "Windows_NT" then
-    command = 'dir /b /a-d "' .. directory .. '*.' .. extension .. '" 2>nul'
+    p = io.popen('dir /b /a-d "' .. directory .. '*.' .. extension .. '" 2>nul')
   else
-    command = 'ls -1 "' .. directory .. '*.' .. extension .. '" 2>/dev/null'
+    p = io.popen('ls "' .. directory .. '"')
   end
 
-  for file in io.popen(command):lines() do
-    files[i] = file
-    i = i + 1
+  if p then
+    for file in p:lines() do
+      if file:match("%." .. extension .. "$") then
+        table.insert(files, file)
+      end
+    end
+    p:close()
   end
 
-  if #files == 0 then
-    print("No ." .. extension .. " files found in directory: " .. directory)
-    return nil
-  end
-
-  return files
+  return #files > 0 and files or nil
 end
 
 local function get_file_by_selection(prompt, extension, sub_directory)
@@ -51,14 +43,15 @@ local function get_file_by_selection(prompt, extension, sub_directory)
 
   local directory = sub_directory or ""
 
-  -- Convert directory path separators based on platform
-  local sep = package.config:sub(1, 1)  -- Get platform-specific path separator
-  directory = directory:gsub("/", sep)  -- Replace forward slashes with platform-specific separator
+  -- Ensure directory has a trailing slash
+  if directory ~= "" and not directory:match("/$") then
+    directory = directory .. "/"
+  end
 
   local files = get_file_list(extension, directory)
 
   if files == nil then
-    print("Exiting.")
+    print("No files found. Exiting.")
     return nil
   end
 
@@ -66,20 +59,20 @@ local function get_file_by_selection(prompt, extension, sub_directory)
     print(i .. ". " .. file)
   end
 
-  io.write("\n" .. prompt .. " (or 'q' to quit): ")
-  local choice = io.read()
+  while true do
+    io.write("\n" .. prompt .. " (or 'q' to quit): ")
+    local choice = io.read()
 
-  if choice == 'q' then
-    return nil
-  else
+    if choice == 'q' then
+      return nil
+    end
+
     choice = tonumber(choice)
     if choice and choice >= 1 and choice <= #files then
-      -- Convert back to original directory path separators for returning
-      local original_sep = sub_directory and "/" or sep  -- Determine if sub_directory was provided
-      return directory:gsub(sep, original_sep) .. files[choice]
+      local full_path = directory .. files[choice]
+      return full_path
     else
       print("Invalid choice. Please enter a number between 1 and " .. #files .. " or 'q' to quit.")
-      return get_file_by_selection(prompt, extension, sub_directory)
     end
   end
 end
