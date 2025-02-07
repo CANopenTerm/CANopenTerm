@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update -y -qq
-        sudo apt-get install ninja-build libsocketcan-dev
+        sudo apt-get install ninja-build libsocketcan-dev libreadline-dev
 
     - name: Build unit tests
       run: |
