@@ -203,7 +203,7 @@ void test_os_ftell(void** state)
 
 void test_os_free(void** state)
 {
-    void* ptr = malloc(sizeof(int));
+    void* ptr = os_calloc(sizeof(int), 1);
 
     (void)state;
 
