@@ -14,7 +14,7 @@
 
 static pdo_t pdo[PDO_MAX];
 
-static uint32 pdo_send_callback(uint32 interval, void* param);
+static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval);
 static void   print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id);
 
 bool_t pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, disp_mode_t disp_mode)
@@ -79,12 +79,14 @@ bool_t pdo_del(uint16 can_id, disp_mode_t disp_mode)
     return IS_TRUE;
 }
 
-static uint32 pdo_send_callback(uint32 interval, void* pdo_pt)
+static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval)
 {
     int           i;
     int           offset  = 0;
     pdo_t*        pdo     = pdo_pt;
     can_message_t message = {0};
+
+    (void)id;
 
     message.id     = pdo->can_id;
     message.length = pdo->length;
@@ -111,7 +113,7 @@ status_t pdo_print_help(void)
         table_print_header(&table);
         table_print_row("CAN-ID", "Object", "Spec.", &table);
         table_print_divider(&table);
-        table_print_row("0x000 - 0x07f", "Node-ID", " ", &table);
+        table_print_row("0x001 - 0x07f", "Node-ID", " ", &table);
         table_print_row("0x181 - 0x1ff", "TPDO1", "CiA 301", &table);
         table_print_row("0x281 - 0x1ff", "TPDO2", "CiA 301", &table);
         table_print_row("0x381 - 0x1ff", "TPDO3", "CiA 301", &table);
@@ -125,13 +127,13 @@ status_t pdo_print_help(void)
 
 bool_t pdo_is_id_valid(uint16 can_id)
 {
-    /* Node-ID (0x000 - 0x07f)
+    /* Node-ID (0x001 - 0x07f)
      * TPDO 1  (0x181 - 0x1ff)
      * TPDO 2  (0x281 - 0x2ff)
      * TPDO 3  (0x381 - 0x3ff)
      * TPDO 4  (0x481 - 0x4ff)
      */
-    if ((can_id >= 0x00) && (can_id <= 0x7f))
+    if ((can_id >= 0x01) && (can_id <= 0x7f))
     {
         return IS_TRUE;
     }

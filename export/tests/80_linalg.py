@@ -315,16 +315,9 @@ val = vec2.angle(vec2(-1, 0), vec2(0, -1))
 assert 1.57 < val < 1.58
 
 # test about staticmethod
-# class mymat3x3(mat3x3):
-#     def f(self):
-#         _0 = self.zeros()
-#         _1 = super().zeros()
-#         _2 = mat3x3.zeros()
-#         return _0 == _1 == _2
-    
-# assert mymat3x3().f()
-
 d = mat3x3.identity()
+d1 = mat3x3(1, 2, 3, 4, 5, 6, 7, 8, 9).identity()
+assert d == d1
 assert d.copy_(mat3x3.zeros()) is None
 assert d == mat3x3.zeros()
 
@@ -375,6 +368,11 @@ assert vec3(1, 2, 3).with_xy(vec2(4, 5)) == vec3(4, 5, 3)
 # test vec2i and vec3i
 assert vec2i.ONE == vec2i(1, 1)
 assert vec2i.ZERO == vec2i(0, 0)
+assert vec2i.LEFT == vec2i(-1, 0)
+assert vec2i.RIGHT == vec2i(1, 0)
+assert vec2i.UP == vec2i(0, -1)
+assert vec2i.DOWN == vec2i(0, 1)
+
 assert vec3i.ONE == vec3i(1, 1, 1)
 assert vec3i.ZERO == vec3i(0, 0, 0)
 
@@ -389,3 +387,41 @@ assert vec3i(1, 2, 3) - vec3i(4, 5, 6) == vec3i(-3, -3, -3)
 assert vec3i(1, 2, 3) * vec3i(4, 5, 6) == vec3i(4, 10, 18)
 assert vec3i(1, 2, 3) * 2 == vec3i(2, 4, 6)
 assert vec3i(1, 2, 3).dot(vec3i(4, 5, 6)) == 32
+
+assert vec2i(3, 5) // 2 == vec2i(1, 2)
+assert vec3i(3, 5, 8) // 2 == vec3i(1, 2, 4)
+
+a = {}
+a[vec2i(1, 2)] = 1
+assert a[vec2i(1, 2)] == 1
+a[vec3i(1, 2, 3)] = 2
+assert a[vec3i(1, 2, 3)] == 2
+
+assert vec2(vec2i.LEFT) == vec2(-1, 0)
+assert vec2(vec2i.RIGHT) == vec2(1, 0)
+assert vec3(vec3i.ONE) == vec3(1, 1, 1)
+assert vec3(vec3i.ZERO) == vec3(0, 0, 0)
+
+x, y = vec2i(1, 2)
+assert x == 1 and y == 2
+x, y, z = vec3i(1, 2, 3)
+assert x == 1 and y == 2 and z == 3
+x, y = vec2(3.0, 4.0)
+assert x == 3.0 and y == 4.0
+x, y, z = vec3(1.0, 2.0, 3.0)
+assert x == 1.0 and y == 2.0 and z == 3.0
+
+assert hash(vec2i(11, -1)) == 51539607551
+assert hash(vec3i(11, -1, 0)) == 13194139467776
+
+d = {vec2i(12, 12): 1035.313708305359, vec2i(12, 11): 2059.313708305359, vec2i(12, 13): 2059.313708305359, vec2i(11, 12): 2059.313708305359, vec2i(13, 12): 2059.313708305359, vec2i(13, 11): 3083.313708305359, vec2i(13, 13): 3083.313708305359, vec2i(14, 12): 3083.313708305359, vec2i(12, 14): 3083.313708305359, vec2i(11, 13): 3083.313708305359, vec2i(12, 10): 3083.313708305359, vec2i(11, 11): 3083.313708305359, vec2i(10, 12): 3083.313708305359, vec2i(13, 14): 4107.313708305359, vec2i(14, 13): 4107.313708305359, vec2i(14, 11): 4107.313708305359, vec2i(15, 12): 4107.313708305359, vec2i(12, 15): 4107.313708305359, vec2i(11, 14): 4107.313708305359, vec2i(13, 10): 4107.313708305359, vec2i(10, 13): 4107.313708305359, vec2i(11, 10): 4107.313708305359, vec2i(10, 11): 4107.313708305359, vec2i(12, 9): 4107.313708305359, vec2i(9, 12): 4107.313708305359, vec2i(14, 14): 5131.313708305359, vec2i(15, 13): 5131.313708305359, vec2i(13, 15): 5131.313708305359, vec2i(15, 11): 5131.313708305359, vec2i(16, 12): 5131.313708305359, vec2i(12, 16): 5131.313708305359, vec2i(11, 15): 5131.313708305359, vec2i(14, 10): 5131.313708305359, vec2i(10, 14): 5131.313708305359, vec2i(13, 9): 5131.313708305359, vec2i(9, 13): 5131.313708305359}
+d[vec2i(11, 9)] = 1
+
+e = {}
+for i in range(-1000, 10000):
+    e[vec2i(12, i)] = i
+    e[vec2i(11, i)] = i
+    e[vec2i(13, i)] = i
+    e[vec2i(i, 12)] = i
+    e[vec2i(i, 11)] = i
+    e[vec2i(i, 13)] = i

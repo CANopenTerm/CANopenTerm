@@ -7,15 +7,16 @@
  *
  **/
 
+#include <SDL3/SDL.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
 
-#include "SDL.h"
 #include "buffer.h"
 #include "dirent.h"
 #include "os.h"
@@ -95,13 +96,13 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
         status = 1; /* TODO: Add proper error. */
     }
 
-    free(buffer);
+    os_free(buffer);
     return status;
 }
 
 uint64 os_get_ticks(void)
 {
-    return SDL_GetTicks64();
+    return SDL_GetTicks();
 }
 
 const char* os_get_user_directory(void)
@@ -109,7 +110,7 @@ const char* os_get_user_directory(void)
     static char user_directory[PATH_MAX] = {0};
     if (0 == user_directory[0])
     {
-        const char* home = getenv("HOME");
+        char* home = getenv("HOME");
         if (home)
         {
             os_strlcpy(user_directory, home, PATH_MAX - 1);
@@ -123,9 +124,9 @@ status_t os_init(void)
 {
     status_t status = ALL_OK;
 
-    if (0 != SDL_InitSubSystem(SDL_INIT_TIMER))
+    if (!SDL_InitSubSystem(SDL_INIT_VIDEO))
     {
-        os_log(LOG_ERROR, "Unable to initialise timer sub-system: %s", os_get_error());
+        os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
         status = OS_INIT_ERROR;
     }
 
@@ -297,7 +298,7 @@ uint64 os_swap_64(uint64 n)
 
 uint32 os_swap_be_32(uint32 n)
 {
-    return SDL_SwapBE32(n);
+    return SDL_Swap32BE(n);
 }
 
 void os_quit(void)

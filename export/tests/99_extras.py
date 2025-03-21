@@ -6,7 +6,7 @@ except ValueError:
     pass
 
 # test some python magics
-class A:
+class TestMagics:
     def __init__(self):
         self.d = {}
 
@@ -22,7 +22,7 @@ class A:
     def __delitem__(self, index):
         del self.d[index]
 
-a = A()
+a = TestMagics()
 a['1'] = 3
 assert '1' in a
 assert '2' not in a
@@ -47,3 +47,65 @@ assert A()[::, :] == (slice(None, None, None), slice(None, None, None))
 assert A()[::, :2] == (slice(None, None, None), slice(None, 2, None))
 assert A()['b':'c':1, :] == (slice('b', 'c', 1), slice(None, None, None))
 assert A()[1:2, :A()[3:4, ::-1]] == (slice(1, 2, None), slice(None, (slice(3, 4, None), slice(None, None, -1)), None))
+
+# test right associative
+assert 2**2**3 == 256
+assert (2**2**3)**2 == 65536
+
+class Number:        
+    def __divmod__(self, other):
+        return 3, 4
+    
+    def __round__(self, *args):
+        return args
+
+assert divmod(Number(), 0) == (3, 4)
+assert round(Number()) == tuple()
+assert round(Number(), 1) == (1,)
+
+class Z:
+    def __new__(cls, x):
+        return cls, x
+
+class B(Z):
+    def __new__(cls, x):
+        assert super() is Z
+        return super().__new__(cls, x)
+
+assert Z(1) == (Z, 1)
+assert B(1) == (B, 1)
+
+from pkpy import TValue
+
+class fixed(TValue[int]):
+    def __new__(cls, value: str):
+        assert super() is TValue[int]
+        return super().__new__(cls, int(value))
+    
+assert fixed('123').value == 123
+
+# context bug
+class Context:
+  def __enter__(self):
+    return 1
+  def __exit__(self, *_):
+    pass
+
+for _ in range(5):
+    with Context() as x:
+        assert x == 1
+
+# bad dict hash
+class A:
+    def __eq__(self, o): return False
+    def __ne__(self, o): return True
+    def __hash__(self): return 1
+
+bad_dict = {A(): 1, A(): 2, A(): 3, A(): 4}
+assert len(bad_dict) == 4
+try:
+    bad_dict[A()] = 5   # error
+    exit(1)
+except RuntimeError as e:
+    assert 'maximum collision reached' in str(e)
+

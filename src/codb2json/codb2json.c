@@ -1309,8 +1309,8 @@ static void handle_attribute(obj_attr_t* attr, const char* token)
                 os_strlcpy(limits, limits_start, limits_end - limits_start);
                 limits[limits_end - limits_start] = '\0';
 
-                lower_limit_str = os_strtokr(limits, ",", &saveptr);
-                upper_limit_str = os_strtokr(NULL, ",", &saveptr);
+                lower_limit_str = os_strtokr_r(limits, ",", &saveptr);
+                upper_limit_str = os_strtokr_r(NULL, ",", &saveptr);
 
                 if (lower_limit_str != NULL)
                 {

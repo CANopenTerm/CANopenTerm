@@ -9,7 +9,7 @@ add_executable(
 target_link_libraries(
     codb2json
     ${CJSON_LIBRARY}
-    ${SDL2_LIBRARY}
+    ${SDL3_LIBRARY}
     ${SDL2MAIN_LIBRARY}
     ${PLATFORM_LIBS})
 
@@ -17,5 +17,5 @@ if(NOT BUILD_YOCTO)
     add_dependencies(
         codb2json
         cJSON_devel
-        SDL2_devel)
+        SDL3_devel)
 endif()

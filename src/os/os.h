@@ -235,8 +235,8 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error os_strstr() not defined
 #endif
 
-#ifndef os_strtokr
-#error os_strtokr() not defined
+#ifndef os_strtokr_r
+#error os_strtok_r() not defined
 #endif
 
 #ifndef os_strtol

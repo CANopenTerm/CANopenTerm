@@ -1,10 +1,13 @@
 from array2d import array2d
 from linalg import vec2i
 
+def exit_on_error():
+    raise KeyboardInterrupt
+
 # test error args for __init__
 try:
     a = array2d(0, 0)
-    exit(0)
+    exit_on_error()
 except ValueError:
     pass
 
@@ -13,12 +16,18 @@ a = array2d[int](2, 4, lambda pos: (pos.x, pos.y))
 
 assert a.width == a.n_cols == 2
 assert a.height == a.n_rows == 4
+assert a.shape == vec2i(2, 4)
 assert a.numel == 8
 assert a.tolist() == [
     [(0, 0), (1, 0)],
     [(0, 1), (1, 1)],
     [(0, 2), (1, 2)],
     [(0, 3), (1, 3)]]
+
+assert a[0, :].tolist() == [[(0, 0)], [(0, 1)], [(0, 2)], [(0, 3)]]
+assert a[1, :].tolist() == [[(1, 0)], [(1, 1)], [(1, 2)], [(1, 3)]]
+assert a[:, 0].tolist() == [[(0, 0), (1, 0)]]
+assert a[:, -1].tolist() == [[(0, 3), (1, 3)]]
 
 # test is_valid
 assert a.is_valid(0, 0) and a.is_valid(vec2i(0, 0))
@@ -39,7 +48,7 @@ assert a[0, 0] == (0, 0)
 assert a[1, 3] == (1, 3)
 try:
     a[2, 0]
-    exit(1)
+    exit_on_error()
 except IndexError:
     pass
 
@@ -51,7 +60,7 @@ a[1, 3] = 6
 assert a[1, 3] == 6
 try:
     a[0, -1] = 7
-    exit(1)
+    exit_on_error()
 except IndexError:
     pass
 
@@ -83,21 +92,19 @@ d = c.copy()
 assert (d == c).all() and d is not c
 
 # test fill_
-d.fill_(-3)
+d[:, :] = -3    # d.fill_(-3)
 assert (d == array2d(2, 4, default=-3)).all()
 
-# test apply_
-d.apply_(lambda x: x + 3)
+# test apply
+d.apply(lambda x: x + 3)
 assert (d == array2d(2, 4, default=0)).all()
 
 # test copy_
-a.copy_(d)
+a[:, :] = d
 assert (a == d).all() and a is not d
 x = array2d(2, 4, default=0)
-x.copy_(d)
+x[:, :] = d
 assert (x == d).all() and x is not d
-x.copy_([1, 2, 3, 4, 5, 6, 7, 8])
-assert x.tolist() == [[1, 2], [3, 4], [5, 6], [7, 8]]
 
 # test alive_neighbors
 a = array2d[int](3, 3, default=0)
@@ -148,7 +155,7 @@ assert a.get_bounding_rect(0) == (0, 0, 5, 5)
 
 try:
     a.get_bounding_rect(2)
-    exit(1)
+    exit_on_error()
 except ValueError:
     pass
 
@@ -165,14 +172,8 @@ assert a == array2d(3, 2, default=3)
 
 try:
     a[:, :] = array2d(1, 1)
-    exit(1)
+    exit_on_error()
 except ValueError:
-    pass
-
-try:
-    a[:, :] = ...
-    exit(1)
-except TypeError:
     pass
 
 # test __iter__
@@ -239,6 +240,40 @@ vis, cnt = a.get_connected_components(2, 'von Neumann')
 assert cnt == 1
 vis, cnt = a.get_connected_components(0, 'Moore')
 assert cnt == 2
+
+# test zip_with
+a = array2d[int].fromlist([[1, 2], [3, 4]])
+b = array2d[int].fromlist([[5, 6], [7, 8]])
+c = a.zip_with(b, lambda x, y: x + y)
+assert c.tolist() == [[6, 8], [10, 12]]
+
+# test magic op
+a = array2d[int].fromlist([[1, 2], [3, 4]])
+assert (a <= 2).tolist() == [[True, True], [False, False]]
+assert (a < 2).tolist() == [[True, False], [False, False]]
+assert (a >= 2).tolist() == [[False, True], [True, True]]
+assert (a > 2).tolist() == [[False, False], [True, True]]
+assert (a == 2).tolist() == [[False, True], [False, False]]
+assert (a != 2).tolist() == [[True, False], [True, True]]
+assert (a + 1).tolist() == [[2, 3], [4, 5]]
+assert (a - 1).tolist() == [[0, 1], [2, 3]]
+assert (a * 2).tolist() == [[2, 4], [6, 8]]
+assert (a / 1).tolist() == [[1.0, 2.0], [3.0, 4.0]]
+assert (a // 2).tolist() == [[0, 1], [1, 2]]
+assert (a % 2).tolist() == [[1, 0], [1, 0]]
+assert (a ** 2).tolist() == [[1, 4], [9, 16]]
+
+a = array2d[bool].fromlist([[True, False], [False, True]])
+assert (a & True).tolist() == [[True, False], [False, True]]
+assert (a | True).tolist() == [[True, True], [True, True]]
+assert (a ^ True).tolist() == [[False, True], [True, False]]
+
+b = array2d[bool].fromlist([[True, True], [False, False]])
+assert (a & b).tolist() == [[True, False], [False, False]]
+assert (a | b).tolist() == [[True, True], [False, True]]
+assert (a ^ b).tolist() == [[False, True], [False, True]]
+assert (~a).tolist() == [[False, True], [True, False]]
+assert (~b).tolist() == [[False, False], [True, True]]
 
 # stackoverflow bug due to recursive mark-and-sweep
 # class Cell:

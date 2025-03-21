@@ -10,15 +10,13 @@
 #ifndef OS_LINUX_H
 #define OS_LINUX_H
 
+#include <SDL3/SDL.h>
 #include <dirent.h>
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-
-#include "SDL.h"
-#include "SDL_main.h"
 
 #define os_atof      SDL_atof
 #define os_atoi      SDL_atoi
@@ -59,7 +57,7 @@
 #define os_strlcpy   SDL_strlcpy
 #define os_strrchr   SDL_strrchr
 #define os_strstr    SDL_strstr
-#define os_strtokr   SDL_strtokr
+#define os_strtokr_r SDL_strtok_r
 #define os_strtol    SDL_strtol
 #define os_strtoul   SDL_strtoul
 #define os_strtoull  SDL_strtoull
@@ -75,7 +73,7 @@
 #define os_timer_cb    SDL_TimerCallback
 #define os_timer_id    SDL_TimerID
 
-#define bool_t    SDL_bool
+#define bool_t    bool
 #define DIR_t     DIR
 #define dirent_t  dirent
 #define FILE_t    FILE

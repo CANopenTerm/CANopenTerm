@@ -16,7 +16,7 @@ add_dependencies(
     core
     cJSON_devel
     CMocka_devel
-    SDL2_devel
+    SDL3_devel
     Lua_devel)
 
 target_link_libraries(
@@ -24,8 +24,7 @@ target_link_libraries(
     core
     ${CMocka_LIBRARY}
     ${CJSON_LIBRARY}
-    ${SDL2_LIBRARY}
-    ${SDL2MAIN_LIBRARY}
+    ${SDL3_LIBRARY}
     ${LUA_LIBRARY}
     ${PLATFORM_LIBS})
 

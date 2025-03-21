@@ -7,6 +7,7 @@
  *
  **/
 
+#include <stdlib.h>
 #include "command.h"
 #include "can.h"
 #include "core.h"
@@ -33,7 +34,7 @@ void parse_command(char* input, core_t* core)
     char*  input_savptr = input;
     uint32 command;
 
-    token = os_strtokr(input_savptr, delim, &input_savptr);
+    token = os_strtokr_r(input_savptr, delim, &input_savptr);
 
     if (NULL == token)
     {
@@ -44,11 +45,11 @@ void parse_command(char* input, core_t* core)
         run_script(token, core);
         return;
     }
-    else if (0 == SDL_strncmp(token, "y", 1))
+    else if (0 == os_strncmp(token, "y", 1))
     {
         uint32 channel_index;
 
-        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             can_print_channel_help(core);
@@ -61,11 +62,11 @@ void parse_command(char* input, core_t* core)
 
         can_set_channel(channel_index, core);
     }
-    else if (0 == SDL_strncmp(token, "b", 1))
+    else if (0 == os_strncmp(token, "b", 1))
     {
         uint32 baud_rate_index;
 
-        token = SDL_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             can_print_baud_rate_help(core);
@@ -90,7 +91,7 @@ void parse_command(char* input, core_t* core)
         uint32 file_no;
         uint32 sub_index;
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             list_codb();
@@ -99,7 +100,7 @@ void parse_command(char* input, core_t* core)
 
         convert_token_to_uint(token, &file_no);
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             load_codb(file_no);
@@ -124,7 +125,7 @@ void parse_command(char* input, core_t* core)
         uint32 command;
         size_t token_len;
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             print_usage_information(IS_FALSE);
@@ -133,7 +134,7 @@ void parse_command(char* input, core_t* core)
 
         convert_token_to_uint(token, &node_id);
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             nmt_print_help(TERM_MODE);
@@ -173,7 +174,7 @@ void parse_command(char* input, core_t* core)
     {
         uint32 can_id;
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             print_usage_information(IS_FALSE);
@@ -185,7 +186,7 @@ void parse_command(char* input, core_t* core)
             uint32 length;
             uint64 data;
 
-            token = os_strtokr(input_savptr, delim, &input_savptr);
+            token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
                 print_usage_information(IS_FALSE);
@@ -194,7 +195,7 @@ void parse_command(char* input, core_t* core)
 
             convert_token_to_uint(token, &can_id);
 
-            token = os_strtokr(input_savptr, delim, &input_savptr);
+            token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
                 print_usage_information(IS_FALSE);
@@ -203,7 +204,7 @@ void parse_command(char* input, core_t* core)
 
             convert_token_to_uint(token, &event_time_ms);
 
-            token = os_strtokr(input_savptr, delim, &input_savptr);
+            token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
                 print_usage_information(IS_FALSE);
@@ -212,7 +213,7 @@ void parse_command(char* input, core_t* core)
 
             convert_token_to_uint(token, &length);
 
-            token = os_strtokr(input_savptr, delim, &input_savptr);
+            token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
                 print_usage_information(IS_FALSE);
@@ -237,7 +238,7 @@ void parse_command(char* input, core_t* core)
         }
         else if (0 == os_strncmp(token, "del", 3))
         {
-            token = os_strtokr(input_savptr, delim, &input_savptr);
+            token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
                 print_usage_information(IS_FALSE);
@@ -273,7 +274,7 @@ void parse_command(char* input, core_t* core)
         uint32        sdo_index;
         uint32        sub_index = 0;
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             print_usage_information(IS_FALSE);
@@ -282,7 +283,7 @@ void parse_command(char* input, core_t* core)
 
         convert_token_to_uint(token, &node_id);
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             print_usage_information(IS_FALSE);
@@ -291,7 +292,7 @@ void parse_command(char* input, core_t* core)
 
         convert_token_to_uint(token, &sdo_index);
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL != token)
         {
             convert_token_to_uint(token, &sub_index);
@@ -309,7 +310,7 @@ void parse_command(char* input, core_t* core)
         uint32        sdo_data        = 0;
         sdo_state_t   sdo_state       = IS_WRITE_EXPEDITED;
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token == NULL)
         {
             print_usage_information(IS_FALSE);
@@ -317,7 +318,7 @@ void parse_command(char* input, core_t* core)
         }
         convert_token_to_uint(token, &node_id);
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token == NULL)
         {
             print_usage_information(IS_FALSE);
@@ -325,7 +326,7 @@ void parse_command(char* input, core_t* core)
         }
         convert_token_to_uint(token, &sdo_index);
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token == NULL)
         {
             print_usage_information(IS_FALSE);
@@ -333,7 +334,7 @@ void parse_command(char* input, core_t* core)
         }
         convert_token_to_uint(token, &sub_index);
 
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token != NULL)
         {
             char buffer[256] = {0};
@@ -342,7 +343,7 @@ void parse_command(char* input, core_t* core)
             {
                 convert_token_to_uint(token, &sdo_data_length);
 
-                token = os_strtokr(input_savptr, delim, &input_savptr);
+                token = os_strtokr_r(input_savptr, delim, &input_savptr);
                 if (token != NULL)
                 {
                     convert_token_to_uint(token, &sdo_data);
@@ -357,14 +358,14 @@ void parse_command(char* input, core_t* core)
                 os_strlcpy(buffer, token, sizeof(buffer));
                 len       = os_strlen(buffer);
                 sdo_state = IS_WRITE_SEGMENTED;
-                token     = os_strtokr(NULL, delim, &input_savptr);
+                token     = os_strtokr_r(NULL, delim, &input_savptr);
 
                 while (token != NULL)
                 {
                     os_strlcat(buffer, " ", sizeof(buffer));
                     os_strlcat(buffer, token, sizeof(buffer));
                     len   = os_strlen(buffer);
-                    token = os_strtokr(NULL, delim, &input_savptr);
+                    token = os_strtokr_r(NULL, delim, &input_savptr);
                 }
 
                 if (buffer[0] == '"' && buffer[len - 1] == '"')
@@ -401,7 +402,7 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == os_strncmp(token, "s", 1))
     {
-        token = os_strtokr(input_savptr, delim, &input_savptr);
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
             print_usage_information(IS_TRUE);

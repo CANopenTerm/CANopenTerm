@@ -28,5 +28,6 @@ bool_t   pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data,
 bool_t   pdo_del(uint16 can_id, disp_mode_t disp_mode);
 status_t pdo_print_help(void);
 bool_t   pdo_is_id_valid(uint16 can_id);
+void     pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char* comment);
 
 #endif /* PDO_H */

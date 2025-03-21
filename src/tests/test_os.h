@@ -49,7 +49,7 @@ void test_os_strlen(void** state);
 void test_os_strncmp(void** state);
 void test_os_strrchr(void** state);
 void test_os_strstr(void** state);
-void test_os_strtokr(void** state);
+void test_os_strtokr_r(void** state);
 void test_os_strtol(void** state);
 void test_os_strtoul(void** state);
 void test_os_strtoull(void** state);

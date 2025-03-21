@@ -187,7 +187,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
 
         table_print_row("Access", buffer, "R", &sub_index_table);
 
-        if (SDL_FALSE == info.pdo_mapping)
+        if (IS_FALSE == info.pdo_mapping)
         {
             os_snprintf(buffer, sizeof(buffer), "No");
         }

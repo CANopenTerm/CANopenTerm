@@ -72,7 +72,7 @@ const char* os_find_data_path(void)
 {
     size_t      len;
     static char data_path[MAX_PATH] = {0};
-    char*       base_path           = SDL_GetBasePath();
+    char*       base_path           = (char*)SDL_GetBasePath();
 
     if (base_path == NULL)
     {
@@ -87,8 +87,6 @@ const char* os_find_data_path(void)
 
     os_strlcpy(data_path, base_path, MAX_PATH - 1);
     data_path[MAX_PATH - 1] = '\0';
-
-    SDL_free(base_path);
 
     return data_path;
 }
@@ -115,7 +113,7 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 
 uint64 os_get_ticks(void)
 {
-    return SDL_GetTicks64();
+    return SDL_GetTicks();
 }
 
 const char* os_get_user_directory(void)
@@ -133,9 +131,9 @@ status_t os_init(void)
 {
     status_t status = ALL_OK;
 
-    if (0 != SDL_InitSubSystem(SDL_INIT_TIMER))
+    if (!SDL_InitSubSystem(SDL_INIT_VIDEO))
     {
-        os_log(LOG_ERROR, "Unable to initialise timer sub-system: %s", os_get_error());
+        os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
         status = OS_INIT_ERROR;
     }
 
@@ -296,7 +294,7 @@ uint64 os_swap_64(uint64 n)
 
 uint32 os_swap_be_32(uint32 n)
 {
-    return SDL_SwapBE32(n);
+    return SDL_Swap32BE(n);
 }
 
 void os_quit(void)

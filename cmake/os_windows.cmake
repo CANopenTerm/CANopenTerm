@@ -54,7 +54,7 @@ ExternalProject_Add(cJSON_devel
         ${CMAKE_COMMAND} -E copy ${CJSON_PATH}_build/cjson.dll ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
 # pocketpy
-set(POCKETPY_VERSION     "2.0.4")
+set(POCKETPY_VERSION     "2.0.6")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.zip")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
@@ -62,7 +62,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/pocketpy.lib)
 
 ExternalProject_Add(pocketpy_devel
   URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-  URL_HASH SHA1=a206d3560f5a408ff2351995b8d23c48404474aa
+  URL_HASH SHA1=19d8b1e975bdd0353b45239f33f43883c67356fa
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
@@ -124,42 +124,40 @@ ExternalProject_Add(Lua_devel
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
-# SDL2
-set(SDL2_VERSION "2.30.10")
+# SDL3
+set(SDL3_VERSION "3.2.8")
 
-set(SDL2_DEVEL_PKG SDL2-devel-${SDL2_VERSION}-VC.zip)
-set(SDL2_PLATFORM  "x64")
+set(SDL3_DEVEL_PKG SDL3-devel-${SDL3_VERSION}-VC.zip)
+set(SDL3_PLATFORM  "x64")
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-    set(SDL2_PLATFORM "x86")
+    set(SDL3_PLATFORM "x86")
 endif()
 
-set(SDL2_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL2-${SDL2_VERSION}_${SDL2_PLATFORM})
+set(SDL3_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION}_${SDL3_PLATFORM})
 
-ExternalProject_Add(SDL2_devel
-    URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=42378fd090d547d03dca8c9df584ba8f38555809
+ExternalProject_Add(SDL3_devel
+    URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
+    URL_HASH SHA1=cb49d02184b0d88d6c52acb6e22dd1e332d9c46e
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
-    SOURCE_DIR ${SDL2_PATH}/
-    BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib
-    BUILD_BYPRODUCTS ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib
+    SOURCE_DIR ${SDL3_PATH}/
+    BUILD_BYPRODUCTS ${SDL3_PATH}/lib/${SDL3_PLATFORM}/SDL3.lib
 
     BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
 
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
-        ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
+        ${SDL3_PATH}/lib/${SDL3_PLATFORM}/SDL3.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_sdl2.cmake" ${SDL2_PATH}/CMakeLists.txt)
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_sdl3.cmake" ${SDL3_PATH}/CMakeLists.txt)
 
-set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
-set(SDL2_LIBRARY     ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2.lib)
-set(SDL2MAIN_LIBRARY ${SDL2_PATH}/lib/${SDL2_PLATFORM}/SDL2main.lib)
+set(SDL3_INCLUDE_DIR ${SDL3_PATH}/include)
+set(SDL3_LIBRARY     ${SDL3_PATH}/lib/${SDL3_PLATFORM}/SDL3.lib)
 
 # PCAN-Basic API
-set(PCAN_VERSION_WINDOWS "4.9.0.942")
+set(PCAN_VERSION_WINDOWS "4.10.1.968")
 
 set(PCAN_PLATFORM  "x64")
 set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/PCAN-Basic_API_Windows")
@@ -170,7 +168,7 @@ endif()
 
 set(PCAN_DEVEL_PKG  PCAN-Basic_Windows-${PCAN_VERSION_WINDOWS}.zip)
 set(PCAN_DEVEL_URL  https://canopenterm.de/mirror)
-set(PCAN_DEVEL_HASH 5aa4459340986d921a63f15cc643733ab7d9c011)
+set(PCAN_DEVEL_HASH 66c7941f1bb93294621437f3d8774845ab0b9659)
 
 ExternalProject_Add(PCAN_devel
     URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
@@ -226,8 +224,7 @@ set(PLATFORM_LIBS
     ${CJSON_LIBRARY}
     ${PCAN_LIBRARY}
     ${POCKETPY_LIBRARY}
-    ${SDL2_LIBRARY}
-    ${SDL2MAIN_LIBRARY}
+    ${SDL3_LIBRARY}
     ${INIH_LIBRARY}
     ${LUA_LIBRARY}
     ${ADDITIONAL_RUNTIME})
@@ -237,10 +234,10 @@ set(PLATFORM_CORE_DEPS
     Lua_devel
     PCAN_devel
     pocketpy_devel
-    SDL2_devel)
+    SDL3_devel)
 
 include_directories(
-    SYSTEM ${SDL2_INCLUDE_DIR}
+    SYSTEM ${SDL3_INCLUDE_DIR}
     SYSTEM ${PCAN_INCLUDE_DIR}
     SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
     SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib

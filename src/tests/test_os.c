@@ -532,30 +532,30 @@ void test_os_strstr(void** state)
     assert_string_equal(result, "world!");
 }
 
-void test_os_strtokr(void** state)
+void test_os_strtokr_r(void** state)
 {
     char  str[] = "A,B,C,D";
     char* saveptr;
-    char* token = os_strtokr(str, ",", &saveptr);
+    char* token = os_strtokr_r(str, ",", &saveptr);
 
     (void)state;
 
     assert_non_null(token);
     assert_string_equal(token, "A");
 
-    token = os_strtokr(NULL, ",", &saveptr);
+    token = os_strtokr_r(NULL, ",", &saveptr);
     assert_non_null(token);
     assert_string_equal(token, "B");
 
-    token = os_strtokr(NULL, ",", &saveptr);
+    token = os_strtokr_r(NULL, ",", &saveptr);
     assert_non_null(token);
     assert_string_equal(token, "C");
 
-    token = os_strtokr(NULL, ",", &saveptr);
+    token = os_strtokr_r(NULL, ",", &saveptr);
     assert_non_null(token);
     assert_string_equal(token, "D");
 
-    token = os_strtokr(NULL, ",", &saveptr);
+    token = os_strtokr_r(NULL, ",", &saveptr);
     assert_null(token);
 }
 

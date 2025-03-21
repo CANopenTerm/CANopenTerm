@@ -17,7 +17,7 @@
                 <File Source="../../export/pocketpy.dll" />
             </Component>
             <Component>
-                <File Source="../../export/SDL2.dll" />
+                <File Source="../../export/SDL3.dll" />
             </Component>
             <Component>
                 <File Source="../../export/vcruntime140.dll" />

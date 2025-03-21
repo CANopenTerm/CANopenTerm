@@ -33,12 +33,12 @@ endif(BUILD_TESTS)
 
 # Use system dependencies when building in a Yocto environment.
 if (BUILD_YOCTO)
-    find_package(SDL2 REQUIRED)
-    if (SDL2_FOUND)
-        include_directories(${SDL2_INCLUDE_DIRS})
-        set(PLATFORM_LIBS ${PLATFORM_LIBS} ${SDL2_LIBRARIES})
+    find_package(SDL3 REQUIRED)
+    if (SDL3_FOUND)
+        include_directories(${SDL3_INCLUDE_DIRS})
+        set(PLATFORM_LIBS ${PLATFORM_LIBS} ${SDL3_LIBRARIES})
     else()
-        message(FATAL_ERROR "SDL2 not found")
+        message(FATAL_ERROR "SDL3 not found")
     endif()
 
     find_package(cJSON REQUIRED)
@@ -133,7 +133,7 @@ ExternalProject_Add(cJSON_devel
         ${CMAKE_COMMAND} -E echo "Skipping install step.")
 
 # pocketpy
-set(POCKETPY_VERSION     "2.0.4")
+set(POCKETPY_VERSION     "2.0.6")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
@@ -141,7 +141,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.a)
 
 ExternalProject_Add(pocketpy_devel
     URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-    URL_HASH SHA1=318c13799ba58e20b02fcbd614aeec4d5510ae8c
+    URL_HASH SHA1=723a8cd3926b91e60587c0efdd963ba875d79e3d
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -204,30 +204,29 @@ ExternalProject_Add(Lua_devel
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
-# SDL2
-set(SDL2_VERSION  "2.30.10")
-set(SDL2_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL2-${SDL2_VERSION})
-set(SDL2_DEVEL_PKG SDL2-${SDL2_VERSION}.tar.gz)
+# SDL3
+set(SDL3_VERSION  "3.2.8")
+set(SDL3_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION})
+set(SDL3_DEVEL_PKG SDL3-${SDL3_VERSION}.tar.gz)
 
-ExternalProject_Add(SDL2_devel
-    URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/${SDL2_DEVEL_PKG}
-    URL_HASH SHA1=55c2f96179aa29b62b604b39eb0a4b79f9b7c70f
+ExternalProject_Add(SDL3_devel
+    URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
+    URL_HASH SHA1=e5c1749aa6bd848f74e07ee3559442acdc06991a
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
-    SOURCE_DIR ${SDL2_PATH}/
-    BINARY_DIR ${SDL2_PATH}_build
-    BUILD_BYPRODUCTS ${SDL2_PATH}_build/libSDL2.a
-    BUILD_BYPRODUCTS ${SDL2_PATH}_build/libSDL2main.a
+    SOURCE_DIR ${SDL3_PATH}/
+    BINARY_DIR ${SDL3_PATH}_build
+    BUILD_BYPRODUCTS ${SDL3_PATH}_build/libSDL3.so
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -DSDL_UNIX_CONSOLE_BUILD=ON
 
     INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
     PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step.")
 
-set(SDL2_INCLUDE_DIR ${SDL2_PATH}/include)
-set(SDL2_LIBRARY     ${SDL2_PATH}_build/libSDL2.a)
-set(SDL2MAIN_LIBRARY ${SDL2_PATH}_build/libSDL2main.a)
+set(SDL3_INCLUDE_DIR ${SDL3_PATH}/include)
+set(SDL3_LIBRARY     ${SDL3_PATH}_build/libSDL3.so)
 
 if(EXISTS "/proc/cpuinfo")
     file(READ "/proc/cpuinfo" CPUINFO)
@@ -249,8 +248,7 @@ endif()
 
 set(PLATFORM_LIBS
     ${CJSON_LIBRARY}
-    ${SDL2_LIBRARY}
-    ${SDL2MAIN_LIBRARY}
+    ${SDL3_LIBRARY}
     ${INIH_LIBRARY}
     ${LUA_LIBRARY}
     ${POCKETPY_LIBRARY}
@@ -265,10 +263,10 @@ set(PLATFORM_CORE_DEPS
     inih_devel
     Lua_devel
     pocketpy_devel
-    SDL2_devel)
+    SDL3_devel)
 
 include_directories(
-    SYSTEM ${SDL2_INCLUDE_DIR}
+    SYSTEM ${SDL3_INCLUDE_DIR}
     SYSTEM ${LUA_INCLUDE_DIR}
     SYSTEM ${POCKETPY_INCLUDE_DIR}
     SYSTEM ${INIH_INCLUDE_DIR}

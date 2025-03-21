@@ -278,13 +278,13 @@ static void parse_message_line(char* line, message_t* message)
     char* token;
     char* rest = line;
 
-    os_strtokr(rest, " ", &rest);
+    os_strtokr_r(rest, " ", &rest);
 
-    token                = os_strtokr(rest, " ", &rest);
+    token                = os_strtokr_r(rest, " ", &rest);
     message->id          = os_strtoul(token, NULL, 10) & 0x7FFFFFFF;
-    token                = os_strtokr(rest, ":", &rest);
+    token                = os_strtokr_r(rest, ":", &rest);
     message->name        = os_strdup(token);
-    token                = os_strtokr(rest, " ", &rest);
+    token                = os_strtokr_r(rest, " ", &rest);
     message->dlc         = os_atoi(token);
     message->transmitter = os_strdup(trim_whitespace(rest));
 }
@@ -305,19 +305,19 @@ static void parse_signal_line(char* line, signal_t* signal)
     signal->max_value  = 0.0;
     signal->endianness = 0;
 
-    os_strtokr(rest, " ", &rest);
+    os_strtokr_r(rest, " ", &rest);
 
-    token = os_strtokr(rest, " ", &rest);
+    token = os_strtokr_r(rest, " ", &rest);
     if (token != NULL)
     {
         signal->name = os_strdup(token);
     }
 
-    token = os_strtokr(rest, "|", &rest);
+    token = os_strtokr_r(rest, "|", &rest);
     if (token != NULL)
     {
         signal->start_bit = os_atoi(token);
-        token             = os_strtokr(rest, "@", &rest);
+        token             = os_strtokr_r(rest, "@", &rest);
         if (token != NULL)
         {
             signal->length = os_atoi(token);
@@ -329,14 +329,14 @@ static void parse_signal_line(char* line, signal_t* signal)
         }
     }
 
-    token = os_strtokr(rest, "(", &rest);
+    token = os_strtokr_r(rest, "(", &rest);
     if (token != NULL)
     {
-        token = os_strtokr(rest, ",", &rest);
+        token = os_strtokr_r(rest, ",", &rest);
         if (token != NULL)
         {
             signal->scale = os_atof(token);
-            token         = os_strtokr(rest, ")", &rest);
+            token         = os_strtokr_r(rest, ")", &rest);
             if (token != NULL)
             {
                 signal->offset = os_atof(token);
@@ -344,14 +344,14 @@ static void parse_signal_line(char* line, signal_t* signal)
         }
     }
 
-    token = os_strtokr(rest, "[", &rest);
+    token = os_strtokr_r(rest, "[", &rest);
     if (token != NULL)
     {
-        token = os_strtokr(rest, "|", &rest);
+        token = os_strtokr_r(rest, "|", &rest);
         if (token != NULL)
         {
             signal->min_value = os_atof(token);
-            token             = os_strtokr(rest, "]", &rest);
+            token             = os_strtokr_r(rest, "]", &rest);
             if (token != NULL)
             {
                 signal->max_value = os_atof(token);
@@ -359,7 +359,7 @@ static void parse_signal_line(char* line, signal_t* signal)
         }
     }
 
-    os_strtokr(rest, "\"", &rest);
+    os_strtokr_r(rest, "\"", &rest);
     if (rest[0] == '\"')
     {
         signal->unit = os_strdup("");
@@ -367,7 +367,7 @@ static void parse_signal_line(char* line, signal_t* signal)
     }
     else
     {
-        char* end = os_strtokr(rest, "\"", &rest);
+        char* end = os_strtokr_r(rest, "\"", &rest);
         if (end != NULL)
         {
             signal->unit = os_strdup(end);
@@ -383,7 +383,7 @@ static void parse_signal_line(char* line, signal_t* signal)
         rest++;
     }
 
-    token = os_strtokr(rest, " ", &rest);
+    token = os_strtokr_r(rest, " ", &rest);
     if (token != NULL)
     {
         signal->receiver = os_strdup(token);

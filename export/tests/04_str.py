@@ -190,29 +190,41 @@ assert (1 != '1') is True
 assert (1 == '1') is False
 assert 1 == 1.0
 
-#exit()
+assert chr(97) is 'a'
+assert ord('a') == 97
+
+assert ord('🥕') == 0x1f955
+assert chr(0x1f955) == '🥕'
+
+assert ord('测') == 27979
+assert chr(27979) == '测'
 
 # test format()
-#assert "Hello, {}!".format("World") == "Hello, World!"
-#assert "{} {} {}".format("I", "love", "Python") == "I love Python"
-#assert "{0} {1} {2}".format("I", "love", "Python") == "I love Python"
-#assert "{2} {1} {0}".format("I", "love", "Python") == "Python love I"
-#assert "{0}{1}{0}".format("abra", "cad") == "abracadabra"
+assert "Hello, {}!".format("World") == "Hello, World!"
+assert "{} {} {}".format("I", "love", "Python") == "I love Python"
+assert "{0} {1} {2}".format("I", "love", "Python") == "I love Python"
+assert "{2} {1} {0}".format("I", "love", "Python") == "Python love I"
+assert "{0}{1}{0}".format("abra", "cad") == "abracadabra"
 
-#assert "{k}={v}".format(k="key", v="value") == "key=value"
-#assert "{k}={k}".format(k="key") == "key=key"
-#assert "{0}={1}".format('{0}', '{1}') == "{0}={1}"
-#assert "{{{0}}}".format(1) == "{1}"
-#assert "{0}{1}{1}".format(1, 2, 3) == "122"
+assert "{k}={v}".format(k="key", v="value") == "key=value"
+assert "{k}={k}".format(k="key") == "key=key"
+assert "{0}={1}".format('{0}', '{1}') == "{0}={1}"
+assert "{{{0}}}".format(1) == "{1}"
+assert "{0}{1}{1}".format(1, 2, 3) == "122"
 
-# try:
-#     "{0}={1}}".format(1, 2)
-#     exit(1)
-# except ValueError:
-#     pass
+try:
+    "{0}={1}}".format(1, 2)
+    exit(1)
+except ValueError:
+    pass
 
-#assert "{{{}xxx{}x}}".format(1, 2) == "{1xxx2x}"
-#assert "{{abc}}".format() == "{abc}"
+assert "{{{}xxx{}x}}".format(1, 2) == "{1xxx2x}"
+assert "{{abc}}".format() == "{abc}"
 
 # test f-string
-# stack=[1,2,3,4]; assert f"{stack[2:]}" == '[3, 4]'
+assert f"{1+2}" == "3"
+# assert f"{1, 2, 3}" == "(1, 2, 3)"
+assert f"{(1, 2, 3)}" == "(1, 2, 3)"
+
+# stack=[1,2,3,4]
+# assert f"{stack[2:]}" == '[3, 4]'
