@@ -386,7 +386,7 @@ static status_t search_can_channels(void)
         return CAN_NO_HARDWARE_FOUND;
     }
 
-    if (pcan_channel_count >= prev_channel_count)
+    if (pcan_channel_count >= prev_channel_count && pcan_channel_count > 0)
     {
         pcan_channel_information = os_realloc(pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
         if (NULL == pcan_channel_information)
