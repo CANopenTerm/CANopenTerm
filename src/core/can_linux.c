@@ -144,6 +144,7 @@ status_t can_print_channel_help(core_t* core)
         os_free(can_interfaces[i]);
     }
     os_free(can_interfaces);
+    return status;
 }
 
 void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
