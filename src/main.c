@@ -15,6 +15,7 @@
 #include "ctt.h"
 #include "os.h"
 #include "scripts.h"
+#include "tachometer.h"
 #include "window.h"
 
 core_t* core = NULL;
@@ -132,10 +133,36 @@ int main(int argc, char* argv[])
     }
 
     core->core_th = os_create_thread(core_update, "Core thread", (void*)core);
-    while (true == core->is_running)
+
     {
-        window_update(core);
-        os_delay(1);
+        // TODO: Add widget script API.
+        uint32 debug = 0;
+        bool goes_up = true;
+        while (true == core->is_running)
+        {
+            if (goes_up)
+            {
+                debug += 1;
+            }
+            else
+            {
+                debug -= 1;
+            }
+
+            if (debug >= 1000)
+            {
+                goes_up = false;
+            }
+            else if (debug <= 0)
+            {
+                goes_up = true;
+            }
+
+            window_clear(core);
+            widget_tachometer(10, 10, 100, 100, 1000, debug);
+            window_update(core);
+            os_delay(1);
+        }
     }
     os_detach_thread(core->core_th);
 

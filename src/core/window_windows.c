@@ -8,6 +8,45 @@
  **/
 
 #include "core.h"
+#include "os.h"
+#include "palette.h"
+#include <SDL3/SDL.h>
+
+uint32 window_id;
+
+void window_clear(core_t* core)
+{
+    uint8 r = (BG_COLOR & 0xff0000) >> 16;
+    uint8 g = (BG_COLOR & 0x00ff00) >> 8;
+    uint8 b = (BG_COLOR & 0x0000ff);
+
+    SDL_SetRenderDrawColor(core->renderer, r, g, b, 0xff);
+    SDL_RenderClear(core->renderer);
+}
+
+void window_deinit(core_t* core)
+{
+    SDL_DestroyWindow(core->window);
+    SDL_DestroyRenderer(core->renderer);
+    core->window = NULL;
+    core->renderer = NULL;
+    core->is_window_shown = false;
+}
+
+os_renderer* window_get_renderer(void)
+{
+    extern core_t* core;
+    return core->renderer;
+}
+
+void window_hide(core_t* core)
+{
+    if (core->window)
+    {
+        SDL_HideWindow(core->window);
+        core->is_window_shown = false;
+    }
+}
 
 bool window_init(core_t* core)
 {
@@ -32,24 +71,6 @@ bool window_init(core_t* core)
 
     SDL_SetWindowPosition(core->window, (mode->w - mode->h / 2) - 64, 64);
     return true;
-}
-
-void window_deinit(core_t* core)
-{
-    SDL_DestroyWindow(core->window);
-    SDL_DestroyRenderer(core->renderer);
-    core->window = NULL;
-    core->renderer = NULL;
-    core->is_window_shown = false;
-}
-
-void window_hide(core_t* core)
-{
-    if (core->window)
-    {
-        SDL_HideWindow(core->window);
-        core->is_window_shown = false;
-    }
 }
 
 void window_show(core_t* core)

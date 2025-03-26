@@ -50,7 +50,8 @@ include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/api
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/codb2json
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os)
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/widget)
 
 function(append_platform_files source_list pattern platform)
     file(GLOB platform_files ${pattern}_${platform}.c)
@@ -95,18 +96,24 @@ set(common_core_sources
 set(common_os_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c)
 
+set(common_widget_sources
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/tachometer.c)
+
 set(core_sources ${common_core_sources})
 set(os_sources ${common_os_sources})
+set(widget_sources ${common_widget_sources})
 
 append_platform_files(core_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/core/*" ${PLATFORM})
 append_platform_files(os_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/os/*" ${PLATFORM})
+append_platform_files(widget_sources "${CMAKE_CURRENT_SOURCE_DIR}/src/widget/*" ${PLATFORM})
 
 add_library(
     core
     STATIC
     ${api_sources}
     ${core_sources}
-    ${os_sources})
+    ${os_sources}
+    ${widget_sources})
 
 target_link_libraries(
     ${PROJECT_NAME}
