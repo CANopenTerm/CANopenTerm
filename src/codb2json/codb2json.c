@@ -108,7 +108,7 @@ typedef struct codb_entry
     obj_attr_t  high_limit_attr;
     uint64      default_value;
     obj_attr_t  default_value_attr;
-    bool_t      mappable;
+    bool      mappable;
     obj_attr_t  mappable_attr;
 
 } codb_entry_t;
@@ -151,19 +151,19 @@ typedef enum field_id
 static codb_database_t* codb_db;
 static cJSON*           min_elements;
 
-static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i);
+static bool add_sub_index_to_object(cJSON* sub_indices, size_t i);
 static void   init_codb_entry(codb_entry_t* entry);
-static bool_t is_codb_file(const char* input_file_name);
+static bool is_codb_file(const char* input_file_name);
 static void   read_codb(const char* input_file_name);
-static void   write_json(const char* output_file_name, bool_t format_output);
-static bool_t write_json_entry(cJSON* entry, size_t i);
+static void   write_json(const char* output_file_name, bool format_output);
+static bool write_json_entry(cJSON* entry, size_t i);
 static void   free_codb_database(codb_database_t* db);
 static void   handle_attribute(obj_attr_t* attr, const char* token);
 static void   handle_value8(uint8* value, const char* token);
 static void   handle_value64(uint64* value, const char* token);
 static char*  to_upper_case(const char* str);
 
-int codb2json(int argc, char* argv[], bool_t format_output)
+int codb2json(int argc, char* argv[], bool format_output)
 {
     char  json_file_name[256] = {0};
     char* dot;
@@ -174,7 +174,7 @@ int codb2json(int argc, char* argv[], bool_t format_output)
         return EXIT_FAILURE;
     }
 
-    if (IS_FALSE == is_codb_file(argv[1]))
+    if (false == is_codb_file(argv[1]))
     {
         os_fprintf(stderr, "Error: %s is not a .codb file.\n", argv[1]);
         return EXIT_FAILURE;
@@ -206,7 +206,7 @@ int codb2json(int argc, char* argv[], bool_t format_output)
     return EXIT_SUCCESS;
 }
 
-static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i)
+static bool add_sub_index_to_object(cJSON* sub_indices, size_t i)
 {
     cJSON* sub_index;
     cJSON* sub_index_value;
@@ -253,7 +253,7 @@ static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i)
     sub_index = cJSON_CreateObject();
     if (sub_index == NULL)
     {
-        return IS_FALSE;
+        return false;
     }
 
     sub_index_value = cJSON_CreateNumber(codb_db->entries[i].sub_index);
@@ -334,7 +334,7 @@ static bool_t add_sub_index_to_object(cJSON* sub_indices, size_t i)
 
     cJSON_AddItemToArray(sub_indices, sub_index);
 
-    return IS_TRUE;
+    return true;
 }
 
 static void init_codb_entry(codb_entry_t* entry)
@@ -382,13 +382,13 @@ static void init_codb_entry(codb_entry_t* entry)
     entry->default_value_attr.type        = EMPTY;
     entry->default_value_attr.lower_limit = 0;
     entry->default_value_attr.upper_limit = 0;
-    entry->mappable                       = IS_FALSE;
+    entry->mappable                       = false;
     entry->mappable_attr.type             = EMPTY;
     entry->mappable_attr.lower_limit      = 0;
     entry->mappable_attr.upper_limit      = 0;
 }
 
-static bool_t is_codb_file(const char* input_file_name)
+static bool is_codb_file(const char* input_file_name)
 {
     char  line[BUFFER_SIZE] = {0};
     FILE* input_file        = os_fopen(input_file_name, "rb");
@@ -396,7 +396,7 @@ static bool_t is_codb_file(const char* input_file_name)
     if (input_file == NULL)
     {
         os_fprintf(stderr, "Error opening input file.");
-        return IS_FALSE;
+        return false;
     }
 
     while (os_fgets(line, sizeof(line), input_file) != NULL)
@@ -408,12 +408,12 @@ static bool_t is_codb_file(const char* input_file_name)
         else
         {
             os_fclose(input_file);
-            return IS_FALSE;
+            return false;
         }
     }
 
     os_fclose(input_file);
-    return IS_TRUE;
+    return true;
 }
 
 static void read_codb(const char* input_file_name)
@@ -1050,15 +1050,15 @@ static void read_codb(const char* input_file_name)
                 {
                     if (0 == os_strncmp(token, "y", 1))
                     {
-                        codb_db->entries[current_entry].mappable = IS_TRUE;
+                        codb_db->entries[current_entry].mappable = true;
                     }
                     else if (0 == os_strncmp(token, "n", 1))
                     {
-                        codb_db->entries[current_entry].mappable = IS_FALSE;
+                        codb_db->entries[current_entry].mappable = false;
                     }
                     else if (token[0] == '\0' || token[0] == ' ')
                     {
-                        codb_db->entries[current_entry].mappable = IS_FALSE;
+                        codb_db->entries[current_entry].mappable = false;
                     }
                     break;
                 }
@@ -1085,7 +1085,7 @@ static void read_codb(const char* input_file_name)
     os_fclose(input_file);
 }
 
-static void write_json(const char* output_file_name, bool_t format_output)
+static void write_json(const char* output_file_name, bool format_output)
 {
     char*   string = NULL;
     cJSON*  root;
@@ -1111,7 +1111,7 @@ static void write_json(const char* output_file_name, bool_t format_output)
     {
         if (codb_db->entries[i].object_name != NULL)
         {
-            if (IS_FALSE == write_json_entry(root, i))
+            if (false == write_json_entry(root, i))
             {
                 os_fprintf(stderr, "Error writing JSON entry.");
                 cJSON_Delete(root);
@@ -1121,7 +1121,7 @@ static void write_json(const char* output_file_name, bool_t format_output)
         }
     }
 
-    if (IS_FALSE == format_output)
+    if (false == format_output)
     {
         string = cJSON_PrintUnformatted(root);
     }
@@ -1169,7 +1169,7 @@ static void free_codb_database(codb_database_t* db)
     }
 }
 
-static bool_t write_json_entry(cJSON* root, size_t i)
+static bool write_json_entry(cJSON* root, size_t i)
 {
     cJSON* id;
     cJSON* index;
@@ -1201,7 +1201,7 @@ static bool_t write_json_entry(cJSON* root, size_t i)
     entry = cJSON_CreateObject();
     if (entry == NULL)
     {
-        return IS_FALSE;
+        return false;
     }
 
     id    = cJSON_CreateString(codb_db->entries[i].object_name);
@@ -1213,7 +1213,7 @@ static bool_t write_json_entry(cJSON* root, size_t i)
     if (sub_indices == NULL)
     {
         cJSON_Delete(entry);
-        return IS_FALSE;
+        return false;
     }
     cJSON_AddItemToObject(entry, "sub_indices", sub_indices);
 
@@ -1261,10 +1261,10 @@ static bool_t write_json_entry(cJSON* root, size_t i)
     /* Object has only one sub-index. */
     if (i + 1 >= codb_db->total_entries || codb_db->entries[i].main_index != codb_db->entries[i + 1].main_index)
     {
-        if (IS_FALSE == add_sub_index_to_object(sub_indices, i))
+        if (false == add_sub_index_to_object(sub_indices, i))
         {
             cJSON_Delete(entry);
-            return IS_FALSE;
+            return false;
         }
     }
     else
@@ -1272,17 +1272,17 @@ static bool_t write_json_entry(cJSON* root, size_t i)
         i++;
         while (i < codb_db->total_entries && codb_db->entries[i - 1].main_index == codb_db->entries[i].main_index)
         {
-            if (IS_FALSE == add_sub_index_to_object(sub_indices, i))
+            if (false == add_sub_index_to_object(sub_indices, i))
             {
                 cJSON_Delete(entry);
-                return IS_FALSE;
+                return false;
             }
             i++;
         }
     }
 
     cJSON_AddItemToArray(root, entry);
-    return IS_TRUE;
+    return true;
 }
 
 static void handle_attribute(obj_attr_t* attr, const char* token)

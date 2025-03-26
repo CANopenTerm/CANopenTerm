@@ -15,7 +15,7 @@
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
-extern bool_t is_printable_string(const char* str, size_t length);
+extern bool is_printable_string(const char* str, size_t length);
 
 bool py_sdo_lookup_abort_code(int argc, py_Ref argv);
 bool py_sdo_read(int argc, py_Ref argv);
@@ -50,7 +50,7 @@ bool py_sdo_lookup_abort_code(int argc, py_Ref argv)
 
     py_newstr(py_retval(), description);
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_sdo_read(int argc, py_Ref argv)
@@ -61,7 +61,7 @@ bool py_sdo_read(int argc, py_Ref argv)
     int           node_id;
     int           index;
     int           sub_index;
-    bool_t        show_output;
+    bool        show_output;
     const char*   comment;
     uint32        result;
 
@@ -80,7 +80,7 @@ bool py_sdo_read(int argc, py_Ref argv)
 
     limit_node_id((uint8*)&node_id);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
@@ -108,7 +108,7 @@ bool py_sdo_read(int argc, py_Ref argv)
             break;
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_sdo_write(int argc, py_Ref argv)
@@ -121,7 +121,7 @@ bool py_sdo_write(int argc, py_Ref argv)
     int           sub_index;
     int           length;
     int           data;
-    bool_t        show_output;
+    bool        show_output;
     const char*   comment;
 
     PY_CHECK_ARGC(7);
@@ -143,7 +143,7 @@ bool py_sdo_write(int argc, py_Ref argv)
 
     limit_node_id((uint8*)&node_id);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
@@ -161,14 +161,14 @@ bool py_sdo_write(int argc, py_Ref argv)
     switch (sdo_state)
     {
         case ABORT_TRANSFER:
-            py_newbool(py_retval(), IS_FALSE);
+            py_newbool(py_retval(), false);
             break;
         default:
-            py_newbool(py_retval(), IS_TRUE);
+            py_newbool(py_retval(), true);
             break;
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_sdo_write_file(int argc, py_Ref argv)
@@ -194,8 +194,8 @@ bool py_sdo_write_file(int argc, py_Ref argv)
 
     if (NULL == filename)
     {
-        py_newbool(py_retval(), IS_FALSE);
-        return IS_TRUE;
+        py_newbool(py_retval(), false);
+        return true;
     }
 
     status = sdo_write_block(
@@ -210,14 +210,14 @@ bool py_sdo_write_file(int argc, py_Ref argv)
     switch (status)
     {
         case ABORT_TRANSFER:
-            py_newbool(py_retval(), IS_FALSE);
+            py_newbool(py_retval(), false);
             break;
         default:
-            py_newbool(py_retval(), IS_TRUE);
+            py_newbool(py_retval(), true);
             break;
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_sdo_write_string(int argc, py_Ref argv)
@@ -230,7 +230,7 @@ bool py_sdo_write_string(int argc, py_Ref argv)
     int           sub_index;
     const char*   data;
     uint32        length = 0;
-    bool_t        show_output;
+    bool        show_output;
     const char*   comment;
 
     PY_CHECK_ARGC(6);
@@ -254,11 +254,11 @@ bool py_sdo_write_string(int argc, py_Ref argv)
     }
     else
     {
-        py_newbool(py_retval(), IS_FALSE);
-        return IS_TRUE;
+        py_newbool(py_retval(), false);
+        return true;
     }
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
@@ -276,14 +276,14 @@ bool py_sdo_write_string(int argc, py_Ref argv)
     switch (status)
     {
         case ABORT_TRANSFER:
-            py_newbool(py_retval(), IS_FALSE);
+            py_newbool(py_retval(), false);
             break;
         default:
-            py_newbool(py_retval(), IS_TRUE);
+            py_newbool(py_retval(), true);
             break;
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_dict_lookup(int argc, py_Ref argv)
@@ -309,5 +309,5 @@ bool py_dict_lookup(int argc, py_Ref argv)
         py_newstr(py_retval(), description);
     }
 
-    return IS_TRUE;
+    return true;
 }

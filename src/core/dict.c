@@ -52,7 +52,7 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
 {
     static const char* lookup;
 
-    if (IS_TRUE == is_codb_loaded())
+    if (true == is_codb_loaded())
     {
         lookup = codb_desc_lookup(codb_get_profile(), index, sub_index);
         if (NULL != lookup)
@@ -61,7 +61,7 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
         }
     }
 
-    if (IS_TRUE == is_ds301_loaded())
+    if (true == is_ds301_loaded())
     {
         lookup = codb_desc_lookup(codb_get_ds301_profile(), index, sub_index);
         if (NULL != lookup)
@@ -85,17 +85,17 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
 
     os_memset(&info, 0, sizeof(object_info_t));
 
-    if (IS_TRUE == is_codb_loaded())
+    if (true == is_codb_loaded())
     {
         codb_info_lookup(codb_get_profile(), index, sub_index, &info);
     }
 
-    if (IS_TRUE == is_ds301_loaded() && IS_FALSE == info.does_exist)
+    if (true == is_ds301_loaded() && false == info.does_exist)
     {
         codb_info_lookup(codb_get_ds301_profile(), index, sub_index, &info);
     }
 
-    if (IS_FALSE == info.does_exist)
+    if (false == info.does_exist)
     {
         return status;
     }
@@ -187,7 +187,7 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
 
         table_print_row("Access", buffer, "R", &sub_index_table);
 
-        if (IS_FALSE == info.pdo_mapping)
+        if (false == info.pdo_mapping)
         {
             os_snprintf(buffer, sizeof(buffer), "No");
         }

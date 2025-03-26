@@ -302,7 +302,7 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
 
                         if (sub_access_type_type != NULL)
                         {
-                            info->access_type = (bool_t)sub_access_type_type->valueint;
+                            info->access_type = (bool)sub_access_type_type->valueint;
                         }
                     }
 
@@ -346,7 +346,7 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
                         }
                     }
 
-                    info->does_exist = IS_TRUE;
+                    info->does_exist = true;
                 }
             }
         }
@@ -363,14 +363,14 @@ codb_t* codb_get_profile(void)
     return (codb_t*)codb;
 }
 
-bool_t is_ds301_loaded(void)
+bool is_ds301_loaded(void)
 {
-    return (ds301 != NULL) ? IS_TRUE : IS_FALSE;
+    return (ds301 != NULL) ? true : false;
 }
 
-bool_t is_codb_loaded(void)
+bool is_codb_loaded(void)
 {
-    return (codb != NULL) ? IS_TRUE : IS_FALSE;
+    return (codb != NULL) ? true : false;
 }
 
 void list_codb(void)
@@ -425,13 +425,13 @@ void list_codb(void)
 
                 os_snprintf(file_no_str, 4, "%3u", file_no);
 
-                if ((0 == os_strcmp(dir->d_name, "ds301.json") && (IS_TRUE == is_ds301_loaded())) || ((active_no > 0) && (active_no == file_no)))
+                if ((0 == os_strcmp(dir->d_name, "ds301.json") && (true == is_ds301_loaded())) || ((active_no > 0) && (active_no == file_no)))
                 {
                     table.text_color = LIGHT_GREEN;
                     table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Active", &table);
                     table.text_color = DEFAULT_COLOR;
                 }
-                else if ((0 == os_strcmp(dir->d_name, "ds301.json") && (IS_FALSE == is_ds301_loaded())))
+                else if ((0 == os_strcmp(dir->d_name, "ds301.json") && (false == is_ds301_loaded())))
                 {
                     table.text_color = LIGHT_YELLOW;
                     table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Queued", &table);
@@ -469,7 +469,7 @@ status_t load_codb(uint32 file_no)
     {
         struct dirent_t* dir;
         uint32           current_file_no = 1;
-        bool_t           found           = IS_FALSE;
+        bool           found           = false;
 
         while ((dir = os_readdir(d)) != NULL)
         {
@@ -500,7 +500,7 @@ status_t load_codb(uint32 file_no)
                     }
                     else
                     {
-                        found     = IS_TRUE;
+                        found     = true;
                         active_no = file_no;
                     }
                 }
@@ -508,7 +508,7 @@ status_t load_codb(uint32 file_no)
             }
         }
         os_closedir(d);
-        if (IS_FALSE == found)
+        if (false == found)
         {
             status = OS_FILE_NOT_FOUND;
             list_codb();

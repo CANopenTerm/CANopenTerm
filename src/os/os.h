@@ -291,8 +291,8 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error os_timer_id not defined
 #endif
 
-#ifndef bool_t
-#define bool_t int
+#ifndef bool
+#define bool int
 #endif
 
 #ifndef DIR_t
@@ -327,14 +327,6 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error va_list_t not defined
 #endif
 
-#ifndef IS_TRUE
-#define IS_TRUE 1
-#endif
-
-#ifndef IS_FALSE
-#define IS_FALSE 0
-#endif
-
 #ifndef CLEAR_CMD
 #define CLEAR_CMD ""
 #endif
@@ -348,7 +340,7 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param);
-status_t    os_console_init(bool_t is_plain_mode);
+status_t    os_console_init(bool is_plain_mode);
 os_thread*  os_create_thread(os_thread_func fn, const char* name, void* data);
 void        os_delay(uint32 delay_in_ms);
 void        os_detach_thread(os_thread* thread);
@@ -359,11 +351,11 @@ status_t    os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
 uint64      os_get_ticks(void);
 const char* os_get_user_directory(void);
 status_t    os_init(void);
-bool_t      os_key_is_hit(void);
+bool        os_key_is_hit(void);
 void        os_log(const log_level_t level, const char* format, ...);
 void        os_print(const color_t color, const char* format, ...);
 void        os_print_prompt(void);
-bool_t      os_remove_timer(os_timer_id id);
+bool        os_remove_timer(os_timer_id id);
 uint64      os_swap_64(uint64 n);
 uint32      os_swap_be_32(uint32 n);
 void        os_quit(void);

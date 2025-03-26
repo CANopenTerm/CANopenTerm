@@ -32,7 +32,7 @@ bool py_nmt_send_command(int argc, py_Ref argv)
     disp_mode_t disp_mode = SILENT;
     int         node_id;
     int         command;
-    bool_t      show_output;
+    bool      show_output;
     const char* comment;
 
     PY_CHECK_ARGC(4);
@@ -48,7 +48,7 @@ bool py_nmt_send_command(int argc, py_Ref argv)
 
     limit_node_id((uint8*)&node_id);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
@@ -63,18 +63,18 @@ bool py_nmt_send_command(int argc, py_Ref argv)
             status = nmt_send_command(node_id, command, disp_mode, comment);
             if (0 == status)
             {
-                py_newbool(py_retval(), IS_TRUE);
+                py_newbool(py_retval(), true);
             }
             else
             {
-                py_newbool(py_retval(), IS_FALSE);
+                py_newbool(py_retval(), false);
             }
             break;
         default:
             nmt_print_error("Unknown NMT command", command, disp_mode);
-            py_newbool(py_retval(), IS_FALSE);
+            py_newbool(py_retval(), false);
             break;
     }
 
-    return IS_TRUE;
+    return true;
 }

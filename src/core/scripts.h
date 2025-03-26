@@ -12,7 +12,7 @@
 
 #include "core.h"
 
-bool_t   has_valid_extension(const char* filename);
+bool     has_valid_extension(const char* filename);
 void     scripts_init(core_t* core);
 void     scripts_deinit(core_t* core);
 status_t list_scripts(void);

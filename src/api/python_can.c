@@ -69,7 +69,7 @@ bool py_dict_lookup_raw(int argc, py_Ref argv)
         py_newstr(py_retval(), description);
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_can_write(int argc, py_Ref argv)
@@ -78,8 +78,8 @@ bool py_can_write(int argc, py_Ref argv)
     int           can_id;
     int           length;
     uint64        data;
-    bool_t        is_extended;
-    bool_t        show_output;
+    bool        is_extended;
+    bool        show_output;
     const char*   comment;
     can_message_t message   = {0};
     disp_mode_t   disp_mode = SILENT;
@@ -109,16 +109,16 @@ bool py_can_write(int argc, py_Ref argv)
     message.data[6] = (data >> 8) & 0xFF;
     message.data[7] = data & 0xFF;
 
-    if (IS_TRUE == is_extended)
+    if (true == is_extended)
     {
-        message.is_extended = IS_TRUE;
+        message.is_extended = true;
     }
     else
     {
-        message.is_extended = IS_FALSE;
+        message.is_extended = false;
     }
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
@@ -149,15 +149,15 @@ bool py_can_write(int argc, py_Ref argv)
             os_print(DARK_MAGENTA, "%s ", buffer);
             os_print(DEFAULT_COLOR, "Write: 0x%" PRIx64 "\n", data);
         }
-        py_newbool(py_retval(), IS_TRUE);
+        py_newbool(py_retval(), true);
     }
     else
     {
         can_print_error(can_id, can_get_error_message(can_status), disp_mode);
-        py_newbool(py_retval(), IS_FALSE);
+        py_newbool(py_retval(), false);
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_can_read(int argc, py_Ref argv)
@@ -199,12 +199,12 @@ bool py_can_read(int argc, py_Ref argv)
         py_newnone(py_retval());
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_can_flush(int argc, py_Ref argv)
 {
     PY_CHECK_ARGC(0);
     can_flush();
-    return IS_TRUE;
+    return true;
 }

@@ -23,25 +23,28 @@ typedef enum disp_mode
 
 typedef struct core
 {
-    os_thread* can_monitor_th;
-    lua_State* L;
-    uint8      baud_rate;
-    uint32     can_channel;
-    uint32     can_status;
-    uint8      node_id;
-    bool_t     is_can_initialised;
-    bool_t     is_running;
-    bool_t     is_script_running;
-    bool_t     is_plain_mode;
-    char       can_interface[32];
+    os_thread*   can_monitor_th;
+    os_thread*   core_th;
+    lua_State*   L;
+    os_renderer* renderer;
+    os_window*   window;
+    uint8        baud_rate;
+    uint32       can_channel;
+    uint32       can_status;
+    uint8        node_id;
+    bool         is_can_initialised;
+    bool         is_running;
+    bool         is_script_running;
+    bool         is_plain_mode;
+    char         can_interface[32];
 
 } core_t;
 
 extern core_t* core;
 
-status_t core_init(core_t** core, bool_t is_plain_mode);
+status_t core_init(core_t** core, bool is_plain_mode);
 void     core_register_ctrl_c_handler(void);
-status_t core_update(core_t* core);
+int      core_update(void* core_pt);
 void     core_deinit(core_t* core);
 
 #endif /* CORE_H */

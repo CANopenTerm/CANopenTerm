@@ -17,14 +17,14 @@ static pdo_t pdo[PDO_MAX];
 static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval);
 static void   print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id);
 
-bool_t pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, disp_mode_t disp_mode)
+bool pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, disp_mode_t disp_mode)
 {
     int i;
 
-    if (IS_FALSE == pdo_is_id_valid(can_id))
+    if (false == pdo_is_id_valid(can_id))
     {
         print_error("Could not add PDO: Invalid TPDO CAN-ID", disp_mode, can_id);
-        return IS_FALSE;
+        return false;
     }
 
     if (length > 8)
@@ -32,7 +32,7 @@ bool_t pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, d
         length = 8;
     }
 
-    if (IS_FALSE == pdo_del(can_id, disp_mode))
+    if (false == pdo_del(can_id, disp_mode))
     {
         /* Nothing to do here. */
     }
@@ -45,22 +45,22 @@ bool_t pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, d
             pdo[i].length = length;
             pdo[i].data   = data;
             pdo[i].id     = os_add_timer(event_time_ms, pdo_send_callback, &pdo[i]);
-            return IS_TRUE;
+            return true;
         }
     }
 
     print_error("Could not add PDO: No empty slot available", disp_mode, can_id);
-    return IS_FALSE;
+    return false;
 }
 
-bool_t pdo_del(uint16 can_id, disp_mode_t disp_mode)
+bool pdo_del(uint16 can_id, disp_mode_t disp_mode)
 {
     int i;
 
-    if (IS_FALSE == pdo_is_id_valid(can_id))
+    if (false == pdo_is_id_valid(can_id))
     {
         print_error("Could not delete PDO: Invalid TPDO CAN-ID", disp_mode, can_id);
-        return IS_FALSE;
+        return false;
     }
 
     for (i = 0; i < PDO_MAX; i += 1)
@@ -76,7 +76,7 @@ bool_t pdo_del(uint16 can_id, disp_mode_t disp_mode)
         }
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval)
@@ -125,7 +125,7 @@ status_t pdo_print_help(void)
     return status;
 }
 
-bool_t pdo_is_id_valid(uint16 can_id)
+bool pdo_is_id_valid(uint16 can_id)
 {
     /* Node-ID (0x001 - 0x07f)
      * TPDO 1  (0x181 - 0x1ff)
@@ -135,7 +135,7 @@ bool_t pdo_is_id_valid(uint16 can_id)
      */
     if ((can_id >= 0x01) && (can_id <= 0x7f))
     {
-        return IS_TRUE;
+        return true;
     }
     else if ((can_id >= 0x180) && (can_id <= 0x4ff))
     {
@@ -145,16 +145,16 @@ bool_t pdo_is_id_valid(uint16 can_id)
             case 0x280:
             case 0x380:
             case 0x480:
-                return IS_FALSE;
+                return false;
             default:
-                return IS_TRUE;
+                return true;
         }
     }
 
-    return IS_FALSE;
+    return false;
 }
 
-void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char* comment)
+void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool was_successful, const char* comment)
 {
     int  i;
     char buffer[34] = {0};
@@ -170,7 +170,7 @@ void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t w
         buffer[i] = ' ';
     }
 
-    if (IS_TRUE == was_successful)
+    if (true == was_successful)
     {
         os_print(LIGHT_BLACK, "PDO  ");
         os_print(DEFAULT_COLOR, "    0x%03X   -       -         -       ", can_id);

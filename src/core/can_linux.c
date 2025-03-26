@@ -56,7 +56,7 @@ void can_deinit(core_t* core)
     }
 
     core->can_status         = 0;
-    core->is_can_initialised = IS_FALSE;
+    core->is_can_initialised = false;
 
     close(can_socket);
 }
@@ -164,7 +164,7 @@ void can_set_channel(uint32 channel, core_t* core)
             os_strlcpy(core->can_interface, can_interfaces[channel], 16);
             core->can_channel = channel;
 
-            if (IS_TRUE == is_can_initialised(core))
+            if (true == is_can_initialised(core))
             {
                 can_deinit(core);
             }
@@ -189,7 +189,7 @@ void can_quit(core_t* core)
         return;
     }
 
-    if (IS_TRUE == is_can_initialised(core))
+    if (true == is_can_initialised(core))
     {
         can_deinit(core);
     }
@@ -293,9 +293,9 @@ static int can_monitor(void* core_pt)
         return 1;
     }
 
-    while (IS_TRUE == core->is_running)
+    while (true == core->is_running)
     {
-        while (IS_FALSE == is_can_initialised(core))
+        while (false == is_can_initialised(core))
         {
             struct sockaddr_can addr;
             struct ifreq        ifr;
@@ -317,7 +317,7 @@ static int can_monitor(void* core_pt)
             {
                 os_log(LOG_ERROR, "Invalid CAN interface: %s", core->can_interface);
                 close(can_socket);
-                core->is_can_initialised = IS_FALSE;
+                core->is_can_initialised = false;
                 return 1;
             }
 
@@ -330,9 +330,9 @@ static int can_monitor(void* core_pt)
                 return 1;
             }
 
-            core->is_can_initialised = IS_TRUE;
+            core->is_can_initialised = true;
 
-            if (IS_FALSE == core->is_plain_mode)
+            if (false == core->is_plain_mode)
             {
                 os_print(DEFAULT_COLOR, "\r");
                 os_log(LOG_SUCCESS, "CAN successfully initialised on %s", core->can_interface);

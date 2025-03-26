@@ -23,12 +23,12 @@ int lua_nmt_send_command(lua_State* L)
     disp_mode_t disp_mode   = SILENT;
     int         node_id     = luaL_checkinteger(L, 1);
     int         command     = luaL_checkinteger(L, 2);
-    bool_t      show_output = lua_toboolean(L, 3);
+    bool      show_output = lua_toboolean(L, 3);
     const char* comment     = lua_tostring(L, 4);
 
     limit_node_id((uint8*)&node_id);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }

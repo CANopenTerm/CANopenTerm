@@ -17,7 +17,7 @@ typedef struct
     char*  buffer;
     size_t size;
     size_t capacity;
-    bool_t use_buffer;
+    bool use_buffer;
 
 } buffer_t;
 
@@ -25,6 +25,6 @@ void     buffer_flush();
 void     buffer_free();
 status_t buffer_init(size_t initial_capacity);
 void     buffer_write(const char* format, ...);
-bool_t   use_buffer(void);
+bool     use_buffer(void);
 
 #endif /* BUFFER_H */

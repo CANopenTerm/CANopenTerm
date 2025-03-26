@@ -155,7 +155,7 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
                     os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
                                 eds.entries[i].Index, eds.entries[i].SubIndex);
 
-                    result.has_passed    = IS_FALSE;
+                    result.has_passed    = false;
                     result.time          = time;
                     result.package       = package;
                     result.class_name    = base_name;
@@ -178,7 +178,7 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
                     os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
                                 eds.entries[i].Index, eds.entries[i].SubIndex);
 
-                    result.has_passed    = IS_TRUE;
+                    result.has_passed    = true;
                     result.time          = time;
                     result.package       = package;
                     result.class_name    = base_name;
@@ -361,7 +361,7 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
     }
     else if (0 == os_strcmp(name, "PDOMapping"))
     {
-        eds.entries[eds.num_entries - 1].DefaultValue = (bool_t)os_strtoul(value, NULL, 0);
+        eds.entries[eds.num_entries - 1].DefaultValue = (bool)os_strtoul(value, NULL, 0);
     }
 
     return 1;

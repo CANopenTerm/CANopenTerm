@@ -22,7 +22,7 @@ extern const char* script_search_path[];
 
 static char*  get_script_description(char* script_path);
 static size_t safe_strcpy(char* dest, const char* src, size_t size);
-static bool_t script_already_listed(char** listed_scripts, int count, const char* script_name);
+static bool script_already_listed(char** listed_scripts, int count, const char* script_name);
 static void   strip_lua_extension(char* filename);
 
 void scripts_init(core_t* core)
@@ -157,28 +157,28 @@ static char* get_script_description(char* script_path)
     return NULL;
 }
 
-bool_t has_valid_extension(const char* filename)
+bool has_valid_extension(const char* filename)
 {
     const char* dot;
 
     if (NULL == filename)
     {
-        return IS_FALSE;
+        return false;
     }
 
     dot = os_strrchr(filename, '.');
     if (NULL == dot)
     {
-        return IS_FALSE;
+        return false;
     }
 
     if ((os_strcmp(dot, ".lua") == 0 || os_strcmp(dot, ".py") == 0))
     {
-        return IS_TRUE;
+        return true;
     }
     else
     {
-        return IS_FALSE;
+        return false;
     }
 }
 
@@ -219,7 +219,7 @@ status_t list_scripts(void)
                         script_name[sizeof(script_name) - 1] = '\0';
                         strip_lua_extension(script_name);
 
-                        if (IS_FALSE == script_already_listed(listed_scripts, listed_count, script_name))
+                        if (false == script_already_listed(listed_scripts, listed_count, script_name))
                         {
                             char  buf[4]           = {0};
                             char* script_no        = os_itoa(listed_count, buf, 10);
@@ -331,8 +331,8 @@ status_t run_script_ex(char* name, core_t* core)
 {
     status_t    status            = ALL_OK;
     const char* extension         = os_strrchr(name, '.');
-    bool_t      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
-    bool_t      has_py_extension  = extension && os_strcmp(extension, ".py") == 0;
+    bool      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
+    bool      has_py_extension  = extension && os_strcmp(extension, ".py") == 0;
     char        script_path[1024] = {0};
     FILE*       file;
 
@@ -341,7 +341,7 @@ status_t run_script_ex(char* name, core_t* core)
         return OS_INVALID_ARGUMENT;
     }
 
-    if (IS_TRUE == has_lua_extension)
+    if (true == has_lua_extension)
     {
         os_snprintf(script_path, sizeof(script_path), "%s", name);
 
@@ -366,7 +366,7 @@ status_t run_script_ex(char* name, core_t* core)
             }
         }
     }
-    else if (IS_TRUE == has_py_extension)
+    else if (true == has_py_extension)
     {
         os_snprintf(script_path, sizeof(script_path), "%s", name);
 
@@ -394,7 +394,7 @@ status_t run_script_ex(char* name, core_t* core)
                 size         = os_fread(buffer, 1, size, file);
                 buffer[size] = 0;
 
-                if (IS_FALSE == py_exec(buffer, script_path, EXEC_MODE, NULL))
+                if (false == py_exec(buffer, script_path, EXEC_MODE, NULL))
                 {
                     py_printexc();
                     status = SCRIPT_ERROR;
@@ -437,7 +437,7 @@ status_t run_script_ex(char* name, core_t* core)
                 size         = os_fread(buffer, 1, size, file);
                 buffer[size] = 0;
 
-                if (IS_FALSE == py_exec(buffer, script_path, EXEC_MODE, NULL))
+                if (false == py_exec(buffer, script_path, EXEC_MODE, NULL))
                 {
                     py_printexc();
                     status = SCRIPT_ERROR;
@@ -478,7 +478,7 @@ static size_t safe_strcpy(char* dest, const char* src, size_t size)
     return src_len;
 }
 
-static bool_t script_already_listed(char** listed_scripts, int count, const char* script_name)
+static bool script_already_listed(char** listed_scripts, int count, const char* script_name)
 {
     int i;
 
@@ -486,11 +486,11 @@ static bool_t script_already_listed(char** listed_scripts, int count, const char
     {
         if (0 == os_strcmp(listed_scripts[i], script_name))
         {
-            return IS_TRUE;
+            return true;
         }
     }
 
-    return IS_FALSE;
+    return false;
 }
 
 static void strip_lua_extension(char* filename)

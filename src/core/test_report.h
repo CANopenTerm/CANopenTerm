@@ -15,7 +15,7 @@
 
 typedef struct
 {
-    bool_t      has_passed;
+    bool      has_passed;
     uint64      testsuite_name_hash;
     float       time;
     const char* package;

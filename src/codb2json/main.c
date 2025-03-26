@@ -15,7 +15,7 @@
 int main(int argc, char* argv[])
 {
     size_t i;
-    bool_t format_output = IS_FALSE;
+    bool format_output = false;
 
     os_printf("<> codb2json\n");
     os_printf("Copyright (c) 2025, Michael Fitzmayer.\n\n");
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
         {
             if (0 == os_strcmp(argv[i], "-f"))
             {
-                format_output = IS_TRUE;
+                format_output = true;
             }
         }
     }

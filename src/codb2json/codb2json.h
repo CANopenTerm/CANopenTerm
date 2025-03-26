@@ -12,6 +12,6 @@
 
 #include "os.h"
 
-int codb2json(int argc, char* argv[], bool_t format_output);
+int codb2json(int argc, char* argv[], bool format_output);
 
 #endif /* CODB2JSON_H */

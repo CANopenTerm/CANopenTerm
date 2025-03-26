@@ -10,7 +10,7 @@
 #include "buffer.h"
 #include "os.h"
 
-static buffer_t buffer = {NULL, 0, 0, IS_FALSE};
+static buffer_t buffer = {NULL, 0, 0, false};
 
 void buffer_free()
 {
@@ -19,7 +19,7 @@ void buffer_free()
     buffer.buffer     = NULL;
     buffer.size       = 0;
     buffer.capacity   = 0;
-    buffer.use_buffer = IS_FALSE;
+    buffer.use_buffer = false;
 }
 
 status_t buffer_init(size_t initial_capacity)
@@ -35,7 +35,7 @@ status_t buffer_init(size_t initial_capacity)
     {
         buffer.size       = 0;
         buffer.capacity   = initial_capacity;
-        buffer.use_buffer = IS_TRUE;
+        buffer.use_buffer = true;
     }
 
     return status;
@@ -70,7 +70,7 @@ void buffer_flush()
     buffer.size = 0;
 }
 
-bool_t use_buffer(void)
+bool use_buffer(void)
 {
     return buffer.use_buffer;
 }

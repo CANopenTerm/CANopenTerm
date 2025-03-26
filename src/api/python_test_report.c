@@ -57,7 +57,7 @@ bool py_test_add_result(int argc, py_Ref argv)
     test_add_result(&result);
     py_newnone(py_retval());
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_test_eds_file(int argc, py_Ref argv)
@@ -79,7 +79,7 @@ bool py_test_eds_file(int argc, py_Ref argv)
 
     py_newnone(py_retval());
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_test_clear_results(int argc, py_Ref argv)
@@ -92,7 +92,7 @@ bool py_test_clear_results(int argc, py_Ref argv)
     test_clear_results();
     py_newnone(py_retval());
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_test_generate_report(int argc, py_Ref argv)
@@ -110,10 +110,10 @@ bool py_test_generate_report(int argc, py_Ref argv)
 
     if (ALL_OK == test_generate_report(file_name))
     {
-        return IS_TRUE;
+        return true;
     }
     else
     {
-        return IS_FALSE;
+        return false;
     }
 }

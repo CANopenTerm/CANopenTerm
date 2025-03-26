@@ -22,7 +22,7 @@ typedef struct can_message
     uint32 length;
     uint8  data[CAN_BUF_SIZE];
     uint64 timestamp_us;
-    bool_t is_extended;
+    bool is_extended;
 
 } can_message_t;
 
@@ -39,6 +39,6 @@ void        can_print_error(uint32 can_id, const char* reason, disp_mode_t disp_
 void        can_set_baud_rate(uint8 baud_rate_index, core_t* core);
 void        can_set_channel(uint32 channel, core_t* core);
 void        limit_node_id(uint8* node_id);
-bool_t      is_can_initialised(core_t* core);
+bool        is_can_initialised(core_t* core);
 
 #endif /* CAN_H */

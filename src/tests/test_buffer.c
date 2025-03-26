@@ -29,9 +29,9 @@ void test_use_buffer(void** state)
 {
     (void)state;
 
-    assert_true(use_buffer() == IS_FALSE);
+    assert_true(use_buffer() == false);
     buffer_init(1024);
-    assert_true(use_buffer() == IS_TRUE);
+    assert_true(use_buffer() == true);
     buffer_free();
-    assert_true(use_buffer() == IS_FALSE);
+    assert_true(use_buffer() == false);
 }

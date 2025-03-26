@@ -100,8 +100,8 @@ typedef struct object_info
     obj_kind_t      entry_category;
     obj_attr_type_t attribute;
     acc_type_t      access_type;
-    bool_t          pdo_mapping;
-    bool_t          does_exist;
+    bool            pdo_mapping;
+    bool            does_exist;
     uint32          value_range_lower;
     uint32          value_range_upper;
     uint32          default_value;
@@ -119,8 +119,8 @@ const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char*
 void        codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* info);
 codb_t*     codb_get_ds301_profile(void);
 codb_t*     codb_get_profile(void);
-bool_t      is_ds301_loaded(void);
-bool_t      is_codb_loaded(void);
+bool        is_ds301_loaded(void);
+bool        is_codb_loaded(void);
 void        list_codb(void);
 status_t    load_codb(uint32 file_no);
 status_t    load_codb_ex(char* file_name);

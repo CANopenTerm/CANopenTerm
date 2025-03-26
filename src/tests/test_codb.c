@@ -23,7 +23,7 @@ void test_codb2json(void** state)
 {
     (void)state;
 
-    assert_true(codb2json(2, (char*[]){"codb2json", "tests/test.codb"}, IS_FALSE) == 0);
+    assert_true(codb2json(2, (char*[]){"codb2json", "tests/test.codb"}, false) == 0);
     assert_files_equal("tests/test.json", "tests/test.json.expected");
 }
 

@@ -210,7 +210,7 @@ status_t test_generate_report(const char* file_name)
                            results[i]->class_name,
                            results[i]->time);
 
-                if (IS_FALSE == results[i]->has_passed)
+                if (false == results[i]->has_passed)
                 {
                     if (NULL == results[i]->error_type)
                     {

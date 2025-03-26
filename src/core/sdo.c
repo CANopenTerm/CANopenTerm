@@ -23,7 +23,7 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
 static void print_write_result(sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, disp_mode_t disp_mode, const char* comment);
 static int  wait_for_response(uint8 node_id, can_message_t* msg_in);
 
-bool_t is_printable_string(const char* str, size_t length);
+bool is_printable_string(const char* str, size_t length);
 
 const char* sdo_lookup_abort_code(uint32 abort_code)
 {
@@ -182,7 +182,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
         uint64 time_a;
         uint64 time_b;
         uint64 delta_time;
-        bool_t response_received;
+        bool response_received;
 
         msg_out.id      = CAN_BASE_ID + node_id;
         msg_out.length  = 8;
@@ -199,9 +199,9 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
         {
             timeout_time      = 0;
             time_a            = os_get_ticks();
-            response_received = IS_FALSE;
+            response_received = false;
 
-            while ((IS_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+            while ((false == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
             {
                 can_read(&msg_in);
                 if ((0x580 + node_id) == msg_in.id)
@@ -250,7 +250,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
                         response_index += 1;
                     }
 
-                    response_received = IS_TRUE;
+                    response_received = true;
                     continue;
                 }
 
@@ -748,17 +748,17 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
     return IS_WRITE_SEGMENTED;
 }
 
-bool_t is_printable_string(const char* str, size_t length)
+bool is_printable_string(const char* str, size_t length)
 {
     size_t i;
     for (i = 0; i < length; i++)
     {
         if (0 == os_isprint(str[i]))
         {
-            return IS_FALSE;
+            return false;
         }
     }
-    return IS_TRUE;
+    return true;
 }
 
 static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode)
@@ -868,7 +868,7 @@ static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_
         os_memcpy(&str_buffer, &u32_value, sdo_response->length);
     }
 
-    if (IS_FALSE == is_printable_string(str_buffer, sizeof(uint32)))
+    if (false == is_printable_string(str_buffer, sizeof(uint32)))
     {
         str_buffer[0] = '\0';
     }
@@ -1107,9 +1107,9 @@ static int wait_for_response(uint8 node_id, can_message_t* msg_in)
 {
     uint64 time_a            = os_get_ticks();
     uint64 timeout_time      = 0;
-    bool_t response_received = IS_FALSE;
+    bool response_received = false;
 
-    while ((IS_FALSE == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+    while ((false == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
     {
         uint64 time_b;
         uint64 delta_time;
@@ -1117,7 +1117,7 @@ static int wait_for_response(uint8 node_id, can_message_t* msg_in)
         can_read(msg_in);
         if ((0x580 + node_id) == msg_in->id)
         {
-            response_received = IS_TRUE;
+            response_received = true;
             continue;
         }
 

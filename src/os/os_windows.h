@@ -73,7 +73,9 @@
 #define os_timer_cb    SDL_TimerCallback
 #define os_timer_id    SDL_TimerID
 
-#define bool_t    bool
+#define os_renderer SDL_Renderer
+#define os_window   SDL_Window
+
 #define DIR_t     DIR
 #define dirent_t  dirent
 #define FILE_t    FILE
@@ -82,9 +84,6 @@
 #define uint32    Uint32
 #define uint64    Uint64
 #define va_list_t va_list
-
-#define IS_TRUE  true
-#define IS_FALSE false
 
 #define CLEAR_CMD "cls"
 

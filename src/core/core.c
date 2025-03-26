@@ -32,7 +32,7 @@
 #include "test_report.h"
 #include "version.h"
 
-status_t core_init(core_t** core, bool_t is_plain_mode)
+status_t core_init(core_t** core, bool is_plain_mode)
 {
     status_t status;
 
@@ -49,7 +49,7 @@ status_t core_init(core_t** core, bool_t is_plain_mode)
     }
 
     (*core)->is_plain_mode = is_plain_mode;
-    if (IS_FALSE == is_plain_mode)
+    if (false == is_plain_mode)
     {
         os_print(LIGHT_YELLOW, "<");
         os_print(LIGHT_GREEN, ">");
@@ -90,28 +90,32 @@ status_t core_init(core_t** core, bool_t is_plain_mode)
     codb_init();
 
     /* Initialise CAN. */
-    (*core)->is_running = IS_TRUE;
-    can_init((*core)); /* Must becalled AFTER is_running has been set to IS_TRUE! */
+    (*core)->is_running = true;
+    can_init((*core)); /* Must becalled AFTER is_running has been set to true! */
 
     return status;
 }
 
-status_t core_update(core_t* core)
+int core_update(void* core_pt)
 {
     char command[COMMAND_BUFFER_SIZE] = {0};
+    core_t* core = (core_t*)core_pt;
 
     if (NULL == core)
     {
-        return ALL_OK;
+        return 1;
     }
 
-    os_print_prompt();
-    if (ALL_OK == os_get_prompt(command))
+    while (true == core->is_running)
     {
-        parse_command(command, core);
+        os_print_prompt();
+        if (ALL_OK == os_get_prompt(command))
+        {
+            parse_command(command, core);
+        }
     }
 
-    return ALL_OK;
+    return 0;
 }
 
 void core_deinit(core_t* core)

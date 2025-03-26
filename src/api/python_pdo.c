@@ -14,7 +14,7 @@
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
-extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char* comment);
+extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool was_successful, const char* comment);
 
 bool py_pdo_add(int argc, py_Ref argv);
 bool py_pdo_del(int argc, py_Ref argv);
@@ -33,9 +33,9 @@ bool py_pdo_add(int argc, py_Ref argv)
     int         event_time_ms;
     int         length;
     uint64      data;
-    bool_t      show_output;
+    bool      show_output;
     const char* comment;
-    bool_t      was_successful;
+    bool      was_successful;
     disp_mode_t disp_mode = SILENT;
 
     PY_CHECK_ARGC(6);
@@ -53,27 +53,27 @@ bool py_pdo_add(int argc, py_Ref argv)
     show_output   = py_tobool(py_arg(4));
     comment       = py_tostr(py_arg(5));
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
 
     was_successful = pdo_add(can_id, event_time_ms, length, data, disp_mode);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         pdo_print_result(can_id, event_time_ms, data, was_successful, comment);
     }
 
     py_newbool(py_retval(), was_successful);
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_pdo_del(int argc, py_Ref argv)
 {
     int         can_id;
-    bool_t      show_output;
+    bool      show_output;
     const char* comment;
     disp_mode_t disp_mode = SILENT;
 
@@ -86,11 +86,11 @@ bool py_pdo_del(int argc, py_Ref argv)
     show_output = py_tobool(py_arg(1));
     comment     = py_tostr(py_arg(2));
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
-        pdo_print_result(can_id, 0, 0, IS_TRUE, comment);
+        pdo_print_result(can_id, 0, 0, true, comment);
     }
 
     py_newbool(py_retval(), pdo_del(can_id, disp_mode));
-    return IS_TRUE;
+    return true;
 }

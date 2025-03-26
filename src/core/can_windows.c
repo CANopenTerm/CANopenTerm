@@ -53,7 +53,7 @@ static char                     err_message[100] = {0};
 
 static int      can_monitor(void* core);
 static status_t search_can_channels(void);
-static void     search_free_can_configuration(core_t* core, bool_t search_baud_rate, bool_t search_channel);
+static void     search_free_can_configuration(core_t* core, bool search_baud_rate, bool search_channel);
 
 status_t can_init(core_t* core)
 {
@@ -83,7 +83,7 @@ void can_deinit(core_t* core)
     }
 
     core->can_status         = 0;
-    core->is_can_initialised = IS_FALSE;
+    core->is_can_initialised = false;
 
     CAN_Uninitialize(peak_can_channel);
 }
@@ -213,7 +213,7 @@ void can_quit(core_t* core)
         return;
     }
 
-    if (IS_TRUE == is_can_initialised(core))
+    if (true == is_can_initialised(core))
     {
         can_deinit(core);
     }
@@ -239,7 +239,7 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
     pcan_message.ID  = message->id;
     pcan_message.LEN = message->length;
 
-    if (message->is_extended == IS_TRUE)
+    if (message->is_extended == true)
     {
         pcan_message.MSGTYPE = PCAN_MESSAGE_EXTENDED;
     }
@@ -267,7 +267,7 @@ uint32 can_read(can_message_t* message)
 
     message->id          = pcan_message.ID;
     message->length      = pcan_message.LEN;
-    message->is_extended = (PCAN_MESSAGE_EXTENDED == pcan_message.MSGTYPE) ? IS_TRUE : IS_FALSE;
+    message->is_extended = (PCAN_MESSAGE_EXTENDED == pcan_message.MSGTYPE) ? true : false;
     message->timestamp_us =
         pcan_timestamp.micros + (1000ULL * pcan_timestamp.millis) + (0x100000000ULL * 1000ULL * pcan_timestamp.millis_overflow);
 
@@ -294,7 +294,7 @@ void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
 
     core->baud_rate = baud_rate_index;
 
-    if (IS_TRUE == is_can_initialised(core))
+    if (true == is_can_initialised(core))
     {
         can_deinit(core);
     }
@@ -321,7 +321,7 @@ void can_set_channel(uint32 channel, core_t* core)
 
     core->can_channel = channel;
 
-    if (IS_TRUE == is_can_initialised(core))
+    if (true == is_can_initialised(core))
     {
         can_deinit(core);
     }
@@ -349,15 +349,15 @@ static int can_monitor(void* core_pt)
         return 1;
     }
 
-    search_free_can_configuration(core, IS_TRUE, IS_TRUE);
+    search_free_can_configuration(core, true, true);
 
-    while (IS_TRUE == core->is_running)
+    while (true == core->is_running)
     {
         TPCANStatus peak_status;
 
-        while (IS_FALSE == is_can_initialised(core))
+        while (false == is_can_initialised(core))
         {
-            search_free_can_configuration(core, IS_FALSE, IS_FALSE);
+            search_free_can_configuration(core, false, false);
             os_delay(1);
         }
 
@@ -404,7 +404,7 @@ static status_t search_can_channels(void)
     return ALL_OK;
 }
 
-static void search_free_can_configuration(core_t* core, bool_t search_baud_rate, bool_t search_channel)
+static void search_free_can_configuration(core_t* core, bool search_baud_rate, bool search_channel)
 {
     int num_baud_rates = sizeof(baud_rates) / sizeof(baud_rates[0]);
     int chan_i;
@@ -421,7 +421,7 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
         {
             TPCANBaudrate baud_rate;
 
-            if (IS_TRUE == search_baud_rate)
+            if (true == search_baud_rate)
             {
                 baud_rate = baud_rates[rate_i];
             }
@@ -430,7 +430,7 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
                 baud_rate = baud_rates[core->baud_rate];
             }
 
-            if (IS_TRUE == search_channel)
+            if (true == search_channel)
             {
                 peak_can_channel = pcan_channel_information[chan_i].channel_handle;
             }
@@ -449,19 +449,19 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
 
             if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
             {
-                core->is_can_initialised = IS_TRUE;
+                core->is_can_initialised = true;
 
-                if (IS_TRUE == search_baud_rate)
+                if (true == search_baud_rate)
                 {
                     core->baud_rate = rate_i;
                 }
 
-                if (IS_TRUE == search_channel)
+                if (true == search_channel)
                 {
                     core->can_channel = chan_i;
                 }
 
-                if (IS_FALSE == core->is_plain_mode)
+                if (false == core->is_plain_mode)
                 {
                     os_print(DEFAULT_COLOR, "\r");
                     os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", pcan_channel_information[core->can_channel].device_name, baud_rate_desc[core->baud_rate]);
@@ -470,12 +470,12 @@ static void search_free_can_configuration(core_t* core, bool_t search_baud_rate,
                 break;
             }
 
-            if (core->is_can_initialised == IS_TRUE)
+            if (core->is_can_initialised == true)
             {
                 break;
             }
         }
-        if (core->is_can_initialised == IS_TRUE)
+        if (core->is_can_initialised == true)
         {
             break;
         }

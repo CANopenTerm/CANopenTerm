@@ -44,7 +44,7 @@ bool py_dbc_decode(int argc, py_Ref argv)
 
     py_newstr(py_retval(), result);
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_dbc_find_id_by_name(int argc, py_Ref argv)
@@ -68,7 +68,7 @@ bool py_dbc_find_id_by_name(int argc, py_Ref argv)
         py_newnone(py_retval());
     }
 
-    return IS_TRUE;
+    return true;
 }
 
 bool py_dbc_load(int argc, py_Ref argv)
@@ -85,12 +85,12 @@ bool py_dbc_load(int argc, py_Ref argv)
     status = dbc_load(filename);
     if (ALL_OK == status)
     {
-        py_newbool(py_retval(), IS_TRUE);
+        py_newbool(py_retval(), true);
     }
     else
     {
-        py_newbool(py_retval(), IS_FALSE);
+        py_newbool(py_retval(), false);
     }
 
-    return IS_TRUE;
+    return true;
 }

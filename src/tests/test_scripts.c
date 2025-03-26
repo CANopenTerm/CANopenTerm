@@ -39,9 +39,9 @@ void test_has_valid_extension(void** state)
 {
     (void)state;
 
-    assert_true(has_valid_extension("exceptional_script.lua") == IS_TRUE);
-    assert_true(has_valid_extension("mediocre_script.py") == IS_TRUE);
-    assert_true(has_valid_extension("totally_unsupported.tcl") == IS_FALSE);
+    assert_true(has_valid_extension("exceptional_script.lua") == true);
+    assert_true(has_valid_extension("mediocre_script.py") == true);
+    assert_true(has_valid_extension("totally_unsupported.tcl") == false);
 }
 
 void test_lua(void** state)

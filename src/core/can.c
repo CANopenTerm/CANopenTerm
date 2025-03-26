@@ -19,11 +19,11 @@ void limit_node_id(uint8* node_id)
     }
 }
 
-bool_t is_can_initialised(core_t* core)
+bool is_can_initialised(core_t* core)
 {
     if (NULL == core)
     {
-        return IS_FALSE;
+        return false;
     }
 
     return core->is_can_initialised;

@@ -15,7 +15,7 @@
 #include "os.h"
 #include "sdo.h"
 
-extern bool_t is_printable_string(const char* str, size_t length);
+extern bool is_printable_string(const char* str, size_t length);
 
 int lua_sdo_lookup_abort_code(lua_State* L)
 {
@@ -34,14 +34,14 @@ int lua_sdo_read(lua_State* L)
     int           node_id       = luaL_checkinteger(L, 1);
     int           index         = luaL_checkinteger(L, 2);
     int           sub_index     = luaL_checkinteger(L, 3);
-    bool_t        show_output   = lua_toboolean(L, 4);
+    bool        show_output   = lua_toboolean(L, 4);
     const char*   comment       = lua_tostring(L, 5);
     char          str_buffer[5] = {0};
     uint32        result;
 
     limit_node_id((uint8*)&node_id);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
@@ -94,12 +94,12 @@ int lua_sdo_write(lua_State* L)
     int           sub_index   = luaL_checkinteger(L, 3);
     int           length      = luaL_checkinteger(L, 4);
     int           data        = lua_tointeger(L, 5);
-    bool_t        show_output = lua_toboolean(L, 6);
+    bool        show_output = lua_toboolean(L, 6);
     const char*   comment     = lua_tostring(L, 7);
 
     limit_node_id((uint8*)&node_id);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
@@ -175,7 +175,7 @@ int lua_sdo_write_string(lua_State* L)
     int           sub_index   = luaL_checkinteger(L, 3);
     const char*   data        = luaL_checkstring(L, 4);
     uint32        length      = 0;
-    bool_t        show_output = lua_toboolean(L, 5);
+    bool        show_output = lua_toboolean(L, 5);
     const char*   comment     = lua_tostring(L, 6);
 
     if (NULL != data)
@@ -188,7 +188,7 @@ int lua_sdo_write_string(lua_State* L)
         return 1;
     }
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }

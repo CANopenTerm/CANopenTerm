@@ -32,7 +32,7 @@ void python_misc_init(void)
 bool py_delay_ms(int argc, py_Ref argv)
 {
     uint32      delay_in_ms;
-    bool_t      show_output;
+    bool      show_output;
     const char* comment;
 
     PY_CHECK_ARGC(3);
@@ -49,7 +49,7 @@ bool py_delay_ms(int argc, py_Ref argv)
         delay_in_ms = 1u;
     }
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         int  i;
         char buffer[34] = {0};
@@ -75,13 +75,13 @@ bool py_delay_ms(int argc, py_Ref argv)
     os_delay(delay_in_ms);
 
     py_newnone(py_retval());
-    return IS_TRUE;
+    return true;
 }
 
 bool py_key_is_hit(int argc, py_Ref argv)
 {
     py_newbool(py_retval(), os_key_is_hit());
-    return IS_TRUE;
+    return true;
 }
 
 bool py_print_heading(int argc, py_Ref argv)
@@ -95,5 +95,5 @@ bool py_print_heading(int argc, py_Ref argv)
     print_heading(heading);
     py_newnone(py_retval());
 
-    return IS_TRUE;
+    return true;
 }

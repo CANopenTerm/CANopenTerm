@@ -10,7 +10,6 @@
 #ifndef TEST_NMT_H
 #define TEST_NMT_H
 
-void test_nmt_send_command(void** state);
 void test_nmt_print_help(void** state);
 
 #endif /* TEST_NMT_H */

@@ -16,7 +16,7 @@ static dbc_t* dbc;
 static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness);
 static void   parse_message_line(char* line, message_t* message);
 static void   parse_signal_line(char* line, signal_t* signal);
-static bool_t starts_with(const char* str, const char* prefix);
+static bool starts_with(const char* str, const char* prefix);
 static char*  str_tolower(const char* str);
 static char*  trim_whitespace(char* str);
 
@@ -394,19 +394,19 @@ static void parse_signal_line(char* line, signal_t* signal)
     }
 }
 
-static bool_t starts_with(const char* str, const char* prefix)
+static bool starts_with(const char* str, const char* prefix)
 {
-    bool_t status;
+    bool status;
     size_t len_prefix = os_strlen(prefix);
     size_t len_str    = os_strlen(str);
 
     if (len_str < len_prefix)
     {
-        status = IS_FALSE;
+        status = false;
     }
     else
     {
-        status = (bool_t)(os_strncmp(prefix, str, len_prefix) == 0);
+        status = (bool)(os_strncmp(prefix, str, len_prefix) == 0);
     }
 
     return status;

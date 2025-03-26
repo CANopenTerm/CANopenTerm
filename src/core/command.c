@@ -22,8 +22,8 @@
 
 static void   convert_token_to_uint(char* token, uint32* result);
 static void   convert_token_to_uint64(char* token, uint64* result);
-status_t      print_usage_information(bool_t show_all);
-static bool_t is_numeric(const char* str);
+status_t      print_usage_information(bool show_all);
+static bool is_numeric(const char* str);
 
 void parse_command(char* input, core_t* core)
 {
@@ -113,11 +113,11 @@ void parse_command(char* input, core_t* core)
     }
     else if (0 == os_strncmp(token, "q", 1))
     {
-        core->is_running = IS_FALSE;
+        core->is_running = false;
     }
     else if (0 == os_strncmp(token, "h", 1))
     {
-        print_usage_information(IS_TRUE);
+        print_usage_information(true);
     }
     else if (0 == os_strncmp(token, "n", 1))
     {
@@ -128,7 +128,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
 
@@ -177,7 +177,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
         else if (0 == os_strncmp(token, "add", 3))
@@ -189,7 +189,7 @@ void parse_command(char* input, core_t* core)
             token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
-                print_usage_information(IS_FALSE);
+                print_usage_information(false);
                 return;
             }
 
@@ -198,7 +198,7 @@ void parse_command(char* input, core_t* core)
             token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
-                print_usage_information(IS_FALSE);
+                print_usage_information(false);
                 return;
             }
 
@@ -207,7 +207,7 @@ void parse_command(char* input, core_t* core)
             token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
-                print_usage_information(IS_FALSE);
+                print_usage_information(false);
                 return;
             }
 
@@ -216,19 +216,19 @@ void parse_command(char* input, core_t* core)
             token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
-                print_usage_information(IS_FALSE);
+                print_usage_information(false);
                 return;
             }
 
             convert_token_to_uint64(token, &data);
 
-            if (IS_FALSE == pdo_is_id_valid(can_id))
+            if (false == pdo_is_id_valid(can_id))
             {
                 pdo_print_help();
                 return;
             }
 
-            if (IS_FALSE == is_can_initialised(core))
+            if (false == is_can_initialised(core))
             {
                 os_log(LOG_WARNING, "Could not add PDO: CAN not initialised");
                 return;
@@ -241,19 +241,19 @@ void parse_command(char* input, core_t* core)
             token = os_strtokr_r(input_savptr, delim, &input_savptr);
             if (NULL == token)
             {
-                print_usage_information(IS_FALSE);
+                print_usage_information(false);
                 return;
             }
 
             convert_token_to_uint(token, &can_id);
 
-            if (IS_FALSE == pdo_is_id_valid(can_id))
+            if (false == pdo_is_id_valid(can_id))
             {
                 pdo_print_help();
                 return;
             }
 
-            if (IS_FALSE == is_can_initialised(core))
+            if (false == is_can_initialised(core))
             {
                 os_log(LOG_WARNING, "Could not delete PDO: CAN not initialised");
                 return;
@@ -263,7 +263,7 @@ void parse_command(char* input, core_t* core)
         }
         else
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
     }
@@ -277,7 +277,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
 
@@ -286,7 +286,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
 
@@ -313,7 +313,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token == NULL)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
         convert_token_to_uint(token, &node_id);
@@ -321,7 +321,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token == NULL)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
         convert_token_to_uint(token, &sdo_index);
@@ -329,7 +329,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token == NULL)
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
         convert_token_to_uint(token, &sub_index);
@@ -390,13 +390,13 @@ void parse_command(char* input, core_t* core)
             }
             else
             {
-                print_usage_information(IS_FALSE);
+                print_usage_information(false);
                 return;
             }
         }
         else
         {
-            print_usage_information(IS_FALSE);
+            print_usage_information(false);
             return;
         }
     }
@@ -405,14 +405,14 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            print_usage_information(IS_TRUE);
+            print_usage_information(true);
             return;
         }
         run_script(token, core);
     }
     else
     {
-        print_usage_information(IS_FALSE);
+        print_usage_information(false);
     }
 }
 
@@ -440,7 +440,7 @@ static void convert_token_to_uint64(char* token, uint64* result)
     }
 }
 
-status_t print_usage_information(bool_t show_all)
+status_t print_usage_information(bool show_all)
 {
     status_t status;
     table_t  table = {DARK_CYAN, DARK_WHITE, 3, 45, 17};
@@ -451,7 +451,7 @@ status_t print_usage_information(bool_t show_all)
     table_print_divider(&table);
     table_print_row(" h ", " ", "Show full help", &table);
 
-    if (IS_TRUE == show_all)
+    if (true == show_all)
     {
         table_print_row(" b ", "(identifer)", "Set baud rate", &table);
         table_print_row(" d ", "[file_no]", "Load data base", &table);
@@ -475,21 +475,21 @@ status_t print_usage_information(bool_t show_all)
     return status;
 }
 
-static bool_t is_numeric(const char* str)
+static bool is_numeric(const char* str)
 {
     if ((NULL == str) || ('\0' == *str))
     {
-        return IS_FALSE;
+        return false;
     }
 
     while (*str)
     {
         if (0 == os_isdigit(*str))
         {
-            return IS_FALSE;
+            return false;
         }
         str += 1;
     }
 
-    return IS_TRUE;
+    return true;
 }

@@ -21,7 +21,7 @@
 #include "dirent.h"
 #include "os.h"
 
-static bool_t console_is_plain_mode;
+static bool console_is_plain_mode;
 
 static void set_nonblocking(int fd, int nonblocking);
 static void set_terminal_raw_mode(struct termios* orig_termios);
@@ -32,7 +32,7 @@ os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
     return SDL_AddTimer(interval, callback, param);
 }
 
-status_t os_console_init(bool_t is_plain_mode)
+status_t os_console_init(bool is_plain_mode)
 {
     console_is_plain_mode = is_plain_mode;
     return ALL_OK;
@@ -133,7 +133,7 @@ status_t os_init(void)
     return status;
 }
 
-bool_t os_key_is_hit(void)
+bool os_key_is_hit(void)
 {
     struct termios orig_termios;
     char           buffer = 0;
@@ -149,11 +149,11 @@ bool_t os_key_is_hit(void)
 
     if (n > 0)
     {
-        return IS_TRUE;
+        return true;
     }
     else
     {
-        return IS_FALSE;
+        return false;
     }
 }
 
@@ -262,7 +262,7 @@ void os_print(const color_t color, const char* format, ...)
     os_vsnprintf(buffer, sizeof(buffer), format, varg);
     os_va_end(varg);
 
-    if (IS_FALSE == console_is_plain_mode)
+    if (false == console_is_plain_mode)
     {
         os_snprintf(print_buffer, sizeof(print_buffer), "%s%s\x1b[0m", color_code, buffer);
     }
@@ -271,7 +271,7 @@ void os_print(const color_t color, const char* format, ...)
         os_snprintf(print_buffer, sizeof(print_buffer), "%s", buffer);
     }
 
-    if (IS_TRUE == use_buffer())
+    if (true == use_buffer())
     {
         buffer_write(print_buffer);
     }
@@ -286,7 +286,7 @@ void os_print_prompt(void)
     return;
 }
 
-bool_t os_remove_timer(os_timer_id id)
+bool os_remove_timer(os_timer_id id)
 {
     return SDL_RemoveTimer(id);
 }

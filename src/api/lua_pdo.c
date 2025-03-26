@@ -14,7 +14,7 @@
 #include "os.h"
 #include "pdo.h"
 
-extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool_t was_successful, const char* comment);
+extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool was_successful, const char* comment);
 
 int lua_pdo_add(lua_State* L)
 {
@@ -22,19 +22,19 @@ int lua_pdo_add(lua_State* L)
     int         event_time_ms = luaL_checkinteger(L, 2);
     int         length        = luaL_checkinteger(L, 3);
     uint64      data          = lua_tointeger(L, 4);
-    bool_t      show_output   = lua_toboolean(L, 5);
+    bool      show_output   = lua_toboolean(L, 5);
     const char* comment       = lua_tostring(L, 6);
-    bool_t      was_successful;
+    bool      was_successful;
     disp_mode_t disp_mode = SILENT;
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         disp_mode = SCRIPT_MODE;
     }
 
     was_successful = pdo_add(can_id, event_time_ms, length, data, disp_mode);
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
         pdo_print_result(can_id, event_time_ms, data, was_successful, comment);
     }
@@ -47,13 +47,13 @@ int lua_pdo_add(lua_State* L)
 int lua_pdo_del(lua_State* L)
 {
     int         can_id      = luaL_checkinteger(L, 1);
-    bool_t      show_output = lua_toboolean(L, 2);
+    bool      show_output = lua_toboolean(L, 2);
     const char* comment     = lua_tostring(L, 3);
     disp_mode_t disp_mode   = SILENT;
 
-    if (IS_TRUE == show_output)
+    if (true == show_output)
     {
-        pdo_print_result(can_id, 0, 0, IS_TRUE, comment);
+        pdo_print_result(can_id, 0, 0, true, comment);
     }
 
     lua_pushboolean(L, pdo_del(can_id, disp_mode));

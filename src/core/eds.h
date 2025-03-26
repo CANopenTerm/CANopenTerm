@@ -29,7 +29,7 @@ typedef struct eds_entry
     uint32     HighLimit;
     acc_type_t AccessType;
     uint32     DefaultValue;
-    bool_t     PDOMapping;
+    bool       PDOMapping;
 
 } eds_entry_t;
 
