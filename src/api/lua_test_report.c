@@ -18,14 +18,14 @@ int lua_test_add_result(lua_State* L)
 {
     test_result_t result;
 
-    result.has_passed    = lua_toboolean(L, 1);
-    result.time          = lua_tonumber(L, 2);
-    result.package       = lua_tostring(L, 3);
-    result.class_name    = lua_tostring(L, 4);
-    result.test_name     = lua_tostring(L, 5);
-    result.error_type    = lua_tostring(L, 6);
+    result.has_passed = lua_toboolean(L, 1);
+    result.time = lua_tonumber(L, 2);
+    result.package = lua_tostring(L, 3);
+    result.class_name = lua_tostring(L, 4);
+    result.test_name = lua_tostring(L, 5);
+    result.error_type = lua_tostring(L, 6);
     result.error_message = lua_tostring(L, 7);
-    result.call_stack    = lua_tostring(L, 8);
+    result.call_stack = lua_tostring(L, 8);
 
     test_add_result(&result);
 
@@ -40,9 +40,9 @@ int lua_test_clear_results(lua_State* L)
 
 int lua_test_eds_file(lua_State* L)
 {
-    int         node_id   = luaL_checkinteger(L, 1);
+    int node_id = luaL_checkinteger(L, 1);
     const char* file_name = lua_tostring(L, 2);
-    const char* package   = lua_tostring(L, 3);
+    const char* package = lua_tostring(L, 3);
 
     if (NULL == package)
     {
@@ -57,7 +57,7 @@ int lua_test_eds_file(lua_State* L)
 int lua_test_generate_report(lua_State* L)
 {
     const char* file_name = lua_tostring(L, 1);
-    status_t    status    = test_generate_report(file_name);
+    status_t status = test_generate_report(file_name);
 
     if (ALL_OK == status)
     {

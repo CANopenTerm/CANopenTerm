@@ -17,18 +17,18 @@
 
 int lua_can_write(lua_State* L)
 {
-    uint32        can_status;
-    int           can_id      = luaL_checkinteger(L, 1);
-    int           length      = luaL_checkinteger(L, 2);
-    uint64        data        = lua_tointeger(L, 3);
-    bool        is_extended = lua_toboolean(L, 4);
-    bool        show_output = lua_toboolean(L, 5);
-    const char*   comment     = lua_tostring(L, 6);
-    can_message_t message     = {0};
-    disp_mode_t   disp_mode   = SILENT;
+    uint32 can_status;
+    int can_id = luaL_checkinteger(L, 1);
+    int length = luaL_checkinteger(L, 2);
+    uint64 data = lua_tointeger(L, 3);
+    bool is_extended = lua_toboolean(L, 4);
+    bool show_output = lua_toboolean(L, 5);
+    const char* comment = lua_tostring(L, 6);
+    can_message_t message = {0};
+    disp_mode_t disp_mode = SILENT;
 
-    message.id      = can_id;
-    message.length  = length;
+    message.id = can_id;
+    message.length = length;
     message.data[0] = (data >> 56) & 0xFF;
     message.data[1] = (data >> 48) & 0xFF;
     message.data[2] = (data >> 40) & 0xFF;
@@ -58,7 +58,7 @@ int lua_can_write(lua_State* L)
     {
         if (SCRIPT_MODE == disp_mode)
         {
-            int  i;
+            int i;
             char buffer[34] = {0};
 
             if (NULL == comment)
@@ -92,9 +92,9 @@ int lua_can_write(lua_State* L)
 int lua_can_read(lua_State* L)
 {
     can_message_t message = {0};
-    status_t      status;
-    uint32        length;
-    uint64        data = 0;
+    status_t status;
+    uint32 length;
+    uint64 data = 0;
     ;
 
     status = can_read(&message);
@@ -130,15 +130,15 @@ int lua_can_flush(lua_State* L)
 
 int lua_dict_lookup_raw(lua_State* L)
 {
-    uint32        can_status;
-    int           can_id  = luaL_checkinteger(L, 1);
-    int           length  = luaL_checkinteger(L, 2);
-    uint64        data    = lua_tointeger(L, 3);
+    uint32 can_status;
+    int can_id = luaL_checkinteger(L, 1);
+    int length = luaL_checkinteger(L, 2);
+    uint64 data = lua_tointeger(L, 3);
     can_message_t message = {0};
-    const char*   description;
+    const char* description;
 
-    message.id      = can_id;
-    message.length  = length;
+    message.id = can_id;
+    message.length = length;
     message.data[0] = (data >> 56) & 0xFF;
     message.data[1] = (data >> 48) & 0xFF;
     message.data[2] = (data >> 40) & 0xFF;

@@ -31,8 +31,8 @@ void python_misc_init(void)
 
 bool py_delay_ms(int argc, py_Ref argv)
 {
-    uint32      delay_in_ms;
-    bool      show_output;
+    uint32 delay_in_ms;
+    bool show_output;
     const char* comment;
 
     PY_CHECK_ARGC(3);
@@ -42,7 +42,7 @@ bool py_delay_ms(int argc, py_Ref argv)
 
     delay_in_ms = py_toint(py_arg(0));
     show_output = py_tobool(py_arg(1));
-    comment     = py_tostr(py_arg(2));
+    comment = py_tostr(py_arg(2));
 
     if (0 == delay_in_ms)
     {
@@ -51,7 +51,7 @@ bool py_delay_ms(int argc, py_Ref argv)
 
     if (true == show_output)
     {
-        int  i;
+        int i;
         char buffer[34] = {0};
 
         os_print(LIGHT_BLACK, "Delay ");

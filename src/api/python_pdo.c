@@ -29,13 +29,13 @@ void python_pdo_init(void)
 
 bool py_pdo_add(int argc, py_Ref argv)
 {
-    int         can_id;
-    int         event_time_ms;
-    int         length;
-    uint64      data;
-    bool      show_output;
+    int can_id;
+    int event_time_ms;
+    int length;
+    uint64 data;
+    bool show_output;
     const char* comment;
-    bool      was_successful;
+    bool was_successful;
     disp_mode_t disp_mode = SILENT;
 
     PY_CHECK_ARGC(6);
@@ -46,12 +46,12 @@ bool py_pdo_add(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(4, tp_bool);
     PY_CHECK_ARG_TYPE(5, tp_str);
 
-    can_id        = py_toint(py_arg(0));
+    can_id = py_toint(py_arg(0));
     event_time_ms = py_toint(py_arg(1));
-    length        = py_toint(py_arg(2));
-    data          = py_toint(py_arg(3));
-    show_output   = py_tobool(py_arg(4));
-    comment       = py_tostr(py_arg(5));
+    length = py_toint(py_arg(2));
+    data = py_toint(py_arg(3));
+    show_output = py_tobool(py_arg(4));
+    comment = py_tostr(py_arg(5));
 
     if (true == show_output)
     {
@@ -72,8 +72,8 @@ bool py_pdo_add(int argc, py_Ref argv)
 
 bool py_pdo_del(int argc, py_Ref argv)
 {
-    int         can_id;
-    bool      show_output;
+    int can_id;
+    bool show_output;
     const char* comment;
     disp_mode_t disp_mode = SILENT;
 
@@ -82,9 +82,9 @@ bool py_pdo_del(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(1, tp_bool);
     PY_CHECK_ARG_TYPE(2, tp_str);
 
-    can_id      = py_toint(py_arg(0));
+    can_id = py_toint(py_arg(0));
     show_output = py_tobool(py_arg(1));
-    comment     = py_tostr(py_arg(2));
+    comment = py_tostr(py_arg(2));
 
     if (true == show_output)
     {

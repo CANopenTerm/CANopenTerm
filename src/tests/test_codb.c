@@ -30,7 +30,7 @@ void test_codb2json(void** state)
 static void assert_files_equal(const char* file1_path, const char* file2_path)
 {
     FILE_t *file1, *file2;
-    char    line1[256], line2[256];
+    char line1[256], line2[256];
 
     file1 = os_fopen(file1_path, "rb");
     if (file1 == NULL)

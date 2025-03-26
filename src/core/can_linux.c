@@ -32,8 +32,8 @@
 
 static int can_socket;
 
-static int    can_monitor(void* core);
-static void   parse_rtattr(struct rtattr* tb[], int max, struct rtattr* rta, int len);
+static int can_monitor(void* core);
+static void parse_rtattr(struct rtattr* tb[], int max, struct rtattr* rta, int len);
 static char** get_can_interfaces(int* count);
 
 status_t can_init(core_t* core)
@@ -55,7 +55,7 @@ void can_deinit(core_t* core)
         return;
     }
 
-    core->can_status         = 0;
+    core->can_status = 0;
     core->is_can_initialised = false;
 
     close(can_socket);
@@ -82,14 +82,14 @@ status_t can_print_baud_rate_help(core_t* core)
 
 status_t can_print_channel_help(core_t* core)
 {
-    status_t     status;
-    table_t      table             = {DARK_CYAN, DARK_WHITE, 3, 30, 6};
-    char         ch_status[128][7] = {0};
-    unsigned int ch_status_index   = core->can_channel;
+    status_t status;
+    table_t table = {DARK_CYAN, DARK_WHITE, 3, 30, 6};
+    char ch_status[128][7] = {0};
+    unsigned int ch_status_index = core->can_channel;
     unsigned int index;
-    int          interface_count;
-    char**       can_interfaces = get_can_interfaces(&interface_count);
-    int          i;
+    int interface_count;
+    char** can_interfaces = get_can_interfaces(&interface_count);
+    int i;
 
     if (0 == interface_count)
     {
@@ -154,7 +154,7 @@ void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
 
 void can_set_channel(uint32 channel, core_t* core)
 {
-    int    interface_count, i;
+    int interface_count, i;
     char** can_interfaces = get_can_interfaces(&interface_count);
 
     if (can_interfaces != NULL)
@@ -200,11 +200,11 @@ void can_quit(core_t* core)
 
 uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
-    int              index;
+    int index;
     struct can_frame frame;
-    long             num_bytes;
+    long num_bytes;
 
-    frame.can_id  = message->id;
+    frame.can_id = message->id;
     frame.can_dlc = message->length;
     frame.can_id |= message->is_extended ? CAN_EFF_FLAG : 0;
 
@@ -229,25 +229,25 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
 
 uint32 can_read(can_message_t* message)
 {
-    int              index;
+    int index;
     struct can_frame frame;
-    struct msghdr    msg;
-    struct iovec     iov;
-    char             ctrlmsg[CMSG_SPACE(sizeof(struct timeval))];
-    struct cmsghdr*  cmsg;
-    struct timeval*  tv;
-    int              nbytes;
+    struct msghdr msg;
+    struct iovec iov;
+    char ctrlmsg[CMSG_SPACE(sizeof(struct timeval))];
+    struct cmsghdr* cmsg;
+    struct timeval* tv;
+    int nbytes;
 
     iov.iov_base = &frame;
-    iov.iov_len  = sizeof(frame);
+    iov.iov_len = sizeof(frame);
 
-    msg.msg_name       = NULL;
-    msg.msg_namelen    = 0;
-    msg.msg_iov        = &iov;
-    msg.msg_iovlen     = 1;
-    msg.msg_control    = &ctrlmsg;
+    msg.msg_name = NULL;
+    msg.msg_namelen = 0;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = &ctrlmsg;
     msg.msg_controllen = sizeof(ctrlmsg);
-    msg.msg_flags      = 0;
+    msg.msg_flags = 0;
 
     nbytes = recvmsg(can_socket, &msg, 0);
     if (nbytes < 0)
@@ -255,8 +255,8 @@ uint32 can_read(can_message_t* message)
         return nbytes;
     }
 
-    message->id          = frame.can_id;
-    message->length      = frame.can_dlc;
+    message->id = frame.can_id;
+    message->length = frame.can_dlc;
     message->is_extended = frame.can_id & CAN_EFF_FLAG;
 
     for (index = 0; index < 8; index += 1)
@@ -268,7 +268,7 @@ uint32 can_read(can_message_t* message)
     {
         if (cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SO_TIMESTAMP)
         {
-            tv                    = (struct timeval*)CMSG_DATA(cmsg);
+            tv = (struct timeval*)CMSG_DATA(cmsg);
             message->timestamp_us = tv->tv_sec * 1000000ULL + tv->tv_usec;
             break;
         }
@@ -298,9 +298,9 @@ static int can_monitor(void* core_pt)
         while (false == is_can_initialised(core))
         {
             struct sockaddr_can addr;
-            struct ifreq        ifr;
-            int                 buffer_size      = 1024 * 1024; /* 1MB */
-            int                 enable_timestamp = 1;
+            struct ifreq ifr;
+            int buffer_size = 1024 * 1024; /* 1MB */
+            int enable_timestamp = 1;
 
             can_socket = socket(PF_CAN, SOCK_RAW, CAN_RAW);
             if (can_socket < 0)
@@ -321,7 +321,7 @@ static int can_monitor(void* core_pt)
                 return 1;
             }
 
-            addr.can_family  = AF_CAN;
+            addr.can_family = AF_CAN;
             addr.can_ifindex = ifr.ifr_ifindex;
 
             if (bind(can_socket, (struct sockaddr*)&addr, sizeof(addr)) < 0)
@@ -365,23 +365,23 @@ void parse_rtattr(struct rtattr* tb[], int max, struct rtattr* rta, int len)
 static char** get_can_interfaces(int* count)
 {
     struct sockaddr_nl sa;
-    int                fd;
-    char               buf[BUFFER_SIZE] = {0};
-    struct iovec       iov              = {buf, sizeof(buf)};
-    struct msghdr      msg              = {0};
-    int                len;
-    int                max_interfaces = 10;
-    int                can_count      = 0;
-    char**             can_interfaces = (char**)os_calloc(max_interfaces * sizeof(char*), sizeof(char));
+    int fd;
+    char buf[BUFFER_SIZE] = {0};
+    struct iovec iov = {buf, sizeof(buf)};
+    struct msghdr msg = {0};
+    int len;
+    int max_interfaces = 10;
+    int can_count = 0;
+    char** can_interfaces = (char**)os_calloc(max_interfaces * sizeof(char*), sizeof(char));
 
-    msg.msg_name    = &sa;
+    msg.msg_name = &sa;
     msg.msg_namelen = sizeof(sa);
-    msg.msg_iov     = &iov;
-    msg.msg_iovlen  = 1;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
 
     struct
     {
-        struct nlmsghdr  nlh;
+        struct nlmsghdr nlh;
         struct ifinfomsg ifm;
     } req;
 
@@ -401,10 +401,10 @@ static char** get_can_interfaces(int* count)
     }
 
     os_memset(&req, 0, sizeof(req));
-    req.nlh.nlmsg_len   = NLMSG_LENGTH(sizeof(struct ifinfomsg));
+    req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifinfomsg));
     req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_DUMP;
-    req.nlh.nlmsg_type  = RTM_GETLINK;
-    req.ifm.ifi_family  = AF_UNSPEC;
+    req.nlh.nlmsg_type = RTM_GETLINK;
+    req.ifm.ifi_family = AF_UNSPEC;
 
     if (send(fd, &req, req.nlh.nlmsg_len, 0) < 0)
     {
@@ -430,9 +430,9 @@ static char** get_can_interfaces(int* count)
         for (nlh = (struct nlmsghdr*)buf; NLMSG_OK(nlh, len); nlh = NLMSG_NEXT(nlh, len))
         {
             struct ifinfomsg* ifi;
-            struct rtattr*    rta;
-            int               rta_len;
-            struct rtattr*    tb[IFLA_MAX + 1];
+            struct rtattr* rta;
+            int rta_len;
+            struct rtattr* tb[IFLA_MAX + 1];
 
             if (NLMSG_DONE == nlh->nlmsg_type)
             {
@@ -444,8 +444,8 @@ static char** get_can_interfaces(int* count)
                 exit(EXIT_FAILURE);
             }
 
-            ifi     = NLMSG_DATA(nlh);
-            rta     = (struct rtattr*)((char*)ifi + NLMSG_ALIGN(sizeof(struct ifinfomsg)));
+            ifi = NLMSG_DATA(nlh);
+            rta = (struct rtattr*)((char*)ifi + NLMSG_ALIGN(sizeof(struct ifinfomsg)));
             rta_len = IFLA_PAYLOAD(nlh);
 
             parse_rtattr(tb, IFLA_MAX, rta, rta_len);

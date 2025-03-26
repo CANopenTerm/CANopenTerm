@@ -75,13 +75,13 @@ const char* dict_lookup(uint16 index, uint8 sub_index)
 
 status_t dict_lookup_object(uint16 index, uint8 sub_index)
 {
-    status_t      status = ALL_OK;
+    status_t status = ALL_OK;
     object_info_t info;
-    table_t       object_table;
-    table_t       sub_index_table;
-    const uint8   min_table_width = 14u;
-    uint8         object_table_width;
-    uint8         sub_index_table_width;
+    table_t object_table;
+    table_t sub_index_table;
+    const uint8 min_table_width = 14u;
+    uint8 object_table_width;
+    uint8 sub_index_table_width;
 
     os_memset(&info, 0, sizeof(object_info_t));
 
@@ -106,8 +106,8 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
         object_table_width = min_table_width;
     }
 
-    object_table.frame_color    = DARK_CYAN;
-    object_table.text_color     = DEFAULT_COLOR;
+    object_table.frame_color = DARK_CYAN;
+    object_table.text_color = DEFAULT_COLOR;
     object_table.column_a_width = 11;
     object_table.column_b_width = object_table_width;
     object_table.column_c_width = 1;
@@ -162,8 +162,8 @@ status_t dict_lookup_object(uint16 index, uint8 sub_index)
         sub_index_table_width = 33;
     }
 
-    sub_index_table.frame_color    = DARK_CYAN;
-    sub_index_table.text_color     = DEFAULT_COLOR;
+    sub_index_table.frame_color = DARK_CYAN;
+    sub_index_table.text_color = DEFAULT_COLOR;
     sub_index_table.column_a_width = 14;
     sub_index_table.column_b_width = sub_index_table_width;
     sub_index_table.column_c_width = 1;
@@ -239,9 +239,9 @@ const char* dict_lookup_raw(can_message_t* message)
         return "";
     }
 
-    id     = message->id;
+    id = message->id;
     length = message->length;
-    data   = message->data;
+    data = message->data;
 
     /* NMT messages. */
     if ((0x0000 == id) && (2 == length))
@@ -284,9 +284,9 @@ const char* dict_lookup_raw(can_message_t* message)
     /* SDO messages. */
     if ((id & 0x600) == 0x600)
     {
-        char*  desc      = NULL;
-        uint16 index     = (data[2] << 8) | data[1];
-        uint8  sub_index = data[3];
+        char* desc = NULL;
+        uint16 index = (data[2] << 8) | data[1];
+        uint8 sub_index = data[3];
 
         desc = (char*)dict_lookup(index, sub_index);
         if ('\0' == desc[0])

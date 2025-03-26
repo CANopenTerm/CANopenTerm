@@ -16,9 +16,9 @@ void buffer_free()
 {
     os_free(buffer.buffer);
 
-    buffer.buffer     = NULL;
-    buffer.size       = 0;
-    buffer.capacity   = 0;
+    buffer.buffer = NULL;
+    buffer.size = 0;
+    buffer.capacity = 0;
     buffer.use_buffer = false;
 }
 
@@ -33,8 +33,8 @@ status_t buffer_init(size_t initial_capacity)
     }
     else
     {
-        buffer.size       = 0;
-        buffer.capacity   = initial_capacity;
+        buffer.size = 0;
+        buffer.capacity = initial_capacity;
         buffer.use_buffer = true;
     }
 
@@ -54,7 +54,7 @@ void buffer_write(const char* format, ...)
     if (buffer.size + required > buffer.capacity)
     {
         buffer.capacity = buffer.size + required + 1024;
-        buffer.buffer   = (char*)os_realloc(buffer.buffer, buffer.capacity);
+        buffer.buffer = (char*)os_realloc(buffer.buffer, buffer.capacity);
     }
 
     os_va_start(args, format);

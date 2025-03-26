@@ -22,41 +22,41 @@ typedef enum
 
 typedef struct
 {
-    char*    name;
-    int      start_bit;
-    int      length;
+    char* name;
+    int start_bit;
+    int length;
     endian_t endianness;
-    float    scale;
-    float    offset;
-    float    min_value;
-    float    max_value;
-    char*    unit;
-    char*    receiver;
+    float scale;
+    float offset;
+    float min_value;
+    float max_value;
+    char* unit;
+    char* receiver;
 
 } signal_t;
 
 typedef struct
 {
-    char*        name;
+    char* name;
     unsigned int id;
     unsigned int dlc;
-    char*        transmitter;
-    int          signal_count;
-    signal_t*    signals;
+    char* transmitter;
+    int signal_count;
+    signal_t* signals;
 
 } message_t;
 
 typedef struct
 {
-    int        message_count;
+    int message_count;
     message_t* messages;
 
 } dbc_t;
 
 const char* dbc_decode(uint32 can_id, uint64 data);
-status_t    dbc_find_id_by_name(uint32* id, const char* search);
-status_t    dbc_load(char* filename);
-void        dbc_print(void);
-void        dbc_unload(void);
+status_t dbc_find_id_by_name(uint32* id, const char* search);
+status_t dbc_load(char* filename);
+void dbc_print(void);
+void dbc_unload(void);
 
 #endif /* DBC_H */

@@ -13,10 +13,10 @@
 #include "core.h"
 #include "lua.h"
 
-int  lua_test_add_result(lua_State* L);
-int  lua_test_clear_results(lua_State* L);
-int  lua_test_eds_file(lua_State* L);
-int  lua_test_generate_report(lua_State* L);
+int lua_test_add_result(lua_State* L);
+int lua_test_clear_results(lua_State* L);
+int lua_test_eds_file(lua_State* L);
+int lua_test_generate_report(lua_State* L);
 void lua_register_test_commands(core_t* core);
 
 #endif /* LUA_TEST_REPORT_H */

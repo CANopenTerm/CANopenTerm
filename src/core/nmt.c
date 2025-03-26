@@ -16,14 +16,14 @@ void nmt_print_error(const char* reason, nmt_command_t command, disp_mode_t disp
 
 status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
 {
-    status_t      status      = ALL_OK;
-    uint32        can_status  = 0;
+    status_t status = ALL_OK;
+    uint32 can_status = 0;
     can_message_t can_message = {0};
 
     limit_node_id(&node_id);
 
-    can_message.id      = 0x000;
-    can_message.length  = 2;
+    can_message.id = 0x000;
+    can_message.length = 2;
     can_message.data[0] = command;
     can_message.data[1] = node_id;
 
@@ -50,7 +50,7 @@ status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp
     {
         if (SCRIPT_MODE == disp_mode)
         {
-            int  i;
+            int i;
             char buffer[34] = {0};
 
             os_print(DARK_CYAN, "NMT  ");

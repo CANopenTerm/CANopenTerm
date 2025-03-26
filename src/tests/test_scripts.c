@@ -46,7 +46,7 @@ void test_has_valid_extension(void** state)
 
 void test_lua(void** state)
 {
-    core_t  core = {0};
+    core_t core = {0};
     FILE_t* lua_file;
 
     (void)state;
@@ -456,8 +456,8 @@ void test_python_99_extras(void** state)
 static status_t test_python_script(const char* script_name)
 {
     status_t status;
-    core_t   core              = {0};
-    char     script_path[1024] = {0};
+    core_t core = {0};
+    char script_path[1024] = {0};
 
     os_snprintf(script_path, sizeof(script_path), "tests/%s", script_name);
 

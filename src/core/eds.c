@@ -27,15 +27,15 @@ void list_eds(void)
 
 status_t run_conformance_test(const char* eds_path, const char* package, uint32 node_id, disp_mode_t disp_mode)
 {
-    status_t status                = ALL_OK;
-    char     unavailable_subs[256] = {0};
-    char     base_name[64]         = {0};
-    int      err_count             = 0;
-    int      error;
-    int      i;
-    int      last_sub_index = -1;
-    int      range_start    = -1;
-    uint16   current_index  = 0xFFFF;
+    status_t status = ALL_OK;
+    char unavailable_subs[256] = {0};
+    char base_name[64] = {0};
+    int err_count = 0;
+    int error;
+    int i;
+    int last_sub_index = -1;
+    int range_start = -1;
+    uint16 current_index = 0xFFFF;
 
     if (NULL == package)
     {
@@ -51,7 +51,7 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
     {
         /* Extract base name from path. */
         const char* base = os_strrchr(eds_path, '/');
-        char*       dot;
+        char* dot;
 
         if (base)
         {
@@ -91,14 +91,14 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
         if (WO != eds.entries[i].AccessType)
         {
             can_message_t sdo_response;
-            sdo_state_t   state;
-            uint64        start, end;
-            float         time;
+            sdo_state_t state;
+            uint64 start, end;
+            float time;
 
             start = os_clock();
             state = sdo_read(&sdo_response, SILENT, (uint8)node_id, eds.entries[i].Index, eds.entries[i].SubIndex, NULL);
-            end   = os_clock();
-            time  = (float)(end - start) / CLOCKS_PER_SECOND;
+            end = os_clock();
+            time = (float)(end - start) / CLOCKS_PER_SECOND;
 
             if (ABORT_TRANSFER == state)
             {
@@ -149,20 +149,20 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
                 }
                 else /* SCRIPT_MODE */
                 {
-                    char          test_name[64] = {0};
+                    char test_name[64] = {0};
                     test_result_t result;
 
                     os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
                                 eds.entries[i].Index, eds.entries[i].SubIndex);
 
-                    result.has_passed    = false;
-                    result.time          = time;
-                    result.package       = package;
-                    result.class_name    = base_name;
-                    result.test_name     = test_name;
-                    result.error_type    = "SDORead";
+                    result.has_passed = false;
+                    result.time = time;
+                    result.package = package;
+                    result.class_name = base_name;
+                    result.test_name = test_name;
+                    result.error_type = "SDORead";
                     result.error_message = "Object not available.";
-                    result.call_stack    = NULL;
+                    result.call_stack = NULL;
 
                     test_add_result(&result);
                 }
@@ -172,20 +172,20 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
             {
                 if (disp_mode == SCRIPT_MODE)
                 {
-                    char          test_name[64] = {0};
+                    char test_name[64] = {0};
                     test_result_t result;
 
                     os_snprintf(test_name, sizeof(test_name), "0x%04X_SUB_%u",
                                 eds.entries[i].Index, eds.entries[i].SubIndex);
 
-                    result.has_passed    = true;
-                    result.time          = time;
-                    result.package       = package;
-                    result.class_name    = base_name;
-                    result.test_name     = test_name;
-                    result.error_type    = NULL;
+                    result.has_passed = true;
+                    result.time = time;
+                    result.package = package;
+                    result.class_name = base_name;
+                    result.test_name = test_name;
+                    result.error_type = NULL;
                     result.error_message = NULL;
-                    result.call_stack    = NULL;
+                    result.call_stack = NULL;
 
                     test_add_result(&result);
                 }
@@ -214,7 +214,7 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
     if (eds.entries != NULL)
     {
         os_free(eds.entries);
-        eds.entries     = NULL;
+        eds.entries = NULL;
         eds.num_entries = 0;
     }
 
@@ -223,10 +223,10 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
 
 status_t validate_eds(uint32 file_no, const char* package, uint32 node_id)
 {
-    status_t    status         = ALL_OK;
-    const char* data_path      = os_find_data_path();
-    char        file_path[512] = {0};
-    DIR_t*      d;
+    status_t status = ALL_OK;
+    const char* data_path = os_find_data_path();
+    char file_path[512] = {0};
+    DIR_t* d;
 
     os_snprintf(file_path, sizeof(file_path), "%s/eds", data_path);
 
@@ -234,7 +234,7 @@ status_t validate_eds(uint32 file_no, const char* package, uint32 node_id)
     if (d)
     {
         struct dirent_t* dir;
-        int              found_file_no = 1;
+        int found_file_no = 1;
 
         while ((dir = os_readdir(d)) != NULL)
         {
@@ -279,7 +279,7 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
 
         if (0 != os_strcmp(section, prev_section))
         {
-            char index[5]     = {0};
+            char index[5] = {0};
             char sub_index[3] = {0};
 
             os_strlcpy(index, section, 5);
@@ -295,7 +295,7 @@ static int parse_eds(void* user, const char* section, const char* name, const ch
                 return 0;
             }
 
-            eds.entries[eds.num_entries].Index    = (uint16)os_strtoul(index, NULL, 16);
+            eds.entries[eds.num_entries].Index = (uint16)os_strtoul(index, NULL, 16);
             eds.entries[eds.num_entries].SubIndex = (uint8)os_strtoul(sub_index, NULL, 16);
             eds.num_entries++;
         }

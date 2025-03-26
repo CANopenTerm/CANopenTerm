@@ -45,14 +45,14 @@ bool py_test_add_result(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(6, tp_str);
     PY_CHECK_ARG_TYPE(7, tp_str);
 
-    result.has_passed    = py_tobool(py_arg(0));
-    result.time          = py_tofloat(py_arg(1));
-    result.package       = py_tostr(py_arg(2));
-    result.class_name    = py_tostr(py_arg(3));
-    result.test_name     = py_tostr(py_arg(4));
-    result.error_type    = py_tostr(py_arg(5));
+    result.has_passed = py_tobool(py_arg(0));
+    result.time = py_tofloat(py_arg(1));
+    result.package = py_tostr(py_arg(2));
+    result.class_name = py_tostr(py_arg(3));
+    result.test_name = py_tostr(py_arg(4));
+    result.error_type = py_tostr(py_arg(5));
     result.error_message = py_tostr(py_arg(6));
-    result.call_stack    = py_tostr(py_arg(7));
+    result.call_stack = py_tostr(py_arg(7));
 
     test_add_result(&result);
     py_newnone(py_retval());
@@ -62,7 +62,7 @@ bool py_test_add_result(int argc, py_Ref argv)
 
 bool py_test_eds_file(int argc, py_Ref argv)
 {
-    int         node_id;
+    int node_id;
     const char* file_name;
     const char* package;
 
@@ -71,9 +71,9 @@ bool py_test_eds_file(int argc, py_Ref argv)
 
     PY_CHECK_ARGC(3);
 
-    node_id   = py_toint(py_arg(0));
+    node_id = py_toint(py_arg(0));
     file_name = py_tostr(py_arg(1));
-    package   = py_tostr(py_arg(2));
+    package = py_tostr(py_arg(2));
 
     run_conformance_test(file_name, package, node_id, SCRIPT_MODE);
 

@@ -28,11 +28,11 @@ void python_nmt_init(void)
 
 bool py_nmt_send_command(int argc, py_Ref argv)
 {
-    uint32      status;
+    uint32 status;
     disp_mode_t disp_mode = SILENT;
-    int         node_id;
-    int         command;
-    bool      show_output;
+    int node_id;
+    int command;
+    bool show_output;
     const char* comment;
 
     PY_CHECK_ARGC(4);
@@ -41,10 +41,10 @@ bool py_nmt_send_command(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(2, tp_bool);
     PY_CHECK_ARG_TYPE(3, tp_str);
 
-    node_id     = py_toint(py_arg(0));
-    command     = py_toint(py_arg(1));
+    node_id = py_toint(py_arg(0));
+    command = py_toint(py_arg(1));
     show_output = py_tobool(py_arg(2));
-    comment     = py_tostr(py_arg(3));
+    comment = py_tostr(py_arg(3));
 
     limit_node_id((uint8*)&node_id);
 

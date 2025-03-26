@@ -7,7 +7,6 @@
  *
  **/
 
-#include <stdlib.h>
 #include "command.h"
 #include "can.h"
 #include "core.h"
@@ -19,19 +18,20 @@
 #include "scripts.h"
 #include "sdo.h"
 #include "table.h"
+#include <stdlib.h>
 
-static void   convert_token_to_uint(char* token, uint32* result);
-static void   convert_token_to_uint64(char* token, uint64* result);
-status_t      print_usage_information(bool show_all);
+static void convert_token_to_uint(char* token, uint32* result);
+static void convert_token_to_uint64(char* token, uint64* result);
+status_t print_usage_information(bool show_all);
 static bool is_numeric(const char* str);
 
 void parse_command(char* input, core_t* core)
 {
-    int    index;
-    char*  delim = " \n";
-    char*  context;
-    char*  token        = NULL;
-    char*  input_savptr = input;
+    int index;
+    char* delim = " \n";
+    char* context;
+    char* token = NULL;
+    char* input_savptr = input;
     uint32 command;
 
     token = os_strtokr_r(input_savptr, delim, &input_savptr);
@@ -270,9 +270,9 @@ void parse_command(char* input, core_t* core)
     else if (0 == os_strncmp(token, "r", 1))
     {
         can_message_t sdo_response = {0};
-        uint32        node_id;
-        uint32        sdo_index;
-        uint32        sub_index = 0;
+        uint32 node_id;
+        uint32 sdo_index;
+        uint32 sub_index = 0;
 
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
@@ -303,12 +303,12 @@ void parse_command(char* input, core_t* core)
     else if (0 == os_strncmp(token, "w", 1))
     {
         can_message_t sdo_response = {0};
-        uint32        node_id;
-        uint32        sdo_index;
-        uint32        sub_index;
-        uint32        sdo_data_length = 0;
-        uint32        sdo_data        = 0;
-        sdo_state_t   sdo_state       = IS_WRITE_EXPEDITED;
+        uint32 node_id;
+        uint32 sdo_index;
+        uint32 sub_index;
+        uint32 sdo_data_length = 0;
+        uint32 sdo_data = 0;
+        sdo_state_t sdo_state = IS_WRITE_EXPEDITED;
 
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (token == NULL)
@@ -356,15 +356,15 @@ void parse_command(char* input, core_t* core)
                 size_t len;
 
                 os_strlcpy(buffer, token, sizeof(buffer));
-                len       = os_strlen(buffer);
+                len = os_strlen(buffer);
                 sdo_state = IS_WRITE_SEGMENTED;
-                token     = os_strtokr_r(NULL, delim, &input_savptr);
+                token = os_strtokr_r(NULL, delim, &input_savptr);
 
                 while (token != NULL)
                 {
                     os_strlcat(buffer, " ", sizeof(buffer));
                     os_strlcat(buffer, token, sizeof(buffer));
-                    len   = os_strlen(buffer);
+                    len = os_strlen(buffer);
                     token = os_strtokr_r(NULL, delim, &input_savptr);
                 }
 
@@ -443,7 +443,7 @@ static void convert_token_to_uint64(char* token, uint64* result)
 status_t print_usage_information(bool show_all)
 {
     status_t status;
-    table_t  table = {DARK_CYAN, DARK_WHITE, 3, 45, 17};
+    table_t table = {DARK_CYAN, DARK_WHITE, 3, 45, 17};
 
     status = table_init(&table, 1024);
     table_print_header(&table);

@@ -1,11 +1,5 @@
 # CANopenTerm Format Style Options
 ---
-AlignConsecutiveAssignments: Consecutive
-AlignConsecutiveBitFields: Consecutive
-AlignConsecutiveDeclarations: Consecutive
-AlignConsecutiveMacros: Consecutive
-AlignEscapedNewlines: Left
-AlignOperands: Align
 AlignTrailingComments: true
 AllowShortBlocksOnASingleLine: Always
 BasedOnStyle: LLVM
@@ -32,7 +26,6 @@ BreakBeforeBraces: Allman
 ColumnLimit: 0
 IndentCaseLabels: true
 IndentWidth: 4
-LineEnding: LF
 MaxEmptyLinesToKeep: 1
 PointerAlignment: Left
 SortIncludes: true

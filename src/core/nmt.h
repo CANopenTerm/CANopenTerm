@@ -15,11 +15,11 @@
 
 typedef enum
 {
-    NMT_OPERATIONAL     = 0x01,
-    NMT_STOP            = 0x02,
+    NMT_OPERATIONAL = 0x01,
+    NMT_STOP = 0x02,
     NMT_PRE_OPERATIONAL = 0x80,
-    NMT_RESET_NODE      = 0x81,
-    NMT_RESET_COMM      = 0x82
+    NMT_RESET_NODE = 0x81,
+    NMT_RESET_COMM = 0x82
 
 } nmt_command_t;
 

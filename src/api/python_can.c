@@ -33,23 +33,23 @@ void python_can_init(void)
 
 bool py_dict_lookup_raw(int argc, py_Ref argv)
 {
-    uint32        can_status;
-    int           can_id;
-    int           length;
-    uint64        data;
-    can_message_t message     = {0};
-    const char*   description = NULL;
+    uint32 can_status;
+    int can_id;
+    int length;
+    uint64 data;
+    can_message_t message = {0};
+    const char* description = NULL;
 
     PY_CHECK_ARGC(3);
     PY_CHECK_ARG_TYPE(0, tp_int);
     PY_CHECK_ARG_TYPE(1, tp_int);
     PY_CHECK_ARG_TYPE(2, tp_int);
 
-    can_id          = py_toint(py_arg(0));
-    length          = py_toint(py_arg(1));
-    data            = py_toint(py_arg(2));
-    message.id      = can_id;
-    message.length  = length;
+    can_id = py_toint(py_arg(0));
+    length = py_toint(py_arg(1));
+    data = py_toint(py_arg(2));
+    message.id = can_id;
+    message.length = length;
     message.data[0] = (data >> 56) & 0xFF;
     message.data[1] = (data >> 48) & 0xFF;
     message.data[2] = (data >> 40) & 0xFF;
@@ -58,7 +58,7 @@ bool py_dict_lookup_raw(int argc, py_Ref argv)
     message.data[5] = (data >> 16) & 0xFF;
     message.data[6] = (data >> 8) & 0xFF;
     message.data[7] = data & 0xFF;
-    description     = dict_lookup_raw(&message);
+    description = dict_lookup_raw(&message);
 
     if (NULL == description)
     {
@@ -74,15 +74,15 @@ bool py_dict_lookup_raw(int argc, py_Ref argv)
 
 bool py_can_write(int argc, py_Ref argv)
 {
-    uint32        can_status;
-    int           can_id;
-    int           length;
-    uint64        data;
-    bool        is_extended;
-    bool        show_output;
-    const char*   comment;
-    can_message_t message   = {0};
-    disp_mode_t   disp_mode = SILENT;
+    uint32 can_status;
+    int can_id;
+    int length;
+    uint64 data;
+    bool is_extended;
+    bool show_output;
+    const char* comment;
+    can_message_t message = {0};
+    disp_mode_t disp_mode = SILENT;
 
     PY_CHECK_ARGC(6);
     PY_CHECK_ARG_TYPE(0, tp_int);
@@ -92,14 +92,14 @@ bool py_can_write(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(4, tp_bool);
     PY_CHECK_ARG_TYPE(5, tp_str);
 
-    can_id          = py_toint(py_arg(0));
-    length          = py_toint(py_arg(1));
-    data            = py_toint(py_arg(2));
-    is_extended     = py_tobool(py_arg(3));
-    show_output     = py_tobool(py_arg(4));
-    comment         = py_tostr(py_arg(5));
-    message.id      = can_id;
-    message.length  = length;
+    can_id = py_toint(py_arg(0));
+    length = py_toint(py_arg(1));
+    data = py_toint(py_arg(2));
+    is_extended = py_tobool(py_arg(3));
+    show_output = py_tobool(py_arg(4));
+    comment = py_tostr(py_arg(5));
+    message.id = can_id;
+    message.length = length;
     message.data[0] = (data >> 56) & 0xFF;
     message.data[1] = (data >> 48) & 0xFF;
     message.data[2] = (data >> 40) & 0xFF;
@@ -129,7 +129,7 @@ bool py_can_write(int argc, py_Ref argv)
     {
         if (SCRIPT_MODE == disp_mode)
         {
-            int  i;
+            int i;
             char buffer[34] = {0};
 
             if (NULL == comment)
@@ -163,9 +163,9 @@ bool py_can_write(int argc, py_Ref argv)
 bool py_can_read(int argc, py_Ref argv)
 {
     can_message_t message = {0};
-    status_t      status;
-    uint32        length;
-    uint64        data = 0;
+    status_t status;
+    uint32 length;
+    uint64 data = 0;
     ;
 
     PY_CHECK_ARGC(0);

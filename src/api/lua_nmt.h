@@ -13,7 +13,7 @@
 #include "core.h"
 #include "lua.h"
 
-int  lua_nmt_send_command(lua_State* L);
+int lua_nmt_send_command(lua_State* L);
 void lua_register_nmt_command(core_t* core);
 
 #endif /* LUA_NMT_H */

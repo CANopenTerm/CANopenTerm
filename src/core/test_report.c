@@ -11,8 +11,8 @@
 #include "core.h"
 #include "os.h"
 
-static uint32          num_results = 0;
-static test_result_t** results     = NULL;
+static uint32 num_results = 0;
+static test_result_t** results = NULL;
 
 static uint64 generate_hash(const unsigned char* name);
 
@@ -35,7 +35,7 @@ status_t test_init(void)
 void test_add_result(test_result_t* result)
 {
     num_results = num_results + 1;
-    results     = (test_result_t**)os_realloc(results, sizeof(test_result_t*) * (num_results));
+    results = (test_result_t**)os_realloc(results, sizeof(test_result_t*) * (num_results));
 
     if (NULL == results)
     {
@@ -52,9 +52,9 @@ void test_add_result(test_result_t* result)
         }
         else
         {
-            results[num_results - 1]->has_passed          = result->has_passed;
+            results[num_results - 1]->has_passed = result->has_passed;
             results[num_results - 1]->testsuite_name_hash = result->testsuite_name_hash;
-            results[num_results - 1]->time                = result->time;
+            results[num_results - 1]->time = result->time;
 
             if (result->package)
             {
@@ -116,14 +116,14 @@ void test_clear_results(void)
         os_free(results[i]);
     }
     os_free(results);
-    results     = NULL;
+    results = NULL;
     num_results = 0;
 }
 
 status_t test_generate_report(const char* file_name)
 {
     status_t status = ALL_OK;
-    FILE_t*  file;
+    FILE_t* file;
 
     if (NULL == file_name)
     {
@@ -137,7 +137,7 @@ status_t test_generate_report(const char* file_name)
     }
     else
     {
-        float  total_time = 0.f;
+        float total_time = 0.f;
         uint32 i;
 
         for (i = 0; i < num_results; i++)
@@ -156,7 +156,7 @@ status_t test_generate_report(const char* file_name)
 
             os_snprintf(testsuit_name, sizeof(testsuit_name), "%s.%s", results[i]->package, results[i]->class_name);
 
-            total_time                      = total_time + results[i]->time;
+            total_time = total_time + results[i]->time;
             results[i]->testsuite_name_hash = generate_hash((const unsigned char*)testsuit_name);
         }
 
@@ -169,8 +169,8 @@ status_t test_generate_report(const char* file_name)
                 if (results[i]->testsuite_name_hash > results[j]->testsuite_name_hash)
                 {
                     test_result_t* temp = results[i];
-                    results[i]          = results[j];
-                    results[j]          = temp;
+                    results[i] = results[j];
+                    results[j] = temp;
                 }
             }
         }
@@ -183,7 +183,7 @@ status_t test_generate_report(const char* file_name)
         while (current_suite_start < num_results)
         {
             uint32 current_suite_end = current_suite_start;
-            float  suite_time        = 0.f;
+            float suite_time = 0.f;
 
             while (current_suite_end < num_results &&
                    results[current_suite_end]->testsuite_name_hash == results[current_suite_start]->testsuite_name_hash)

@@ -16,7 +16,7 @@
 
 static bool console_is_plain_mode;
 static HANDLE console = NULL;
-static WORD   default_attr;
+static WORD default_attr;
 
 os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
 {
@@ -47,7 +47,7 @@ status_t os_console_init(bool is_plain_mode)
         return OS_CONSOLE_INIT_ERROR;
     }
 
-    default_attr          = info.wAttributes;
+    default_attr = info.wAttributes;
     console_is_plain_mode = is_plain_mode;
 
     return ALL_OK;
@@ -70,9 +70,9 @@ void os_detach_thread(os_thread* thread)
 
 const char* os_find_data_path(void)
 {
-    size_t      len;
+    size_t len;
     static char data_path[MAX_PATH] = {0};
-    char*       base_path           = (char*)SDL_GetBasePath();
+    char* base_path = (char*)SDL_GetBasePath();
 
     if (base_path == NULL)
     {
@@ -131,7 +131,7 @@ status_t os_init(void)
 {
     status_t status = ALL_OK;
 
-    if (!SDL_InitSubSystem(SDL_INIT_VIDEO))
+    if (! SDL_InitSubSystem(SDL_INIT_VIDEO))
     {
         os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
         status = OS_INIT_ERROR;
@@ -157,7 +157,7 @@ bool os_key_is_hit(void)
 
 void os_log(const log_level_t level, const char* format, ...)
 {
-    char      buffer[1024];
+    char buffer[1024];
     va_list_t varg;
 
     if (LOG_SUPPRESS == level)
@@ -192,9 +192,9 @@ void os_log(const log_level_t level, const char* format, ...)
 
 void os_print(const color_t color, const char* format, ...)
 {
-    char      buffer[1024];
+    char buffer[1024];
     va_list_t args;
-    WORD      attr = 0;
+    WORD attr = 0;
 
     if (INVALID_HANDLE_VALUE == console)
     {

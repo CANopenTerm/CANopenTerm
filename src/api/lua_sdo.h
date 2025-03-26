@@ -13,12 +13,12 @@
 #include "core.h"
 #include "lua.h"
 
-int  lua_sdo_lookup_abort_code(lua_State* L);
-int  lua_sdo_read(lua_State* L);
-int  lua_sdo_write(lua_State* L);
-int  lua_sdo_write_file(lua_State* L);
-int  lua_sdo_write_string(lua_State* L);
-int  lua_dict_lookup(lua_State* L);
+int lua_sdo_lookup_abort_code(lua_State* L);
+int lua_sdo_read(lua_State* L);
+int lua_sdo_write(lua_State* L);
+int lua_sdo_write_file(lua_State* L);
+int lua_sdo_write_string(lua_State* L);
+int lua_dict_lookup(lua_State* L);
 void lua_register_sdo_commands(core_t* core);
 
 #endif /* LUA_SDO_H */

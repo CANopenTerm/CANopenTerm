@@ -79,44 +79,44 @@
 typedef struct obj_attr
 {
     obj_attr_type_t type;
-    uint64          lower_limit;
-    uint64          upper_limit;
+    uint64 lower_limit;
+    uint64 upper_limit;
 
 } obj_attr_t;
 
 typedef struct codb_entry
 {
-    char*       object_name;
-    uint16      main_index;
-    uint8       sub_index;
-    char*       parameter_name;
-    obj_kind_t  object_kind;
-    char*       unit;
-    obj_code_t  object_code;
-    obj_attr_t  object_code_attr;
+    char* object_name;
+    uint16 main_index;
+    uint8 sub_index;
+    char* parameter_name;
+    obj_kind_t object_kind;
+    char* unit;
+    obj_code_t object_code;
+    obj_attr_t object_code_attr;
     data_type_t data_type;
-    obj_attr_t  data_type_attr;
-    acc_type_t  access_type;
-    obj_attr_t  access_type_attr;
-    uint8       min_elements;
-    obj_attr_t  min_elements_attr;
-    uint8       max_elements;
-    obj_attr_t  max_elements_attr;
-    uint64      low_limit;
-    obj_attr_t  low_limit_attr;
-    uint64      high_limit;
-    obj_attr_t  high_limit_attr;
-    uint64      default_value;
-    obj_attr_t  default_value_attr;
-    bool      mappable;
-    obj_attr_t  mappable_attr;
+    obj_attr_t data_type_attr;
+    acc_type_t access_type;
+    obj_attr_t access_type_attr;
+    uint8 min_elements;
+    obj_attr_t min_elements_attr;
+    uint8 max_elements;
+    obj_attr_t max_elements_attr;
+    uint64 low_limit;
+    obj_attr_t low_limit_attr;
+    uint64 high_limit;
+    obj_attr_t high_limit_attr;
+    uint64 default_value;
+    obj_attr_t default_value_attr;
+    bool mappable;
+    obj_attr_t mappable_attr;
 
 } codb_entry_t;
 
 typedef struct codb_database
 {
     codb_entry_t* entries;
-    size_t        total_entries;
+    size_t total_entries;
 
 } codb_database_t;
 
@@ -149,23 +149,23 @@ typedef enum field_id
 } field_id_t;
 
 static codb_database_t* codb_db;
-static cJSON*           min_elements;
+static cJSON* min_elements;
 
 static bool add_sub_index_to_object(cJSON* sub_indices, size_t i);
-static void   init_codb_entry(codb_entry_t* entry);
+static void init_codb_entry(codb_entry_t* entry);
 static bool is_codb_file(const char* input_file_name);
-static void   read_codb(const char* input_file_name);
-static void   write_json(const char* output_file_name, bool format_output);
+static void read_codb(const char* input_file_name);
+static void write_json(const char* output_file_name, bool format_output);
 static bool write_json_entry(cJSON* entry, size_t i);
-static void   free_codb_database(codb_database_t* db);
-static void   handle_attribute(obj_attr_t* attr, const char* token);
-static void   handle_value8(uint8* value, const char* token);
-static void   handle_value64(uint64* value, const char* token);
-static char*  to_upper_case(const char* str);
+static void free_codb_database(codb_database_t* db);
+static void handle_attribute(obj_attr_t* attr, const char* token);
+static void handle_value8(uint8* value, const char* token);
+static void handle_value64(uint64* value, const char* token);
+static char* to_upper_case(const char* str);
 
 int codb2json(int argc, char* argv[], bool format_output)
 {
-    char  json_file_name[256] = {0};
+    char json_file_name[256] = {0};
     char* dot;
 
     if (argc < 2)
@@ -186,12 +186,12 @@ int codb2json(int argc, char* argv[], bool format_output)
         os_fprintf(stderr, "Error allocating memory for codb_db");
         return EXIT_FAILURE;
     }
-    codb_db->entries       = NULL;
+    codb_db->entries = NULL;
     codb_db->total_entries = 0;
 
     os_strlcpy(json_file_name, argv[1], sizeof(json_file_name) - 1);
     json_file_name[sizeof(json_file_name) - 1] = '\0';
-    dot                                        = os_strrchr(json_file_name, '.');
+    dot = os_strrchr(json_file_name, '.');
     if (dot != NULL)
     {
         *dot = '\0';
@@ -257,13 +257,13 @@ static bool add_sub_index_to_object(cJSON* sub_indices, size_t i)
     }
 
     sub_index_value = cJSON_CreateNumber(codb_db->entries[i].sub_index);
-    parameter_name  = cJSON_CreateString(codb_db->entries[i].parameter_name);
-    object_kind     = cJSON_CreateNumber(codb_db->entries[i].object_kind);
-    unit            = cJSON_CreateString(codb_db->entries[i].unit);
+    parameter_name = cJSON_CreateString(codb_db->entries[i].parameter_name);
+    object_kind = cJSON_CreateNumber(codb_db->entries[i].object_kind);
+    unit = cJSON_CreateString(codb_db->entries[i].unit);
 
-    data_type             = cJSON_CreateObject();
-    data_type_type        = cJSON_CreateNumber(codb_db->entries[i].data_type);
-    data_type_attr        = cJSON_CreateNumber(codb_db->entries[i].data_type_attr.type);
+    data_type = cJSON_CreateObject();
+    data_type_type = cJSON_CreateNumber(codb_db->entries[i].data_type);
+    data_type_attr = cJSON_CreateNumber(codb_db->entries[i].data_type_attr.type);
     data_type_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].data_type_attr.lower_limit);
     data_type_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].data_type_attr.upper_limit);
     cJSON_AddItemToObject(data_type, "type", data_type_type);
@@ -271,9 +271,9 @@ static bool add_sub_index_to_object(cJSON* sub_indices, size_t i)
     cJSON_AddItemToObject(data_type, "lower", data_type_lower_limit);
     cJSON_AddItemToObject(data_type, "upper", data_type_upper_limit);
 
-    access_type             = cJSON_CreateObject();
-    access_type_type        = cJSON_CreateNumber(codb_db->entries[i].access_type);
-    access_type_attr        = cJSON_CreateNumber(codb_db->entries[i].access_type_attr.type);
+    access_type = cJSON_CreateObject();
+    access_type_type = cJSON_CreateNumber(codb_db->entries[i].access_type);
+    access_type_attr = cJSON_CreateNumber(codb_db->entries[i].access_type_attr.type);
     access_type_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].access_type_attr.lower_limit);
     access_type_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].access_type_attr.upper_limit);
     cJSON_AddItemToObject(access_type, "type", access_type_type);
@@ -281,9 +281,9 @@ static bool add_sub_index_to_object(cJSON* sub_indices, size_t i)
     cJSON_AddItemToObject(access_type, "lower", access_type_lower_limit);
     cJSON_AddItemToObject(access_type, "upper", access_type_upper_limit);
 
-    low_limit             = cJSON_CreateObject();
-    low_limit_value       = cJSON_CreateNumber(codb_db->entries[i].low_limit);
-    low_limit_attr        = cJSON_CreateNumber(codb_db->entries[i].low_limit_attr.type);
+    low_limit = cJSON_CreateObject();
+    low_limit_value = cJSON_CreateNumber(codb_db->entries[i].low_limit);
+    low_limit_attr = cJSON_CreateNumber(codb_db->entries[i].low_limit_attr.type);
     low_limit_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].low_limit_attr.lower_limit);
     low_limit_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].low_limit_attr.upper_limit);
     cJSON_AddItemToObject(low_limit, "value", low_limit_value);
@@ -291,9 +291,9 @@ static bool add_sub_index_to_object(cJSON* sub_indices, size_t i)
     cJSON_AddItemToObject(low_limit, "lower", low_limit_lower_limit);
     cJSON_AddItemToObject(low_limit, "upper", low_limit_upper_limit);
 
-    high_limit             = cJSON_CreateObject();
-    high_limit_value       = cJSON_CreateNumber(codb_db->entries[i].high_limit);
-    high_limit_attr        = cJSON_CreateNumber(codb_db->entries[i].high_limit_attr.type);
+    high_limit = cJSON_CreateObject();
+    high_limit_value = cJSON_CreateNumber(codb_db->entries[i].high_limit);
+    high_limit_attr = cJSON_CreateNumber(codb_db->entries[i].high_limit_attr.type);
     high_limit_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].high_limit_attr.lower_limit);
     high_limit_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].high_limit_attr.upper_limit);
     cJSON_AddItemToObject(high_limit, "value", high_limit_value);
@@ -301,9 +301,9 @@ static bool add_sub_index_to_object(cJSON* sub_indices, size_t i)
     cJSON_AddItemToObject(high_limit, "lower", high_limit_lower_limit);
     cJSON_AddItemToObject(high_limit, "upper", high_limit_upper_limit);
 
-    default_value             = cJSON_CreateObject();
-    default_value_value       = cJSON_CreateNumber(codb_db->entries[i].default_value);
-    default_value_attr        = cJSON_CreateNumber(codb_db->entries[i].default_value_attr.type);
+    default_value = cJSON_CreateObject();
+    default_value_value = cJSON_CreateNumber(codb_db->entries[i].default_value);
+    default_value_attr = cJSON_CreateNumber(codb_db->entries[i].default_value_attr.type);
     default_value_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].default_value_attr.lower_limit);
     default_value_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].default_value_attr.upper_limit);
     cJSON_AddItemToObject(default_value, "value", default_value_value);
@@ -311,9 +311,9 @@ static bool add_sub_index_to_object(cJSON* sub_indices, size_t i)
     cJSON_AddItemToObject(default_value, "lower", default_value_lower_limit);
     cJSON_AddItemToObject(default_value, "upper", default_value_upper_limit);
 
-    mappable             = cJSON_CreateObject();
-    mappable_value       = cJSON_CreateBool(codb_db->entries[i].mappable);
-    mappable_attr        = cJSON_CreateNumber(codb_db->entries[i].mappable_attr.type);
+    mappable = cJSON_CreateObject();
+    mappable_value = cJSON_CreateBool(codb_db->entries[i].mappable);
+    mappable_attr = cJSON_CreateNumber(codb_db->entries[i].mappable_attr.type);
     mappable_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].mappable_attr.lower_limit);
     mappable_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].mappable_attr.upper_limit);
     cJSON_AddItemToObject(mappable, "value", mappable_value);
@@ -344,54 +344,54 @@ static void init_codb_entry(codb_entry_t* entry)
         return;
     }
 
-    entry->object_name                    = NULL;
-    entry->main_index                     = 0;
-    entry->sub_index                      = 0;
-    entry->parameter_name                 = NULL;
-    entry->object_kind                    = IS_OPTIONAL;
-    entry->unit                           = NULL;
-    entry->object_code                    = IS_DOMAIN;
-    entry->object_code_attr.type          = EMPTY;
-    entry->object_code_attr.lower_limit   = 0;
-    entry->object_code_attr.upper_limit   = 0;
-    entry->data_type                      = NONE_T;
-    entry->data_type_attr.type            = EMPTY;
-    entry->data_type_attr.lower_limit     = 0;
-    entry->data_type_attr.upper_limit     = 0;
-    entry->access_type                    = UNSPECIFIED;
-    entry->access_type_attr.type          = EMPTY;
-    entry->access_type_attr.lower_limit   = 0;
-    entry->access_type_attr.upper_limit   = 0;
-    entry->min_elements                   = 0;
-    entry->min_elements_attr.type         = EMPTY;
-    entry->min_elements_attr.lower_limit  = 0;
-    entry->min_elements_attr.upper_limit  = 0;
-    entry->max_elements                   = 0;
-    entry->max_elements_attr.type         = EMPTY;
-    entry->max_elements_attr.lower_limit  = 0;
-    entry->max_elements_attr.upper_limit  = 0;
-    entry->low_limit                      = 0;
-    entry->low_limit_attr.type            = EMPTY;
-    entry->low_limit_attr.lower_limit     = 0;
-    entry->low_limit_attr.upper_limit     = 0;
-    entry->high_limit                     = 0;
-    entry->high_limit_attr.type           = EMPTY;
-    entry->high_limit_attr.lower_limit    = 0;
-    entry->high_limit_attr.upper_limit    = 0;
-    entry->default_value                  = 0;
-    entry->default_value_attr.type        = EMPTY;
+    entry->object_name = NULL;
+    entry->main_index = 0;
+    entry->sub_index = 0;
+    entry->parameter_name = NULL;
+    entry->object_kind = IS_OPTIONAL;
+    entry->unit = NULL;
+    entry->object_code = IS_DOMAIN;
+    entry->object_code_attr.type = EMPTY;
+    entry->object_code_attr.lower_limit = 0;
+    entry->object_code_attr.upper_limit = 0;
+    entry->data_type = NONE_T;
+    entry->data_type_attr.type = EMPTY;
+    entry->data_type_attr.lower_limit = 0;
+    entry->data_type_attr.upper_limit = 0;
+    entry->access_type = UNSPECIFIED;
+    entry->access_type_attr.type = EMPTY;
+    entry->access_type_attr.lower_limit = 0;
+    entry->access_type_attr.upper_limit = 0;
+    entry->min_elements = 0;
+    entry->min_elements_attr.type = EMPTY;
+    entry->min_elements_attr.lower_limit = 0;
+    entry->min_elements_attr.upper_limit = 0;
+    entry->max_elements = 0;
+    entry->max_elements_attr.type = EMPTY;
+    entry->max_elements_attr.lower_limit = 0;
+    entry->max_elements_attr.upper_limit = 0;
+    entry->low_limit = 0;
+    entry->low_limit_attr.type = EMPTY;
+    entry->low_limit_attr.lower_limit = 0;
+    entry->low_limit_attr.upper_limit = 0;
+    entry->high_limit = 0;
+    entry->high_limit_attr.type = EMPTY;
+    entry->high_limit_attr.lower_limit = 0;
+    entry->high_limit_attr.upper_limit = 0;
+    entry->default_value = 0;
+    entry->default_value_attr.type = EMPTY;
     entry->default_value_attr.lower_limit = 0;
     entry->default_value_attr.upper_limit = 0;
-    entry->mappable                       = false;
-    entry->mappable_attr.type             = EMPTY;
-    entry->mappable_attr.lower_limit      = 0;
-    entry->mappable_attr.upper_limit      = 0;
+    entry->mappable = false;
+    entry->mappable_attr.type = EMPTY;
+    entry->mappable_attr.lower_limit = 0;
+    entry->mappable_attr.upper_limit = 0;
 }
 
 static bool is_codb_file(const char* input_file_name)
 {
-    char  line[BUFFER_SIZE] = {0};
-    FILE* input_file        = os_fopen(input_file_name, "rb");
+    char line[BUFFER_SIZE] = {0};
+    FILE* input_file = os_fopen(input_file_name, "rb");
 
     if (input_file == NULL)
     {
@@ -418,10 +418,10 @@ static bool is_codb_file(const char* input_file_name)
 
 static void read_codb(const char* input_file_name)
 {
-    FILE*  input_file  = os_fopen(input_file_name, "rb");
-    char*  line        = NULL;
+    FILE* input_file = os_fopen(input_file_name, "rb");
+    char* line = NULL;
     size_t entry_count = 0;
-    size_t line_count  = 0;
+    size_t line_count = 0;
     size_t current_entry;
     size_t i;
 
@@ -473,7 +473,7 @@ static void read_codb(const char* input_file_name)
     while (os_fgets(line, BUFFER_SIZE, input_file) != NULL)
     {
         field_id_t id;
-        char*      token = line;
+        char* token = line;
 
         line_count++;
 
@@ -490,7 +490,7 @@ static void read_codb(const char* input_file_name)
         /* Copy object. */
         if (line[0] == '$')
         {
-            char*  end;
+            char* end;
             uint16 source_index;
             uint16 dest_index;
             size_t source_count = 0;
@@ -506,9 +506,9 @@ static void read_codb(const char* input_file_name)
             }
             else
             {
-                *end         = '\0';
+                *end = '\0';
                 source_index = (uint16)os_strtol(end + 1, NULL, 16);
-                dest_index   = (uint16)os_strtol(token + 1, NULL, 16);
+                dest_index = (uint16)os_strtol(token + 1, NULL, 16);
             }
 
             if (source_index == dest_index)
@@ -566,18 +566,18 @@ static void read_codb(const char* input_file_name)
                         codb_db->entries[current_entry].object_name = os_strdup(object_name_str);
                     }
 
-                    codb_db->entries[current_entry].main_index    = dest_index;
-                    codb_db->entries[current_entry].sub_index     = codb_db->entries[i].sub_index;
-                    codb_db->entries[current_entry].object_kind   = codb_db->entries[i].object_kind;
-                    codb_db->entries[current_entry].object_code   = codb_db->entries[i].object_code;
-                    codb_db->entries[current_entry].data_type     = codb_db->entries[i].data_type;
-                    codb_db->entries[current_entry].access_type   = codb_db->entries[i].access_type;
-                    codb_db->entries[current_entry].min_elements  = codb_db->entries[i].min_elements;
-                    codb_db->entries[current_entry].max_elements  = codb_db->entries[i].max_elements;
-                    codb_db->entries[current_entry].low_limit     = codb_db->entries[i].low_limit;
-                    codb_db->entries[current_entry].high_limit    = codb_db->entries[i].high_limit;
+                    codb_db->entries[current_entry].main_index = dest_index;
+                    codb_db->entries[current_entry].sub_index = codb_db->entries[i].sub_index;
+                    codb_db->entries[current_entry].object_kind = codb_db->entries[i].object_kind;
+                    codb_db->entries[current_entry].object_code = codb_db->entries[i].object_code;
+                    codb_db->entries[current_entry].data_type = codb_db->entries[i].data_type;
+                    codb_db->entries[current_entry].access_type = codb_db->entries[i].access_type;
+                    codb_db->entries[current_entry].min_elements = codb_db->entries[i].min_elements;
+                    codb_db->entries[current_entry].max_elements = codb_db->entries[i].max_elements;
+                    codb_db->entries[current_entry].low_limit = codb_db->entries[i].low_limit;
+                    codb_db->entries[current_entry].high_limit = codb_db->entries[i].high_limit;
                     codb_db->entries[current_entry].default_value = codb_db->entries[i].default_value;
-                    codb_db->entries[current_entry].mappable      = codb_db->entries[i].mappable;
+                    codb_db->entries[current_entry].mappable = codb_db->entries[i].mappable;
 
                     if (NULL != codb_db->entries[i].parameter_name)
                     {
@@ -639,7 +639,7 @@ static void read_codb(const char* input_file_name)
             {
                 case MAIN_INDEX:
                 {
-                    char*  endptr;
+                    char* endptr;
                     uint16 value = (uint16)os_strtol(token, &endptr, 16);
 
                     if (*endptr != '\0' || value == 0x0000 || value >= 0xFFFF)
@@ -1087,10 +1087,10 @@ static void read_codb(const char* input_file_name)
 
 static void write_json(const char* output_file_name, bool format_output)
 {
-    char*   string = NULL;
-    cJSON*  root;
+    char* string = NULL;
+    cJSON* root;
     FILE_t* output_file;
-    size_t  i;
+    size_t i;
 
     output_file = os_fopen(output_file_name, "wb+");
     if (NULL == output_file)
@@ -1204,7 +1204,7 @@ static bool write_json_entry(cJSON* root, size_t i)
         return false;
     }
 
-    id    = cJSON_CreateString(codb_db->entries[i].object_name);
+    id = cJSON_CreateString(codb_db->entries[i].object_name);
     index = cJSON_CreateNumber(codb_db->entries[i].main_index);
     cJSON_AddItemToObject(entry, "id", id);
     cJSON_AddItemToObject(entry, "index", index);
@@ -1218,9 +1218,9 @@ static bool write_json_entry(cJSON* root, size_t i)
     cJSON_AddItemToObject(entry, "sub_indices", sub_indices);
 
     /* Object root data. */
-    code                  = cJSON_CreateObject();
-    code_type             = cJSON_CreateNumber(codb_db->entries[i].object_code);
-    code_attr             = cJSON_CreateNumber(codb_db->entries[i].object_code_attr.type);
+    code = cJSON_CreateObject();
+    code_type = cJSON_CreateNumber(codb_db->entries[i].object_code);
+    code_attr = cJSON_CreateNumber(codb_db->entries[i].object_code_attr.type);
     code_attr_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].object_code_attr.lower_limit);
     code_attr_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].object_code_attr.upper_limit);
     cJSON_AddItemToObject(code, "type", code_type);
@@ -1228,9 +1228,9 @@ static bool write_json_entry(cJSON* root, size_t i)
     cJSON_AddItemToObject(code, "lower", code_attr_lower_limit);
     cJSON_AddItemToObject(code, "upper", code_attr_upper_limit);
 
-    min_elements             = cJSON_CreateObject();
-    min_elements_value       = cJSON_CreateNumber(codb_db->entries[i].min_elements);
-    min_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].min_elements_attr.type);
+    min_elements = cJSON_CreateObject();
+    min_elements_value = cJSON_CreateNumber(codb_db->entries[i].min_elements);
+    min_elements_attr = cJSON_CreateNumber(codb_db->entries[i].min_elements_attr.type);
     min_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.lower_limit);
     min_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].min_elements_attr.upper_limit);
     cJSON_AddItemToObject(min_elements, "value", min_elements_value);
@@ -1238,9 +1238,9 @@ static bool write_json_entry(cJSON* root, size_t i)
     cJSON_AddItemToObject(min_elements, "lower", min_elements_lower_limit);
     cJSON_AddItemToObject(min_elements, "upper", min_elements_upper_limit);
 
-    max_elements             = cJSON_CreateObject();
-    max_elements_value       = cJSON_CreateNumber(codb_db->entries[i].max_elements);
-    max_elements_attr        = cJSON_CreateNumber(codb_db->entries[i].max_elements_attr.type);
+    max_elements = cJSON_CreateObject();
+    max_elements_value = cJSON_CreateNumber(codb_db->entries[i].max_elements);
+    max_elements_attr = cJSON_CreateNumber(codb_db->entries[i].max_elements_attr.type);
     max_elements_lower_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.lower_limit);
     max_elements_upper_limit = cJSON_CreateNumber((double)codb_db->entries[i].max_elements_attr.upper_limit);
     cJSON_AddItemToObject(max_elements, "value", max_elements_value);
@@ -1296,12 +1296,12 @@ static void handle_attribute(obj_attr_t* attr, const char* token)
         if (token[1] == '[')
         {
             const char* limits_start = token + 2;
-            const char* limits_end   = os_strchr(limits_start, ']');
-            attr->type               = DEFAULT_LIMITS;
+            const char* limits_end = os_strchr(limits_start, ']');
+            attr->type = DEFAULT_LIMITS;
 
             if (limits_end != NULL)
             {
-                char  limits[256];
+                char limits[256];
                 char* lower_limit_str;
                 char* upper_limit_str;
                 char* saveptr;
@@ -1350,7 +1350,7 @@ static void handle_value64(uint64* value, const char* token)
 static char* to_upper_case(const char* str)
 {
     size_t i;
-    char*  upper_case = os_strdup(str);
+    char* upper_case = os_strdup(str);
 
     if (NULL == upper_case)
     {

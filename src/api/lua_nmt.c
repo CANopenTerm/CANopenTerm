@@ -19,12 +19,12 @@ extern void nmt_print_error(const char* reason, nmt_command_t command, disp_mode
 
 int lua_nmt_send_command(lua_State* L)
 {
-    uint32      status;
-    disp_mode_t disp_mode   = SILENT;
-    int         node_id     = luaL_checkinteger(L, 1);
-    int         command     = luaL_checkinteger(L, 2);
-    bool      show_output = lua_toboolean(L, 3);
-    const char* comment     = lua_tostring(L, 4);
+    uint32 status;
+    disp_mode_t disp_mode = SILENT;
+    int node_id = luaL_checkinteger(L, 1);
+    int command = luaL_checkinteger(L, 2);
+    bool show_output = lua_toboolean(L, 3);
+    const char* comment = lua_tostring(L, 4);
 
     limit_node_id((uint8*)&node_id);
 

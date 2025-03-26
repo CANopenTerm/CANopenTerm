@@ -16,13 +16,13 @@
 
 typedef struct emcy_entry
 {
-    uint16      code;
+    uint16 code;
     const char* description;
 
 } emcy_entry_t;
 
 const char* dict_lookup(uint16 index, uint8 sub_index);
-status_t    dict_lookup_object(uint16 index, uint8 sub_index);
+status_t dict_lookup_object(uint16 index, uint8 sub_index);
 const char* dict_lookup_raw(can_message_t* message);
 const char* emcy_lookup(uint16 code);
 

@@ -91,39 +91,39 @@ typedef enum acc_type
 
 typedef struct object_info
 {
-    int             entry_count;
-    uint16          index;
-    uint8           sub_index;
-    obj_code_t      code;
-    data_type_t     data_type;
-    obj_kind_t      category;
-    obj_kind_t      entry_category;
+    int entry_count;
+    uint16 index;
+    uint8 sub_index;
+    obj_code_t code;
+    data_type_t data_type;
+    obj_kind_t category;
+    obj_kind_t entry_category;
     obj_attr_type_t attribute;
-    acc_type_t      access_type;
-    bool            pdo_mapping;
-    bool            does_exist;
-    uint32          value_range_lower;
-    uint32          value_range_upper;
-    uint32          default_value;
-    char            name[CODB_MAX_DESC_LEN];
-    char            sub_index_name[CODB_MAX_DESC_LEN];
+    acc_type_t access_type;
+    bool pdo_mapping;
+    bool does_exist;
+    uint32 value_range_lower;
+    uint32 value_range_upper;
+    uint32 default_value;
+    char name[CODB_MAX_DESC_LEN];
+    char sub_index_name[CODB_MAX_DESC_LEN];
 
 } object_info_t;
 
 typedef cJSON codb_t;
 
-void        codb_init(void);
-void        codb_deinit(void);
+void codb_init(void);
+void codb_deinit(void);
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index);
 const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char* object_desc, char* sub_index_desc);
-void        codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* info);
-codb_t*     codb_get_ds301_profile(void);
-codb_t*     codb_get_profile(void);
-bool        is_ds301_loaded(void);
-bool        is_codb_loaded(void);
-void        list_codb(void);
-status_t    load_codb(uint32 file_no);
-status_t    load_codb_ex(char* file_name);
-void        unload_codb(void);
+void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* info);
+codb_t* codb_get_ds301_profile(void);
+codb_t* codb_get_profile(void);
+bool is_ds301_loaded(void);
+bool is_codb_loaded(void);
+void list_codb(void);
+status_t load_codb(uint32 file_no);
+status_t load_codb_ex(char* file_name);
+void unload_codb(void);
 
 #endif /* CODB_H */

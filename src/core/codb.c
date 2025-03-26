@@ -16,10 +16,10 @@
 
 static const char* file_name_to_profile_desc(const char* file_name);
 
-static uint32     active_no = 0;
-static cJSON*     ds301     = NULL;
-static cJSON*     codb      = NULL;
-static os_thread* init_th   = NULL;
+static uint32 active_no = 0;
+static cJSON* ds301 = NULL;
+static cJSON* codb = NULL;
+static os_thread* init_th = NULL;
 
 const char* data_type_lookup[] = {
     "-",
@@ -81,11 +81,11 @@ void codb_init(void)
 /* Can be used like codb_init(), when no scheduler is available. */
 int codb_init_ex(void* unused)
 {
-    FILE_t*     file;
-    char        file_path[512] = {0};
-    const char* data_path      = os_find_data_path();
-    char*       file_content;
-    size_t      file_size;
+    FILE_t* file;
+    char file_path[512] = {0};
+    const char* data_path = os_find_data_path();
+    char* file_content;
+    size_t file_size;
 
     (void)unused;
 
@@ -159,14 +159,14 @@ void codb_deinit(void)
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)
 {
     char object_desc[256] = {0};
-    char sub_desc[256]    = {0};
+    char sub_desc[256] = {0};
 
     return codb_desc_lookup_ex(db, index, sub_index, object_desc, sub_desc);
 }
 
 const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char* object_desc, char* sub_index_desc)
 {
-    cJSON*      object    = NULL;
+    cJSON* object = NULL;
     static char desc[256] = {0};
 
     if (NULL == db || NULL == object_desc || NULL == sub_index_desc)
@@ -180,7 +180,7 @@ const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char*
         if (json_index != NULL && json_index->valueint == index)
         {
             cJSON* sub_indices = cJSON_GetObjectItem(object, "sub_indices");
-            cJSON* obj_desc    = cJSON_GetObjectItem(object, "desc");
+            cJSON* obj_desc = cJSON_GetObjectItem(object, "desc");
 
             if (obj_desc == NULL || obj_desc->valuestring == NULL)
             {
@@ -238,11 +238,11 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
         cJSON* json_index = cJSON_GetObjectItem(object, "index");
         if (json_index != NULL && json_index->valueint == index)
         {
-            cJSON* obj_desc      = cJSON_GetObjectItem(object, "desc");
-            cJSON* sub_indices   = cJSON_GetObjectItem(object, "sub_indices");
-            cJSON* obj_code      = cJSON_GetObjectItem(object, "code");
+            cJSON* obj_desc = cJSON_GetObjectItem(object, "desc");
+            cJSON* sub_indices = cJSON_GetObjectItem(object, "sub_indices");
+            cJSON* obj_code = cJSON_GetObjectItem(object, "code");
             cJSON* obj_code_type = cJSON_GetObjectItem(obj_code, "type");
-            cJSON* obj_category  = cJSON_GetObjectItem(object, "kind");
+            cJSON* obj_category = cJSON_GetObjectItem(object, "kind");
 
             if (obj_desc != NULL && obj_desc->valuestring != NULL)
             {
@@ -261,8 +261,8 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
 
             if (sub_indices != NULL)
             {
-                cJSON* sub_index_item  = cJSON_GetArrayItem(sub_indices, sub_index);
-                int    num_sub_indices = cJSON_GetArraySize(sub_indices);
+                cJSON* sub_index_item = cJSON_GetArrayItem(sub_indices, sub_index);
+                int num_sub_indices = cJSON_GetArraySize(sub_indices);
 
                 if (num_sub_indices > info->entry_count)
                 {
@@ -271,13 +271,13 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
 
                 if (sub_index_item != NULL)
                 {
-                    cJSON* sub_desc          = cJSON_GetObjectItem(sub_index_item, "desc");
-                    cJSON* sub_data_type     = cJSON_GetObjectItem(sub_index_item, "data_type");
-                    cJSON* sub_category      = cJSON_GetObjectItem(sub_index_item, "kind");
-                    cJSON* sub_access_type   = cJSON_GetObjectItem(sub_index_item, "access_type");
-                    cJSON* sub_pdo_mapping   = cJSON_GetObjectItem(sub_index_item, "mappable");
-                    cJSON* sub_low_limit     = cJSON_GetObjectItem(sub_index_item, "low_limit");
-                    cJSON* sub_high_limit    = cJSON_GetObjectItem(sub_index_item, "high_limit");
+                    cJSON* sub_desc = cJSON_GetObjectItem(sub_index_item, "desc");
+                    cJSON* sub_data_type = cJSON_GetObjectItem(sub_index_item, "data_type");
+                    cJSON* sub_category = cJSON_GetObjectItem(sub_index_item, "kind");
+                    cJSON* sub_access_type = cJSON_GetObjectItem(sub_index_item, "access_type");
+                    cJSON* sub_pdo_mapping = cJSON_GetObjectItem(sub_index_item, "mappable");
+                    cJSON* sub_low_limit = cJSON_GetObjectItem(sub_index_item, "low_limit");
+                    cJSON* sub_high_limit = cJSON_GetObjectItem(sub_index_item, "high_limit");
                     cJSON* sub_default_value = cJSON_GetObjectItem(sub_index_item, "default_value");
 
                     if (sub_desc != NULL && sub_desc->valuestring != NULL)
@@ -288,7 +288,7 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
                     if (sub_data_type != NULL)
                     {
                         cJSON* sub_data_type_type = cJSON_GetObjectItem(sub_data_type, "type");
-                        info->data_type           = sub_data_type_type->valueint;
+                        info->data_type = sub_data_type_type->valueint;
                     }
 
                     if (sub_category != NULL)
@@ -375,11 +375,11 @@ bool is_codb_loaded(void)
 
 void list_codb(void)
 {
-    const char* data_path      = os_find_data_path();
-    char        file_path[512] = {0};
-    DIR_t*      d;
-    table_t     table = {DARK_CYAN, DEFAULT_COLOR, 3, 57, 1};
-    status_t    status;
+    const char* data_path = os_find_data_path();
+    char file_path[512] = {0};
+    DIR_t* d;
+    table_t table = {DARK_CYAN, DEFAULT_COLOR, 3, 57, 1};
+    status_t status;
 
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
 
@@ -391,7 +391,7 @@ void list_codb(void)
     }
 
     table.column_c_width = 6;
-    status               = table_init(&table, 1024);
+    status = table_init(&table, 1024);
     if (ALL_OK != status)
     {
         os_log(LOG_ERROR, "Failed to initialize table.");
@@ -409,7 +409,7 @@ void list_codb(void)
     if (d)
     {
         struct dirent_t* dir;
-        uint32           file_no = 1;
+        uint32 file_no = 1;
 
         table_print_header(&table);
         table_print_row("No.", "Profile", "Status", &table);
@@ -457,10 +457,10 @@ void list_codb(void)
 
 status_t load_codb(uint32 file_no)
 {
-    status_t    status         = ALL_OK;
-    const char* data_path      = os_find_data_path();
-    char        file_path[512] = {0};
-    DIR_t*      d;
+    status_t status = ALL_OK;
+    const char* data_path = os_find_data_path();
+    char file_path[512] = {0};
+    DIR_t* d;
 
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
     d = os_opendir(file_path);
@@ -468,8 +468,8 @@ status_t load_codb(uint32 file_no)
     if (d)
     {
         struct dirent_t* dir;
-        uint32           current_file_no = 1;
-        bool           found           = false;
+        uint32 current_file_no = 1;
+        bool found = false;
 
         while ((dir = os_readdir(d)) != NULL)
         {
@@ -500,7 +500,7 @@ status_t load_codb(uint32 file_no)
                     }
                     else
                     {
-                        found     = true;
+                        found = true;
                         active_no = file_no;
                     }
                 }
@@ -525,9 +525,9 @@ status_t load_codb(uint32 file_no)
 status_t load_codb_ex(char* file_name)
 {
     status_t status = ALL_OK;
-    FILE_t*  file;
-    char*    file_content;
-    size_t   file_size;
+    FILE_t* file;
+    char* file_content;
+    size_t file_size;
 
     if (NULL == file_name)
     {
@@ -588,7 +588,7 @@ void unload_codb(void)
     {
         cJSON_Delete(codb);
         active_no = 0;
-        codb      = NULL;
+        codb = NULL;
     }
 }
 

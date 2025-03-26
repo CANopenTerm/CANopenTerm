@@ -20,10 +20,10 @@
 extern const uint8 max_script_search_paths;
 extern const char* script_search_path[];
 
-static char*  get_script_description(char* script_path);
+static char* get_script_description(char* script_path);
 static size_t safe_strcpy(char* dest, const char* src, size_t size);
 static bool script_already_listed(char** listed_scripts, int count, const char* script_name);
-static void   strip_lua_extension(char* filename);
+static void strip_lua_extension(char* filename);
 
 void scripts_init(core_t* core)
 {
@@ -38,16 +38,16 @@ void scripts_init(core_t* core)
 
     if (NULL != core->L)
     {
-        int         i;
+        int i;
         const char* current_path;
-        char*       new_path;
+        char* new_path;
 
         luaL_openlibs(core->L);
 
         lua_getglobal(core->L, "package");
         lua_getfield(core->L, -1, "path");
 
-        current_path    = lua_tostring(core->L, -1);
+        current_path = lua_tostring(core->L, -1);
         size_t path_len = os_strlen(current_path) + 1;
 
         for (i = 0; i < max_script_search_paths; i++)
@@ -101,7 +101,7 @@ void scripts_deinit(core_t* core)
 static char* get_script_description(char* script_path)
 {
     static char description[256] = {0};
-    FILE_t*     file;
+    FILE_t* file;
 
     os_fix_path(script_path);
     file = os_fopen(script_path, "r");
@@ -185,14 +185,14 @@ bool has_valid_extension(const char* filename)
 status_t list_scripts(void)
 {
     status_t status;
-    table_t  table = {DARK_CYAN, DARK_WHITE, 3, 10, 40};
+    table_t table = {DARK_CYAN, DARK_WHITE, 3, 10, 40};
 
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
         char* listed_scripts[256];
-        int   listed_count = 0;
-        int   i, j;
+        int listed_count = 0;
+        int i, j;
 
         table_print_header(&table);
         table_print_row("No.", "Identifier", "Description", &table);
@@ -221,9 +221,9 @@ status_t list_scripts(void)
 
                         if (false == script_already_listed(listed_scripts, listed_count, script_name))
                         {
-                            char  buf[4]           = {0};
-                            char* script_no        = os_itoa(listed_count, buf, 10);
-                            char  script_path[512] = {0};
+                            char buf[4] = {0};
+                            char* script_no = os_itoa(listed_count, buf, 10);
+                            char script_path[512] = {0};
                             char* description;
 
                             listed_scripts[listed_count++] = os_strdup(script_name);
@@ -272,10 +272,10 @@ void print_heading(const char* heading)
 
 void run_script(char* name, core_t* core)
 {
-    status_t    status             = ALL_OK;
-    const char* base               = os_strrchr(name, '/');
-    char        basename[PATH_MAX] = {0};
-    FILE*       file;
+    status_t status = ALL_OK;
+    const char* base = os_strrchr(name, '/');
+    char basename[PATH_MAX] = {0};
+    FILE* file;
 
     if (base)
     {
@@ -312,8 +312,8 @@ void run_script(char* name, core_t* core)
 
         if (ALL_OK != status)
         {
-            const char* user_directory        = os_get_user_directory();
-            char        script_path[PATH_MAX] = {0};
+            const char* user_directory = os_get_user_directory();
+            char script_path[PATH_MAX] = {0};
 
             os_snprintf(script_path, sizeof(script_path), "%s/CANopenTerm/scripts/%s", user_directory, name);
 
@@ -329,12 +329,12 @@ void run_script(char* name, core_t* core)
 
 status_t run_script_ex(char* name, core_t* core)
 {
-    status_t    status            = ALL_OK;
-    const char* extension         = os_strrchr(name, '.');
-    bool      has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
-    bool      has_py_extension  = extension && os_strcmp(extension, ".py") == 0;
-    char        script_path[1024] = {0};
-    FILE*       file;
+    status_t status = ALL_OK;
+    const char* extension = os_strrchr(name, '.');
+    bool has_lua_extension = extension && os_strcmp(extension, ".lua") == 0;
+    bool has_py_extension = extension && os_strcmp(extension, ".py") == 0;
+    char script_path[1024] = {0};
+    FILE* file;
 
     if (NULL == core)
     {
@@ -385,13 +385,13 @@ status_t run_script_ex(char* name, core_t* core)
             else
             {
                 size_t size;
-                char*  buffer;
+                char* buffer;
 
                 os_fseek(file, 0, SEEK_END);
                 size = os_ftell(file);
                 os_fseek(file, 0, SEEK_SET);
-                buffer       = os_calloc(size + 1, sizeof(char));
-                size         = os_fread(buffer, 1, size, file);
+                buffer = os_calloc(size + 1, sizeof(char));
+                size = os_fread(buffer, 1, size, file);
                 buffer[size] = 0;
 
                 if (false == py_exec(buffer, script_path, EXEC_MODE, NULL))
@@ -428,13 +428,13 @@ status_t run_script_ex(char* name, core_t* core)
             else
             {
                 size_t size;
-                char*  buffer;
+                char* buffer;
 
                 os_fseek(file, 0, SEEK_END);
                 size = os_ftell(file);
                 os_fseek(file, 0, SEEK_SET);
-                buffer       = os_calloc(size + 1, sizeof(char));
-                size         = os_fread(buffer, 1, size, file);
+                buffer = os_calloc(size + 1, sizeof(char));
+                size = os_fread(buffer, 1, size, file);
                 buffer[size] = 0;
 
                 if (false == py_exec(buffer, script_path, EXEC_MODE, NULL))

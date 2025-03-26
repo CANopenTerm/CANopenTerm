@@ -21,19 +21,19 @@ core_t* core = NULL;
 
 int main(int argc, char* argv[])
 {
-    bool is_plain_mode   = false;
-    bool run_cct         = false;
-    char*  can_interface   = DEFAULT_CAN_INTERFACE;
-    char*  script          = NULL;
-    int    status          = EXIT_SUCCESS;
-    uint32 node_id         = 0x01;
-    uint8  baud_rate_index = 0;
+    bool is_plain_mode = false;
+    bool run_cct = false;
+    char* can_interface = DEFAULT_CAN_INTERFACE;
+    char* script = NULL;
+    int status = EXIT_SUCCESS;
+    uint32 node_id = 0x01;
+    uint8 baud_rate_index = 0;
 
     core_register_ctrl_c_handler();
 
     if (argc > 1 && (argv[1][0] != '-') && (2 == argc))
     {
-        script        = argv[1];
+        script = argv[1];
         is_plain_mode = true;
     }
     else
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
             }
             else if (0 == os_strcmp(argv[i], "-t"))
             {
-                run_cct       = true;
+                run_cct = true;
                 is_plain_mode = true;
             }
             else

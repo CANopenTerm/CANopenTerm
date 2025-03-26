@@ -340,24 +340,24 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param);
-status_t    os_console_init(bool is_plain_mode);
-os_thread*  os_create_thread(os_thread_func fn, const char* name, void* data);
-void        os_delay(uint32 delay_in_ms);
-void        os_detach_thread(os_thread* thread);
-char*       os_fix_path(char* path);
+status_t os_console_init(bool is_plain_mode);
+os_thread* os_create_thread(os_thread_func fn, const char* name, void* data);
+void os_delay(uint32 delay_in_ms);
+void os_detach_thread(os_thread* thread);
+char* os_fix_path(char* path);
 const char* os_find_data_path(void);
 const char* os_get_error(void);
-status_t    os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
-uint64      os_get_ticks(void);
+status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
+uint64 os_get_ticks(void);
 const char* os_get_user_directory(void);
-status_t    os_init(void);
-bool        os_key_is_hit(void);
-void        os_log(const log_level_t level, const char* format, ...);
-void        os_print(const color_t color, const char* format, ...);
-void        os_print_prompt(void);
-bool        os_remove_timer(os_timer_id id);
-uint64      os_swap_64(uint64 n);
-uint32      os_swap_be_32(uint32 n);
-void        os_quit(void);
+status_t os_init(void);
+bool os_key_is_hit(void);
+void os_log(const log_level_t level, const char* format, ...);
+void os_print(const color_t color, const char* format, ...);
+void os_print_prompt(void);
+bool os_remove_timer(os_timer_id id);
+uint64 os_swap_64(uint64 n);
+uint32 os_swap_be_32(uint32 n);
+void os_quit(void);
 
 #endif /* OS_H */

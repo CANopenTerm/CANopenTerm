@@ -13,29 +13,29 @@
 #include "codb.h"
 #include "core.h"
 
-void     list_eds(void);
+void list_eds(void);
 status_t run_conformance_test(const char* eds_path, const char* package, uint32 node_id, disp_mode_t disp_mode);
 status_t validate_eds(uint32 file_no, const char* package, uint32 node_id);
 
 typedef struct eds_entry
 {
     uint16 Index;
-    uint8  SubIndex;
+    uint8 SubIndex;
 
-    char       ParameterName[242]; /* max. 241 characters, leading \0. */
-    uint8      ObjectType;
-    uint16     DataType;
-    uint32     LowLimit;
-    uint32     HighLimit;
+    char ParameterName[242]; /* max. 241 characters, leading \0. */
+    uint8 ObjectType;
+    uint16 DataType;
+    uint32 LowLimit;
+    uint32 HighLimit;
     acc_type_t AccessType;
-    uint32     DefaultValue;
-    bool       PDOMapping;
+    uint32 DefaultValue;
+    bool PDOMapping;
 
 } eds_entry_t;
 
 typedef struct eds
 {
-    uint16       num_entries;
+    uint16 num_entries;
     eds_entry_t* entries;
 
 } eds_t;

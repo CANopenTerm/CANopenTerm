@@ -30,8 +30,8 @@ void python_dbc_init(void)
 
 bool py_dbc_decode(int argc, py_Ref argv)
 {
-    int         can_id;
-    uint64      data;
+    int can_id;
+    uint64 data;
     const char* result;
 
     PY_CHECK_ARGC(2);
@@ -39,7 +39,7 @@ bool py_dbc_decode(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(1, tp_int);
 
     can_id = py_toint(py_arg(0));
-    data   = py_toint(py_arg(1));
+    data = py_toint(py_arg(1));
     result = dbc_decode(can_id, data);
 
     py_newstr(py_retval(), result);
@@ -50,8 +50,8 @@ bool py_dbc_decode(int argc, py_Ref argv)
 bool py_dbc_find_id_by_name(int argc, py_Ref argv)
 {
     const char* search;
-    uint32      id;
-    status_t    status;
+    uint32 id;
+    status_t status;
 
     PY_CHECK_ARGC(1);
     PY_CHECK_ARG_TYPE(0, tp_str);
@@ -73,7 +73,7 @@ bool py_dbc_find_id_by_name(int argc, py_Ref argv)
 
 bool py_dbc_load(int argc, py_Ref argv)
 {
-    char*    filename;
+    char* filename;
     status_t status;
 
     PY_CHECK_ARGC(1);

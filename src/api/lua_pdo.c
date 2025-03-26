@@ -18,13 +18,13 @@ extern void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, b
 
 int lua_pdo_add(lua_State* L)
 {
-    int         can_id        = luaL_checkinteger(L, 1);
-    int         event_time_ms = luaL_checkinteger(L, 2);
-    int         length        = luaL_checkinteger(L, 3);
-    uint64      data          = lua_tointeger(L, 4);
-    bool      show_output   = lua_toboolean(L, 5);
-    const char* comment       = lua_tostring(L, 6);
-    bool      was_successful;
+    int can_id = luaL_checkinteger(L, 1);
+    int event_time_ms = luaL_checkinteger(L, 2);
+    int length = luaL_checkinteger(L, 3);
+    uint64 data = lua_tointeger(L, 4);
+    bool show_output = lua_toboolean(L, 5);
+    const char* comment = lua_tostring(L, 6);
+    bool was_successful;
     disp_mode_t disp_mode = SILENT;
 
     if (true == show_output)
@@ -46,10 +46,10 @@ int lua_pdo_add(lua_State* L)
 
 int lua_pdo_del(lua_State* L)
 {
-    int         can_id      = luaL_checkinteger(L, 1);
-    bool      show_output = lua_toboolean(L, 2);
-    const char* comment     = lua_tostring(L, 3);
-    disp_mode_t disp_mode   = SILENT;
+    int can_id = luaL_checkinteger(L, 1);
+    bool show_output = lua_toboolean(L, 2);
+    const char* comment = lua_tostring(L, 3);
+    disp_mode_t disp_mode = SILENT;
 
     if (true == show_output)
     {

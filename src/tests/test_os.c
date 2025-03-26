@@ -22,7 +22,7 @@ static int sum_values(int count, ...);
 void test_os_atof(void** state)
 {
     const char* str = "123.45";
-    double      result;
+    double result;
 
     (void)state;
 
@@ -33,7 +33,7 @@ void test_os_atof(void** state)
 
 void test_os_atoi(void** state)
 {
-    int         result;
+    int result;
     const char* str = "12345";
 
     (void)state;
@@ -46,8 +46,8 @@ void test_os_atoi(void** state)
 void test_os_calloc(void** state)
 {
     size_t nmemb = 5;
-    size_t size  = sizeof(int);
-    void*  ptr   = os_calloc(nmemb, size);
+    size_t size = sizeof(int);
+    void* ptr = os_calloc(nmemb, size);
 
     (void)state;
 
@@ -69,7 +69,7 @@ void test_os_clock(void** state)
 
 void test_os_closedir(void** state)
 {
-    int    result;
+    int result;
     DIR_t* dir = os_opendir(".");
 
     (void)state;
@@ -87,7 +87,7 @@ void test_os_delay(void** state)
     uint64 new_time;
 
     os_delay(100);
-    time     = time + 100u;
+    time = time + 100u;
     new_time = os_get_ticks();
 
     /* Max. deviation is 1ms. */
@@ -96,7 +96,7 @@ void test_os_delay(void** state)
 
 void test_os_fclose(void** state)
 {
-    int     result;
+    int result;
     FILE_t* file = os_fopen("fclose.txt", "w");
 
     (void)state;
@@ -111,8 +111,8 @@ void test_os_fclose(void** state)
 void test_os_fgets(void** state)
 {
     FILE_t* file = os_fopen("tests/test.txt", "r");
-    char    buffer[20];
-    char*   result;
+    char buffer[20];
+    char* result;
 
     (void)state;
 
@@ -139,8 +139,8 @@ void test_os_fopen(void** state)
 void test_os_fread(void** state)
 {
     FILE_t* file = os_fopen("tests/test.txt", "r");
-    char    buffer[20];
-    size_t  result;
+    char buffer[20];
+    size_t result;
 
     (void)state;
 
@@ -170,7 +170,7 @@ void test_os_freopen(void** state)
 
 void test_os_fseek(void** state)
 {
-    int     result;
+    int result;
     FILE_t* file = os_fopen("tests/test.txt", "r");
 
     (void)state;
@@ -186,7 +186,7 @@ void test_os_fseek(void** state)
 
 void test_os_ftell(void** state)
 {
-    long    result;
+    long result;
     FILE_t* file = os_fopen("tests/test.txt", "r");
 
     (void)state;
@@ -265,7 +265,7 @@ void test_os_isxdigit(void** state)
 
 void test_os_itoa(void** state)
 {
-    int  value = 12345;
+    int value = 12345;
     char buffer[20];
 
     (void)state;
@@ -278,7 +278,7 @@ void test_os_itoa(void** state)
 void test_os_memcpy(void** state)
 {
     const char src[] = "Hello, world!";
-    char       dest[sizeof(src)];
+    char dest[sizeof(src)];
 
     (void)state;
 
@@ -327,7 +327,7 @@ void test_os_opendir(void** state)
 void test_os_readdir(void** state)
 {
     DIR_t* dir = os_opendir(".");
-    void*  entry;
+    void* entry;
 
     (void)state;
 
@@ -358,7 +358,7 @@ void test_os_realloc(void** state)
 
 void test_os_rewind(void** state)
 {
-    long    result;
+    long result;
     FILE_t* file = os_fopen("tests/test.txt", "r");
 
     (void)state;
@@ -377,7 +377,7 @@ void test_os_rewind(void** state)
 void test_os_snprintf(void** state)
 {
     char buffer[20];
-    int  result = os_snprintf(buffer, sizeof(buffer), "%d %s", 123, "hello");
+    int result = os_snprintf(buffer, sizeof(buffer), "%d %s", 123, "hello");
 
     (void)state;
 
@@ -386,8 +386,8 @@ void test_os_snprintf(void** state)
 
 void test_os_strchr(void** state)
 {
-    const char* str    = "Hello, world!";
-    char*       result = os_strchr(str, 'w');
+    const char* str = "Hello, world!";
+    char* result = os_strchr(str, 'w');
 
     (void)state;
 
@@ -413,33 +413,33 @@ void test_os_strcspn(void** state)
     (void)state;
 
     {
-        const char* s      = "Hello World";
+        const char* s = "Hello World";
         const char* reject = "aeiou";
-        size_t      result = os_strcspn(s, reject);
+        size_t result = os_strcspn(s, reject);
 
         assert_int_equal(result, 1);
     }
 
     {
-        const char* s      = "Hello World";
+        const char* s = "Hello World";
         const char* reject = "aeiou";
-        size_t      result = os_strcspn(s, reject);
+        size_t result = os_strcspn(s, reject);
 
         assert_int_equal(result, 1);
     }
 
     {
-        const char* s      = "Hello World";
+        const char* s = "Hello World";
         const char* reject = "";
-        size_t      result = os_strcspn(s, reject);
+        size_t result = os_strcspn(s, reject);
 
         assert_int_equal(result, os_strlen(s));
     }
 
     {
-        const char* s      = "Hello";
+        const char* s = "Hello";
         const char* reject = "xyz";
-        size_t      result = os_strcspn(s, reject);
+        size_t result = os_strcspn(s, reject);
 
         assert_int_equal(result, os_strlen(s));
     }
@@ -447,8 +447,8 @@ void test_os_strcspn(void** state)
 
 void test_os_strdup(void** state)
 {
-    const char* str  = "Hello, world!";
-    char*       copy = os_strdup(str);
+    const char* str = "Hello, world!";
+    char* copy = os_strdup(str);
 
     (void)state;
 
@@ -460,9 +460,9 @@ void test_os_strdup(void** state)
 
 void test_os_strlcat(void** state)
 {
-    char        dest[20] = "Hello";
-    const char* src      = ", world!";
-    size_t      result   = os_strlcat(dest, src, sizeof(dest));
+    char dest[20] = "Hello";
+    const char* src = ", world!";
+    size_t result = os_strlcat(dest, src, sizeof(dest));
 
     (void)state;
 
@@ -472,9 +472,9 @@ void test_os_strlcat(void** state)
 
 void test_os_strlcpy(void** state)
 {
-    char        dest[20];
+    char dest[20];
     const char* src = "Hello, world!";
-    size_t      result;
+    size_t result;
 
     (void)state;
 
@@ -487,7 +487,7 @@ void test_os_strlcpy(void** state)
 void test_os_strlen(void** state)
 {
     const char* str = "Hello, world!";
-    size_t      len = os_strlen(str);
+    size_t len = os_strlen(str);
 
     (void)state;
 
@@ -509,8 +509,8 @@ void test_os_strncmp(void** state)
 
 void test_os_strrchr(void** state)
 {
-    const char* str    = "Hello, world!";
-    char*       result = os_strrchr(str, 'o');
+    const char* str = "Hello, world!";
+    char* result = os_strrchr(str, 'o');
 
     (void)state;
 
@@ -521,8 +521,8 @@ void test_os_strrchr(void** state)
 void test_os_strstr(void** state)
 {
     const char* haystack = "Hello, world!";
-    const char* needle   = "world";
-    char*       result;
+    const char* needle = "world";
+    char* result;
 
     (void)state;
 
@@ -534,7 +534,7 @@ void test_os_strstr(void** state)
 
 void test_os_strtokr_r(void** state)
 {
-    char  str[] = "A,B,C,D";
+    char str[] = "A,B,C,D";
     char* saveptr;
     char* token = os_strtokr_r(str, ",", &saveptr);
 
@@ -562,8 +562,8 @@ void test_os_strtokr_r(void** state)
 void test_os_strtol(void** state)
 {
     const char* str = "12345";
-    char*       endptr;
-    long        result = os_strtol(str, &endptr, 10);
+    char* endptr;
+    long result = os_strtol(str, &endptr, 10);
 
     (void)state;
 
@@ -573,8 +573,8 @@ void test_os_strtol(void** state)
 
 void test_os_strtoul(void** state)
 {
-    const char*   str = "12345";
-    char*         endptr;
+    const char* str = "12345";
+    char* endptr;
     unsigned long result;
 
     (void)state;
@@ -587,8 +587,8 @@ void test_os_strtoul(void** state)
 
 void test_os_strtoull(void** state)
 {
-    const char*        str = "1234567890";
-    char*              endptr;
+    const char* str = "1234567890";
+    char* endptr;
     unsigned long long result = os_strtoull(str, &endptr, 10);
 
     (void)state;
@@ -666,7 +666,7 @@ void test_variadic_functions(void** state)
 
 static int os_vsnprintf_wrapper(char* str, size_t size, const char* format, ...)
 {
-    int       result;
+    int result;
     va_list_t args;
 
     os_va_start(args, format);
@@ -678,11 +678,11 @@ static int os_vsnprintf_wrapper(char* str, size_t size, const char* format, ...)
 
 void test_os_vsnprintf(void** state)
 {
-    int         result;
-    char        buffer[100];
-    const char* format  = "%s %d. %s";
+    int result;
+    char buffer[100];
+    const char* format = "%s %d. %s";
     const char* value_1 = "6 by 9.";
-    int         value_2 = 42;
+    int value_2 = 42;
     const char* value_3 = "That's it. That's all there is";
 
     (void)state;
@@ -695,9 +695,9 @@ void test_os_vsnprintf(void** state)
 
 static int sum_values(int count, ...)
 {
-    int       i;
+    int i;
     va_list_t args;
-    int       sum = 0;
+    int sum = 0;
 
     os_va_start(args, count);
 

@@ -83,7 +83,7 @@ const char* os_get_error(void)
 status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 {
     status_t status = ALL_OK;
-    char*    buffer;
+    char* buffer;
 
     buffer = readline(": ");
     if (buffer != NULL)
@@ -124,7 +124,7 @@ status_t os_init(void)
 {
     status_t status = ALL_OK;
 
-    if (!SDL_InitSubSystem(SDL_INIT_VIDEO))
+    if (! SDL_InitSubSystem(SDL_INIT_VIDEO))
     {
         os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
         status = OS_INIT_ERROR;
@@ -136,8 +136,8 @@ status_t os_init(void)
 bool os_key_is_hit(void)
 {
     struct termios orig_termios;
-    char           buffer = 0;
-    int            n;
+    char buffer = 0;
+    int n;
 
     set_terminal_raw_mode(&orig_termios);
     set_nonblocking(STDIN_FILENO, 1);
@@ -159,7 +159,7 @@ bool os_key_is_hit(void)
 
 void os_log(const log_level_t level, const char* format, ...)
 {
-    char      buffer[1024];
+    char buffer[1024];
     va_list_t varg;
 
     if (LOG_SUPPRESS == level)
@@ -195,9 +195,9 @@ void os_log(const log_level_t level, const char* format, ...)
 
 void os_print(const color_t color, const char* format, ...)
 {
-    char        buffer[1024];
-    char        print_buffer[1024];
-    va_list_t   varg;
+    char buffer[1024];
+    char print_buffer[1024];
+    va_list_t varg;
     const char* color_code = "";
 
     switch (color)

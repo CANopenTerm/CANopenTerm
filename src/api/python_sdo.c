@@ -39,13 +39,13 @@ void python_sdo_init(void)
 
 bool py_sdo_lookup_abort_code(int argc, py_Ref argv)
 {
-    int         abort_code;
+    int abort_code;
     const char* description;
 
     PY_CHECK_ARGC(1);
     PY_CHECK_ARG_TYPE(0, tp_int);
 
-    abort_code  = py_toint(py_arg(0));
+    abort_code = py_toint(py_arg(0));
     description = sdo_lookup_abort_code(abort_code);
 
     py_newstr(py_retval(), description);
@@ -56,14 +56,14 @@ bool py_sdo_lookup_abort_code(int argc, py_Ref argv)
 bool py_sdo_read(int argc, py_Ref argv)
 {
     can_message_t sdo_response = {0};
-    disp_mode_t   disp_mode    = SILENT;
-    sdo_state_t   sdo_state;
-    int           node_id;
-    int           index;
-    int           sub_index;
-    bool        show_output;
-    const char*   comment;
-    uint32        result;
+    disp_mode_t disp_mode = SILENT;
+    sdo_state_t sdo_state;
+    int node_id;
+    int index;
+    int sub_index;
+    bool show_output;
+    const char* comment;
+    uint32 result;
 
     PY_CHECK_ARGC(5);
     PY_CHECK_ARG_TYPE(0, tp_int);
@@ -72,11 +72,11 @@ bool py_sdo_read(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(3, tp_bool);
     PY_CHECK_ARG_TYPE(4, tp_str);
 
-    node_id     = py_toint(py_arg(0));
-    index       = py_toint(py_arg(1));
-    sub_index   = py_toint(py_arg(2));
+    node_id = py_toint(py_arg(0));
+    index = py_toint(py_arg(1));
+    sub_index = py_toint(py_arg(2));
     show_output = py_tobool(py_arg(3));
-    comment     = py_tostr(py_arg(4));
+    comment = py_tostr(py_arg(4));
 
     limit_node_id((uint8*)&node_id);
 
@@ -114,15 +114,15 @@ bool py_sdo_read(int argc, py_Ref argv)
 bool py_sdo_write(int argc, py_Ref argv)
 {
     can_message_t sdo_response = {0};
-    disp_mode_t   disp_mode    = SILENT;
-    sdo_state_t   sdo_state;
-    int           node_id;
-    int           index;
-    int           sub_index;
-    int           length;
-    int           data;
-    bool        show_output;
-    const char*   comment;
+    disp_mode_t disp_mode = SILENT;
+    sdo_state_t sdo_state;
+    int node_id;
+    int index;
+    int sub_index;
+    int length;
+    int data;
+    bool show_output;
+    const char* comment;
 
     PY_CHECK_ARGC(7);
     PY_CHECK_ARG_TYPE(0, tp_int);
@@ -133,13 +133,13 @@ bool py_sdo_write(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(5, tp_bool);
     PY_CHECK_ARG_TYPE(6, tp_str);
 
-    node_id     = py_toint(py_arg(0));
-    index       = py_toint(py_arg(1));
-    sub_index   = py_toint(py_arg(2));
-    length      = py_toint(py_arg(3));
-    data        = py_toint(py_arg(4));
+    node_id = py_toint(py_arg(0));
+    index = py_toint(py_arg(1));
+    sub_index = py_toint(py_arg(2));
+    length = py_toint(py_arg(3));
+    data = py_toint(py_arg(4));
     show_output = py_tobool(py_arg(5));
-    comment     = py_tostr(py_arg(6));
+    comment = py_tostr(py_arg(6));
 
     limit_node_id((uint8*)&node_id);
 
@@ -174,12 +174,12 @@ bool py_sdo_write(int argc, py_Ref argv)
 bool py_sdo_write_file(int argc, py_Ref argv)
 {
     can_message_t sdo_response = {0};
-    disp_mode_t   disp_mode    = SILENT;
-    int           status;
-    int           node_id;
-    int           index;
-    int           sub_index;
-    const char*   filename;
+    disp_mode_t disp_mode = SILENT;
+    int status;
+    int node_id;
+    int index;
+    int sub_index;
+    const char* filename;
 
     PY_CHECK_ARGC(4);
     PY_CHECK_ARG_TYPE(0, tp_int);
@@ -187,10 +187,10 @@ bool py_sdo_write_file(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(2, tp_int);
     PY_CHECK_ARG_TYPE(3, tp_str);
 
-    node_id   = py_toint(py_arg(0));
-    index     = py_toint(py_arg(1));
+    node_id = py_toint(py_arg(0));
+    index = py_toint(py_arg(1));
     sub_index = py_toint(py_arg(2));
-    filename  = py_tostr(py_arg(3));
+    filename = py_tostr(py_arg(3));
 
     if (NULL == filename)
     {
@@ -223,15 +223,15 @@ bool py_sdo_write_file(int argc, py_Ref argv)
 bool py_sdo_write_string(int argc, py_Ref argv)
 {
     can_message_t sdo_response = {0};
-    disp_mode_t   disp_mode    = SILENT;
-    int           status;
-    int           node_id;
-    int           index;
-    int           sub_index;
-    const char*   data;
-    uint32        length = 0;
-    bool        show_output;
-    const char*   comment;
+    disp_mode_t disp_mode = SILENT;
+    int status;
+    int node_id;
+    int index;
+    int sub_index;
+    const char* data;
+    uint32 length = 0;
+    bool show_output;
+    const char* comment;
 
     PY_CHECK_ARGC(6);
     PY_CHECK_ARG_TYPE(0, tp_int);
@@ -241,12 +241,12 @@ bool py_sdo_write_string(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(4, tp_bool);
     PY_CHECK_ARG_TYPE(5, tp_str);
 
-    node_id     = py_toint(py_arg(0));
-    index       = py_toint(py_arg(1));
-    sub_index   = py_toint(py_arg(2));
-    data        = py_tostr(py_arg(3));
+    node_id = py_toint(py_arg(0));
+    index = py_toint(py_arg(1));
+    sub_index = py_toint(py_arg(2));
+    data = py_tostr(py_arg(3));
     show_output = py_tobool(py_arg(4));
-    comment     = py_tostr(py_arg(5));
+    comment = py_tostr(py_arg(5));
 
     if (NULL != data)
     {
@@ -288,16 +288,16 @@ bool py_sdo_write_string(int argc, py_Ref argv)
 
 bool py_dict_lookup(int argc, py_Ref argv)
 {
-    int         index;
-    int         sub_index;
+    int index;
+    int sub_index;
     const char* description;
 
     PY_CHECK_ARGC(2);
     PY_CHECK_ARG_TYPE(0, tp_int);
     PY_CHECK_ARG_TYPE(1, tp_int);
 
-    index       = py_toint(py_arg(0));
-    sub_index   = py_toint(py_arg(1));
+    index = py_toint(py_arg(0));
+    sub_index = py_toint(py_arg(1));
     description = dict_lookup(index, sub_index);
 
     if ('\0' == description[0])

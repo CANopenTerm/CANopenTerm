@@ -46,14 +46,14 @@ static const char* baud_rate_desc[] = {
     "10 kBit/s",
     "5 kBit/s"};
 
-static TPCANHandle              peak_can_channel;
+static TPCANHandle peak_can_channel;
 static TPCANChannelInformation* pcan_channel_information = NULL;
-static uint32                   pcan_channel_count;
-static char                     err_message[100] = {0};
+static uint32 pcan_channel_count;
+static char err_message[100] = {0};
 
-static int      can_monitor(void* core);
+static int can_monitor(void* core);
 static status_t search_can_channels(void);
-static void     search_free_can_configuration(core_t* core, bool search_baud_rate, bool search_channel);
+static void search_free_can_configuration(core_t* core, bool search_baud_rate, bool search_channel);
 
 status_t can_init(core_t* core)
 {
@@ -82,7 +82,7 @@ void can_deinit(core_t* core)
         return;
     }
 
-    core->can_status         = 0;
+    core->can_status = 0;
     core->is_can_initialised = false;
 
     CAN_Uninitialize(peak_can_channel);
@@ -95,10 +95,10 @@ void can_flush(void)
 
 status_t can_print_baud_rate_help(core_t* core)
 {
-    status_t     status;
-    table_t      table            = {DARK_CYAN, DARK_WHITE, 3, 13, 6};
-    char         br_status[14][7] = {0};
-    unsigned int br_status_index  = core->baud_rate;
+    status_t status;
+    table_t table = {DARK_CYAN, DARK_WHITE, 3, 13, 6};
+    char br_status[14][7] = {0};
+    unsigned int br_status_index = core->baud_rate;
     unsigned int index;
 
     if (br_status_index >= 13)
@@ -121,7 +121,7 @@ status_t can_print_baud_rate_help(core_t* core)
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
-        int  i;
+        int i;
         char row_index[4] = {0};
         char row_desc[14] = {0};
 
@@ -145,10 +145,10 @@ status_t can_print_baud_rate_help(core_t* core)
 
 status_t can_print_channel_help(core_t* core)
 {
-    status_t     status;
-    table_t      table            = {DARK_CYAN, DARK_WHITE, 3, 30, 6};
-    char         ch_status[33][7] = {0};
-    unsigned int ch_status_index  = core->can_channel;
+    status_t status;
+    table_t table = {DARK_CYAN, DARK_WHITE, 3, 30, 6};
+    char ch_status[33][7] = {0};
+    unsigned int ch_status_index = core->can_channel;
     unsigned int index;
 
     status = search_can_channels();
@@ -178,7 +178,7 @@ status_t can_print_channel_help(core_t* core)
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
-        char row_index[4]                            = {0};
+        char row_index[4] = {0};
         char row_desc[MAX_LENGTH_HARDWARE_NAME + 16] = {0};
 
         table_print_header(&table);
@@ -229,14 +229,14 @@ void can_quit(core_t* core)
 
 uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
-    int      index;
+    int index;
     TPCANMsg pcan_message = {0};
 
     /* Not yet implemented. */
     (void)disp_mode;
     (void)comment;
 
-    pcan_message.ID  = message->id;
+    pcan_message.ID = message->id;
     pcan_message.LEN = message->length;
 
     if (message->is_extended == true)
@@ -258,15 +258,15 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
 
 uint32 can_read(can_message_t* message)
 {
-    int            index;
-    uint32         can_status;
-    TPCANMsg       pcan_message   = {0};
+    int index;
+    uint32 can_status;
+    TPCANMsg pcan_message = {0};
     TPCANTimestamp pcan_timestamp = {0};
 
     can_status = CAN_Read(peak_can_channel, &pcan_message, &pcan_timestamp);
 
-    message->id          = pcan_message.ID;
-    message->length      = pcan_message.LEN;
+    message->id = pcan_message.ID;
+    message->length = pcan_message.LEN;
     message->is_extended = (PCAN_MESSAGE_EXTENDED == pcan_message.MSGTYPE) ? true : false;
     message->timestamp_us =
         pcan_timestamp.micros + (1000ULL * pcan_timestamp.millis) + (0x100000000ULL * 1000ULL * pcan_timestamp.millis_overflow);
@@ -378,7 +378,7 @@ static int can_monitor(void* core_pt)
 static status_t search_can_channels(void)
 {
     TPCANStatus pcan_status;
-    uint32      prev_channel_count = pcan_channel_count;
+    uint32 prev_channel_count = pcan_channel_count;
 
     pcan_status = CAN_GetValue(PCAN_NONEBUS, PCAN_ATTACHED_CHANNELS_COUNT, &pcan_channel_count, sizeof(uint32));
     if (PCAN_ERROR_OK != pcan_status)

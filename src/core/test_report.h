@@ -15,9 +15,9 @@
 
 typedef struct
 {
-    bool      has_passed;
-    uint64      testsuite_name_hash;
-    float       time;
+    bool has_passed;
+    uint64 testsuite_name_hash;
+    float time;
     const char* package;
     const char* class_name;
     const char* test_name;
@@ -28,8 +28,8 @@ typedef struct
 } test_result_t;
 
 status_t test_init(void);
-void     test_add_result(test_result_t* result);
-void     test_clear_results(void);
+void test_add_result(test_result_t* result);
+void test_clear_results(void);
 status_t test_generate_report(const char* file_name);
 
 #endif /* TEST_REPORT_H */

@@ -41,7 +41,7 @@ void table_print_footer(table_t* t)
 
 void table_print_row(const char* column_a, const char* column_b, const char* column_c, table_t* t)
 {
-    int    index;
+    int index;
     size_t column_a_len = os_strlen(column_a);
     size_t column_b_len = os_strlen(column_b);
     size_t column_c_len = os_strlen(column_c);

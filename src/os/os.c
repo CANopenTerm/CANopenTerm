@@ -26,7 +26,7 @@ static size_t safe_strnlen(const char* s, size_t maxlen);
 
 size_t os_strlcpy(char* dst, const char* src, size_t dstsize)
 {
-    size_t srclen  = safe_strnlen(src, 5);
+    size_t srclen = safe_strnlen(src, 5);
     size_t copylen = (srclen >= dstsize) ? dstsize - 1 : srclen;
 
     if (dstsize > 0)

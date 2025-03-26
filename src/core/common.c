@@ -15,12 +15,12 @@
 
 void list_file_type(const char* dir, const char* ext, uint32 active_no)
 {
-    const char* data_path      = os_find_data_path();
-    char        file_path[512] = {0};
-    DIR_t*      d;
-    table_t     table = {DARK_CYAN, DARK_WHITE, 3, 25, 1};
-    status_t    status;
-    uint32      status_width = 1;
+    const char* data_path = os_find_data_path();
+    char file_path[512] = {0};
+    DIR_t* d;
+    table_t table = {DARK_CYAN, DARK_WHITE, 3, 25, 1};
+    status_t status;
+    uint32 status_width = 1;
 
     os_snprintf(file_path, sizeof(file_path), "%s/%s", data_path, dir);
 
@@ -30,7 +30,7 @@ void list_file_type(const char* dir, const char* ext, uint32 active_no)
     }
 
     table.column_c_width = status_width;
-    status               = table_init(&table, 1024);
+    status = table_init(&table, 1024);
 
     if (ALL_OK != status)
     {
@@ -41,7 +41,7 @@ void list_file_type(const char* dir, const char* ext, uint32 active_no)
     if (d)
     {
         struct dirent_t* dir;
-        uint32           file_no = 1;
+        uint32 file_no = 1;
 
         table_print_header(&table);
         if (0 == active_no)

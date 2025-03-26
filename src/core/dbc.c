@@ -14,17 +14,17 @@
 static dbc_t* dbc;
 
 static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness);
-static void   parse_message_line(char* line, message_t* message);
-static void   parse_signal_line(char* line, signal_t* signal);
+static void parse_message_line(char* line, message_t* message);
+static void parse_signal_line(char* line, signal_t* signal);
 static bool starts_with(const char* str, const char* prefix);
-static char*  str_tolower(const char* str);
-static char*  trim_whitespace(char* str);
+static char* str_tolower(const char* str);
+static char* trim_whitespace(char* str);
 
 const char* dbc_decode(uint32 can_id, uint64 data)
 {
     static char result[4096] = {0};
-    int         pos          = 0;
-    int         i;
+    int pos = 0;
+    int i;
 
     if (NULL == dbc)
     {
@@ -36,8 +36,8 @@ const char* dbc_decode(uint32 can_id, uint64 data)
         if (dbc->messages[i].id == can_id)
         {
             message_t* msg = &dbc->messages[i];
-            int        n   = os_snprintf(result + pos, sizeof(result) - pos, "%s (%Xh)\n", msg->name, msg->id);
-            int        j;
+            int n = os_snprintf(result + pos, sizeof(result) - pos, "%s (%Xh)\n", msg->name, msg->id);
+            int j;
 
             if (n > 0)
             {
@@ -46,10 +46,10 @@ const char* dbc_decode(uint32 can_id, uint64 data)
 
             for (j = 0; j < msg->signal_count; ++j)
             {
-                signal_t* signal    = &msg->signals[j];
-                uint64    raw_value = extract_raw_signal(data, signal->start_bit, signal->length, signal->endianness);
-                double    value     = (raw_value * signal->scale) + signal->offset;
-                int       k;
+                signal_t* signal = &msg->signals[j];
+                uint64 raw_value = extract_raw_signal(data, signal->start_bit, signal->length, signal->endianness);
+                double value = (raw_value * signal->scale) + signal->offset;
+                int k;
 
                 n = os_snprintf(result + pos, sizeof(result) - pos, "  %s", signal->name);
                 if (n > 0)
@@ -126,8 +126,8 @@ status_t dbc_find_id_by_name(uint32* id, const char* search)
 
 status_t dbc_load(char* filename)
 {
-    FILE_t*    file;
-    char       line[1024]      = {0};
+    FILE_t* file;
+    char line[1024] = {0};
     message_t* current_message = NULL;
 
     dbc_unload();
@@ -143,7 +143,7 @@ status_t dbc_load(char* filename)
     else
     {
         dbc->message_count = 0;
-        dbc->messages      = NULL;
+        dbc->messages = NULL;
     }
 
     os_fix_path(filename);
@@ -168,7 +168,7 @@ status_t dbc_load(char* filename)
                 return OS_MEMORY_ALLOCATION_ERROR;
             }
 
-            dbc->messages   = temp;
+            dbc->messages = temp;
             current_message = &dbc->messages[dbc->message_count];
             os_memset(current_message, 0, sizeof(message_t));
 
@@ -252,7 +252,7 @@ void dbc_unload(void)
 
     os_free(dbc->messages);
     dbc->message_count = 0;
-    dbc->messages      = NULL;
+    dbc->messages = NULL;
 }
 
 static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness)
@@ -263,7 +263,7 @@ static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length
     if (ENDIANNESS_MOTOROLA == endianness)
     {
         int bit_pos = 64 - (start_bit + length);
-        raw_value   = (can_frame >> bit_pos) & mask;
+        raw_value = (can_frame >> bit_pos) & mask;
     }
     else
     {
@@ -280,12 +280,12 @@ static void parse_message_line(char* line, message_t* message)
 
     os_strtokr_r(rest, " ", &rest);
 
-    token                = os_strtokr_r(rest, " ", &rest);
-    message->id          = os_strtoul(token, NULL, 10) & 0x7FFFFFFF;
-    token                = os_strtokr_r(rest, ":", &rest);
-    message->name        = os_strdup(token);
-    token                = os_strtokr_r(rest, " ", &rest);
-    message->dlc         = os_atoi(token);
+    token = os_strtokr_r(rest, " ", &rest);
+    message->id = os_strtoul(token, NULL, 10) & 0x7FFFFFFF;
+    token = os_strtokr_r(rest, ":", &rest);
+    message->name = os_strdup(token);
+    token = os_strtokr_r(rest, " ", &rest);
+    message->dlc = os_atoi(token);
     message->transmitter = os_strdup(trim_whitespace(rest));
 }
 
@@ -294,15 +294,15 @@ static void parse_signal_line(char* line, signal_t* signal)
     char* token;
     char* rest = line;
 
-    signal->name       = NULL;
-    signal->unit       = NULL;
-    signal->receiver   = NULL;
-    signal->start_bit  = 0;
-    signal->length     = 0;
-    signal->scale      = 1.0;
-    signal->offset     = 0.0;
-    signal->min_value  = 0.0;
-    signal->max_value  = 0.0;
+    signal->name = NULL;
+    signal->unit = NULL;
+    signal->receiver = NULL;
+    signal->start_bit = 0;
+    signal->length = 0;
+    signal->scale = 1.0;
+    signal->offset = 0.0;
+    signal->min_value = 0.0;
+    signal->max_value = 0.0;
     signal->endianness = 0;
 
     os_strtokr_r(rest, " ", &rest);
@@ -317,7 +317,7 @@ static void parse_signal_line(char* line, signal_t* signal)
     if (token != NULL)
     {
         signal->start_bit = os_atoi(token);
-        token             = os_strtokr_r(rest, "@", &rest);
+        token = os_strtokr_r(rest, "@", &rest);
         if (token != NULL)
         {
             signal->length = os_atoi(token);
@@ -336,7 +336,7 @@ static void parse_signal_line(char* line, signal_t* signal)
         if (token != NULL)
         {
             signal->scale = os_atof(token);
-            token         = os_strtokr_r(rest, ")", &rest);
+            token = os_strtokr_r(rest, ")", &rest);
             if (token != NULL)
             {
                 signal->offset = os_atof(token);
@@ -351,7 +351,7 @@ static void parse_signal_line(char* line, signal_t* signal)
         if (token != NULL)
         {
             signal->min_value = os_atof(token);
-            token             = os_strtokr_r(rest, "]", &rest);
+            token = os_strtokr_r(rest, "]", &rest);
             if (token != NULL)
             {
                 signal->max_value = os_atof(token);
@@ -398,7 +398,7 @@ static bool starts_with(const char* str, const char* prefix)
 {
     bool status;
     size_t len_prefix = os_strlen(prefix);
-    size_t len_str    = os_strlen(str);
+    size_t len_str = os_strlen(str);
 
     if (len_str < len_prefix)
     {
@@ -414,7 +414,7 @@ static bool starts_with(const char* str, const char* prefix)
 
 static char* str_tolower(const char* str)
 {
-    int   i;
+    int i;
     char* lower_str;
 
     if (NULL == str)

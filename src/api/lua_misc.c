@@ -18,9 +18,9 @@ extern void print_heading(const char* heading);
 
 int lua_delay_ms(lua_State* L)
 {
-    uint32      delay_in_ms = (uint32)lua_tointeger(L, 1);
-    bool      show_output = lua_toboolean(L, 2);
-    const char* comment     = lua_tostring(L, 3);
+    uint32 delay_in_ms = (uint32)lua_tointeger(L, 1);
+    bool show_output = lua_toboolean(L, 2);
+    const char* comment = lua_tostring(L, 3);
 
     if (0 == delay_in_ms)
     {
@@ -29,7 +29,7 @@ int lua_delay_ms(lua_State* L)
 
     if (true == show_output)
     {
-        int  i;
+        int i;
         char buffer[34] = {0};
 
         os_print(LIGHT_BLACK, "Delay ");

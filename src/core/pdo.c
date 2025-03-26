@@ -15,7 +15,7 @@
 static pdo_t pdo[PDO_MAX];
 
 static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval);
-static void   print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id);
+static void print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id);
 
 bool pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, disp_mode_t disp_mode)
 {
@@ -43,8 +43,8 @@ bool pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, dis
         {
             pdo[i].can_id = can_id;
             pdo[i].length = length;
-            pdo[i].data   = data;
-            pdo[i].id     = os_add_timer(event_time_ms, pdo_send_callback, &pdo[i]);
+            pdo[i].data = data;
+            pdo[i].id = os_add_timer(event_time_ms, pdo_send_callback, &pdo[i]);
             return true;
         }
     }
@@ -69,7 +69,7 @@ bool pdo_del(uint16 can_id, disp_mode_t disp_mode)
         {
             pdo[i].can_id = 0;
             pdo[i].length = 0;
-            pdo[i].data   = 0;
+            pdo[i].data = 0;
 
             os_remove_timer(pdo[i].id);
             break;
@@ -81,14 +81,14 @@ bool pdo_del(uint16 can_id, disp_mode_t disp_mode)
 
 static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval)
 {
-    int           i;
-    int           offset  = 0;
-    pdo_t*        pdo     = pdo_pt;
+    int i;
+    int offset = 0;
+    pdo_t* pdo = pdo_pt;
     can_message_t message = {0};
 
     (void)id;
 
-    message.id     = pdo->can_id;
+    message.id = pdo->can_id;
     message.length = pdo->length;
 
     for (i = (pdo->length - 1); i >= 0; i -= 1)
@@ -105,7 +105,7 @@ static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval)
 status_t pdo_print_help(void)
 {
     status_t status;
-    table_t  table = {DARK_CYAN, DARK_WHITE, 13, 7, 7};
+    table_t table = {DARK_CYAN, DARK_WHITE, 13, 7, 7};
 
     status = table_init(&table, 1024);
     if (ALL_OK == status)
@@ -156,7 +156,7 @@ bool pdo_is_id_valid(uint16 can_id)
 
 void pdo_print_result(uint16 can_id, uint32 event_time_ms, uint64 data, bool was_successful, const char* comment)
 {
-    int  i;
+    int i;
     char buffer[34] = {0};
 
     if (NULL == comment)
