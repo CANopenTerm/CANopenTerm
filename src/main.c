@@ -10,12 +10,12 @@
 #include <stdlib.h>
 
 #include "can.h"
+#include "codb.h"
 #include "core.h"
 #include "ctt.h"
 #include "os.h"
 #include "scripts.h"
-
-#include "codb.h"
+#include "window.h"
 
 core_t* core = NULL;
 
@@ -126,13 +126,20 @@ int main(int argc, char* argv[])
         core->is_running = false;
     }
 
+    if (! window_init(core))
+    {
+        /* Nothing to do here. */
+    }
+
     core->core_th = os_create_thread(core_update, "Core thread", (void*)core);
     while (true == core->is_running)
     {
+        window_update(core);
         os_delay(1);
     }
     os_detach_thread(core->core_th);
 
+    window_deinit(core);
     core_deinit(core);
     os_quit();
     return status;
