@@ -12,11 +12,10 @@
 
 typedef enum pal_color
 {
-    BG_COLOR = 0x2a2b2e,
-    WIDGET_COLOR = 0x5a5a66,
-    WIDGET_COLOR_HIGHLIGHT = 0xa4c2a8,
-    DRAW_COLOR = 0xaceb98,
-    DRAW_COLOR_HIGHLIGHT = 0x87ff65
+    BG_COLOR = 0x2d3142,
+    WIDGET_COLOR = 0x086375,
+    WIDGET_COLOR_HIGHLIGHT = 0x1dd3b0,
+    DRAW_COLOR = 0xaffc41,
 
 } pal_color_t;
 
