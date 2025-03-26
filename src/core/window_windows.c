@@ -11,6 +11,11 @@
 
 bool window_init(core_t* core)
 {
+    if (! core)
+    {
+        return false;
+    }
+
     const SDL_DisplayMode* mode = SDL_GetDesktopDisplayMode(1);
     if (! mode)
     {
@@ -25,6 +30,7 @@ bool window_init(core_t* core)
         return false;
     }
 
+    SDL_SetWindowPosition(core->window, (mode->w - mode->h / 2) - 64, 64);
     return true;
 }
 
