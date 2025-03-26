@@ -182,7 +182,6 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
         uint64 time_a;
         uint64 time_b;
         uint64 delta_time;
-        bool response_received;
 
         msg_out.id = CAN_BASE_ID + node_id;
         msg_out.length = 8;
@@ -197,9 +196,9 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
 
         for (n = 0; n < expected_msgs; n += 1)
         {
+            bool response_received = false;
             timeout_time = 0;
             time_a = os_get_ticks();
-            response_received = false;
 
             while ((false == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
             {
