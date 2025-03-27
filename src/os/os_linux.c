@@ -123,11 +123,32 @@ const char* os_get_user_directory(void)
 status_t os_init(void)
 {
     status_t status = ALL_OK;
+    int i;
+    int num_drivers = SDL_GetNumVideoDrivers();
+    const char* selected_driver = NULL;
 
-    if (! SDL_InitSubSystem(SDL_INIT_VIDEO))
+    for (i = 0; i < num_drivers; i++)
     {
-        os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
-        status = OS_INIT_ERROR;
+        const char* driver = SDL_GetVideoDriver(i);
+        if (SDL_SetHint(SDL_HINT_VIDEO_DRIVER, driver) && SDL_InitSubSystem(SDL_INIT_VIDEO))
+        {
+            selected_driver = driver;
+            break;
+        }
+    }
+
+    if (! selected_driver)
+    {
+        SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "offscreen");
+        if (SDL_InitSubSystem(SDL_INIT_VIDEO))
+        {
+            selected_driver = "offscreen";
+        }
+        else
+        {
+            os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
+            status = OS_INIT_ERROR;
+        }
     }
 
     return status;
