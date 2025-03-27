@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
             }
 
             window_clear(core);
-            widget_tachometer(10, 10, 100, 100, 1000, debug);
+            widget_tachometer(10, 10, 100, 1000, debug);
             window_update(core);
             os_delay(1);
         }

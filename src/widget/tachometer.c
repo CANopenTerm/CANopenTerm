@@ -15,11 +15,55 @@
 #include "window.h"
 #include <SDL3/SDL.h>
 
-void widget_tachometer(uint8 pos_x, uint8 pos_y, uint8 w, uint8 h, const uint32 max, uint32 rpm)
+static void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, bool fill)
 {
-    SDL_FRect rect = {pos_x, pos_y, w, h};
-    SDL_Renderer* renderer = window_get_renderer();
+    int x = 0;
+    int y = radius;
+    int d = 3 - 2 * radius;
 
+    while (x <= y)
+    {
+        if (fill)
+        {
+            for (int i = (cx - x); i <= (cx + x); i++)
+            {
+                SDL_RenderPoint(renderer, i, cy + y);
+                SDL_RenderPoint(renderer, i, cy - y);
+            }
+            for (int i = (cx - y); i <= (cx + y); i++)
+            {
+                SDL_RenderPoint(renderer, i, cy + x);
+                SDL_RenderPoint(renderer, i, cy - x);
+            }
+        }
+        else
+        {
+            SDL_RenderPoint(renderer, cx + x, cy + y);
+            SDL_RenderPoint(renderer, cx - x, cy + y);
+            SDL_RenderPoint(renderer, cx + x, cy - y);
+            SDL_RenderPoint(renderer, cx - x, cy - y);
+            SDL_RenderPoint(renderer, cx + y, cy + x);
+            SDL_RenderPoint(renderer, cx - y, cy + x);
+            SDL_RenderPoint(renderer, cx + y, cy - x);
+            SDL_RenderPoint(renderer, cx - y, cy - x);
+        }
+
+        if (d < 0)
+        {
+            d += 4 * x + 6;
+        }
+        else
+        {
+            d += 4 * (x - y) + 10;
+            y--;
+        }
+        x++;
+    }
+}
+
+void widget_tachometer(uint8 pos_x, uint8 pos_y, uint8 size, const uint32 max, uint32 rpm)
+{
+    SDL_Renderer* renderer = window_get_renderer();
     uint8 r, g, b;
 
     float angle;
@@ -40,21 +84,21 @@ void widget_tachometer(uint8 pos_x, uint8 pos_y, uint8 w, uint8 h, const uint32 
     b = (WIDGET_COLOR & 0x0000ff);
 
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
-    SDL_RenderFillRect(renderer, &rect);
+    draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, true);
 
     r = (WIDGET_COLOR_HIGHLIGHT & 0xff0000) >> 16;
     g = (WIDGET_COLOR_HIGHLIGHT & 0x00ff00) >> 8;
     b = (WIDGET_COLOR_HIGHLIGHT & 0x0000ff);
 
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
-    SDL_RenderRect(renderer, &rect);
+    draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, false);
 
     angle = 180.0f - ((float)rpm / max * 180.0f);
     radians = angle * (3.14159f / 180.0f);
 
-    center_x = pos_x + w / 2;
-    center_y = pos_y + h / 2;
-    needle_length = (w < h ? w : h) / 2 - 10;
+    center_x = pos_x + size / 2;
+    center_y = pos_y + size / 2;
+    needle_length = size / 2;
 
     needle_x = center_x + (int)(needle_length * SDL_cos(radians));
     needle_y = center_y - (int)(needle_length * SDL_sin(radians));
