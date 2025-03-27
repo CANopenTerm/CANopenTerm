@@ -42,7 +42,11 @@ void parse_command(char* input, core_t* core)
     }
     else if ((input[1] != ' ') && (input[1] != '\0'))
     {
-        run_script(token, core);
+        core->user_event.type = SDL_EVENT_USER;
+        core->user_event.user.code = RUN_SCRIPT_EVENT;
+        core->user_event.user.data1 = token;
+        core->user_event.user.data2 = NULL;
+        SDL_PushEvent(&core->user_event);
         return;
     }
     else if (0 == os_strncmp(token, "y", 1))
@@ -119,11 +123,11 @@ void parse_command(char* input, core_t* core)
     {
         if (core->is_window_shown)
         {
-            window_hide(core);
+            window_hide();
         }
         else
         {
-            window_show(core);
+            window_show();
         }
     }
     else if (0 == os_strncmp(token, "h", 1))
@@ -419,7 +423,12 @@ void parse_command(char* input, core_t* core)
             print_usage_information(true);
             return;
         }
-        run_script(token, core);
+
+        core->user_event.type = SDL_EVENT_USER;
+        core->user_event.user.code = RUN_SCRIPT_EVENT;
+        core->user_event.user.data1 = token;
+        core->user_event.user.data2 = NULL;
+        SDL_PushEvent(&core->user_event);
     }
     else
     {

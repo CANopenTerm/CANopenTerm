@@ -21,10 +21,17 @@ typedef enum disp_mode
 
 } disp_mode_t;
 
+typedef enum user_event
+{
+    RUN_SCRIPT_EVENT = 2
+
+} user_event_t;
+
 typedef struct core
 {
     os_thread* can_monitor_th;
     os_thread* core_th;
+    os_event user_event;
     lua_State* L;
     os_renderer* renderer;
     os_window* window;

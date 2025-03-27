@@ -47,7 +47,6 @@ int lua_widget_tachometer(lua_State* L)
     uint32 rpm = luaL_checkinteger(L, 5);
 
     widget_tachometer(pos_x, pos_y, size, max, rpm);
-
     return 0;
 }
 

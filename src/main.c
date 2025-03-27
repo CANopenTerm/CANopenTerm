@@ -7,6 +7,7 @@
  *
  **/
 
+#include <SDL3/SDL.h>
 #include <stdlib.h>
 
 #include "can.h"
@@ -135,9 +136,22 @@ int main(int argc, char* argv[])
     core->core_th = os_create_thread(core_update, "Core thread", (void*)core);
     while (true == core->is_running)
     {
-        // TODO:
-        // Run scripts on custom event.
-        // Drawing functions have to be called from within the main thread.
+        while (SDL_PollEvent(&core->user_event))
+        {
+            switch (core->user_event.type)
+            {
+                case SDL_EVENT_USER:
+                {
+                    if (RUN_SCRIPT_EVENT == core->user_event.user.code)
+                    {
+                        run_script(core->user_event.user.data1, core);
+                    }
+                }
+            }
+        }
+
+        window_update();
+        os_delay(1);
     }
     os_detach_thread(core->core_th);
 

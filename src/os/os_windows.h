@@ -73,6 +73,7 @@
 #define os_timer_cb SDL_TimerCallback
 #define os_timer_id SDL_TimerID
 
+#define os_event SDL_Event
 #define os_renderer SDL_Renderer
 #define os_window SDL_Window
 
