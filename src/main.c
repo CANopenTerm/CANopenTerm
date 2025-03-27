@@ -146,6 +146,7 @@ int main(int argc, char* argv[])
                     {
                         run_script(core->user_event.user.data1, core);
                     }
+                    break;
                 }
             }
         }

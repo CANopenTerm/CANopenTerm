@@ -18,7 +18,12 @@ while not key_is_hit() do
         previous_data = data
     end
 
-    clear_window()
-    widget_tachometer(10, 10, 100, 5000, data)
-    update_window()
+    if (id == 0x100) then
+        clear_window()
+        widget_tachometer(10, 10, 100, 5000, data)
+        update_window()
+    end
 end
+
+clear_window()
+hide_window()

@@ -277,6 +277,13 @@ void run_script(char* name, core_t* core)
     char basename[PATH_MAX] = {0};
     FILE* file;
 
+    if (core->is_script_running)
+    {
+        os_log(LOG_WARNING, "Another script is currently being executed.\n");
+        return;
+    }
+    core->is_script_running = true;
+
     if (base)
     {
         os_strlcpy(basename, base + 1, sizeof(basename) - 1);
@@ -325,6 +332,8 @@ void run_script(char* name, core_t* core)
     {
         os_log(LOG_ERROR, "Script \"%s\" not found.\n", basename);
     }
+
+    core->is_script_running = false;
 }
 
 status_t run_script_ex(char* name, core_t* core)

@@ -111,10 +111,13 @@ int core_update(void* core_pt)
 
     while (true == core->is_running)
     {
-        os_print_prompt();
-        if (ALL_OK == os_get_prompt(command))
+        if (false == core->is_script_running)
         {
-            parse_command(command, core);
+            os_print_prompt();
+            if (ALL_OK == os_get_prompt(command))
+            {
+                parse_command(command, core);
+            }
         }
     }
 
