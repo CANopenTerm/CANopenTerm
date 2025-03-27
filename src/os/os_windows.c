@@ -147,11 +147,7 @@ status_t os_init(void)
     if (! selected_driver)
     {
         SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "offscreen");
-        if (SDL_InitSubSystem(SDL_INIT_VIDEO))
-        {
-            selected_driver = "offscreen";
-        }
-        else
+        if (! SDL_InitSubSystem(SDL_INIT_VIDEO))
         {
             os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
             status = OS_INIT_ERROR;
