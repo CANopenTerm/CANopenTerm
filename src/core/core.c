@@ -19,6 +19,7 @@
 #include "lua_pdo.h"
 #include "lua_sdo.h"
 #include "lua_test_report.h"
+#include "lua_widget.h"
 #include "nmt.h"
 #include "os.h"
 #include "python_can.h"
@@ -28,6 +29,7 @@
 #include "python_pdo.h"
 #include "python_sdo.h"
 #include "python_test_report.h"
+#include "python_widget.h"
 #include "scripts.h"
 #include "test_report.h"
 #include "version.h"
@@ -73,6 +75,7 @@ status_t core_init(core_t** core, bool is_plain_mode)
         lua_register_pdo_commands((*core));
         lua_register_sdo_commands((*core));
         lua_register_test_commands((*core));
+        lua_register_widget_commands((*core));
         python_can_init();
         python_dbc_init();
         python_misc_init();

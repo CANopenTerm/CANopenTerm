@@ -10,10 +10,10 @@
 #include "core.h"
 #include "os.h"
 
-void window_clear(core_t* core);
+void window_clear(void);
 bool window_deinit(core_t* core);
 os_renderer* window_get_renderer(void);
-void window_hide(core_t* core);
+void window_hide(void);
 bool window_init(core_t* core);
-void window_show(core_t* core);
-void window_update(core_t* core);
+void window_show(void);
+void window_update(void);

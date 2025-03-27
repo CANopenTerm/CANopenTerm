@@ -61,7 +61,7 @@ static void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, bool
     }
 }
 
-void widget_tachometer(uint8 pos_x, uint8 pos_y, uint8 size, const uint32 max, uint32 rpm)
+void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max, uint32 rpm)
 {
     SDL_Renderer* renderer = window_get_renderer();
     uint8 r, g, b;

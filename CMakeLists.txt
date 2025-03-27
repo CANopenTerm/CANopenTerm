@@ -67,13 +67,15 @@ set(api_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_pdo.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_sdo.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_test_report.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/api/lua_widget.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_can.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_dbc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_misc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_nmt.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_pdo.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_sdo.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_test_report.c)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_test_report.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/api/python_widget.c)
 
 set(common_core_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/buffer.c

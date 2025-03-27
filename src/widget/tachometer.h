@@ -12,6 +12,6 @@
 
 #include "os.h"
 
-void widget_tachometer(uint8 pos_x, uint8 pos_y, uint8 size, const uint32 max, uint32 rpm);
+void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max, uint32 rpm);
 
 #endif /* TACHOMETER_H */

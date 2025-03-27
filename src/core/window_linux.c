@@ -12,10 +12,10 @@
 #include "palette.h"
 #include <SDL3/SDL.h>
 
-uint32 window_id;
-
-void window_clear(core_t* core)
+void window_clear(void)
 {
+    extern core_t* core;
+
     uint8 r = (BG_COLOR & 0xff0000) >> 16;
     uint8 g = (BG_COLOR & 0x00ff00) >> 8;
     uint8 b = (BG_COLOR & 0x0000ff);
@@ -39,8 +39,9 @@ os_renderer* window_get_renderer(void)
     return core->renderer;
 }
 
-void window_hide(core_t* core)
+void window_hide(void)
 {
+    extern core_t* core;
     if (core->window)
     {
         SDL_HideWindow(core->window);
@@ -73,8 +74,9 @@ bool window_init(core_t* core)
     return true;
 }
 
-void window_show(core_t* core)
+void window_show(void)
 {
+    extern core_t* core;
     if (core->window)
     {
         SDL_ShowWindow(core->window);
@@ -82,8 +84,9 @@ void window_show(core_t* core)
     }
 }
 
-void window_update(core_t* core)
+void window_update(void)
 {
+    extern core_t* core;
     if (core->renderer)
     {
         SDL_RenderPresent(core->renderer);

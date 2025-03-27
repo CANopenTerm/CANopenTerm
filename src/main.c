@@ -116,6 +116,11 @@ int main(int argc, char* argv[])
         can_set_baud_rate(baud_rate_index, core);
     }
 
+    if (! window_init(core))
+    {
+        /* Nothing to do here. */
+    }
+
     if (true == run_cct)
     {
         cct_run_test(node_id);
@@ -127,42 +132,12 @@ int main(int argc, char* argv[])
         core->is_running = false;
     }
 
-    if (! window_init(core))
-    {
-        /* Nothing to do here. */
-    }
-
     core->core_th = os_create_thread(core_update, "Core thread", (void*)core);
-
+    while (true == core->is_running)
     {
-        // TODO: Add widget script API.
-        uint32 debug = 0;
-        bool goes_up = true;
-        while (true == core->is_running)
-        {
-            if (goes_up)
-            {
-                debug += 1;
-            }
-            else
-            {
-                debug -= 1;
-            }
-
-            if (debug >= 1000)
-            {
-                goes_up = false;
-            }
-            else if (debug <= 0)
-            {
-                goes_up = true;
-            }
-
-            window_clear(core);
-            widget_tachometer(10, 10, 100, 1000, debug);
-            window_update(core);
-            os_delay(1);
-        }
+        // TODO:
+        // Run scripts on custom event.
+        // Drawing functions have to be called from within the main thread.
     }
     os_detach_thread(core->core_th);
 
