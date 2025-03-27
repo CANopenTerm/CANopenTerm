@@ -7,8 +7,10 @@
  *
  **/
 
-#include "command.h"
+#include <stdlib.h>
+
 #include "can.h"
+#include "command.h"
 #include "core.h"
 #include "dict.h"
 #include "eds.h"
@@ -18,7 +20,6 @@
 #include "scripts.h"
 #include "sdo.h"
 #include "table.h"
-#include <stdlib.h>
 
 static void convert_token_to_uint(char* token, uint32* result);
 static void convert_token_to_uint64(char* token, uint64* result);
@@ -118,17 +119,6 @@ void parse_command(char* input, core_t* core)
     else if (0 == os_strncmp(token, "q", 1))
     {
         core->is_running = false;
-    }
-    else if (0 == os_strncmp(token, "g", 1))
-    {
-        if (core->is_window_shown)
-        {
-            window_hide();
-        }
-        else
-        {
-            window_show();
-        }
     }
     else if (0 == os_strncmp(token, "h", 1))
     {
@@ -478,7 +468,6 @@ status_t print_usage_information(bool show_all)
         table_print_row(" d ", "[index] [sub_index]", "Lookup dictionary", &table);
         table_print_row(" y ", "(identifer)", "Set CAN channel", &table);
         table_print_row(" c ", " ", "Clear output", &table);
-        table_print_row(" g ", " ", "Show/hide GUI", &table);
         table_print_row(" l ", " ", "List scripts", &table);
         table_print_row("(s)", "[identifier](.lua)", "Run script", &table);
     }
