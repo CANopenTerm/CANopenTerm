@@ -34,7 +34,14 @@ int lua_show_window(lua_State* L)
 
 int lua_update_window(lua_State* L)
 {
-    window_update();
+    if (CORE_QUIT == window_update())
+    {
+        window_clear();
+        window_update();
+        window_hide();
+        lua_pushstring(L, "Script execution stopped");
+        return lua_error(L);
+    }
     return 0;
 }
 

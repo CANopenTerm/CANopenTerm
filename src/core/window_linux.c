@@ -84,7 +84,7 @@ void window_show(void)
     }
 }
 
-void window_update(void)
+status_t window_update(void)
 {
     extern core_t* core;
     if (core->renderer)
@@ -97,9 +97,10 @@ void window_update(void)
             switch (event.type)
             {
                 case SDL_EVENT_QUIT:
-                    core->is_running = false;
-                    return;
+                    return CORE_QUIT;
             }
         }
     }
+
+    return ALL_OK;
 }

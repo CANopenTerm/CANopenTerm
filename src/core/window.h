@@ -16,4 +16,4 @@ os_renderer* window_get_renderer(void);
 void window_hide(void);
 bool window_init(core_t* core);
 void window_show(void);
-void window_update(void);
+status_t window_update(void);

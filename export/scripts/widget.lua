@@ -15,14 +15,14 @@ while not key_is_hit() do
     if data == nil then
         data = previous_data
     else
-        previous_data = data
+        if id == 0x100 then
+           previous_data = data
+        end
     end
 
-    if (id == 0x100) then
-        clear_window()
-        widget_tachometer(10, 10, 100, 5000, data)
-        update_window()
-    end
+    clear_window()
+    widget_tachometer(10, 10, 100, 5000, data)
+    update_window()
 end
 
 clear_window()

@@ -686,6 +686,8 @@ print_heading (heading)
 
 > **heading** Heading to be printed.
 
+**Returns**: Nothing.
+
 <!-- tab:Example -->
 ```lua
 local device_name = sdo_read(0x123, 0x1008, 0x00)
@@ -699,9 +701,75 @@ sdo_read(0x123, 0x100A, 0x00, true)
 ```
 <!-- tabs:end -->
 
+## Widgets
+
+### window_clear()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Clear widget window.
+
+```lua
+window_clear ()
+```
 **Returns**: Nothing.
 
-### Utilities
+<!-- tabs:start -->
+<!-- tab:Description -->
+Hide widget window.
+
+```lua
+window_hide ()
+```
+**Returns**: Nothing.
+
+### window_show()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Show widget window.
+
+```lua
+window_show ()
+```
+
+**Returns**: Nothing.
+
+### window_update()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Update widget window.
+
+```lua
+window_update ()
+```
+
+**Returns**: Nothing.
+
+### widget_tachometer()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Interpret raw CAN message.
+
+```lua
+widget_tachometer (pos_x, pos_y, size, max, rpm)
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel.
+
+> **max** Maximum value.
+
+> **rpm** Set value.
+
+**Returns**: Nothing.
+
+## Utilities
 
 <!-- tabs:start -->
 <!-- tab:Description -->

@@ -370,7 +370,7 @@ status_t run_script_ex(char* name, core_t* core)
             }
             else
             {
-                os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
+                os_log(LOG_WARNING, "'%s': %s", name, lua_tostring(core->L, -1));
                 status = SCRIPT_ERROR;
             }
         }
@@ -464,7 +464,7 @@ status_t run_script_ex(char* name, core_t* core)
             }
             else
             {
-                os_log(LOG_WARNING, "Could not run script '%s': %s", name, lua_tostring(core->L, -1));
+                os_log(LOG_WARNING, "'%s': %s", name, lua_tostring(core->L, -1));
                 status = SCRIPT_ERROR;
             }
         }

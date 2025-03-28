@@ -150,12 +150,10 @@ int main(int argc, char* argv[])
                 }
             }
         }
-
-        window_update();
         os_delay(1);
     }
-    os_detach_thread(core->core_th);
 
+    os_detach_thread(core->core_th);
     window_deinit(core);
     core_deinit(core);
     os_quit();
