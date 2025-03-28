@@ -11,6 +11,7 @@
 #include "lauxlib.h"
 #include "lua.h"
 #include "os.h"
+#include "status_bar.h"
 #include "tachometer.h"
 #include "window.h"
 
@@ -45,15 +46,28 @@ int lua_update_window(lua_State* L)
     return 0;
 }
 
+int lua_widget_status_bar(lua_State* L)
+{
+    uint32 pos_x = luaL_checkinteger(L, 1);
+    uint32 pos_y = luaL_checkinteger(L, 2);
+    uint32 width = luaL_checkinteger(L, 3);
+    uint32 height = luaL_checkinteger(L, 4);
+    const uint32 max = luaL_checkinteger(L, 5);
+    uint32 value = luaL_checkinteger(L, 6);
+
+    widget_status_bar(pos_x, pos_y, width, height, max, value);
+    return 0;
+}
+
 int lua_widget_tachometer(lua_State* L)
 {
     uint32 pos_x = luaL_checkinteger(L, 1);
     uint32 pos_y = luaL_checkinteger(L, 2);
     uint32 size = luaL_checkinteger(L, 3);
     const uint32 max = luaL_checkinteger(L, 4);
-    uint32 rpm = luaL_checkinteger(L, 5);
+    uint32 value = luaL_checkinteger(L, 5);
 
-    widget_tachometer(pos_x, pos_y, size, max, rpm);
+    widget_tachometer(pos_x, pos_y, size, max, value);
     return 0;
 }
 
@@ -67,6 +81,8 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "show_window");
     lua_pushcfunction(core->L, lua_update_window);
     lua_setglobal(core->L, "update_window");
+    lua_pushcfunction(core->L, lua_widget_status_bar);
+    lua_setglobal(core->L, "widget_status_bar");
     lua_pushcfunction(core->L, lua_widget_tachometer);
     lua_setglobal(core->L, "widget_tachometer");
 }

@@ -61,7 +61,7 @@ static void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, bool
     }
 }
 
-void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max, uint32 rpm)
+void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max, uint32 value)
 {
     SDL_Renderer* renderer = window_get_renderer();
     uint8 r, g, b;
@@ -93,7 +93,7 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
     draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, false);
 
-    angle = 180.0f - ((float)rpm / max * 180.0f);
+    angle = 180.0f - ((float)value / max * 180.0f);
     radians = angle * (3.14159f / 180.0f);
 
     center_x = pos_x + size / 2;

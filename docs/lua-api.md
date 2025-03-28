@@ -747,6 +747,30 @@ window_update ()
 
 **Returns**: Nothing.
 
+### widget_status_bar()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw status bar.
+
+```lua
+widget_status_bar (pos_x, pos_y, width, height, max, value)
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **width** Width in pixel.
+
+> **height** Height in pixel.
+
+> **max** Maximum value.
+
+> **value** Set value.
+
+**Returns**: Nothing.
+
 ### widget_tachometer()
 
 <!-- tabs:start -->
@@ -754,7 +778,7 @@ window_update ()
 Draw tachometer-like widget.
 
 ```lua
-widget_tachometer (pos_x, pos_y, size, max, rpm)
+widget_tachometer (pos_x, pos_y, size, max, value)
 ```
 
 > **pos_x** Horizontal position on widget window.
@@ -765,7 +789,7 @@ widget_tachometer (pos_x, pos_y, size, max, rpm)
 
 > **max** Maximum value.
 
-> **rpm** Set value.
+> **value** Set value.
 
 **Returns**: Nothing.
 

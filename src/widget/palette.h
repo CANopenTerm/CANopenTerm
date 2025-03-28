@@ -16,6 +16,12 @@ typedef enum pal_color
     WIDGET_COLOR = 0x086375,
     WIDGET_COLOR_HIGHLIGHT = 0x1dd3b0,
     DRAW_COLOR = 0xaffc41,
+    STATUS_BAR_LOW_1 = 0x43aa8b,
+    STATUS_BAR_LOW_2 = 0x90be6d,
+    STATUS_BAR_MID_1 = 0xf9c74f,
+    STATUS_BAR_MID_2 = 0xf8961e,
+    STATUS_BAR_HIGH_1 = 0xf3722c,
+    STATUS_BAR_HIGH_2 = 0xf94144
 
 } pal_color_t;
 
