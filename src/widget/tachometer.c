@@ -73,6 +73,7 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     int needle_length;
     int needle_x;
     int needle_y;
+    int indicator_length = size / 20;
 
     if (! renderer)
     {
@@ -92,6 +93,8 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
 
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
     draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, false);
+    SDL_RenderLine(renderer, pos_x, pos_y + (size / 2), pos_x + indicator_length, pos_y + (size / 2));
+    SDL_RenderLine(renderer, pos_x + (size - indicator_length), pos_y + (size / 2), pos_x + size, pos_y + (size / 2));
 
     angle = 180.0f - ((float)value / max * 180.0f);
     radians = angle * (3.14159f / 180.0f);
