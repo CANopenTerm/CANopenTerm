@@ -93,7 +93,7 @@ bool py_print_heading(int argc, py_Ref argv)
 
     heading = py_tostr(py_arg(0));
     print_heading(heading);
-    py_newnone(py_retval());
 
+    py_newnone(py_retval());
     return true;
 }

@@ -67,6 +67,9 @@ Key functionalities include:
   Generate Test reports for integration with continuous integration (CI) systems
   such as [Jenkins](https://plugins.jenkins.io/junit/).
 
+- **Grahical Widgets**:
+  Intuitive graphical widgets for real-time CAN data visualization.
+
 ## Why Your Support Matters
 
 **CANopenTerm** is developed to provide a powerful tool for

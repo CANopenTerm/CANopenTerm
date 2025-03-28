@@ -10,4 +10,6 @@
 #ifndef PYTHON_WIDGET_H
 #define PYTHON_WIDGET_H
 
+void python_widget_init(void);
+
 #endif /* PYTHON_WIDGET_H */

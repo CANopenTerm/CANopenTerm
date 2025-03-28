@@ -714,3 +714,71 @@ sdo_read(node_id, 0x100A, 0x00, True)
 <!-- tabs:end -->
 
 **Returns**: `None`.
+
+## Widgets
+
+### window_clear()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Clear widget window.
+
+```python
+window_clear ()
+```
+**Returns**: Nothing.
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Hide widget window.
+
+```python
+window_hide ()
+```
+**Returns**: Nothing.
+
+### window_show()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Show widget window.
+
+```python
+window_show ()
+```
+
+**Returns**: Nothing.
+
+### window_update()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Update widget window.
+
+```python
+window_update ()
+```
+
+**Returns**: Nothing.
+
+### widget_tachometer()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw tachometer-like widget.
+
+```python
+widget_tachometer (pos_x, pos_y, size, max, rpm)
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel.
+
+> **max** Maximum value.
+
+> **rpm** Set value.
+
+**Returns**: `True`, or `False` when the window is closed.

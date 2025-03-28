@@ -83,6 +83,7 @@ status_t core_init(core_t** core, bool is_plain_mode)
         python_pdo_init();
         python_sdo_init();
         python_test_init();
+        python_widget_init();
     }
     else
     {

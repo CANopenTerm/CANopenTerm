@@ -751,7 +751,7 @@ window_update ()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Interpret raw CAN message.
+Draw tachometer-like widget.
 
 ```lua
 widget_tachometer (pos_x, pos_y, size, max, rpm)
