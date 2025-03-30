@@ -12,16 +12,16 @@
 
 typedef enum pal_color
 {
-    BG_COLOR = 0x2d3142,
-    WIDGET_COLOR = 0x086375,
-    WIDGET_COLOR_HIGHLIGHT = 0x1dd3b0,
-    DRAW_COLOR = 0xaffc41,
-    STATUS_BAR_LOW_1 = 0x43aa8b,
-    STATUS_BAR_LOW_2 = 0x90be6d,
-    STATUS_BAR_MID_1 = 0xf9c74f,
-    STATUS_BAR_MID_2 = 0xf8961e,
-    STATUS_BAR_HIGH_1 = 0xf3722c,
-    STATUS_BAR_HIGH_2 = 0xf94144
+    BG_COLOR = 0x121212,
+    WIDGET_COLOR = 0x1e1e1e,
+    WIDGET_COLOR_HIGHLIGHT = 0xbb86fc,
+    DRAW_COLOR = 0x03daC6,
+    STATUS_BAR_LOW_1 = 0x00c853,
+    STATUS_BAR_LOW_2 = 0x64dd17,
+    STATUS_BAR_MID_1 = 0xffd600,
+    STATUS_BAR_MID_2 = 0xff9100,
+    STATUS_BAR_HIGH_1 = 0xff1744,
+    STATUS_BAR_HIGH_2 = 0xd500f9
 
 } pal_color_t;
 

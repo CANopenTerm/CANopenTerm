@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
                 }
             }
         }
-        os_delay(1);
+        os_delay(10);
     }
 
     os_detach_thread(core->core_th);

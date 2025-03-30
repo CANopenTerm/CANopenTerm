@@ -330,7 +330,15 @@ void run_script(char* name, core_t* core)
 
     if (OS_FILE_NOT_FOUND == status)
     {
-        os_log(LOG_ERROR, "Script \"%s\" not found.\n", basename);
+        if (core->is_abort)
+        {
+            core->is_abort = false;
+        }
+        else
+        {
+            os_log(LOG_ERROR, "Script \"%s\" not found.\n", basename);
+        }
+        os_print_prompt();
     }
 
     core->is_script_running = false;

@@ -57,8 +57,11 @@ bool py_window_show(int argc, py_Ref argv)
 
 bool py_window_update(int argc, py_Ref argv)
 {
+    extern core_t* core;
+
     if (CORE_QUIT == window_update())
     {
+        core->is_abort = true;
         window_clear();
         window_update();
         window_hide();

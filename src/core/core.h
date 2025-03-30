@@ -39,6 +39,7 @@ typedef struct core
     uint32 can_channel;
     uint32 can_status;
     uint8 node_id;
+    bool is_abort;
     bool is_can_initialised;
     bool is_running;
     bool is_script_running;
