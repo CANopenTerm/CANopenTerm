@@ -7,16 +7,26 @@
  *
  **/
 
+#include <SDL3/SDL.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "ascii.h"
 #include "os.h"
 
+#define CHAR_WIDTH 5
+#define CHAR_HEIGHT 7
+#define CHAR_SPACING 1
+#define LINE_SPACING 2
+
 typedef struct
 {
-    uint8 row[7];
+    uint8 data[CHAR_HEIGHT];
 
 } char_t;
 
-const char_t font[] = {
+const char_t font[128] = {
     {0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000}, // SPACE
     {0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0b00000, 0b00100}, // !
     {0b01010, 0b01010, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000}, // "
@@ -114,3 +124,54 @@ const char_t font[] = {
     {0b00000, 0b00000, 0b01001, 0b10110, 0b00000, 0b00000, 0b00000}  // ~
 
 };
+
+void draw_char(SDL_Renderer* renderer, char c, int x, int y, SDL_Color color)
+{
+    const char_t* glyph;
+    int row, col;
+
+    if (c < 32 || c > 127)
+    {
+        return;
+    }
+    glyph = &font[(int)c];
+
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+    for (row = 0; row < CHAR_HEIGHT; row++)
+    {
+        for (col = 0; col < CHAR_WIDTH; col++)
+        {
+            if (glyph->data[row] & (1 << (CHAR_WIDTH - 1 - col)))
+            {
+                SDL_RenderPoint(renderer, x + col, y + row);
+            }
+        }
+    }
+}
+
+void draw_text(SDL_Renderer* renderer, int x, int y, SDL_Color color, const char* fmt, ...)
+{
+    char buffer[256];
+    va_list args;
+    int cx = x, cy = y;
+    char* c;
+
+    va_start(args, fmt);
+    SDL_vsnprintf(buffer, sizeof(buffer), fmt, args);
+    va_end(args);
+
+    for (c = buffer; *c; c++)
+    {
+        if (*c == '\n')
+        {
+            cx = x;
+            cy += CHAR_HEIGHT + LINE_SPACING;
+        }
+        else
+        {
+            draw_char(renderer, *c, cx, cy, color);
+            cx += CHAR_WIDTH + CHAR_SPACING;
+        }
+    }
+}
