@@ -99,6 +99,7 @@ set(common_os_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/src/os/os.c)
 
 set(common_widget_sources
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/ascii.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/status_bar.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/tachometer.c)
 
