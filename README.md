@@ -81,7 +81,7 @@ Key functionalities include:
   such as [Jenkins](https://plugins.jenkins.io/junit/).
 
 - **Grahical Widgets**:
-  Intuitive graphical widgets for real-time CAN data visualization.
+  Intuitive graphical widgets for real-time CAN data visualisation.
 
 ## Why Your Support Matters
 

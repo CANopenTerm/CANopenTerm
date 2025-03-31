@@ -715,7 +715,7 @@ sdo_read(node_id, 0x100A, 0x00, True)
 
 **Returns**: `None`.
 
-## Widgets
+## Visualisation
 
 ### window_clear()
 
@@ -727,6 +727,8 @@ Clear widget window.
 window_clear ()
 ```
 **Returns**: Nothing.
+
+### window_hide()
 
 <!-- tabs:start -->
 <!-- tab:Description -->

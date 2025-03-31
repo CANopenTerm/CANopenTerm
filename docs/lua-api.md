@@ -701,7 +701,7 @@ sdo_read(0x123, 0x100A, 0x00, true)
 ```
 <!-- tabs:end -->
 
-## Widgets
+## Visualisation
 
 ### window_clear()
 
@@ -713,6 +713,8 @@ Clear widget window.
 window_clear ()
 ```
 **Returns**: Nothing.
+
+### window_hide()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
