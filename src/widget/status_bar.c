@@ -9,10 +9,12 @@
 
 /* TODO: Use OS-abstraction layer. */
 
+#include <SDL3/SDL.h>
+
+#include "ascii.h"
 #include "os.h"
 #include "palette.h"
 #include "window.h"
-#include <SDL3/SDL.h>
 
 void widget_status_bar(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, const uint32 max, uint32 value)
 {
@@ -65,4 +67,6 @@ void widget_status_bar(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, 
     {
         SDL_RenderLine(renderer, pos_x + 1 + i, pos_y + 1, pos_x + 1 + i, pos_y + height - 2);
     }
+
+    widget_print(pos_x + 2, pos_y + 2, DRAW_WHITE, "%d/%d", value, max);
 }

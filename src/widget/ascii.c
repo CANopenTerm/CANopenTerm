@@ -9,14 +9,12 @@
 
 #include <SDL3/SDL.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "ascii.h"
 #include "os.h"
+#include "palette.h"
+#include "window.h"
 
-#define CHAR_WIDTH 5
-#define CHAR_HEIGHT 7
 #define CHAR_SPACING 1
 #define LINE_SPACING 2
 
@@ -26,7 +24,7 @@ typedef struct
 
 } char_t;
 
-const char_t font[128] = {
+static const char_t font[128] = {
     {0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000}, // SPACE
     {0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0b00000, 0b00100}, // !
     {0b01010, 0b01010, 0b00000, 0b00000, 0b00000, 0b00000, 0b00000}, // "
@@ -125,18 +123,22 @@ const char_t font[128] = {
 
 };
 
-void draw_char(SDL_Renderer* renderer, char c, int x, int y, SDL_Color color)
+static void draw_char(char c, int x, int y, pal_color_t color)
 {
+    SDL_Renderer* renderer = window_get_renderer();
     const char_t* glyph;
     int row, col;
+    uint8 r = (color & 0xff0000) >> 16;
+    uint8 g = (color & 0x00ff00) >> 8;
+    uint8 b = (color & 0x0000ff);
 
     if (c < 32 || c > 127)
     {
         return;
     }
-    glyph = &font[(int)c];
+    glyph = &font[(int)c - 32];
 
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
 
     for (row = 0; row < CHAR_HEIGHT; row++)
     {
@@ -150,7 +152,7 @@ void draw_char(SDL_Renderer* renderer, char c, int x, int y, SDL_Color color)
     }
 }
 
-void draw_text(SDL_Renderer* renderer, int x, int y, SDL_Color color, const char* fmt, ...)
+void widget_print(int x, int y, pal_color_t color, const char* fmt, ...)
 {
     char buffer[256];
     va_list args;
@@ -170,7 +172,7 @@ void draw_text(SDL_Renderer* renderer, int x, int y, SDL_Color color, const char
         }
         else
         {
-            draw_char(renderer, *c, cx, cy, color);
+            draw_char(*c, cx, cy, color);
             cx += CHAR_WIDTH + CHAR_SPACING;
         }
     }

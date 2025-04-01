@@ -10,4 +10,13 @@
 #ifndef ASCII_H
 #define ASCII_H
 
+#include <stdarg.h>
+
+#include "palette.h"
+
+#define CHAR_WIDTH 5
+#define CHAR_HEIGHT 7
+
+void widget_print(int x, int y, pal_color_t color, const char* fmt, ...);
+
 #endif /* ASCII_H */

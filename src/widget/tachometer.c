@@ -9,11 +9,13 @@
 
 /* TODO: Use OS-abstraction layer. */
 
-#include "tachometer.h"
+#include <SDL3/SDL.h>
+
+#include "ascii.h"
 #include "os.h"
 #include "palette.h"
+#include "tachometer.h"
 #include "window.h"
-#include <SDL3/SDL.h>
 
 static void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, bool fill)
 {
@@ -112,4 +114,6 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
 
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
     SDL_RenderLine(renderer, center_x, center_y, needle_x, needle_y);
+
+    widget_print(pos_x + size / 2 - (CHAR_WIDTH * 2), pos_y + size / 2 + (CHAR_HEIGHT * 2), DRAW_WHITE, "%u", value);
 }
