@@ -15,25 +15,25 @@
 #include "tachometer.h"
 #include "window.h"
 
-int lua_clear_window(lua_State* L)
+int lua_window_clear(lua_State* L)
 {
     window_clear();
     return 0;
 }
 
-int lua_hide_window(lua_State* L)
+int lua_window_hide(lua_State* L)
 {
     window_hide();
     return 0;
 }
 
-int lua_show_window(lua_State* L)
+int lua_window_show(lua_State* L)
 {
     window_show();
     return 0;
 }
 
-int lua_update_window(lua_State* L)
+int lua_window_update(lua_State* L)
 {
     extern core_t* core;
 
@@ -76,14 +76,14 @@ int lua_widget_tachometer(lua_State* L)
 
 void lua_register_widget_commands(core_t* core)
 {
-    lua_pushcfunction(core->L, lua_clear_window);
-    lua_setglobal(core->L, "clear_window");
-    lua_pushcfunction(core->L, lua_hide_window);
-    lua_setglobal(core->L, "hide_window");
-    lua_pushcfunction(core->L, lua_show_window);
-    lua_setglobal(core->L, "show_window");
-    lua_pushcfunction(core->L, lua_update_window);
-    lua_setglobal(core->L, "update_window");
+    lua_pushcfunction(core->L, lua_window_clear);
+    lua_setglobal(core->L, "window_clear");
+    lua_pushcfunction(core->L, lua_window_hide);
+    lua_setglobal(core->L, "window_hide");
+    lua_pushcfunction(core->L, lua_window_show);
+    lua_setglobal(core->L, "window_show");
+    lua_pushcfunction(core->L, lua_window_update);
+    lua_setglobal(core->L, "window_update");
     lua_pushcfunction(core->L, lua_widget_status_bar);
     lua_setglobal(core->L, "widget_status_bar");
     lua_pushcfunction(core->L, lua_widget_tachometer);

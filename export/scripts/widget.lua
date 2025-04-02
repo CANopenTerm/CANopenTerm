@@ -5,7 +5,8 @@ License: Public domain
 
 --]]
 
-show_window()
+window_show()
+window_clear()
 
 previous_data = 0
 value = 0
@@ -34,7 +35,7 @@ while not key_is_hit() do
         value = value - 10
     end
 
-    clear_window()
+    window_clear()
     widget_tachometer(10, 10, 100, 5000, data)
     widget_status_bar(230, 10, 100, 25, 5000, data)
     widget_tachometer(120, 10, 100, 5000, value)
@@ -42,5 +43,5 @@ while not key_is_hit() do
     update_window()
 end
 
-clear_window()
-hide_window()
+window_clear()
+window_hide()

@@ -49,6 +49,16 @@ void window_hide(void)
     }
 }
 
+void window_fullscreen(bool state)
+{
+    extern core_t* core;
+    if (core->window)
+    {
+        core->is_window_fullscreen = state;
+        SDL_SetWindowFullscreen(core->window, state);
+    }
+}
+
 bool window_init(core_t* core)
 {
     if (! core)
@@ -108,13 +118,11 @@ status_t window_update(void)
                         {
                             if (true == core->is_window_fullscreen)
                             {
-                                SDL_SetWindowFullscreen(core->window, false);
-                                core->is_window_fullscreen = false;
+                                window_fullscreen(false);
                             }
                             else
                             {
-                                SDL_SetWindowFullscreen(core->window, true);
-                                core->is_window_fullscreen = true;
+                                window_fullscreen(true);
                             }
                             break;
                         }

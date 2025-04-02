@@ -14,6 +14,7 @@ void window_clear(void);
 bool window_deinit(core_t* core);
 os_renderer* window_get_renderer(void);
 void window_hide(void);
+void window_fullscreen(bool state);
 bool window_init(core_t* core);
 void window_show(void);
 status_t window_update(void);
