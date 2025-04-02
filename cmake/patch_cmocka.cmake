@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
 if(NOT DEFINED CMocka_PATH)
     message(FATAL_ERROR "CMocka_PATH is not defined")

@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 add_executable(
     run_unit_tests
     ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/run_unit_tests.c

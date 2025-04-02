@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 # FindcJSON.cmake
 # Locate cJSON library and include directories
 

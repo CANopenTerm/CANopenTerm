@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 if(BUILD_TESTS)
     # CMocka
     set(CMocka_VERSION     "1.1.7")
@@ -50,6 +52,7 @@ ExternalProject_Add(cJSON_devel
     BUILD_BYPRODUCTS ${CJSON_LIBRARY}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     INSTALL_COMMAND
         ${CMAKE_COMMAND} -E copy ${CJSON_PATH}_build/cjson.dll ${CMAKE_CURRENT_SOURCE_DIR}/export)
 

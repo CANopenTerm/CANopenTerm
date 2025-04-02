@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 # Findinih.cmake
 # Locate inih library and include directories
 

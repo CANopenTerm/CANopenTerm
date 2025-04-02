@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 if(BUILD_TESTS)
     # CMocka
     set(CMocka_VERSION     "1.1.7")
