@@ -64,6 +64,8 @@ status_t can_init(core_t* core)
         return OS_INVALID_ARGUMENT;
     }
 
+    can_deinit(core);
+
     status = search_can_channels();
     if (ALL_OK != status)
     {
