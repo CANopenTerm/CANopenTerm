@@ -11,6 +11,7 @@
 #include "core.h"
 #include "os.h"
 #include "pocketpy.h"
+#include "status_bar.h"
 #include "tachometer.h"
 #include "window.h"
 
