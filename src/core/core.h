@@ -44,6 +44,7 @@ typedef struct core
     bool is_running;
     bool is_script_running;
     bool is_plain_mode;
+    bool is_window_fullscreen;
     bool is_window_shown;
     char can_interface[32];
 

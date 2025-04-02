@@ -96,6 +96,31 @@ status_t window_update(void)
         {
             switch (event.type)
             {
+                case SDL_EVENT_KEY_DOWN:
+                {
+                    if (event.key.repeat) /* No key repeat. */
+                    {
+                        break;
+                    }
+                    switch (event.key.key)
+                    {
+                        case SDLK_F11:
+                        {
+                            if (true == core->is_window_fullscreen)
+                            {
+                                SDL_SetWindowFullscreen(core->window, false);
+                                core->is_window_fullscreen = false;
+                            }
+                            else
+                            {
+                                SDL_SetWindowFullscreen(core->window, true);
+                                core->is_window_fullscreen = true;
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
                 case SDL_EVENT_QUIT:
                     return CORE_QUIT;
             }
