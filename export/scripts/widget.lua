@@ -40,7 +40,7 @@ while not key_is_hit() do
     widget_status_bar(230, 10, 100, 25, 5000, data)
     widget_tachometer(120, 10, 100, 5000, value)
     widget_status_bar(230, 45, 100, 25, 5000, value)
-    update_window()
+    window_update()
 end
 
 window_clear()
