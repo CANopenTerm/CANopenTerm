@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
 {
     bool is_plain_mode = false;
     bool run_cct = false;
+    bool fullscreen = false;
     char* can_interface = DEFAULT_CAN_INTERFACE;
     char* script = NULL;
     int status = EXIT_SUCCESS;
@@ -74,6 +75,10 @@ int main(int argc, char* argv[])
                     exit(EXIT_FAILURE);
                 }
             }
+            else if (0 == os_strcmp(argv[i], "-f"))
+            {
+                fullscreen = true;
+            }
             else if (0 == os_strcmp(argv[i], "-p"))
             {
                 is_plain_mode = true;
@@ -96,6 +101,7 @@ int main(int argc, char* argv[])
                 os_printf("                        3 = 250 kBit/s\n");
                 os_printf("                        4 = 125 kBit/s\n");
                 os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
+                os_printf("    -f                Full screen widget window\n");
                 os_printf("    -p                Run in plain mode\n");
                 os_printf("    -t                Run conformance test, implies -p\n");
                 /* os_printf("    -e EDS_FILE       Test EDS file, implies -t\n"); */
@@ -120,6 +126,10 @@ int main(int argc, char* argv[])
     if (! window_init(core))
     {
         /* Nothing to do here. */
+    }
+    else if (true == fullscreen)
+    {
+        window_fullscreen(fullscreen);
     }
 
     if (true == run_cct)

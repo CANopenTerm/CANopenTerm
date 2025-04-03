@@ -114,6 +114,14 @@ status_t window_update(void)
                     }
                     switch (event.key.key)
                     {
+                        case SDLK_ESCAPE:
+                        {
+                            if (true == core->is_window_fullscreen)
+                            {
+                                window_fullscreen(false);
+                            }
+                            break;
+                        }
                         case SDLK_F11:
                         {
                             if (true == core->is_window_fullscreen)
