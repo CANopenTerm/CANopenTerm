@@ -56,27 +56,10 @@ void window_get_resolution(uint32* width, uint32* height)
 
     if (core->window)
     {
-        if (core->is_window_fullscreen)
+        if (false == SDL_GetWindowSize(core->window, (int*)width, (int*)height))
         {
-            const SDL_DisplayMode* mode = SDL_GetCurrentDisplayMode(1);
-            if (mode)
-            {
-                *width = (uint32)mode->h;
-                *height = (uint32)mode->w;
-            }
-            else
-            {
-                *width = 0;
-                *height = 0;
-            }
-        }
-        else
-        {
-            if (false == SDL_GetWindowSize(core->window, (int*)width, (int*)height))
-            {
-                *width = 0;
-                *height = 0;
-            }
+            *width = 0;
+            *height = 0;
         }
     }
     else
