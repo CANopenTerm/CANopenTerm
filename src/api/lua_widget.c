@@ -27,6 +27,17 @@ int lua_window_hide(lua_State* L)
     return 0;
 }
 
+int lua_window_get_resolution(lua_State* L)
+{
+    uint32 width, height;
+    window_get_resolution(&width, &height);
+
+    lua_pushinteger(L, width);
+    lua_pushinteger(L, height);
+
+    return 2;
+}
+
 int lua_window_show(lua_State* L)
 {
     window_show();
@@ -80,6 +91,8 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "window_clear");
     lua_pushcfunction(core->L, lua_window_hide);
     lua_setglobal(core->L, "window_hide");
+    lua_pushcfunction(core->L, lua_window_get_resolution);
+    lua_setglobal(core->L, "window_get_resolution");
     lua_pushcfunction(core->L, lua_window_show);
     lua_setglobal(core->L, "window_show");
     lua_pushcfunction(core->L, lua_window_update);

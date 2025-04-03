@@ -726,6 +726,7 @@ Clear widget window.
 ```python
 window_clear ()
 ```
+
 **Returns**: Nothing.
 
 ### window_hide()
@@ -737,7 +738,20 @@ Hide widget window.
 ```python
 window_hide ()
 ```
+
 **Returns**: Nothing.
+
+### window_get_resolution()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Returns current window resolution.
+
+```python
+tuple window_get_resolution ()
+```
+
+**Returns**: (width, height), or (0, 0) on failure.
 
 ### window_show()
 
