@@ -131,6 +131,7 @@ ExternalProject_Add(cJSON_devel
     BUILD_BYPRODUCTS ${CJSON_LIBRARY}
     CMAKE_ARGS
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     INSTALL_COMMAND
         ${CMAKE_COMMAND} -E echo "Skipping install step.")
 
