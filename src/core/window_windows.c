@@ -53,13 +53,12 @@ void window_fullscreen(bool state)
 void window_get_resolution(uint32* width, uint32* height)
 {
     extern core_t* core;
-    SDL_DisplayMode* mode;
 
     if (core->window)
     {
         if (core->is_window_fullscreen)
         {
-            mode = SDL_GetCurrentDisplayMode(1);
+            const SDL_DisplayMode* mode = SDL_GetCurrentDisplayMode(1);
             if (mode)
             {
                 *width = (uint32)mode->h;
@@ -73,7 +72,7 @@ void window_get_resolution(uint32* width, uint32* height)
         }
         else
         {
-            if (false == SDL_GetWindowSize(core->window, (int)&width, (int)&height))
+            if (false == SDL_GetWindowSize(core->window, (int*)width, (int*)height))
             {
                 *width = 0;
                 *height = 0;
