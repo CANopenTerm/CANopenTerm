@@ -16,13 +16,23 @@ BOOL WINAPI handle_ctrl_c(DWORD signal)
 {
     extern core_t* core;
 
-    if (signal == CTRL_C_EVENT)
+    if (CTRL_C_EVENT == signal)
     {
         if (core != NULL)
         {
             printf("\r");
             os_log(LOG_INFO, "Ctrl+C pressed. Cleaning up...");
             fflush(stdout);
+            os_detach_thread(core->core_th);
+            core_deinit(core);
+        }
+        exit(EXIT_SUCCESS);
+    }
+    else if (CTRL_CLOSE_EVENT == signal)
+    {
+        if (core != NULL)
+        {
+            os_detach_thread(core->core_th);
             core_deinit(core);
         }
         exit(EXIT_SUCCESS);

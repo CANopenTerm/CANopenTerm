@@ -164,8 +164,7 @@ int main(int argc, char* argv[])
     }
 
     os_detach_thread(core->core_th);
-    window_deinit(core);
     core_deinit(core);
-    os_quit();
+
     return status;
 }

@@ -24,15 +24,6 @@ void window_clear(void)
     SDL_RenderClear(core->renderer);
 }
 
-void window_deinit(core_t* core)
-{
-    SDL_DestroyWindow(core->window);
-    SDL_DestroyRenderer(core->renderer);
-    core->window = NULL;
-    core->renderer = NULL;
-    core->is_window_shown = false;
-}
-
 os_renderer* window_get_renderer(void)
 {
     extern core_t* core;

@@ -11,7 +11,6 @@
 #include "os.h"
 
 void window_clear(void);
-bool window_deinit(core_t* core);
 os_renderer* window_get_renderer(void);
 void window_hide(void);
 void window_fullscreen(bool state);
