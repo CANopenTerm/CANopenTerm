@@ -8,8 +8,6 @@ License: Public domain
 window_show()
 
 previous_data = 0
-value = 0
-dir = 0
 value1 = 0
 value2 = 0
 value3 = 0
