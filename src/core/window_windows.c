@@ -7,10 +7,11 @@
  *
  **/
 
+#include <SDL3/SDL.h>
+
 #include "core.h"
 #include "os.h"
 #include "palette.h"
-#include <SDL3/SDL.h>
 
 void window_clear(void)
 {

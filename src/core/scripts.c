@@ -355,6 +355,7 @@ status_t run_script_ex(char* name, core_t* core)
 
     if (NULL == core)
     {
+        os_console_show();
         return OS_INVALID_ARGUMENT;
     }
 
@@ -478,6 +479,7 @@ status_t run_script_ex(char* name, core_t* core)
         }
     }
 
+    os_console_show();
     return status;
 }
 

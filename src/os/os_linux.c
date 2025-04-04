@@ -38,6 +38,16 @@ status_t os_console_init(bool is_plain_mode)
     return ALL_OK;
 }
 
+void os_console_hide()
+{
+    /* Not yet implemented. */
+}
+
+void os_console_show()
+{
+    /* Not yet implemented. */
+}
+
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data)
 {
     return SDL_CreateThread(fn, name, data);

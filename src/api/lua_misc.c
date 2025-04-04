@@ -54,6 +54,18 @@ int lua_delay_ms(lua_State* L)
     return 1;
 }
 
+int lua_console_hide(lua_State* L)
+{
+    os_console_hide();
+    return 0;
+}
+
+int lua_console_show(lua_State* L)
+{
+    os_console_show();
+    return 0;
+}
+
 int lua_key_is_hit(lua_State* L)
 {
     lua_pushboolean(L, os_key_is_hit());
@@ -73,6 +85,12 @@ void lua_register_misc_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_delay_ms);
     lua_setglobal(core->L, "delay_ms");
+
+    lua_pushcfunction(core->L, lua_console_hide);
+    lua_setglobal(core->L, "console_hide");
+
+    lua_pushcfunction(core->L, lua_console_show);
+    lua_setglobal(core->L, "console_show");
 
     lua_pushcfunction(core->L, lua_key_is_hit);
     lua_setglobal(core->L, "key_is_hit");

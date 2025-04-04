@@ -53,6 +53,24 @@ status_t os_console_init(bool is_plain_mode)
     return ALL_OK;
 }
 
+void os_console_hide()
+{
+    HWND hwnd = GetConsoleWindow();
+    if (hwnd != NULL)
+    {
+        ShowWindow(hwnd, SW_HIDE);
+    }
+}
+
+void os_console_show()
+{
+    HWND hwnd = GetConsoleWindow();
+    if (hwnd != NULL)
+    {
+        ShowWindow(hwnd, SW_SHOW);
+    }
+}
+
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data)
 {
     return SDL_CreateThread(fn, name, data);

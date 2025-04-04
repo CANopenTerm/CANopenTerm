@@ -341,6 +341,8 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param);
 status_t os_console_init(bool is_plain_mode);
+void os_console_hide(void);
+void os_console_show(void);
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data);
 void os_delay(uint32 delay_in_ms);
 void os_detach_thread(os_thread* thread);

@@ -608,12 +608,12 @@ if can_write(0x5454, 8, 0x1122334455667788, False, True, "SPAM"):
 <!-- tab:Description -->
 Flush receive and transmit queues.
 
-```lua
+```python
 can_flush ()
 ```
 
 <!-- tab:Example -->
-```lua
+```python
 can_flush()
 ```
 <!-- tabs:end -->
@@ -667,6 +667,30 @@ delay_ms(5000)
 print("Done.")
 ```
 <!-- tabs:end -->
+
+### console_hide()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Hide console window.
+
+```python
+console_hide ()
+```
+
+**Returns**: Nothing.
+
+### console_show()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Show console window.
+
+```python
+console_show ()
+```
+
+**Returns**: Nothing.
 
 ### key_is_hit()
 

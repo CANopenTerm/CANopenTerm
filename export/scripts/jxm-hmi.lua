@@ -5,6 +5,7 @@ License: Public domain
 
 --]]
 
+console_hide()
 window_show()
 
 previous_data = -1

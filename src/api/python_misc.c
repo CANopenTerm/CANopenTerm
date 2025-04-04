@@ -16,6 +16,8 @@
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
 bool py_delay_ms(int argc, py_Ref argv);
+bool py_console_hide(int argc, py_Ref argv);
+bool py_console_show(int argc, py_Ref argv);
 bool py_key_is_hit(int argc, py_Ref argv);
 bool py_print_heading(int argc, py_Ref argv);
 
@@ -25,6 +27,8 @@ void python_misc_init(void)
 
     py_bind(mod, "delay_ms(delay_in_ms, show_output=False, comment=\"\")", py_delay_ms);
 
+    py_bindfunc(mod, "console_hide", py_console_hide);
+    py_bindfunc(mod, "console_show", py_console_show);
     py_bindfunc(mod, "key_is_hit", py_key_is_hit);
     py_bindfunc(mod, "print_heading", py_print_heading);
 }
@@ -75,6 +79,20 @@ bool py_delay_ms(int argc, py_Ref argv)
     os_delay(delay_in_ms);
 
     py_newnone(py_retval());
+    return true;
+}
+
+bool py_console_hide(int argc, py_Ref argv)
+{
+    PY_CHECK_ARGC(0);
+    os_console_hide();
+    return true;
+}
+
+bool py_console_show(int argc, py_Ref argv)
+{
+    PY_CHECK_ARGC(0);
+    os_console_show();
     return true;
 }
 

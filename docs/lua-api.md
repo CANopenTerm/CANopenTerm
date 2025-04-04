@@ -656,6 +656,30 @@ print("Done.")
 ```
 <!-- tabs:end -->
 
+### console_hide()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Hide console window.
+
+```lua
+console_hide ()
+```
+
+**Returns**: Nothing.
+
+### console_show()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Show console window.
+
+```lua
+console_show ()
+```
+
+**Returns**: Nothing.
+
 ### key_is_hit()
 
 <!-- tabs:start -->
@@ -733,7 +757,7 @@ window_hide ()
 <!-- tab:Description -->
 Returns current window resolution.
 
-```python
+```lua
 window_get_resolution ()
 ```
 
