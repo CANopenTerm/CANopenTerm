@@ -772,8 +772,10 @@ window_show ()
 Update widget window.
 
 ```python
-window_update ()
+window_update ([render])
 ```
+
+> **render** Re-draw window, default is `True`.
 
 **Returns**: `True`, or `False` when the window is closed.
 

@@ -758,8 +758,10 @@ window_show ()
 Update widget window.
 
 ```lua
-window_update ()
+window_update ([render])
 ```
+
+> **render** Re-draw window, default is `true`.
 
 **Returns**: Nothing.
 

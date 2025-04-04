@@ -29,11 +29,12 @@ void python_widget_init(void)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 
+    py_bind(mod, "window_update(render=True)", py_window_update);
+
     py_bindfunc(mod, "window_clear", py_window_clear);
     py_bindfunc(mod, "window_hide", py_window_hide);
     py_bindfunc(mod, "window_get_resolution", py_window_get_resolution);
     py_bindfunc(mod, "window_show", py_window_show);
-    py_bindfunc(mod, "window_update", py_window_update);
     py_bindfunc(mod, "widget_tachometer", py_widget_tachometer);
 }
 
@@ -85,14 +86,18 @@ bool py_window_show(int argc, py_Ref argv)
 bool py_window_update(int argc, py_Ref argv)
 {
     extern core_t* core;
+    bool render;
 
-    PY_CHECK_ARGC(0);
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_bool);
 
-    if (CORE_QUIT == window_update())
+    render = py_tobool(py_arg(0));
+
+    if (CORE_QUIT == window_update(render))
     {
         core->is_abort = true;
         window_clear();
-        window_update();
+        window_update(render);
         window_hide();
         py_newbool(py_retval(), false);
         return true;

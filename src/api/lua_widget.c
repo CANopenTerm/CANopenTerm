@@ -47,12 +47,18 @@ int lua_window_show(lua_State* L)
 int lua_window_update(lua_State* L)
 {
     extern core_t* core;
+    bool render = true;
 
-    if (CORE_QUIT == window_update())
+    if (lua_isboolean(L, 1))
+    {
+        render = (bool)lua_toboolean(L, 1);
+    }
+
+    if (CORE_QUIT == window_update(render))
     {
         core->is_abort = true;
         window_clear();
-        window_update();
+        window_update(render);
         window_hide();
         lua_pushstring(L, "Widget window closed: script stopped.");
         return lua_error(L);

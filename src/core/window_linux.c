@@ -104,12 +104,15 @@ void window_show(void)
     }
 }
 
-status_t window_update(void)
+status_t window_update(bool render)
 {
     extern core_t* core;
     if (core->renderer)
     {
-        SDL_RenderPresent(core->renderer);
+        if (true == render)
+        {
+            SDL_RenderPresent(core->renderer);
+        }
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
