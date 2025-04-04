@@ -7,7 +7,7 @@ License: Public domain
 
 window_show()
 
-previous_data = 0
+previous_data = -1
 value1 = 0
 value2 = 0
 value3 = 0
