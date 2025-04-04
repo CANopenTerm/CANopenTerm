@@ -8,9 +8,6 @@ License: Public domain
 window_show()
 
 previous_data = -1
-value1 = 0
-value2 = 0
-value3 = 0
 
 while not key_is_hit() do
     id, length, data = can_read()
