@@ -789,7 +789,7 @@ window_update ([render])
 
 **Returns**: Nothing.
 
-### widget_bragraph()
+### widget_bargraph()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
