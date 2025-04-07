@@ -803,14 +803,14 @@ window_update ([render])
 
 **Returns**: `True`, or `False` when the window is closed.
 
-### widget_status_bar()
+### widget_bargraph()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Draw status bar.
+Draw bar graph.
 
 ```python
-widget_status_bar (pos_x, pos_y, width, height, max, value)
+widget_bargraph (pos_x, pos_y, width, height, max, value)
 ```
 
 > **pos_x** Horizontal position on widget window.
@@ -824,6 +824,26 @@ widget_status_bar (pos_x, pos_y, width, height, max, value)
 > **max** Maximum value.
 
 > **value** Set value.
+
+**Returns**: Nothing.
+
+### widget_led()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+LED indicator.
+
+```python
+widget_led (pos_x, pos_y, size, state)
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel.
+
+> **state** Boolean state.
 
 **Returns**: Nothing.
 

@@ -7,11 +7,12 @@
  *
  **/
 
+#include "bargraph.h"
 #include "core.h"
 #include "lauxlib.h"
+#include "led.h"
 #include "lua.h"
 #include "os.h"
-#include "status_bar.h"
 #include "tachometer.h"
 #include "window.h"
 
@@ -66,7 +67,7 @@ int lua_window_update(lua_State* L)
     return 0;
 }
 
-int lua_widget_status_bar(lua_State* L)
+int lua_widget_bargraph(lua_State* L)
 {
     uint32 pos_x = luaL_checkinteger(L, 1);
     uint32 pos_y = luaL_checkinteger(L, 2);
@@ -75,7 +76,24 @@ int lua_widget_status_bar(lua_State* L)
     const uint32 max = luaL_checkinteger(L, 5);
     uint32 value = luaL_checkinteger(L, 6);
 
-    widget_status_bar(pos_x, pos_y, width, height, max, value);
+    widget_bargraph(pos_x, pos_y, width, height, max, value);
+    return 0;
+}
+
+int lua_widget_led(lua_State* L)
+{
+    bool state = false;
+
+    uint32 pos_x = luaL_checkinteger(L, 1);
+    uint32 pos_y = luaL_checkinteger(L, 2);
+    uint32 size = luaL_checkinteger(L, 3);
+
+    if (lua_isboolean(L, 4))
+    {
+        state = (bool)lua_toboolean(L, 4);
+    }
+
+    widget_led(pos_x, pos_y, size, state);
     return 0;
 }
 
@@ -103,8 +121,10 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "window_show");
     lua_pushcfunction(core->L, lua_window_update);
     lua_setglobal(core->L, "window_update");
-    lua_pushcfunction(core->L, lua_widget_status_bar);
-    lua_setglobal(core->L, "widget_status_bar");
+    lua_pushcfunction(core->L, lua_widget_bargraph);
+    lua_setglobal(core->L, "widget_bargraph");
+    lua_pushcfunction(core->L, lua_widget_led);
+    lua_setglobal(core->L, "widget_led");
     lua_pushcfunction(core->L, lua_widget_tachometer);
     lua_setglobal(core->L, "widget_tachometer");
 }

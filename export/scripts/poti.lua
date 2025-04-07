@@ -1,4 +1,4 @@
---[[ Jetter JXM-HMI
+--[[ Potentiometer visualisation
 
 Author:  Michael Fitzmayer
 License: Public domain
@@ -15,7 +15,8 @@ while not key_is_hit() do
     width, height = window_get_resolution()
     render = false
 
-    size = width / 4;
+    size = width / 4
+    led = size / 10
     pos_x = (width / 2) - (size / 2)
     pos_y = (height / 2) - (size / 2)
 
@@ -25,9 +26,17 @@ while not key_is_hit() do
         if id == 0x191 and previous_data ~= data then
             window_clear()
             previous_data = data
-			value1 = data & 0xffff
-			value2 = (data >> 16) & 0xffff
-			value3 = (data >> 32) & 0xffff
+			local value1 = data & 0xffff
+			local value2 = (data >> 16) & 0xffff
+			local value3 = (data >> 32) & 0xffff
+            local value4 = (data >> 48) & 0xff
+            local button1 = (value4 & 0x01) ~= 0
+            local button2 = (value4 & 0x02) ~= 0
+            local button3 = (value4 & 0x04) ~= 0
+
+            widget_led(pos_x - size - 10, pos_y, led, button1)
+            widget_led(pos_x, pos_y, led, button2)
+            widget_led(pos_x + size + 10, pos_y, led, button3)
 
             widget_tachometer(pos_x - size - 10, pos_y, size, 0x40, value1)
             widget_tachometer(pos_x, pos_y, size, 0x40, value2)

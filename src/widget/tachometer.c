@@ -14,54 +14,9 @@
 #include "ascii.h"
 #include "os.h"
 #include "palette.h"
+#include "primitives.h"
 #include "tachometer.h"
 #include "window.h"
-
-static void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, bool fill)
-{
-    int x = 0;
-    int y = radius;
-    int d = 3 - 2 * radius;
-
-    while (x <= y)
-    {
-        if (fill)
-        {
-            for (int i = (cx - x); i <= (cx + x); i++)
-            {
-                SDL_RenderPoint(renderer, i, cy + y);
-                SDL_RenderPoint(renderer, i, cy - y);
-            }
-            for (int i = (cx - y); i <= (cx + y); i++)
-            {
-                SDL_RenderPoint(renderer, i, cy + x);
-                SDL_RenderPoint(renderer, i, cy - x);
-            }
-        }
-        else
-        {
-            SDL_RenderPoint(renderer, cx + x, cy + y);
-            SDL_RenderPoint(renderer, cx - x, cy + y);
-            SDL_RenderPoint(renderer, cx + x, cy - y);
-            SDL_RenderPoint(renderer, cx - x, cy - y);
-            SDL_RenderPoint(renderer, cx + y, cy + x);
-            SDL_RenderPoint(renderer, cx - y, cy + x);
-            SDL_RenderPoint(renderer, cx + y, cy - x);
-            SDL_RenderPoint(renderer, cx - y, cy - x);
-        }
-
-        if (d < 0)
-        {
-            d += 4 * x + 6;
-        }
-        else
-        {
-            d += 4 * (x - y) + 10;
-            y--;
-        }
-        x++;
-    }
-}
 
 void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max, uint32 value)
 {

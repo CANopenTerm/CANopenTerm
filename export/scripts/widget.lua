@@ -19,7 +19,7 @@ while not key_is_hit() do
         data = previous_data
     else
         if id == 0x100 then
-           previous_data = data
+            previous_data = data
         end
     end
 
@@ -37,9 +37,9 @@ while not key_is_hit() do
 
     window_clear()
     widget_tachometer(10, 10, 100, 5000, data)
-    widget_status_bar(230, 10, 100, 25, 5000, data)
+    widget_bargraph(230, 10, 100, 25, 5000, data)
     widget_tachometer(120, 10, 100, 5000, value)
-    widget_status_bar(230, 45, 100, 25, 5000, value)
+    widget_bargraph(230, 45, 100, 25, 5000, value)
     window_update()
 end
 

@@ -8,10 +8,11 @@
  **/
 
 #include "python_widget.h"
+#include "bargraph.h"
 #include "core.h"
+#include "led.h"
 #include "os.h"
 #include "pocketpy.h"
-#include "status_bar.h"
 #include "tachometer.h"
 #include "window.h"
 
@@ -22,7 +23,8 @@ bool py_window_hide(int argc, py_Ref argv);
 bool py_window_get_resolution(int argc, py_Ref argv);
 bool py_window_show(int argc, py_Ref argv);
 bool py_window_update(int argc, py_Ref argv);
-bool py_widget_status_bar(int argc, py_Ref argv);
+bool py_widget_bargraph(int argc, py_Ref argv);
+bool py_widget_led(int argc, py_Ref argv);
 bool py_widget_tachometer(int argc, py_Ref argv);
 
 void python_widget_init(void)
@@ -35,6 +37,8 @@ void python_widget_init(void)
     py_bindfunc(mod, "window_hide", py_window_hide);
     py_bindfunc(mod, "window_get_resolution", py_window_get_resolution);
     py_bindfunc(mod, "window_show", py_window_show);
+    py_bindfunc(mod, "widget_bargraph", py_widget_bargraph);
+    py_bindfunc(mod, "widget_led", py_widget_led);
     py_bindfunc(mod, "widget_tachometer", py_widget_tachometer);
 }
 
@@ -106,7 +110,7 @@ bool py_window_update(int argc, py_Ref argv)
     return true;
 }
 
-bool py_widget_status_bar(int argc, py_Ref argv)
+bool py_widget_bargraph(int argc, py_Ref argv)
 {
     uint32 pos_x;
     uint32 pos_y;
@@ -130,7 +134,32 @@ bool py_widget_status_bar(int argc, py_Ref argv)
     max = (uint32)py_toint(py_arg(4));
     value = (uint32)py_toint(py_arg(5));
 
-    widget_status_bar(pos_x, pos_y, width, height, max, value);
+    widget_bargraph(pos_x, pos_y, width, height, max, value);
+
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_led(int argc, py_Ref argv)
+{
+    bool state = false;
+
+    uint32 pos_x;
+    uint32 pos_y;
+    uint32 size;
+
+    PY_CHECK_ARGC(4);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+    PY_CHECK_ARG_TYPE(3, tp_bool);
+
+    pos_x = (uint32)py_toint(py_arg(0));
+    pos_y = (uint32)py_toint(py_arg(1));
+    size = (uint32)py_toint(py_arg(2));
+    state = (bool)py_tobool(py_arg(3));
+
+    widget_led(pos_x, pos_y, size, state);
 
     py_newnone(py_retval());
     return true;

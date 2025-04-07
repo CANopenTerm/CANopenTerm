@@ -789,14 +789,14 @@ window_update ([render])
 
 **Returns**: Nothing.
 
-### widget_status_bar()
+### widget_bragraph()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Draw status bar.
+Draw bargraph.
 
 ```lua
-widget_status_bar (pos_x, pos_y, width, height, max, value)
+widget_bargraph (pos_x, pos_y, width, height, max, value)
 ```
 
 > **pos_x** Horizontal position on widget window.
@@ -810,6 +810,26 @@ widget_status_bar (pos_x, pos_y, width, height, max, value)
 > **max** Maximum value.
 
 > **value** Set value.
+
+**Returns**: Nothing.
+
+### widget_led()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+LED indicator.
+
+```lua
+widget_led (pos_x, pos_y, size, state)
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel.
+
+> **state** Boolean state.
 
 **Returns**: Nothing.
 

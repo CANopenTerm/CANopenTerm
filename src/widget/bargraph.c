@@ -1,4 +1,4 @@
-/** @file status_bar.c
+/** @file bargraph.c
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
@@ -16,7 +16,7 @@
 #include "palette.h"
 #include "window.h"
 
-void widget_status_bar(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, const uint32 max, uint32 value)
+void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, const uint32 max, uint32 value)
 {
     SDL_Renderer* renderer = window_get_renderer();
     SDL_FRect box = {pos_x, pos_y, width, height};
