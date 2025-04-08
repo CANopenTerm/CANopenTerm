@@ -15,9 +15,12 @@
 #include "os.h"
 #include "palette.h"
 
+#define CHAR_SPACING 1
+#define LINE_SPACING 2
+
 #define CHAR_WIDTH 5
 #define CHAR_HEIGHT 7
 
-uint32 widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt, ...);
+void widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt, ...);
 
 #endif /* ASCII_H */
