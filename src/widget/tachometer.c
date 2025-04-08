@@ -23,7 +23,7 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     SDL_Renderer* renderer = window_get_renderer();
     uint8 r, g, b;
 
-    char buffer[7] = {0};
+    char buffer[10] = {0};
     float angle;
     float radians;
     int center_x;
@@ -74,7 +74,7 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
     SDL_RenderLine(renderer, center_x, center_y, needle_x, needle_y);
 
-    os_snprintf(buffer, 7, "%u", value);
+    os_snprintf(buffer, 9, "%Xh", value);
     len = os_strlen(buffer);
     text_width = (CHAR_WIDTH + CHAR_SPACING) * len - (CHAR_SPACING);
 
