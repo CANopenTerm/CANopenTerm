@@ -68,5 +68,5 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
         SDL_RenderLine(renderer, pos_x + 1 + i, pos_y + 1, pos_x + 1 + i, pos_y + height - 2);
     }
 
-    widget_print(pos_x + 2, pos_y + 2, DRAW_WHITE, "%d/%d", value, max);
+    widget_print(pos_x + 2, pos_y + 2, DRAW_WHITE, 1u, "%d/%d", value, max);
 }

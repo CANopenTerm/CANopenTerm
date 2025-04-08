@@ -123,11 +123,12 @@ static const char_t font[128] = {
 
 };
 
-static void draw_char(char c, int x, int y, pal_color_t color)
+static void draw_char(char c, int x, int y, pal_color_t color, uint8 scale)
 {
     SDL_Renderer* renderer = window_get_renderer();
     const char_t* glyph;
-    int row, col;
+    int row, col, dx, dy;
+
     uint8 r = (color & 0xff0000) >> 16;
     uint8 g = (color & 0x00ff00) >> 8;
     uint8 b = (color & 0x0000ff);
@@ -146,13 +147,22 @@ static void draw_char(char c, int x, int y, pal_color_t color)
         {
             if (glyph->data[row] & (1 << (CHAR_WIDTH - 1 - col)))
             {
-                SDL_RenderPoint(renderer, x + col, y + row);
+                for (dy = 0; dy < scale; dy++)
+                {
+                    for (dx = 0; dx < scale; dx++)
+                    {
+                        SDL_RenderPoint(
+                            renderer,
+                            x + col * scale + dx,
+                            y + row * scale + dy);
+                    }
+                }
             }
         }
     }
 }
 
-void widget_print(int x, int y, pal_color_t color, const char* fmt, ...)
+void widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt, ...)
 {
     char buffer[256];
     va_list args;
@@ -168,12 +178,12 @@ void widget_print(int x, int y, pal_color_t color, const char* fmt, ...)
         if (*c == '\n')
         {
             cx = x;
-            cy += CHAR_HEIGHT + LINE_SPACING;
+            cy += (CHAR_HEIGHT * scale) + (LINE_SPACING * scale);
         }
         else
         {
-            draw_char(*c, cx, cy, color);
-            cx += CHAR_WIDTH + CHAR_SPACING;
+            draw_char(*c, cx, cy, color, scale);
+            cx += (CHAR_WIDTH * scale) + (CHAR_SPACING * scale);
         }
     }
 }

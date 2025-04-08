@@ -70,5 +70,5 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
     SDL_RenderLine(renderer, center_x, center_y, needle_x, needle_y);
 
-    widget_print(pos_x + size / 2 - (CHAR_WIDTH * 2), pos_y + size / 2 + (CHAR_HEIGHT * 2), DRAW_WHITE, "%u", value);
+    widget_print(pos_x + size / 2 - (CHAR_WIDTH * 2), pos_y + size / 2 + (CHAR_HEIGHT * 2), DRAW_WHITE, 1u, "%u", value);
 }
