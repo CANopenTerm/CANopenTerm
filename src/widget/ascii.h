@@ -18,6 +18,6 @@
 #define CHAR_WIDTH 5
 #define CHAR_HEIGHT 7
 
-void widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt, ...);
+uint32 widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt, ...);
 
 #endif /* ASCII_H */

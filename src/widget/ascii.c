@@ -162,12 +162,13 @@ static void draw_char(char c, int x, int y, pal_color_t color, uint8 scale)
     }
 }
 
-void widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt, ...)
+uint32 widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt, ...)
 {
     char buffer[256];
     va_list args;
     int cx = x, cy = y;
     char* c;
+    uint32 line_width = 0, max_width = 0;
 
     va_start(args, fmt);
     SDL_vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -177,13 +178,28 @@ void widget_print(int x, int y, pal_color_t color, uint8 scale, const char* fmt,
     {
         if (*c == '\n')
         {
+            if (line_width > max_width)
+            {
+                max_width = line_width;
+            }
+            line_width = 0;
             cx = x;
             cy += (CHAR_HEIGHT * scale) + (LINE_SPACING * scale);
         }
         else
         {
+            int char_width;
             draw_char(*c, cx, cy, color, scale);
-            cx += (CHAR_WIDTH * scale) + (CHAR_SPACING * scale);
+            char_width = (CHAR_WIDTH * scale) + (CHAR_SPACING * scale);
+            cx += char_width;
+            line_width += char_width;
         }
     }
+
+    if (line_width > max_width)
+    {
+        max_width = line_width;
+    }
+
+    return max_width;
 }
