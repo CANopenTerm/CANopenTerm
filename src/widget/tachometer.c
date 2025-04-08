@@ -32,9 +32,15 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     int needle_x;
     int needle_y;
     int indicator_length = size / 20;
+    uint8 scale = 2u;
 
     size_t len;
     int text_width;
+
+    if (size <= 100)
+    {
+        scale = 1u;
+    }
 
     if (! renderer)
     {
@@ -76,10 +82,10 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
 
     os_snprintf(buffer, 9, "%Xh", value);
     len = os_strlen(buffer);
-    text_width = (CHAR_WIDTH + CHAR_SPACING) * len - (CHAR_SPACING);
+    text_width = (CHAR_WIDTH + CHAR_SPACING) * scale * len - (CHAR_SPACING);
 
     widget_print(
         pos_x + (size / 2) - (text_width / 2),
         pos_y + size / 2 + (CHAR_HEIGHT * 2),
-        DRAW_WHITE, 1u, "%s", buffer);
+        DRAW_WHITE, scale, "%s", buffer);
 }
