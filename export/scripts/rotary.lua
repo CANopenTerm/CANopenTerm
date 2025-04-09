@@ -9,6 +9,8 @@ console_hide()
 window_show()
 
 previous_data = -1
+previous_value3 = 0
+value3 = 0
 
 while not key_is_hit() do
     id, length, data = can_read()
@@ -30,11 +32,20 @@ while not key_is_hit() do
             previous_data = data
 			local value1 = data & 0xffff
 			local value2 = (data >> 16) & 0xffff
-			local value3 = (data >> 32) & 0xffff
+
+			previous_value3 = value3
+			value3 = (data >> 32) & 0xffff
+
             local value4 = (data >> 48) & 0xff
             local button1 = (value4 & 0x01) ~= 0
             local button2 = (value4 & 0x02) ~= 0
             local button3 = (value4 & 0x04) ~= 0
+
+			if previous_value3 < value3 then
+				for i = 1, 3 do key_send(0x28) end
+			elseif previous_value3 > value3 then
+				for i = 1, 3 do key_send(0x26) end
+			end
 
             widget_led(pos_x - size - 10, pos_y, led, button1)
             widget_led(pos_x, pos_y, led, button2)
