@@ -72,6 +72,13 @@ int lua_key_is_hit(lua_State* L)
     return 1;
 }
 
+int lua_key_send(lua_State* L)
+{
+    uint16 key = (uint16)lua_tointeger(L, 1);
+    os_key_send(key);
+    return 0;
+}
+
 int lua_print_heading(lua_State* L)
 {
     const char* heading = lua_tostring(L, 1);
@@ -94,6 +101,9 @@ void lua_register_misc_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_key_is_hit);
     lua_setglobal(core->L, "key_is_hit");
+
+    lua_pushcfunction(core->L, lua_key_send);
+    lua_setglobal(core->L, "key_send");
 
     lua_pushcfunction(core->L, lua_print_heading);
     lua_setglobal(core->L, "print_heading");

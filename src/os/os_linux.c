@@ -184,6 +184,11 @@ bool os_key_is_hit(void)
     }
 }
 
+void os_key_send(uint16 key)
+{
+    /* Not yet implemented. */
+}
+
 void os_log(const log_level_t level, const char* format, ...)
 {
     char buffer[1024];

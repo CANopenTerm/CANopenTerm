@@ -190,6 +190,20 @@ bool os_key_is_hit(void)
     }
 }
 
+void os_key_send(uint16 key)
+{
+    INPUT input = {0};
+    input.type = INPUT_KEYBOARD;
+    input.ki.wVk = key;
+
+    /* Key down. */
+    SendInput(1, &input, sizeof(INPUT));
+
+    /* Key up. */
+    input.ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(1, &input, sizeof(INPUT));
+}
+
 void os_log(const log_level_t level, const char* format, ...)
 {
     char buffer[1024];

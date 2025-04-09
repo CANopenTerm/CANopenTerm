@@ -19,6 +19,7 @@ bool py_delay_ms(int argc, py_Ref argv);
 bool py_console_hide(int argc, py_Ref argv);
 bool py_console_show(int argc, py_Ref argv);
 bool py_key_is_hit(int argc, py_Ref argv);
+bool py_key_send(int argc, py_Ref argv);
 bool py_print_heading(int argc, py_Ref argv);
 
 void python_misc_init(void)
@@ -31,6 +32,7 @@ void python_misc_init(void)
     py_bindfunc(mod, "console_show", py_console_show);
     py_bindfunc(mod, "key_is_hit", py_key_is_hit);
     py_bindfunc(mod, "print_heading", py_print_heading);
+    py_bindfunc(mod, "key_send", py_key_send);
 }
 
 bool py_delay_ms(int argc, py_Ref argv)
@@ -99,6 +101,20 @@ bool py_console_show(int argc, py_Ref argv)
 bool py_key_is_hit(int argc, py_Ref argv)
 {
     py_newbool(py_retval(), os_key_is_hit());
+    return true;
+}
+
+bool py_key_send(int argc, py_Ref argv)
+{
+    uint16 key;
+
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    key = (uint16)py_toint(py_arg(0));
+    os_key_send(key);
+
+    py_newnone(py_retval());
     return true;
 }
 

@@ -354,6 +354,7 @@ uint64 os_get_ticks(void);
 const char* os_get_user_directory(void);
 status_t os_init(void);
 bool os_key_is_hit(void);
+void os_key_send(uint16 key);
 void os_log(const log_level_t level, const char* format, ...);
 void os_print(const color_t color, const char* format, ...);
 void os_print_prompt(void);

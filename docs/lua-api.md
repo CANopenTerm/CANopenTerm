@@ -668,6 +668,8 @@ console_hide ()
 
 **Returns**: Nothing.
 
+<!-- tabs:end -->
+
 ### console_show()
 
 <!-- tabs:start -->
@@ -679,6 +681,8 @@ console_show ()
 ```
 
 **Returns**: Nothing.
+
+<!-- tabs:end -->
 
 ### key_is_hit()
 
@@ -698,6 +702,20 @@ while false == key_is_hit() do
 end
 print("Exiting.")
 ```
+<!-- tabs:end -->
+
+### key_send()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```lua
+key_send (key)
+```
+
+> **key** Key code to send.
+
+**Returns**: Nothing.
+
 <!-- tabs:end -->
 
 ### print_heading()
@@ -725,6 +743,7 @@ sdo_read(0x123, 0x100A, 0x00, true)
 ```
 <!-- tabs:end -->
 
+
 ## Visualisation
 
 ### window_clear()
@@ -739,6 +758,8 @@ window_clear ()
 
 **Returns**: Nothing.
 
+<!-- tabs:end -->
+
 ### window_hide()
 
 <!-- tabs:start -->
@@ -750,6 +771,8 @@ window_hide ()
 ```
 
 **Returns**: Nothing.
+
+<!-- tabs:end -->
 
 ### window_get_resolution()
 
@@ -763,6 +786,8 @@ window_get_resolution ()
 
 **Returns**: width, height or 0, 0 on failure.
 
+<!-- tabs:end -->
+
 ### window_show()
 
 <!-- tabs:start -->
@@ -774,6 +799,8 @@ window_show ()
 ```
 
 **Returns**: Nothing.
+
+<!-- tabs:end -->
 
 ### window_update()
 
@@ -788,6 +815,8 @@ window_update ([render])
 > **render** Re-draw window, default is `true`.
 
 **Returns**: Nothing.
+
+<!-- tabs:end -->
 
 ### widget_bargraph()
 
@@ -813,6 +842,8 @@ widget_bargraph (pos_x, pos_y, width, height, max, value)
 
 **Returns**: Nothing.
 
+<!-- tabs:end -->
+
 ### widget_led()
 
 <!-- tabs:start -->
@@ -833,6 +864,8 @@ widget_led (pos_x, pos_y, size, state)
 
 **Returns**: Nothing.
 
+<!-- tabs:end -->
+
 ### widget_print()
 
 <!-- tabs:start -->
@@ -852,6 +885,8 @@ widget_print (pos_x, pos_y, scale, str, [scale])
 > **scale** Scaling factor, default is 1.
 
 **Returns**: Nothing.
+
+<!-- tabs:end -->
 
 ### widget_tachometer()
 
@@ -874,6 +909,8 @@ widget_tachometer (pos_x, pos_y, size, max, value)
 > **value** Set value.
 
 **Returns**: Nothing.
+
+<!-- tabs:end -->
 
 ## Utilities
 
