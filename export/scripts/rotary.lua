@@ -1,4 +1,4 @@
---[[ Potentiometer visualisation
+--[[ Rotary encoder visualisation
 
 Author:  Michael Fitzmayer
 License: Public domain
@@ -25,6 +25,8 @@ while not key_is_hit() do
     else
         if id == 0x191 and previous_data ~= data then
             window_clear()
+
+            widget_print(10, 10, "Potentiometer", 3)
             previous_data = data
 			local value1 = data & 0xffff
 			local value2 = (data >> 16) & 0xffff

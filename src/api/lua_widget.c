@@ -7,6 +7,7 @@
  *
  **/
 
+#include "ascii.h"
 #include "bargraph.h"
 #include "core.h"
 #include "lauxlib.h"
@@ -97,6 +98,17 @@ int lua_widget_led(lua_State* L)
     return 0;
 }
 
+int lua_widget_print(lua_State* L)
+{
+    uint32 pos_x = luaL_checkinteger(L, 1);
+    uint32 pos_y = luaL_checkinteger(L, 2);
+    const char* str = luaL_checkstring(L, 3);
+    uint32 scale = luaL_optinteger(L, 4, 1);
+
+    widget_print(pos_x, pos_y, DRAW_WHITE, scale, "%s", str);
+    return 0;
+}
+
 int lua_widget_tachometer(lua_State* L)
 {
     uint32 pos_x = luaL_checkinteger(L, 1);
@@ -125,6 +137,8 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "widget_bargraph");
     lua_pushcfunction(core->L, lua_widget_led);
     lua_setglobal(core->L, "widget_led");
+    lua_pushcfunction(core->L, lua_widget_print);
+    lua_setglobal(core->L, "widget_print");
     lua_pushcfunction(core->L, lua_widget_tachometer);
     lua_setglobal(core->L, "widget_tachometer");
 }

@@ -847,6 +847,26 @@ widget_led (pos_x, pos_y, size, state)
 
 **Returns**: Nothing.
 
+### widget_print()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Print string to window, font size is 5x7.
+
+```python
+widget_print (pos_x, pos_y, scale, str, [scale])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **str** Output string.
+
+> **scale** Scaling factor, default is 1.
+
+**Returns**: Nothing.
+
 ### widget_tachometer()
 
 <!-- tabs:start -->

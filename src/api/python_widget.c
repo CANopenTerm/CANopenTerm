@@ -8,6 +8,7 @@
  **/
 
 #include "python_widget.h"
+#include "ascii.h"
 #include "bargraph.h"
 #include "core.h"
 #include "led.h"
@@ -25,6 +26,7 @@ bool py_window_show(int argc, py_Ref argv);
 bool py_window_update(int argc, py_Ref argv);
 bool py_widget_bargraph(int argc, py_Ref argv);
 bool py_widget_led(int argc, py_Ref argv);
+bool py_widget_print(int argc, py_Ref argv);
 bool py_widget_tachometer(int argc, py_Ref argv);
 
 void python_widget_init(void)
@@ -32,6 +34,7 @@ void python_widget_init(void)
     py_GlobalRef mod = py_getmodule("__main__");
 
     py_bind(mod, "window_update(render=True)", py_window_update);
+    py_bind(mod, "widget_print(pos_x, pos_y, scale, str, scale=1)", py_widget_print);
 
     py_bindfunc(mod, "window_clear", py_window_clear);
     py_bindfunc(mod, "window_hide", py_window_hide);
@@ -160,6 +163,30 @@ bool py_widget_led(int argc, py_Ref argv)
     state = (bool)py_tobool(py_arg(3));
 
     widget_led(pos_x, pos_y, size, state);
+
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_print(int argc, py_Ref argv)
+{
+    uint32 pos_x;
+    uint32 pos_y;
+    uint32 scale;
+    const char* str;
+
+    PY_CHECK_ARGC(4);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_str);
+    PY_CHECK_ARG_TYPE(3, tp_int);
+
+    pos_x = (uint32)py_toint(py_arg(0));
+    pos_y = (uint32)py_toint(py_arg(1));
+    str = py_tostr(py_arg(3));
+    scale = (uint32)py_toint(py_arg(2));
+
+    widget_print(pos_x, pos_y, DRAW_WHITE, scale, "%s", str);
 
     py_newnone(py_retval());
     return true;
