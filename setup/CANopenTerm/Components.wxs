@@ -88,7 +88,7 @@
                 <File Source="../../export/scripts/replay.lua" />
             </Component>
             <Component>
-                <File Source="../../export/scripts/poti.lua" />
+                <File Source="../../export/scripts/rotary.lua" />
             </Component>
             <Component>
                 <File Source="../../export/scripts/scanner.lua" />

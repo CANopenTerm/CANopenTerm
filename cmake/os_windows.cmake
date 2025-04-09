@@ -57,7 +57,7 @@ ExternalProject_Add(cJSON_devel
         ${CMAKE_COMMAND} -E copy ${CJSON_PATH}_build/cjson.dll ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
 # pocketpy
-set(POCKETPY_VERSION     "2.0.6")
+set(POCKETPY_VERSION     "2.0.8")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.zip")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
@@ -65,7 +65,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/pocketpy.lib)
 
 ExternalProject_Add(pocketpy_devel
   URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-  URL_HASH SHA1=19d8b1e975bdd0353b45239f33f43883c67356fa
+  URL_HASH SHA1=30e2dcc881b7c2d657dae09f03e4c852a352c2bf
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   TLS_VERIFY true
