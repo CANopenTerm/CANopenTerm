@@ -25,6 +25,9 @@
         </ComponentGroup>
         <ComponentGroup Id="CodbComponents" Directory="CODBFOLDER">
             <Component>
+                <File Source="../../export/codb/codb.schema.json" />
+            </Component>
+            <Component>
                 <File Source="../../export/codb/ds301.json" />
             </Component>
             <Component>
