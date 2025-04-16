@@ -1,0 +1,270 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Generated schema for CANopen Profile data bases",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "index": {
+        "type": "number"
+      },
+      "sub_indices": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "number"
+            },
+            "desc": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "number"
+            },
+            "data_type": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "number"
+                },
+                "attr": {
+                  "type": "number"
+                },
+                "lower": {
+                  "type": "number"
+                },
+                "upper": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "type",
+                "attr",
+                "lower",
+                "upper"
+              ]
+            },
+            "access_type": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "number"
+                },
+                "attr": {
+                  "type": "number"
+                },
+                "lower": {
+                  "type": "number"
+                },
+                "upper": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "type",
+                "attr",
+                "lower",
+                "upper"
+              ]
+            },
+            "low_limit": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "attr": {
+                  "type": "number"
+                },
+                "lower": {
+                  "type": "number"
+                },
+                "upper": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "value",
+                "attr",
+                "lower",
+                "upper"
+              ]
+            },
+            "high_limit": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "attr": {
+                  "type": "number"
+                },
+                "lower": {
+                  "type": "number"
+                },
+                "upper": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "value",
+                "attr",
+                "lower",
+                "upper"
+              ]
+            },
+            "default_value": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "attr": {
+                  "type": "number"
+                },
+                "lower": {
+                  "type": "number"
+                },
+                "upper": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "value",
+                "attr",
+                "lower",
+                "upper"
+              ]
+            },
+            "mappable": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "boolean"
+                },
+                "attr": {
+                  "type": "number"
+                },
+                "lower": {
+                  "type": "number"
+                },
+                "upper": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "value",
+                "attr",
+                "lower",
+                "upper"
+              ]
+            },
+            "unit": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "index",
+            "desc",
+            "kind",
+            "data_type",
+            "access_type",
+            "low_limit",
+            "high_limit",
+            "default_value",
+            "mappable"
+          ]
+        }
+      },
+      "code": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "number"
+          },
+          "attr": {
+            "type": "number"
+          },
+          "lower": {
+            "type": "number"
+          },
+          "upper": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "attr",
+          "lower",
+          "upper"
+        ]
+      },
+      "min_elements": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "attr": {
+            "type": "number"
+          },
+          "lower": {
+            "type": "number"
+          },
+          "upper": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "attr",
+          "lower",
+          "upper"
+        ]
+      },
+      "max_elements": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "attr": {
+            "type": "number"
+          },
+          "lower": {
+            "type": "number"
+          },
+          "upper": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "attr",
+          "lower",
+          "upper"
+        ]
+      },
+      "desc": {
+        "type": "string"
+      },
+      "kind": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "id",
+      "index",
+      "sub_indices",
+      "code",
+      "min_elements",
+      "max_elements",
+      "desc",
+      "kind"
+    ]
+  }
+}
