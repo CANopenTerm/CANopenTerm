@@ -38,6 +38,18 @@ pocketpy is licensed under the
 "[MIT License]("https://github.com/pocketpy/pocketpy/blob/main/LICENSE)".  
 Copyright (c) 2024, blueloveTH
 
+## Liability Disclaimer under EU Directive 2024/2853
+
+**Product Liability Notice (Directive (EU) 2024/2853)**:
+
+This software is distributed as Open Source.
+In accordance with
+[Directive (EU) 2024/2853 on liability for defective products](https://eur-lex.europa.eu/eli/dir/2024/2853/),
+please note that Open Source Software is generally provided without
+commercial guarantees.  Liability may be limited under the conditions
+set out in the directive, particularly where software is made available
+free of charge and without substantial modification.
+
 ## Datenschutzerklärung
 
 ### Hosting
