@@ -20,8 +20,7 @@ dem Urheberrecht.  Alle Rechte sind dem Autor vorbehalten.
 
 **Product Liability Notice (Directive (EU) 2024/2853)**:
 
-This software is distributed as Open Source.
-In accordance with
+This software is distributed as Open Source. In accordance with
 [Directive (EU) 2024/2853 on liability for defective products](https://eur-lex.europa.eu/eli/dir/2024/2853/),
 please note that Open Source Software is generally provided without
 commercial guarantees.  Liability may be limited under the conditions
