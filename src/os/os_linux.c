@@ -352,6 +352,19 @@ void os_quit(void)
     SDL_Quit();
 }
 
+void os_clear_window(os_renderer* renderer)
+{
+    if (renderer)
+    {
+        uint8 r = (BG_COLOR & 0xff0000) >> 16;
+        uint8 g = (BG_COLOR & 0x00ff00) >> 8;
+        uint8 b = (BG_COLOR & 0x0000ff);
+
+        SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
+        SDL_RenderClear(renderer);
+    }
+}
+
 static void set_nonblocking(int fd, int nonblocking)
 {
     int flags = fcntl(fd, F_GETFL, 0);
