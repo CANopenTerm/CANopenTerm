@@ -64,6 +64,9 @@
                 <File Source="../../export/codb/ds416.json" />
             </Component>
             <Component>
+                <File Source="../../export/codb/ds417.json" />
+            </Component>
+            <Component>
                 <File Source="../../export/codb/ds418.json" />
             </Component>
             <Component>
