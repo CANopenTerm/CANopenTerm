@@ -20,6 +20,7 @@
 #include "buffer.h"
 #include "dirent.h"
 #include "os.h"
+#include "palette.h"
 
 static bool console_is_plain_mode;
 
