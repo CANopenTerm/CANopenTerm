@@ -16,7 +16,7 @@ oder generell gewerbsmäßig ausgerichteter Tätigkeit ist untersagt.
 Alle Inhalte dieser Seite unterliegen, sofern nicht anders angegeben,
 dem Urheberrecht.  Alle Rechte sind dem Autor vorbehalten.
 
-## Liability Disclaimer under EU Directive 2024/2853
+## Liability Disclaimer
 
 **Product Liability Notice (Directive (EU) 2024/2853)**:
 
