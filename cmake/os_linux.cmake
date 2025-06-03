@@ -215,7 +215,7 @@ set(SDL3_DEVEL_PKG SDL3-${SDL3_VERSION}.tar.gz)
 
 ExternalProject_Add(SDL3_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
-    URL_HASH SHA1=e5c1749aa6bd848f74e07ee3559442acdc06991a
+    URL_HASH SHA1=c4e75bad691322511d8d6830b7aa9f763a3c4fba
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true

@@ -128,7 +128,7 @@ ExternalProject_Add(Lua_devel
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL3
-set(SDL3_VERSION "3.2.8")
+set(SDL3_VERSION "3.2.16")
 
 set(SDL3_DEVEL_PKG SDL3-devel-${SDL3_VERSION}-VC.zip)
 set(SDL3_PLATFORM  "x64")
@@ -141,7 +141,7 @@ set(SDL3_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION}_
 
 ExternalProject_Add(SDL3_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
-    URL_HASH SHA1=cb49d02184b0d88d6c52acb6e22dd1e332d9c46e
+    URL_HASH SHA1=7f060c12b0f0a19ab82621680ebe0e84a64ddecc
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
