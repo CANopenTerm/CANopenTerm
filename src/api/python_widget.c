@@ -106,6 +106,7 @@ bool py_window_update(int argc, py_Ref argv)
         window_clear();
         window_update(render);
         window_hide();
+        os_console_show();
         py_newbool(py_retval(), false);
         return true;
     }

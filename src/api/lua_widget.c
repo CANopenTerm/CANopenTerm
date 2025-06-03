@@ -62,8 +62,9 @@ int lua_window_update(lua_State* L)
         window_clear();
         window_update(render);
         window_hide();
+        os_console_show();
         lua_pushstring(L, "Widget window closed: script stopped.");
-        return lua_error(L);
+        return 0;
     }
     return 0;
 }
