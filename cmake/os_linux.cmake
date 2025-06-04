@@ -209,7 +209,7 @@ ExternalProject_Add(Lua_devel
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL3
-set(SDL3_VERSION  "3.2.8")
+set(SDL3_VERSION  "3.2.16")
 set(SDL3_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION})
 set(SDL3_DEVEL_PKG SDL3-${SDL3_VERSION}.tar.gz)
 
