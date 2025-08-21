@@ -425,7 +425,11 @@ void list_codb(void)
 
                 os_snprintf(file_no_str, 4, "%3u", file_no);
 
-                if ((0 == os_strcmp(dir->d_name, "ds301.json") && (true == is_ds301_loaded())) || ((active_no > 0) && (active_no == file_no)))
+                if (0 == os_strcmp(dir->d_name, "codb.schema.json"))
+                {
+                    continue;
+                }
+                else if ((0 == os_strcmp(dir->d_name, "ds301.json") && (true == is_ds301_loaded())) || ((active_no > 0) && (active_no == file_no)))
                 {
                     table.text_color = LIGHT_GREEN;
                     table_print_row(file_no_str, file_name_to_profile_desc(dir->d_name), "Active", &table);
