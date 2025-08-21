@@ -39,5 +39,5 @@ endif()
 include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
     SYSTEM ${CMocka_INCLUDE_DIR}
-    SYSTEM ${SDL2_INCLUDE_DIR}
+    SYSTEM ${SDL3_INCLUDE_DIR}
     SYSTEM ${LUA_INCLUDE_DIR})

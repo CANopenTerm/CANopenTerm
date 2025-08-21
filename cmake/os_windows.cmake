@@ -104,7 +104,7 @@ ExternalProject_Add(inih_devel
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_inih.cmake" ${INIH_PATH}/CMakeLists.txt)
 
 # Lua
-set(LUA_VERSION     "5.4.7")
+set(LUA_VERSION     "5.4.8")
 set(LUA_DEVEL_PKG   lua-${LUA_VERSION}.tar.gz)
 set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/lua-${LUA_VERSION}_${PLATFORM})
 set(LUA_INCLUDE_DIR ${LUA_PATH}/src)
@@ -112,7 +112,7 @@ set(LUA_LIBRARY     ${LUA_PATH}/lua.lib)
 
 ExternalProject_Add(Lua_devel
     URL https://www.lua.org/ftp/${LUA_DEVEL_PKG}
-    URL_HASH SHA1=29b54f97dab8631f52ee21a44871622eaefbe235
+    URL_HASH SHA1=ced7c0ec99ad9d984ad3e7af5fcd2deef2b33f9f
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -128,7 +128,7 @@ ExternalProject_Add(Lua_devel
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_lua.cmake" ${LUA_PATH}/CMakeLists.txt)
 
 # SDL3
-set(SDL3_VERSION "3.2.16")
+set(SDL3_VERSION "3.2.20")
 
 set(SDL3_DEVEL_PKG SDL3-devel-${SDL3_VERSION}-VC.zip)
 set(SDL3_PLATFORM  "x64")
@@ -141,7 +141,7 @@ set(SDL3_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION}_
 
 ExternalProject_Add(SDL3_devel
     URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
-    URL_HASH SHA1=7f060c12b0f0a19ab82621680ebe0e84a64ddecc
+    URL_HASH SHA1=8dec519732be0add6e8f1cc82e61a1c04aab8d17
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
@@ -194,13 +194,13 @@ set(PCAN_INCLUDE_DIR ${PCAN_PATH}/Include)
 set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
 
 # dirent
-set(DIRENT_VERSION   "1.24")
+set(DIRENT_VERSION   "1.26")
 set(DIRENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/dirent-${DIRENT_VERSION})
 set(DIRENT_DEVEL_PKG ${DIRENT_VERSION}.zip)
 
 ExternalProject_Add(dirent_devel
     URL https://github.com/tronkko/dirent/archive/refs/tags/${DIRENT_DEVEL_PKG}
-    URL_HASH SHA1=70b02369071572dd1b080057a6b9170dec04868d
+    URL_HASH SHA1=5a9dfd1204dcf29d418ec1678fd961a42b84f5fb
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     TLS_VERIFY true
