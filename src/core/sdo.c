@@ -16,7 +16,7 @@
 #define SEGMENT_DATA_SIZE 7u
 #define MAX_SDO_RESPONSE_SIZE 8u
 #define CAN_BASE_ID 0x600
-#define SDO_TIMEOUT_IN_MS 100u
+#define SDO_TIMEOUT_IN_NS 100000000u
 
 static void print_error(const char* reason, sdo_state_t sdo_state, uint8 node_id, uint16 index, uint8 sub_index, const char* comment, disp_mode_t disp_mode);
 static void print_read_result(uint8 node_id, uint16 index, uint8 sub_index, can_message_t* sdo_response, disp_mode_t disp_mode, sdo_state_t sdo_state, const char* comment);
@@ -200,7 +200,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
             timeout_time = 0;
             time_a = os_get_ticks();
 
-            while ((false == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+            while ((false == response_received) && (timeout_time < SDO_TIMEOUT_IN_NS))
             {
                 can_read(&msg_in);
                 if ((0x580 + node_id) == msg_in.id)
@@ -267,7 +267,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
                 timeout_time += delta_time;
             }
 
-            if (timeout_time >= SDO_TIMEOUT_IN_MS)
+            if (timeout_time >= SDO_TIMEOUT_IN_NS)
             {
                 os_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");
                 print_error(reason, IS_READ_EXPEDITED, node_id, index, sub_index, comment, disp_mode);
@@ -1108,7 +1108,7 @@ static int wait_for_response(uint8 node_id, can_message_t* msg_in)
     uint64 timeout_time = 0;
     bool response_received = false;
 
-    while ((false == response_received) && (timeout_time < SDO_TIMEOUT_IN_MS))
+    while ((false == response_received) && (timeout_time < SDO_TIMEOUT_IN_NS))
     {
         uint64 time_b;
         uint64 delta_time;
@@ -1134,7 +1134,7 @@ static int wait_for_response(uint8 node_id, can_message_t* msg_in)
         timeout_time += delta_time;
     }
 
-    if (timeout_time >= SDO_TIMEOUT_IN_MS)
+    if (timeout_time >= SDO_TIMEOUT_IN_NS)
     {
         char reason[300] = {0};
         os_snprintf(reason, 300, "SDO timeout: CAN-dongle present?");

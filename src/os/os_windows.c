@@ -132,7 +132,7 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 
 uint64 os_get_ticks(void)
 {
-    return SDL_GetTicks();
+    return SDL_GetTicksNS();
 }
 
 const char* os_get_user_directory(void)
