@@ -339,7 +339,7 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error No OS - layer defined.
 #endif
 
-os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param);
+os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param);
 status_t os_console_init(bool is_plain_mode);
 void os_console_hide(void);
 void os_console_show(void);

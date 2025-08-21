@@ -70,7 +70,7 @@
 
 #define os_thread SDL_Thread
 #define os_thread_func SDL_ThreadFunction
-#define os_timer_cb SDL_TimerCallback
+#define os_timer_cb SDL_NSTimerCallback
 #define os_timer_id SDL_TimerID
 
 #define os_event SDL_Event

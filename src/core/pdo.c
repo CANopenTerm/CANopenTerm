@@ -14,12 +14,13 @@
 
 static pdo_t pdo[PDO_MAX];
 
-static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval);
+static uint64 pdo_send_callback(void* pdo_pt, uint32 id, uint64 interval);
 static void print_error(const char* reason, disp_mode_t disp_mode, uint16 can_id);
 
 bool pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, disp_mode_t disp_mode)
 {
     int i;
+    uint64 event_time_ns = event_time_ms * 1000000ULL;
 
     if (false == pdo_is_id_valid(can_id))
     {
@@ -44,7 +45,7 @@ bool pdo_add(uint16 can_id, uint32 event_time_ms, uint8 length, uint64 data, dis
             pdo[i].can_id = can_id;
             pdo[i].length = length;
             pdo[i].data = data;
-            pdo[i].id = os_add_timer(event_time_ms, pdo_send_callback, &pdo[i]);
+            pdo[i].id = os_add_timer(event_time_ns, pdo_send_callback, &pdo[i]);
             return true;
         }
     }
@@ -79,7 +80,7 @@ bool pdo_del(uint16 can_id, disp_mode_t disp_mode)
     return true;
 }
 
-static uint32 pdo_send_callback(void* pdo_pt, uint32 id, uint32_t interval)
+static uint64 pdo_send_callback(void* pdo_pt, uint32 id, uint64 interval)
 {
     int i;
     int offset = 0;

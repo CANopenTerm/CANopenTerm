@@ -19,9 +19,9 @@ static bool console_is_plain_mode;
 static HANDLE console = NULL;
 static WORD default_attr;
 
-os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
+os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param)
 {
-    return SDL_AddTimer(interval, callback, param);
+    return SDL_AddTimerNS(interval, callback, param);
 }
 
 status_t os_console_init(bool is_plain_mode)

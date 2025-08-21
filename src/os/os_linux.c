@@ -28,9 +28,9 @@ static void set_nonblocking(int fd, int nonblocking);
 static void set_terminal_raw_mode(struct termios* orig_termios);
 static void reset_terminal_mode(struct termios* orig_termios);
 
-os_timer_id os_add_timer(uint32 interval, os_timer_cb callback, void* param)
+os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param)
 {
-    return SDL_AddTimer(interval, callback, param);
+    return SDL_AddTimerNS(interval, callback, param);
 }
 
 status_t os_console_init(bool is_plain_mode)
