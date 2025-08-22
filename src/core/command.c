@@ -503,3 +503,73 @@ static bool is_numeric(const char* str)
 
     return true;
 }
+
+void completion_callback(const char* buf, completions_t* lc)
+{
+    if (buf[0] == '\0')
+    {
+        // Empty line TAB -> suggest commands.
+        os_completion_add(lc, "h", "Show full help");
+        os_completion_add(lc, "b", "Set baud rate");
+        os_completion_add(lc, "d", "Load data base");
+        os_completion_add(lc, "d", "Lookup dictionary");
+        os_completion_add(lc, "y", "Set CAN channel");
+        os_completion_add(lc, "c", "Clear output");
+        os_completion_add(lc, "l", "List scripts");
+        os_completion_add(lc, "s", "Run script");
+        os_completion_add(lc, "n", "NMT command");
+        os_completion_add(lc, "r", "Read SDO");
+        os_completion_add(lc, "w", "Write SDO");
+        os_completion_add(lc, "p", "PDO");
+        os_completion_add(lc, "q", "Quit");
+    }
+    else if (buf[0] == 'b' && buf[2] == '\0')
+    {
+        os_completion_add(lc, "b 0", "Set 1 MBit/s");
+        os_completion_add(lc, "b 1", "Set 800 kBit/s");
+        os_completion_add(lc, "b 2", "Set 500 kBit/s");
+        os_completion_add(lc, "b 3", "Set 250 kBit/s");
+        os_completion_add(lc, "b 4", "Set 125 kBit/s");
+        os_completion_add(lc, "b 5", "Set 100 kBit/s");
+        os_completion_add(lc, "b 6", "Set 95.238 kBit/s");
+        os_completion_add(lc, "b 7", "Set 83.333 kBit/s");
+        os_completion_add(lc, "b 8", "Set 50 kBit/s");
+        os_completion_add(lc, "b 9", "Set 47.619 kBit/s");
+        os_completion_add(lc, "b 10", "Set 33.333 kBit/s");
+        os_completion_add(lc, "b 11", "Set 20 kBit/s");
+        os_completion_add(lc, "b 12", "Set 10 kBit/s");
+        os_completion_add(lc, "b 13", "Set 5 kBit/s");
+    }
+    else if (buf[0] == 'b' && buf[2] == '1' && buf[3] == '\0')
+    {
+        os_completion_add(lc, "b 1", "Set 800 kBit/s");
+        os_completion_add(lc, "b 10", "Set 33.333 kBit/s");
+        os_completion_add(lc, "b 11", "Set 20 kBit/s");
+        os_completion_add(lc, "b 12", "Set 10 kBit/s");
+        os_completion_add(lc, "b 13", "Set 5 kBit/s");
+    }
+    else if (buf[0] == 'p' && buf[2] == '\0')
+    {
+        os_completion_add(lc, "p add", "Add PDO (tx)");
+        os_completion_add(lc, "p del", "Remove PDO (tx)");
+    }
+    else if (buf[0] == 'n')
+    {
+        unsigned val;
+        char dummy;
+        if (os_sscanf(buf, "n %i %c", &val, &dummy) == 1)
+        {
+            char tmp[256] = {0};
+            os_snprintf(tmp, 256, "n 0x%x op", val);
+            os_completion_add(lc, tmp, "Start (go to Operational)");
+            os_snprintf(tmp, 256, "n 0x%x stop", val);
+            os_completion_add(lc, tmp, "Stop (go to Stopped)");
+            os_snprintf(tmp, 256, "n 0x%x preop", val);
+            os_completion_add(lc, tmp, "Go to Pre-operational");
+            os_snprintf(tmp, 256, "n 0x%x reset", val);
+            os_completion_add(lc, tmp, "Reset node (Application reset)");
+            os_snprintf(tmp, 256, "n 0x%x 0x82", val);
+            os_completion_add(lc, tmp, "Reset communication");
+        }
+    }
+}

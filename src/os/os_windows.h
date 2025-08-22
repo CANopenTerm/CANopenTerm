@@ -18,11 +18,14 @@
 #include <string.h>
 #include <time.h>
 
+#include "crossline.h"
+
 #define os_atof SDL_atof
 #define os_atoi SDL_atoi
 #define os_calloc SDL_calloc
 #define os_clock clock
 #define os_closedir closedir
+#define os_completion_add crossline_completion_add
 #define os_exit exit
 #define os_fclose fclose
 #define os_fgets fgets
@@ -46,6 +49,7 @@
 #define os_readdir readdir
 #define os_realloc SDL_realloc
 #define os_rewind rewind
+#define os_sscanf SDL_sscanf
 #define os_snprintf SDL_snprintf
 #define os_strchr SDL_strchr
 #define os_strcmp SDL_strcmp
@@ -85,6 +89,7 @@
 #define uint32 Uint32
 #define uint64 Uint64
 #define va_list_t va_list
+#define completions_t crossline_completions_t
 
 #define CLEAR_CMD "cls"
 

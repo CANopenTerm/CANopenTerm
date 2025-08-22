@@ -191,6 +191,10 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error os_rewind() not defined
 #endif
 
+#ifndef os_sscanf
+#error os_sscanf() not defined
+#endif
+
 #ifndef os_snprintf
 #error os_snprintf() not defined
 #endif
@@ -325,6 +329,14 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef va_list_t
 #error va_list_t not defined
+#endif
+
+#ifndef completions_t
+#error completions_t not defined
+#endif
+
+#ifndef os_completion_add
+#error os_completion_add() not defined
 #endif
 
 #ifndef CLEAR_CMD
