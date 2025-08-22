@@ -87,7 +87,7 @@ void test_os_delay(void** state)
     uint64 new_time;
 
     os_delay(100);
-    time = time + 100u;
+    time = time + 100000000ull;
     new_time = os_get_ticks();
 
     /* Max. deviation is 1ms. */
