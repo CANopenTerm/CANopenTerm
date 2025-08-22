@@ -13,11 +13,33 @@
 
 #include "buffer.h"
 #include "os.h"
+#include "crossline.h"
 #include "palette.h"
 
 static bool console_is_plain_mode;
 static HANDLE console = NULL;
 static WORD default_attr;
+
+static void completion_callback(const char* buf, crossline_completions_t* lc)
+{
+    if (buf[0] == '\0')
+    {
+        // Empty line TAB -> suggest commands.
+        crossline_completion_add(lc, "h", "Show full help");
+        crossline_completion_add(lc, "b", "Set baud rate");
+        crossline_completion_add(lc, "d", "Load data base");
+        crossline_completion_add(lc, "d", "Lookup dictionary");
+        crossline_completion_add(lc, "y", "Set CAN channel");
+        crossline_completion_add(lc, "c", "Clear output");
+        crossline_completion_add(lc, "l", "List scripts");
+        crossline_completion_add(lc, "s", "Run script");
+        crossline_completion_add(lc, "n", "NMT command");
+        crossline_completion_add(lc, "r", "Read SDO");
+        crossline_completion_add(lc, "w", "Write SDO");
+        crossline_completion_add(lc, "p", "PDO");
+        crossline_completion_add(lc, "q", "Quit");
+    }
+}
 
 os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param)
 {
@@ -119,12 +141,14 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 {
     status_t status = ALL_OK;
 
-    if (NULL == fgets(prompt, PROMPT_BUFFER_SIZE - 1, stdin))
+    if (NULL != crossline_readline(": ", prompt, PROMPT_BUFFER_SIZE))
     {
-        if (0 != feof(stdin))
-        {
-            status = 1; /* TODO: Add proper error. */
-        }
+        SDL_strlcpy(prompt, prompt, PROMPT_BUFFER_SIZE);
+        prompt[PROMPT_BUFFER_SIZE - 1] = '\0';
+    }
+    else
+    {
+        status = 1;
     }
 
     return status;
@@ -350,6 +374,21 @@ uint32 os_swap_be_32(uint32 n)
 void os_quit(void)
 {
     SDL_Quit();
+}
+
+void os_init_history(void)
+{
+    char path[256] = {0};
+    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    crossline_history_load(path);
+    crossline_completion_register(completion_callback);
+}
+
+void os_save_history(void)
+{
+    char path[256] = {0};
+    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    crossline_history_save(path);
 }
 
 void os_clear_window(os_renderer* renderer)

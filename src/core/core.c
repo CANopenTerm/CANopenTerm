@@ -97,6 +97,8 @@ status_t core_init(core_t** core, bool is_plain_mode)
     (*core)->is_running = true;
     can_init((*core)); /* Must becalled AFTER is_running has been set to true! */
 
+    os_init_history();
+
     return status;
 }
 
@@ -114,7 +116,6 @@ int core_update(void* core_pt)
     {
         if (false == core->is_script_running)
         {
-            os_print_prompt();
             if (ALL_OK == os_get_prompt(command))
             {
                 parse_command(command, core);
@@ -132,6 +133,7 @@ void core_deinit(core_t* core)
         return;
     }
 
+    os_save_history();
     test_clear_results();
     can_quit(core);
     codb_deinit();

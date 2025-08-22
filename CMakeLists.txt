@@ -50,6 +50,7 @@ include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/api
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/codb2json
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/crossline
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/widget)
 
@@ -105,6 +106,8 @@ set(common_widget_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/primitives.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/tachometer.c)
 
+set(crossline_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/crossline/crossline.c)
+
 set(core_sources ${common_core_sources})
 set(os_sources ${common_os_sources})
 set(widget_sources ${common_widget_sources})
@@ -121,14 +124,21 @@ add_library(
     ${os_sources}
     ${widget_sources})
 
+add_library(
+    crossline
+    STATIC
+    ${crossline_sources})
+
 target_link_libraries(
     ${PROJECT_NAME}
     core
+    crossline
     ${PLATFORM_LIBS})
 
 add_dependencies(
     ${PROJECT_NAME}
-    core)
+    core
+    crossline)
 
 if(NOT BUILD_YOCTO)
     add_dependencies(

@@ -10,8 +10,6 @@
 #include <SDL3/SDL.h>
 #include <fcntl.h>
 #include <limits.h>
-#include <readline/history.h>
-#include <readline/readline.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <termios.h>
@@ -20,6 +18,7 @@
 #include "buffer.h"
 #include "dirent.h"
 #include "os.h"
+#include "crossline.h"
 #include "palette.h"
 
 static bool console_is_plain_mode;
@@ -27,6 +26,27 @@ static bool console_is_plain_mode;
 static void set_nonblocking(int fd, int nonblocking);
 static void set_terminal_raw_mode(struct termios* orig_termios);
 static void reset_terminal_mode(struct termios* orig_termios);
+
+static void completion_callback(const char* buf, crossline_completions_t* lc)
+{
+    if (buf[0] == '\0')
+    {
+        // Empty line TAB -> suggest commands.
+        crossline_completion_add(lc, "h", "Show full help");
+        crossline_completion_add(lc, "b", "Set baud rate");
+        crossline_completion_add(lc, "d", "Load data base");
+        crossline_completion_add(lc, "d", "Lookup dictionary");
+        crossline_completion_add(lc, "y", "Set CAN channel");
+        crossline_completion_add(lc, "c", "Clear output");
+        crossline_completion_add(lc, "l", "List scripts");
+        crossline_completion_add(lc, "s", "Run script");
+        crossline_completion_add(lc, "n", "NMT command");
+        crossline_completion_add(lc, "r", "Read SDO");
+        crossline_completion_add(lc, "w", "Write SDO");
+        crossline_completion_add(lc, "p", "PDO");
+        crossline_completion_add(lc, "q", "Quit");
+    }
+}
 
 os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param)
 {
@@ -94,20 +114,17 @@ const char* os_get_error(void)
 status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 {
     status_t status = ALL_OK;
-    char* buffer;
 
-    buffer = readline(": ");
-    if (buffer != NULL)
+    if (NULL != crossline_readline(": ", prompt, PROMPT_BUFFER_SIZE))
     {
-        add_history(buffer);
-        os_strlcpy(prompt, buffer, PROMPT_BUFFER_SIZE);
+        SDL_strlcpy(prompt, prompt, PROMPT_BUFFER_SIZE);
+        prompt[PROMPT_BUFFER_SIZE - 1] = '\0';
     }
     else
     {
-        status = 1; /* TODO: Add proper error. */
+        status = 1;
     }
 
-    os_free(buffer);
     return status;
 }
 
@@ -332,6 +349,21 @@ uint64 os_swap_64(uint64 n)
 uint32 os_swap_be_32(uint32 n)
 {
     return SDL_Swap32BE(n);
+}
+
+void os_init_history(void)
+{
+    char path[256] = {0};
+    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    crossline_history_load(path);
+    crossline_completion_register(completion_callback);
+}
+
+void os_save_history(void)
+{
+    char path[256] = {0};
+    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    crossline_history_save(path);
 }
 
 void os_quit(void)

@@ -363,6 +363,9 @@ uint64 os_swap_64(uint64 n);
 uint32 os_swap_be_32(uint32 n);
 void os_quit(void);
 
+void os_init_history(void);
+void os_save_history(void);
+
 void os_clear_window(os_renderer* renderer);
 
 #endif /* OS_H */
