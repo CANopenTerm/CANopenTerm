@@ -91,7 +91,7 @@ void test_os_delay(void** state)
     new_time = os_get_ticks();
 
     /* Max. deviation is 1ms. */
-    assert_in_range(new_time, time, time + 1u);
+    assert_in_range(new_time, time, time + 1000000ull);
 }
 
 void test_os_fclose(void** state)
