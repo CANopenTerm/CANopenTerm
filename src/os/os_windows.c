@@ -39,6 +39,23 @@ static void completion_callback(const char* buf, crossline_completions_t* lc)
         crossline_completion_add(lc, "p", "PDO");
         crossline_completion_add(lc, "q", "Quit");
     }
+    else if (buf[0] == 'b' && buf[2] == '\0')
+    {
+        crossline_completion_add(lc, "b 0", "Set 1 MBit/s");
+        crossline_completion_add(lc, "b 1", "Set 800 kBit/s");
+        crossline_completion_add(lc, "b 2", "Set 500 kBit/s");
+        crossline_completion_add(lc, "b 3", "Set 250 kBit/s");
+        crossline_completion_add(lc, "b 4", "Set 125 kBit/s");
+        crossline_completion_add(lc, "b 5", "Set 100 kBit/s");
+        crossline_completion_add(lc, "b 6", "Set 95.238 kBit/s");
+        crossline_completion_add(lc, "b 7", "Set 83.333 kBit/s");
+        crossline_completion_add(lc, "b 8", "Set 50 kBit/s");
+        crossline_completion_add(lc, "b 9", "Set 47.619 kBit/s");
+        crossline_completion_add(lc, "b 10", "Set 33.333 kBit/s");
+        crossline_completion_add(lc, "b 11", "Set 20 kBit/s");
+        crossline_completion_add(lc, "b 12", "Set 10 kBit/s");
+        crossline_completion_add(lc, "b 13", "Set 5 kBit/s");
+    }
 }
 
 os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param)
