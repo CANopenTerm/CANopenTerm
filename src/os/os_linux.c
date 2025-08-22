@@ -92,11 +92,12 @@ const char* os_get_error(void)
 
 status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 {
+    char buf[PROMPT_BUFFER_SIZE];
     status_t status = ALL_OK;
 
-    if (NULL != crossline_readline(": ", prompt, PROMPT_BUFFER_SIZE))
+    if (NULL != crossline_readline(": ", buf, PROMPT_BUFFER_SIZE))
     {
-        SDL_strlcpy(prompt, prompt, PROMPT_BUFFER_SIZE);
+        SDL_strlcpy(prompt, buf, PROMPT_BUFFER_SIZE);
         prompt[PROMPT_BUFFER_SIZE - 1] = '\0';
     }
     else

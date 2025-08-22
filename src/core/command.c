@@ -548,6 +548,36 @@ void completion_callback(const char* buf, completions_t* lc)
         os_completion_add(lc, "b 12", "Set 10 kBit/s");
         os_completion_add(lc, "b 13", "Set 5 kBit/s");
     }
+    else if (buf[0] == 'd' && buf[2] == '\0')
+    {
+        os_completion_add(lc, "d 2", "[CiA 302] Programmable CANopen Devices");
+        os_completion_add(lc, "d 3", "[CiA 401] I / O devices");
+        os_completion_add(lc, "d 4", "[CiA 402] Drives and motion control");
+        os_completion_add(lc, "d 5", "[CiA 404] Measurement Devices and Closed Loop Controllers");
+        os_completion_add(lc, "d 6", "[CiA 405] IEC 61131 - 3 programmable devices");
+        os_completion_add(lc, "d 7", "[CiA 406] Encoders");
+        os_completion_add(lc, "d 8", "[CiA 408] Fluid Power Technology");
+        os_completion_add(lc, "d 9", "[CiA 410] Inclinometer");
+        os_completion_add(lc, "d 10", "[CiA 413] Truck Gateways");
+        os_completion_add(lc, "d 11", "[CiA 415] Road construction machinery");
+        os_completion_add(lc, "d 12", "[CiA 416] Building door control");
+        os_completion_add(lc, "d 13", "[CiA 417] Lift control systems");
+        os_completion_add(lc, "d 14", "[CiA 418] Battery modules");
+        os_completion_add(lc, "d 15", "[CiA 419] Battery chargers");
+        os_completion_add(lc, "d 16", "[CiA 443] SIIS level - 2 devices");
+        os_completion_add(lc, "d 17", "[CiA 447] Special - purpose car add - on devices");
+    }
+    else if (buf[0] == 'd' && buf[2] == '1' && buf[3] == '\0')
+    {
+        os_completion_add(lc, "d 10", "[CiA 413] Truck Gateways");
+        os_completion_add(lc, "d 11", "[CiA 415] Road construction machinery");
+        os_completion_add(lc, "d 12", "[CiA 416] Building door control");
+        os_completion_add(lc, "d 13", "[CiA 417] Lift control systems");
+        os_completion_add(lc, "d 14", "[CiA 418] Battery modules");
+        os_completion_add(lc, "d 15", "[CiA 419] Battery chargers");
+        os_completion_add(lc, "d 16", "[CiA 443] SIIS level - 2 devices");
+        os_completion_add(lc, "d 17", "[CiA 447] Special - purpose car add - on devices");
+    }
     else if (buf[0] == 'p' && buf[2] == '\0')
     {
         os_completion_add(lc, "p add", "Add PDO (tx)");
@@ -570,6 +600,23 @@ void completion_callback(const char* buf, completions_t* lc)
             os_completion_add(lc, tmp, "Reset node (Application reset)");
             os_snprintf(tmp, 256, "n 0x%x 0x82", val);
             os_completion_add(lc, tmp, "Reset communication");
+        }
+    }
+    else if (buf[0] == 'r')
+    {
+        unsigned val;
+        char dummy;
+        if (os_sscanf(buf, "r %i %c", &val, &dummy) == 1)
+        {
+            char tmp[256] = {0};
+            os_snprintf(tmp, 256, "r 0x%x 0x1000", val);
+            os_completion_add(lc, tmp, "Read Device Type");
+            os_snprintf(tmp, 256, "r 0x%x 0x1008", val);
+            os_completion_add(lc, tmp, "Read Manufacturer Device Name");
+            os_snprintf(tmp, 256, "r 0x%x 0x1009", val);
+            os_completion_add(lc, tmp, "Read Manufacturer Hardware Version");
+            os_snprintf(tmp, 256, "r 0x%x 0x100a", val);
+            os_completion_add(lc, tmp, "Read Manufacturer Software Version");
         }
     }
 }
