@@ -16,9 +16,10 @@
 #include <unistd.h>
 
 #include "buffer.h"
+#include "command.h"
+#include "crossline.h"
 #include "dirent.h"
 #include "os.h"
-#include "crossline.h"
 #include "palette.h"
 
 static bool console_is_plain_mode;
