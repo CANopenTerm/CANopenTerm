@@ -1,6 +1,6 @@
-﻿<Project Sdk="WixToolset.Sdk/5.0.1">
+﻿<Project Sdk="WixToolset.Sdk/6.0.1">
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-        <DefineConstants>ProductVersion=1.0.11;UpgradeCode=4fe8d03a-6f50-4887-a724-66992deef6f8</DefineConstants>
+        <DefineConstants>ProductVersion=1.0.12;UpgradeCode=4fe8d03a-6f50-4887-a724-66992deef6f8</DefineConstants>
     </PropertyGroup>
     <PropertyGroup>
         <OutputName>$(MSBuildProjectName)</OutputName>
@@ -9,6 +9,6 @@
         <None Include=".gitignore" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="WixToolset.UI.wixext" Version="5.0.1" />
+        <PackageReference Include="WixToolset.UI.wixext" Version="6.0.1" />
     </ItemGroup>
 </Project>

@@ -551,10 +551,10 @@ void completion_callback(const char* buf, completions_t* lc)
     else if (buf[0] == 'd' && buf[2] == '\0')
     {
         os_completion_add(lc, "d 2", "[CiA 302] Programmable CANopen Devices");
-        os_completion_add(lc, "d 3", "[CiA 401] I / O devices");
+        os_completion_add(lc, "d 3", "[CiA 401] I/O devices");
         os_completion_add(lc, "d 4", "[CiA 402] Drives and motion control");
         os_completion_add(lc, "d 5", "[CiA 404] Measurement Devices and Closed Loop Controllers");
-        os_completion_add(lc, "d 6", "[CiA 405] IEC 61131 - 3 programmable devices");
+        os_completion_add(lc, "d 6", "[CiA 405] IEC 61131-3 programmable devices");
         os_completion_add(lc, "d 7", "[CiA 406] Encoders");
         os_completion_add(lc, "d 8", "[CiA 408] Fluid Power Technology");
         os_completion_add(lc, "d 9", "[CiA 410] Inclinometer");
@@ -564,8 +564,8 @@ void completion_callback(const char* buf, completions_t* lc)
         os_completion_add(lc, "d 13", "[CiA 417] Lift control systems");
         os_completion_add(lc, "d 14", "[CiA 418] Battery modules");
         os_completion_add(lc, "d 15", "[CiA 419] Battery chargers");
-        os_completion_add(lc, "d 16", "[CiA 443] SIIS level - 2 devices");
-        os_completion_add(lc, "d 17", "[CiA 447] Special - purpose car add - on devices");
+        os_completion_add(lc, "d 16", "[CiA 443] SIIS level-2 devices");
+        os_completion_add(lc, "d 17", "[CiA 447] Special-purpose car add-on devices");
     }
     else if (buf[0] == 'd' && buf[2] == '1' && buf[3] == '\0')
     {
@@ -575,8 +575,8 @@ void completion_callback(const char* buf, completions_t* lc)
         os_completion_add(lc, "d 13", "[CiA 417] Lift control systems");
         os_completion_add(lc, "d 14", "[CiA 418] Battery modules");
         os_completion_add(lc, "d 15", "[CiA 419] Battery chargers");
-        os_completion_add(lc, "d 16", "[CiA 443] SIIS level - 2 devices");
-        os_completion_add(lc, "d 17", "[CiA 447] Special - purpose car add - on devices");
+        os_completion_add(lc, "d 16", "[CiA 443] SIIS level-2 devices");
+        os_completion_add(lc, "d 17", "[CiA 447] Special-purpose car add-on devices");
     }
     else if (buf[0] == 'p' && buf[2] == '\0')
     {
