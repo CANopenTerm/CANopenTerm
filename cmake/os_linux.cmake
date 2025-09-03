@@ -104,10 +104,10 @@ if (BUILD_YOCTO)
             DESTINATION /usr/share/CANopenTerm/scripts/utils
             FILES_MATCHING PATTERN "*")
 
-    install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/export/CANopenTerm
+    install(PROGRAMS  ${CMAKE_BINARY_DIR}/CANopenTerm
             DESTINATION /usr/bin)
 
-    install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/export/codb2json
+    install(PROGRAMS  ${CMAKE_BINARY_DIR}/codb2json
             DESTINATION /usr/bin)
 
     return()
