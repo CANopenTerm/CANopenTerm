@@ -898,7 +898,7 @@ widget_led (pos_x, pos_y, size, state)
 Print string to window, font size is 5x7.
 
 ```python
-widget_print (pos_x, pos_y, scale, str, [scale])
+widget_print (pos_x, pos_y, str, [scale])
 ```
 
 > **pos_x** Horizontal position on widget window.

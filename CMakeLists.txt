@@ -6,13 +6,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
 option(BUILD_TESTS              "Build CMocka unit tests"              OFF)
 option(BUILD_YOCTO              "Build in a Yocto build environment"   OFF)
-option(ENABLE_POCKETPY_SUPPORT  "Enable experimental pocketpy support" OFF)
 option(ENABLE_ADDRESS_SANITIZER "Enable address sanitizer (Clang)"     OFF)
 option(ENABLE_VALGRIND_SUPPORT  "Build with Valgrind support"          OFF)
-
-if (POLICY CMP0135)
-    cmake_policy(SET CMP0135 NEW)
-endif()
 
 add_executable(
     ${PROJECT_NAME}

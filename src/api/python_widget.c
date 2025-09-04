@@ -34,7 +34,7 @@ void python_widget_init(void)
     py_GlobalRef mod = py_getmodule("__main__");
 
     py_bind(mod, "window_update(render=True)", py_window_update);
-    py_bind(mod, "widget_print(pos_x, pos_y, scale, str, scale=1)", py_widget_print);
+    py_bind(mod, "widget_print(pos_x, pos_y, str, scale=1)", py_widget_print);
 
     py_bindfunc(mod, "window_clear", py_window_clear);
     py_bindfunc(mod, "window_hide", py_window_hide);
@@ -184,8 +184,8 @@ bool py_widget_print(int argc, py_Ref argv)
 
     pos_x = (uint32)py_toint(py_arg(0));
     pos_y = (uint32)py_toint(py_arg(1));
-    str = py_tostr(py_arg(3));
-    scale = (uint32)py_toint(py_arg(2));
+    str = py_tostr(py_arg(2));
+    scale = (uint32)py_toint(py_arg(3));
 
     widget_print(pos_x, pos_y, DRAW_WHITE, scale, "%s", str);
 
