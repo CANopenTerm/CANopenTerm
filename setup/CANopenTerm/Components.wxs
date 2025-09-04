@@ -4,8 +4,24 @@
             <Component>
                 <File Source="../../export/codb2json.exe" />
             </Component>
-            <Component>
-                <File Source="../../export/CANopenTerm.exe" />
+            <Component Id="CANopenTermExe" Guid="1d24bc86-fbc3-4339-b331-03db3e821bef">
+                <File Id="CANopenTermExeFile" Source="../../export/CANopenTerm.exe" KeyPath="yes"/>
+            </Component>
+
+            <Component Id="CANopenTermDesktopShortcut" Guid="e2a1c2b7-2e4a-4e7a-9c2b-1a2b3c4d5e6f">
+                <Shortcut Id="CANopenTermDesktopShortcut"
+                          Name="CANopenTerm"
+                          Description="CANopenTerm Application"
+                          Directory="DesktopFolder"
+                          Target="[INSTALLFOLDER]CANopenTerm.exe"
+                          WorkingDirectory="INSTALLFOLDER" />
+                <RemoveFolder Id="RemoveDesktopShortcut" Directory="DesktopFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU"
+                               Key="Software\CANopenTerm"
+                               Name="desktopShortcut"
+                               Type="integer"
+                               Value="1"
+                               KeyPath="yes"/>
             </Component>
             <Component>
                 <File Source="../../export/cjson.dll" />
