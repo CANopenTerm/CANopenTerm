@@ -455,15 +455,19 @@ void test_python_99_extras(void** state)
 
 static status_t test_python_script(const char* script_name)
 {
+    static bool has_init = false;
     status_t status;
     core_t core = {0};
     char script_path[1024] = {0};
 
     os_snprintf(script_path, sizeof(script_path), "tests/%s", script_name);
 
-    scripts_init(&core);
+    if (! has_init)
+    {
+        scripts_init(&core);
+        has_init = true;
+    }
     status = run_script_ex(script_path, &core);
-    scripts_deinit(&core);
 
     return status;
 }

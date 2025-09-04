@@ -54,8 +54,19 @@ assert eq(float("123.456"), 123.456)
 
 
 inf = float("inf")
-assert 1/0 == inf
-assert -1/0 == -inf
+
+try:
+    assert 1/0 == inf
+    exit(1)
+except ZeroDivisionError:
+    pass
+
+try:
+    assert -1/0 == -inf
+    exit(1)
+except ZeroDivisionError:
+    pass
+
 assert 1/inf == 0
 assert -1/inf == 0
 
@@ -98,3 +109,8 @@ assert abs(0.0) == 0.0
 #     exit(1)
 # except ValueError:
 #     pass
+
+assert eq(10 % 4, 2)
+assert eq(10.5 % 4, 2.5)
+assert eq(10 % 4.5, 1.0)
+assert eq(10.5 % 4.5, 1.5)

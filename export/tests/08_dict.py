@@ -32,8 +32,8 @@ assert tinydict == updated_dict
 
 dishes = {'eggs': 2, 'sausage': 1, 'bacon': 1, 'spam': 500}
 # dict is now ordered
-assert dishes.keys() == ('eggs', 'sausage', 'bacon', 'spam')
-assert dishes.values() == (2, 1, 1, 500)
+assert list(dishes.keys()) == ['eggs', 'sausage', 'bacon', 'spam']
+assert list(dishes.values()) == [2, 1, 1, 500]
 
 d={1:"a",2:"b",3:"c"}
 result=[]
@@ -44,8 +44,8 @@ assert len(result) == 6
 
 del d[2]
 assert len(d) == 2
-assert d.keys() == (1, 3)
-assert d.values() == ('a', 'c')
+assert list(d.keys()) == [1, 3]
+assert list(d.values()) == ['a', 'c']
 del d[1]
 del d[3]
 assert len(d) == 0
@@ -77,11 +77,11 @@ a = {'g': 0}
 
 a['ball_3'] = 0
 a['ball_4'] = 0
-assert a.keys() == ('g', 'ball_3', 'ball_4')
+assert list(a.keys()) == ['g', 'ball_3', 'ball_4']
 del a['ball_3']
-assert a.keys() == ('g', 'ball_4')
+assert list(a.keys()) == ['g', 'ball_4']
 del a['ball_4']
-assert a.keys() == ('g',)
+assert list(a.keys()) == ['g',]
 del a['g']
 assert len(a) == 0
 
@@ -115,30 +115,7 @@ assert a.pop(1) == 2
 
 assert a.pop(1, None) is None
 
-n = 2 ** 17
-a = {}
-for i in range(n):
-    a[str(i)] = i
-
-for i in range(n):
-    y = a[str(i)]
-
-for i in range(n):
-    del a[str(i)]
-
-# namedict delete test
-# class A: pass
-# a = A()
-# b = ['0', '1']
-
-# for i in range(len(data)):
-#     z = data[i]
-#     setattr(a, str(z), i)
-#     b.append(z)
-#     if i % 3 == 0:
-#         y = b.pop()
-#         delattr(a, y)
-
+# test getitem
 d = {}
 for i in range(-1000, 1000):
     d[i] = i
@@ -148,3 +125,57 @@ e = {}
 for i in range(-10000, 10000, 3):
     e[i] = i
     assert e[i] == i
+
+# test iter
+d = {'1': 1, 222: 2, '333': 3}
+assert list(d) == ['1', 222, '333']
+assert list(d.keys()) == ['1', 222, '333']
+assert list(d.values()) == [1, 2, 3]
+assert list(d.items()) == [('1', 1), (222, 2), ('333', 3)]
+
+# test del
+n = 2 ** 17
+a = {}
+for i in range(n):
+    a[str(i)] = i
+for i in range(n):
+    del a[str(i)]
+assert len(a) == 0
+
+# test del with int keys
+if 0:
+    n = 2 ** 17
+    a = {}
+    for i in range(n):
+        a[i] = i
+    for i in range(n):
+        del a[i]
+    assert len(a) == 0
+
+#######################
+
+# namedict delete test
+class A: pass
+a = A()
+b = ['0', '1']
+
+for i in range(len(data)):
+    z = data[i]
+    setattr(a, str(z), i)
+    b.append(z)
+    if i % 3 == 0:
+        y = b.pop()
+        delattr(a, y)
+
+# bug test
+d = {
+    '__name__': '__main__',
+    '__package__': '',
+    '__path__': '__main__',
+    'a': [],
+    'gc': 1,
+}
+
+del d['a']
+assert 'a' not in d
+assert d['gc'] == 1

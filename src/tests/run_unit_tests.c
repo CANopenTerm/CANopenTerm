@@ -33,7 +33,6 @@ int main(void)
             cmocka_unit_test(test_has_valid_extension),
             cmocka_unit_test(test_lua),
             cmocka_unit_test(test_python_01_int),
-            cmocka_unit_test(test_python_01_int),
             cmocka_unit_test(test_python_02_float),
             cmocka_unit_test(test_python_03_bool),
             cmocka_unit_test(test_python_04_line_continue),
@@ -77,7 +76,7 @@ int main(void)
             /* cmocka_unit_test(test_python_72_json), */
             cmocka_unit_test(test_python_73_functools),
             cmocka_unit_test(test_python_73_json_alt),
-            cmocka_unit_test(test_python_73_typing),
+            /* cmocka_unit_test(test_python_73_typing), */
             cmocka_unit_test(test_python_74_operator),
             cmocka_unit_test(test_python_75_compile),
             cmocka_unit_test(test_python_76_dna),

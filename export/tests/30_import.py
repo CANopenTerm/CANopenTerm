@@ -23,6 +23,11 @@ assert get_value_2() == '123'
 from test3.a.b import value
 assert value == 1
 
+from test2.utils import r
+assert r.__name__ == 'r'
+assert r.__package__ == 'test2.utils'
+assert r.__path__ == 'test2.utils.r'
+
 def f():
     import math as m
     assert m.pi > 3
@@ -43,3 +48,9 @@ from math import (
     sin,
     cos
 )
+
+# test reload (dummy)
+import importlib
+importlib.reload(test2.a)
+
+assert __import__('math').pi > 3
