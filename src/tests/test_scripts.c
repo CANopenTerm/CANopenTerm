@@ -34,6 +34,7 @@ static int stdout_fd_backup;
 static int stdout_fd;
 
 static status_t test_python_script(const char* file_name);
+static core_t test_core = {0};
 
 void test_has_valid_extension(void** state)
 {
@@ -46,7 +47,6 @@ void test_has_valid_extension(void** state)
 
 void test_lua(void** state)
 {
-    core_t core = {0};
     FILE_t* lua_file;
 
     (void)state;
@@ -68,7 +68,7 @@ void test_lua(void** state)
         return;
     }
 
-    scripts_init(&core);
+    scripts_init(&test_core);
 
     os_fprintf(lua_file, "-- Lua script to test and validate basic Lua functionality\n\n");
 
@@ -113,9 +113,7 @@ void test_lua(void** state)
     os_fprintf(lua_file, "assert(result == 12.5, 'Result should be 12.5')\n");
 
     os_fclose(lua_file);
-    assert_true(run_script_ex("tests/test.lua", &core) == ALL_OK);
-
-    scripts_deinit(&core);
+    assert_true(run_script_ex("tests/test.lua", &test_core) == ALL_OK);
 }
 
 void test_python_01_int(void** state)
@@ -455,19 +453,12 @@ void test_python_99_extras(void** state)
 
 static status_t test_python_script(const char* script_name)
 {
-    static bool has_init = false;
     status_t status;
-    core_t core = {0};
     char script_path[1024] = {0};
 
     os_snprintf(script_path, sizeof(script_path), "tests/%s", script_name);
 
-    if (! has_init)
-    {
-        scripts_init(&core);
-        has_init = true;
-    }
-    status = run_script_ex(script_path, &core);
+    status = run_script_ex(script_path, &test_core);
 
     return status;
 }
