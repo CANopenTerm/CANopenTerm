@@ -335,7 +335,7 @@ uint32 os_swap_be_32(uint32 n)
 void os_init_history(void)
 {
     char path[256] = {0};
-    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), ".CANopenTerm.history");
     crossline_history_load(path);
     crossline_completion_register(completion_callback);
 }
@@ -343,7 +343,7 @@ void os_init_history(void)
 void os_save_history(void)
 {
     char path[256] = {0};
-    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), ".CANopenTerm.history");
     crossline_history_save(path);
 }
 
