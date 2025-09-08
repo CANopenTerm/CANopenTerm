@@ -28,6 +28,12 @@ os_renderer* window_get_renderer(void)
     return core->renderer;
 }
 
+bool window_is_shown(void)
+{
+    extern core_t* core;
+    return core->is_window_shown;
+}
+
 void window_hide(void)
 {
     extern core_t* core;

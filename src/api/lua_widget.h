@@ -14,6 +14,7 @@
 #include "lua.h"
 
 int lua_clear_window(lua_State* L);
+int lua_window_is_shown(lua_State* L);
 int lua_hide_window(lua_State* L);
 int lua_show_window(lua_State* L);
 int lua_widget_tachometer(lua_State* L);

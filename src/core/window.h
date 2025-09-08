@@ -12,6 +12,7 @@
 
 void window_clear(void);
 os_renderer* window_get_renderer(void);
+bool window_is_shown(void);
 void window_hide(void);
 void window_fullscreen(bool state);
 void window_get_resolution(uint32* width, uint32* height);

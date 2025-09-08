@@ -23,6 +23,14 @@ int lua_window_clear(lua_State* L)
     return 0;
 }
 
+int lua_window_is_shown(lua_State* L)
+{
+    int is_shown = (int)window_is_shown();
+
+    lua_pushboolean(L, is_shown);
+    return 1;
+}
+
 int lua_window_hide(lua_State* L)
 {
     window_hide();
@@ -126,6 +134,8 @@ void lua_register_widget_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_window_clear);
     lua_setglobal(core->L, "window_clear");
+    lua_pushcfunction(core->L, lua_window_is_shown);
+    lua_setglobal(core->L, "window_is_shown");
     lua_pushcfunction(core->L, lua_window_hide);
     lua_setglobal(core->L, "window_hide");
     lua_pushcfunction(core->L, lua_window_get_resolution);

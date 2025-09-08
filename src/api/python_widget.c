@@ -20,6 +20,7 @@
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
 bool py_window_clear(int argc, py_Ref argv);
+bool py_window_is_shown(int argc, py_Ref argv);
 bool py_window_hide(int argc, py_Ref argv);
 bool py_window_get_resolution(int argc, py_Ref argv);
 bool py_window_show(int argc, py_Ref argv);
@@ -37,6 +38,7 @@ void python_widget_init(void)
     py_bind(mod, "widget_print(pos_x, pos_y, str, scale=1)", py_widget_print);
 
     py_bindfunc(mod, "window_clear", py_window_clear);
+    py_bindfunc(mod, "window_is_shown", py_window_is_shown);
     py_bindfunc(mod, "window_hide", py_window_hide);
     py_bindfunc(mod, "window_get_resolution", py_window_get_resolution);
     py_bindfunc(mod, "window_show", py_window_show);
@@ -51,6 +53,14 @@ bool py_window_clear(int argc, py_Ref argv)
 
     window_clear();
     py_newnone(py_retval());
+    return true;
+}
+
+bool py_window_is_shown(int argc, py_Ref argv)
+{
+    PY_CHECK_ARGC(0);
+
+    py_newbool(py_retval(), window_is_shown());
     return true;
 }
 

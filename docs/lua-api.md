@@ -760,6 +760,20 @@ window_clear ()
 
 <!-- tabs:end -->
 
+### window_is_shown()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Check if the widget window is currently shown.
+
+```lua
+window_is_shown ()
+```
+
+**Returns**: `true` or `false`.
+
+<!-- tabs:end -->
+
 ### window_hide()
 
 <!-- tabs:start -->

@@ -12,7 +12,7 @@ previous_data = -1
 previous_value3 = 0
 value3 = 0
 
-while not key_is_hit() do
+while window_is_shown() do
     id, length, data = can_read()
     width, height = window_get_resolution()
     render = false
