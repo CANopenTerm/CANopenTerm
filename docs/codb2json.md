@@ -12,7 +12,7 @@ a CANopen CC interface using [CANopenTerm](https://canopenterm.de).
 In order to test if the CANopen CC interface of a device is conform to
 CANopen application layer and communication profile (CiA 301), CiA
 consortium has developed the
-[CANopen CC conformance testing tool](https://www.can-cia.org/services/canopen-conformance-test-tool).
+[CANopen CC conformance test tool](https://www.can-cia.org/services/canopen-conformance-test-tool).
 
 As this tool is primarily a proprietary Windows tool and there are no
 alternatives on the market, we would like to extend
