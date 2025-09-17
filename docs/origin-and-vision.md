@@ -46,7 +46,7 @@ data object) handling. A raw CAN interface is also available, which
 makes it possible to work with other CAN-based protocols beyond CANopen
 CC.
 
-[![CANopenTerm screenshot](media/screenshot-1.png)](media/screenshot-1.png)
+[![CANopenTerm screenshot](https://canopenterm.de/media/screenshot-1.png)](https://canopenterm.de/media/screenshot-1.png)
 
 Beyond interactive use, CANopenTerm includes built-in
 **[Lua](/lua-api)** and **[Python](/python-api)** interpreters that
@@ -59,7 +59,7 @@ XML** format for integration with continuous testing workflows.  These
 features complement the core monitoring, configuration, and automation
 capabilities.
 
-[![CANopenTerm screenshot](media/screenshot-2.png)](media/screenshot-2.png)
+[![CANopenTerm screenshot](https://canopenterm.de/media/screenshot-2.png)](https://canopenterm.de/media/screenshot-2.png)
 
 ## A JSON-Based Alternative to CODB
 
@@ -73,7 +73,7 @@ syntactically validated, which helps reduce errors and simplifies
 maintenance.  This approach lays the groundwork for future features such
 as automated conformance testing.
 
-[![CANopenTerm screenshot](media/screenshot-3.png)](media/screenshot-3.png)
+[![CANopenTerm screenshot](https://canopenterm.de/media/screenshot-3.png)](https://canopenterm.de/media/screenshot-3.png)
 
 ## Extending the Ecosystem
 
