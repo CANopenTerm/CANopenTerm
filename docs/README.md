@@ -4,6 +4,9 @@
 
 ## Overview
 
+<a class="github-button" href="https://github.com/CANopenTerm/CANopenTerm" data-color-scheme="no-preference: light; light: light; dark: light;" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star CANopenTerm/CANopenTerm on GitHub">Star</a>
+<a class="github-button" href="https://github.com/sponsors/mupfdev" data-color-scheme="no-preference: light; light: light; dark: light;" data-icon="octicon-heart" data-size="large" aria-label="Sponsor @mupfdev on GitHub">Sponsor</a>
+
 CANopenTerm is an open-source tool for developing, testing,
 and analyzing **CANopen** CC networks and devices. It provides
 a technical, no-nonsense solution for professionals working
