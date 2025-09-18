@@ -47,10 +47,6 @@ Crossline is licensed under
 "[MIT License](https://github.com/CANopenTerm/CANopenTerm/blob/main/src/crossline/LICENSE.md)".  
 Copyright (c) 2019, JC Wang (wang_junchuan@163.com)
 
-PicoC is licensed under the
-"[New BSD License](https://github.com/CANopenTerm/CANopenTerm/blob/main/src/picoc/LICENSE)".  
-Copyright (c) 2009-2011, Zik Saleeba, Copyright (c) 2015, Joseph Poirier, All rights reserved.
-
 pocketpy is licensed under the
 "[MIT License]("https://github.com/pocketpy/pocketpy/blob/main/LICENSE)".  
 Copyright (c) 2024, blueloveTH
