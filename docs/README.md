@@ -1,6 +1,6 @@
 <!-- # CANopenTerm -->
 
-![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg)
+![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg ':no-zoom')
 
 ## Overview
 
