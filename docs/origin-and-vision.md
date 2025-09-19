@@ -46,7 +46,7 @@ data object) handling. A raw CAN interface is also available, which
 makes it possible to work with other CAN-based protocols beyond CANopen
 CC.
 
-[![CANopenTerm screenshot](media/screenshot-1.png)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/refs/heads/main/docs/media/screenshot-1.png)
+![CANopenTerm screenshot](media/screenshot-1.png)
 
 Beyond interactive use, CANopenTerm includes built-in
 **[Lua](/lua-api)** and **[Python](/python-api)** interpreters that
