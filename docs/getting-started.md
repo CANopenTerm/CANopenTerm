@@ -61,7 +61,7 @@ Folder`.  All required dependencies are fetched at compile time.
 
 ### Yocto
 
-[![CANopenTerm](media/oe-logo-2009.svg)](media/oe-logo-2009.svg "OpenEmbedded")
+![CANopenTerm](media/oe-logo-2009.svg)
 
 CANopenTerm is upstreamed to the
 [OpenEmbedded](https://www.openembedded.org)/[Yocto project](https://www.yoctoproject.org/).
