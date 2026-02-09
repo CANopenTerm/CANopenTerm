@@ -93,9 +93,26 @@ function parse_engine_rpm(data)
     return ((a * 256) + b) / 4
 end
 
+local last_request_time = 0
+local request_interval = 0.25 -- seconds
+local request_rpm = true      -- Toggle between RPM and Speed requests
+
 -- Main application loop - continues while window is visible.
 -- This loop repeatedly reads CAN data, updates state, and redraws the dashboard.
 while window_is_shown() do
+    local now = os.clock()
+
+    -- Periodically send OBD-II requests (alternate between RPM and Speed).
+    if now - last_request_time > request_interval then
+        if request_rpm then
+            can_write(0x7E0, 8, 0x02010C0000000000)  -- RPM.
+        else
+            can_write(0x7E0, 8, 0x02010D0000000000)  -- Speed.
+        end
+        request_rpm = not request_rpm  -- Toggle for next cycle.
+        last_request_time = now
+    end
+
     -- Read CAN data and get current window dimensions.
     -- can_read() returns: CAN ID, data length, and data payload.
     id, length, data = can_read()
