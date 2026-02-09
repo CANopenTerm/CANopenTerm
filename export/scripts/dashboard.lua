@@ -118,18 +118,10 @@ function send_obd_request(now)
     end
 end
 
-function calculate_layout(width, height)
-    local layout = {}
-    layout.size = width / 3
-    layout.spacing = width / 6
-    layout.pos_y = (height / 2) - (layout.size / 2)
-    layout.pos_x_kmh = layout.spacing
-    layout.pos_x_rpm = width - layout.spacing - layout.size
-    return layout
-end
-
 function process_obd_response(id, data)
-    if id ~= nil and id == OBD_RESPONSE_ID and data ~= nil and data ~= previous_data then
+    if id ~= nil and id == OBD_RESPONSE_ID and
+       data ~= nil and data ~= previous_data then
+
         local mode = (data >> 8) & 0xff
         local pid = (data >> 16) & 0xff
 
@@ -148,10 +140,20 @@ function process_obd_response(id, data)
     return false
 end
 
+function calculate_layout(width, height)
+    local layout = {}
+    layout.size = width / 3
+    layout.spacing = width / 6
+    layout.pos_y = (height / 2) - (layout.size / 2)
+    layout.pos_x_kmh = layout.spacing
+    layout.pos_x_rpm = width - layout.spacing - layout.size
+    return layout
+end
+
 function render_dashboard(layout)
     window_clear()
 
-    widget_print(10, 10, "ODB-II DASHBOARD", 4)
+    widget_print(10, 10, "CAR DASHBOARD", 4)
     widget_print(10, 75, string.format("%4d", kmh) .. " km/h", 4)
     widget_print(10, 125, string.format("%4d", rpm) .. " RPM", 4)
 
