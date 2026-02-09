@@ -1,4 +1,4 @@
---[[ A simple car dashboard example.
+--[[ An ODB-II speed and RPM monitor
 
 Author:  Michael Fitzmayer
 License: Public domain
@@ -16,6 +16,11 @@ OBD-II test frames (inject via CAN for testing):
 - Speed (100 km/h): id=0x7E8, length=8, data=0x02410D6400000000
 - RPM (3000 rpm):   id=0x7E8, length=8, data=0x04410C2EE0000000
 
+If the service mode or PID is unsupported, the response will indicate an
+error (e.g., 0x7F for negative response).  Especially older vehicles may not
+support all PIDs or use K-line instead of CAN, so compatibility may vary.
+Always verify supported PIDs.
+
 --]]
 
 -- Hide the console and show the graphical window.
@@ -28,6 +33,10 @@ previous_data = nil      -- Cache previous CAN data to avoid redundant processin
 kmh = 0                  -- Current vehicle speed in km/h.
 rpm = 0                  -- Current engine RPM.
 first_render = true      -- Flag to force initial rendering.
+
+-- ODB-II standard request CAN ID.
+-- All OBD-II requests use this CAN ID to query diagnostic data.
+OBD_REQUEST_ID = 0x7E0
 
 -- OBD-II standard response CAN ID.
 -- All OBD-II responses use this CAN ID for diagnostic data.
@@ -94,109 +103,86 @@ function parse_engine_rpm(data)
 end
 
 local last_request_time = 0
-local request_interval = 0.25 -- seconds
-local request_rpm = true      -- Toggle between RPM and Speed requests
+local request_interval = 0.25 -- Request OBD data every 250 milliseconds.
+local request_rpm = true
+
+function send_obd_request(now)
+    if now - last_request_time > request_interval then
+        if request_rpm then
+            can_write(OBD_REQUEST_ID, 8, 0x02010C0000000000)
+        else
+            can_write(OBD_REQUEST_ID, 8, 0x02010D0000000000)
+        end
+        request_rpm = not request_rpm
+        last_request_time = now
+    end
+end
+
+function calculate_layout(width, height)
+    local layout = {}
+    layout.size = width / 3
+    layout.spacing = width / 6
+    layout.pos_y = (height / 2) - (layout.size / 2)
+    layout.pos_x_kmh = layout.spacing
+    layout.pos_x_rpm = width - layout.spacing - layout.size
+    return layout
+end
+
+function process_obd_response(id, data)
+    if id ~= nil and id == OBD_RESPONSE_ID and data ~= nil and data ~= previous_data then
+        local mode = (data >> 8) & 0xff
+        local pid = (data >> 16) & 0xff
+
+        if mode == 0x41 then
+            if pid == 0x0D then
+                kmh = parse_vehicle_speed(data)
+                return true
+            elseif pid == 0x0C then
+                rpm = parse_engine_rpm(data)
+                return true
+            end
+        end
+
+        previous_data = data
+    end
+    return false
+end
+
+function render_dashboard(layout)
+    window_clear()
+
+    widget_print(10, 10, "ODB-II DASHBOARD", 4)
+    widget_print(10, 75, string.format("%4d", kmh) .. " km/h", 4)
+    widget_print(10, 125, string.format("%4d", rpm) .. " RPM", 4)
+
+    widget_print(layout.pos_x_kmh - offset, layout.pos_y - 10, "KM/H", 2)
+    widget_print(layout.pos_x_rpm + offset, layout.pos_y - 10, "RPM", 2)
+
+    widget_tachometer(layout.pos_x_kmh - offset, layout.pos_y, layout.size, 260, kmh)
+    widget_tachometer(layout.pos_x_rpm + offset, layout.pos_y, layout.size, 8000, rpm)
+end
 
 -- Main application loop - continues while window is visible.
 -- This loop repeatedly reads CAN data, updates state, and redraws the dashboard.
 while window_is_shown() do
     local now = os.clock()
+    send_obd_request(now)
 
-    -- Periodically send OBD-II requests (alternate between RPM and Speed).
-    if now - last_request_time > request_interval then
-        if request_rpm then
-            can_write(0x7E0, 8, 0x02010C0000000000)  -- RPM.
-        else
-            can_write(0x7E0, 8, 0x02010D0000000000)  -- Speed.
-        end
-        request_rpm = not request_rpm  -- Toggle for next cycle.
-        last_request_time = now
-    end
-
-    -- Read CAN data and get current window dimensions.
-    -- can_read() returns: CAN ID, data length, and data payload.
     id, length, data = can_read()
-    -- Get window dimensions for responsive layout calculations.
     width, height = window_get_resolution()
-    -- Flag to indicate if we need to redraw the screen this iteration.
-    render = false
+    layout = calculate_layout(width, height)
 
-    -- Calculate widget sizes and positions based on window dimensions.
-    -- This creates a responsive layout that adapts to window size.
-    size = width / 3                         -- Tachometer size (1/3 of window width).
-    spacing = width / 6                      -- Spacing from edges (1/6 of window width).
-    pos_y = (height / 2) - (size / 2)        -- Vertical center position.
-    
-    -- Position for KM/H gauge (left side).
-    -- Layout: [spacing][gauge][spacing][spacing][gauge][spacing]
-    pos_x_kmh = spacing
-    -- Position for RPM gauge (right side).
-    pos_x_rpm = width - spacing - size
+    render = process_obd_response(id, data)
 
-    -- Parse OBD-II data if new data is available and from correct CAN ID.
-    -- This section filters for valid OBD-II responses and prevents reprocessing.
-    if id ~= nil and id == OBD_RESPONSE_ID and data ~= nil and data ~= previous_data then
-        -- Extract mode and PID from OBD-II response frame.
-        -- OBD-II standard format: [Length, Mode+0x40, PID, Data...]
-        -- The mode byte is at position 1 (shift right 8 bits).
-        local mode = (data >> 8) & 0xff
-        -- The PID byte is at position 2 (shift right 16 bits).
-        local pid = (data >> 16) & 0xff
-        
-        -- Check if this is a response to mode 0x01 (show current data).
-        -- Mode 0x01 requests are responded to with mode 0x41 (0x01 + 0x40).
-        if mode == 0x41 then  -- Response to mode 0x01 (show current data).
-            if pid == 0x0D then  -- Vehicle speed PID.
-                -- Update speed value and trigger redraw.
-                kmh = parse_vehicle_speed(data)
-                render = true
-            elseif pid == 0x0C then  -- Engine RPM PID.
-                -- Update RPM value and trigger redraw.
-                rpm = parse_engine_rpm(data)
-                render = true
-            end
-        end
-        
-        -- Update data cache to prevent reprocessing.
-        -- This optimization avoids redundant parsing of the same CAN frame.
-        previous_data = data
-    end
-
-    -- Force initial render to display gauges on startup.
-    -- This ensures the dashboard is visible even before receiving CAN data.
     if first_render then
         render = true
         first_render = false
     end
 
-    -- Redraw the dashboard if new data was received or on first run.
-    -- This conditional rendering improves performance by only updating when needed.
     if render then
-        -- Clear the window to prepare for fresh drawing.
-        window_clear()
-        
-        -- Display application title at the top-left corner.
-        widget_print(10, 10, "Diagnostics: All Systems Nerdy", 3)
-
-        -- Display current speed and RPM values as text (digital readout).
-        -- Format numbers with fixed width for consistent alignment.
-        widget_print(10, 50, string.format("%3d", kmh) .. "  km/h", 4)
-        widget_print(10, 100, string.format("%4d", rpm) .. " RPM", 4)
-
-        -- Display gauge labels above each tachometer.
-        widget_print(pos_x_kmh - offset, pos_y - 10, "KM/H", 2)
-        widget_print(pos_x_rpm + offset, pos_y - 10, "RPM", 2)
-
-        -- Display tachometer gauges (analog visualization).
-        -- Parameters: x, y, size, max_value, current_value
-        -- Max speed: 260 km/h, Max RPM: 8000 (typical car redline).
-        widget_tachometer(pos_x_kmh - offset, pos_y, size, 260, kmh)
-        widget_tachometer(pos_x_rpm + offset, pos_y, size, 8000, rpm)
+        render_dashboard(layout)
     end
 
-    -- Update window display (only if render flag is set).
-    -- Passing the render flag tells the system whether to actually refresh the screen.
-    -- This prevents unnecessary screen updates when data hasn't changed.
     window_update(render)
 end
 
