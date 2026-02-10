@@ -1,4 +1,4 @@
---[[ An ODB-II speed and RPM monitor
+--[[ An OBD-II speed and RPM monitor
 
 Author:  Michael Fitzmayer
 License: Public domain
@@ -34,7 +34,7 @@ kmh = 0                  -- Current vehicle speed in km/h.
 rpm = 0                  -- Current engine RPM.
 first_render = true      -- Flag to force initial rendering.
 
--- ODB-II standard request CAN ID.
+-- OBD-II standard request CAN ID.
 -- All OBD-II requests use this CAN ID to query diagnostic data.
 OBD_REQUEST_ID = 0x7E0
 
