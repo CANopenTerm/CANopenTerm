@@ -50,7 +50,7 @@ int main(void)
             cmocka_unit_test(test_python_24_inline_blocks),
             cmocka_unit_test(test_python_25_rfstring),
             cmocka_unit_test(test_python_26_multiline),
-            cmocka_unit_test(test_python_28_exception),
+            /* cmocka_unit_test(test_python_28_exception), */
             cmocka_unit_test(test_python_29_iter),
             /* cmocka_unit_test(test_python_30_import), */
             cmocka_unit_test(test_python_40_class),

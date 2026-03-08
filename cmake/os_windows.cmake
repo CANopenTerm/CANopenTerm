@@ -61,7 +61,7 @@ ExternalProject_Add(cJSON_devel
 )
 
 # pocketpy
-set(POCKETPY_VERSION     "2.1.1")
+set(POCKETPY_VERSION     "2.1.6")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.zip")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
@@ -69,7 +69,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/pocketpy.lib)
 
 ExternalProject_Add(pocketpy_devel
   URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-  URL_HASH SHA1=ed0378a99f8a94f619fe072cd8e83e0fb9935a7c
+  URL_HASH SHA1=e6b0ac5648b1eb0e970f9edaa37ffe67912b9a15
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -112,7 +112,7 @@ ExternalProject_Add(inih_devel
 )
 
 # Lua
-set(LUA_VERSION     "5.4.8")
+set(LUA_VERSION     "5.5.0")
 set(LUA_DEVEL_PKG   lua-${LUA_VERSION}.tar.gz)
 set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/lua-${LUA_VERSION}_${PLATFORM})
 set(LUA_INCLUDE_DIR ${LUA_PATH}/src)
@@ -120,7 +120,7 @@ set(LUA_LIBRARY     ${LUA_PATH}/lua.lib)
 
 ExternalProject_Add(Lua_devel
   URL https://www.lua.org/ftp/${LUA_DEVEL_PKG}
-  URL_HASH SHA1=ced7c0ec99ad9d984ad3e7af5fcd2deef2b33f9f
+  URL_HASH SHA1=71c930fa188fd244f353f227175c6f5ee5b52f6a
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -138,7 +138,7 @@ ExternalProject_Add(Lua_devel
 )
 
 # SDL3
-set(SDL3_VERSION "3.2.22")
+set(SDL3_VERSION "3.4.2")
 
 set(SDL3_DEVEL_PKG SDL3-devel-${SDL3_VERSION}-VC.zip)
 set(SDL3_PLATFORM  "x64")
@@ -151,7 +151,7 @@ set(SDL3_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION}_
 
 ExternalProject_Add(SDL3_devel
   URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
-  URL_HASH SHA1=502313757118a068a6ef8f767d082b95334ca456
+  URL_HASH SHA1=5e6d3990c2529ec04f07f5a5ef573cd4a4e25e4e
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -172,7 +172,7 @@ set(SDL3_INCLUDE_DIR ${SDL3_PATH}/include)
 set(SDL3_LIBRARY     ${SDL3_PATH}/lib/${SDL3_PLATFORM}/SDL3.lib)
 
 # PCAN-Basic API
-set(PCAN_VERSION_WINDOWS "4.10.1.968")
+set(PCAN_VERSION_WINDOWS "5.0.0.1115")
 
 set(PCAN_PLATFORM  "x64")
 set(PCAN_PATH      "${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/PCAN-Basic_API_Windows")
@@ -183,7 +183,7 @@ endif()
 
 set(PCAN_DEVEL_PKG  PCAN-Basic_Windows-${PCAN_VERSION_WINDOWS}.zip)
 set(PCAN_DEVEL_URL  https://canopenterm.de/mirror)
-set(PCAN_DEVEL_HASH 66c7941f1bb93294621437f3d8774845ab0b9659)
+set(PCAN_DEVEL_HASH aca36ff1a766839ffc698f6d1a1d0870f01e395e)
 
 ExternalProject_Add(PCAN_devel
   URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}

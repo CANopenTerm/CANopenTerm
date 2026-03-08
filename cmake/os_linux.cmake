@@ -155,7 +155,7 @@ ExternalProject_Add(cJSON_devel
 )
 
 # pocketpy
-set(POCKETPY_VERSION     "2.1.1")
+set(POCKETPY_VERSION     "2.1.6")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
@@ -163,7 +163,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.a)
 
 ExternalProject_Add(pocketpy_devel
   URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-  URL_HASH SHA1=4829316b8d3db869996018522087faa36151ffcb
+  URL_HASH SHA1=13c53916fbbacfae5c9d3e79984430d88a09bd60
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -208,7 +208,7 @@ ExternalProject_Add(inih_devel
 )
 
 # Lua
-set(LUA_VERSION     "5.4.8")
+set(LUA_VERSION     "5.5.0")
 set(LUA_DEVEL_PKG   lua-${LUA_VERSION}.tar.gz)
 set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/lua-${LUA_VERSION}_${PLATFORM})
 set(LUA_INCLUDE_DIR ${LUA_PATH}/src)
@@ -216,7 +216,7 @@ set(LUA_LIBRARY     ${LUA_PATH}/liblua.a)
 
 ExternalProject_Add(Lua_devel
   URL https://www.lua.org/ftp/${LUA_DEVEL_PKG}
-  URL_HASH SHA1=ced7c0ec99ad9d984ad3e7af5fcd2deef2b33f9f
+  URL_HASH SHA1=71c930fa188fd244f353f227175c6f5ee5b52f6a
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -234,13 +234,13 @@ ExternalProject_Add(Lua_devel
 )
 
 # SDL3
-set(SDL3_VERSION  "3.2.22")
+set(SDL3_VERSION  "3.4.2")
 set(SDL3_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION})
 set(SDL3_DEVEL_PKG SDL3-${SDL3_VERSION}.tar.gz)
 
 ExternalProject_Add(SDL3_devel
   URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
-  URL_HASH SHA1=091d01a3bcceff4ab8e9e18f0cdb011ac4f2d9a9
+  URL_HASH SHA1=c3e6ad40e0cde41fb88a139c0e0cc003de0b41ea
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -251,6 +251,7 @@ ExternalProject_Add(SDL3_devel
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DSDL_UNIX_CONSOLE_BUILD=ON
+    -DSDL_X11_XTEST=OFF
 
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
   PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step."
