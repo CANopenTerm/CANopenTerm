@@ -1,131 +1,128 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-    <Fragment>
-        <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
-            <Component>
-                <File Source="../../export/codb2json.exe" />
-            </Component>
-            <Component Id="CANopenTermExe" Guid="1d24bc86-fbc3-4339-b331-03db3e821bef">
-                <File Id="CANopenTermExeFile" Source="../../export/CANopenTerm.exe" KeyPath="yes"/>
-            </Component>
+	<Fragment>
+		<ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
+			<Component>
+				<File Source="../../export/codb2json.exe" />
+			</Component>
+			<Component Id="CANopenTermExe" Guid="1d24bc86-fbc3-4339-b331-03db3e821bef">
+				<File Id="CANopenTermExeFile" Source="../../export/CANopenTerm.exe" KeyPath="yes"/>
+			</Component>
 
-            <Component Id="CANopenTermDesktopShortcut" Guid="e2a1c2b7-2e4a-4e7a-9c2b-1a2b3c4d5e6f">
-                <Shortcut Id="CANopenTermDesktopShortcut"
+			<Component Id="CANopenTermDesktopShortcut" Guid="e2a1c2b7-2e4a-4e7a-9c2b-1a2b3c4d5e6f">
+				<Shortcut Id="CANopenTermDesktopShortcut"
                           Name="CANopenTerm"
                           Description="CANopenTerm Application"
                           Directory="DesktopFolder"
                           Target="[INSTALLFOLDER]CANopenTerm.exe"
                           WorkingDirectory="INSTALLFOLDER" />
-                <RemoveFolder Id="RemoveDesktopShortcut" Directory="DesktopFolder" On="uninstall"/>
-                <RegistryValue Root="HKCU"
+				<RemoveFolder Id="RemoveDesktopShortcut" Directory="DesktopFolder" On="uninstall"/>
+				<RegistryValue Root="HKCU"
                                Key="Software\CANopenTerm"
                                Name="desktopShortcut"
                                Type="integer"
                                Value="1"
                                KeyPath="yes"/>
-            </Component>
-            <Component>
-                <File Source="../../export/cjson.dll" />
-            </Component>
-            <Component>
-                <File Source="../../export/PCANBasic.dll" />
-            </Component>
-            <Component>
-                <File Source="../../export/pocketpy.dll" />
-            </Component>
-            <Component>
-                <File Source="../../export/SDL3.dll" />
-            </Component>
-            <Component>
-                <File Source="../../export/vcruntime140.dll" />
-            </Component>
-        </ComponentGroup>
-        <ComponentGroup Id="CodbComponents" Directory="CODBFOLDER">
-            <Component>
-                <File Source="../../export/codb/codb.schema.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds301.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds302.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds401.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds402.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds404.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds405.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds406.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds408.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds410.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds413.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds415.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds416.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds417.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds418.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds419.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds443.json" />
-            </Component>
-            <Component>
-                <File Source="../../export/codb/ds447.json" />
-            </Component>
-        </ComponentGroup>
-        <ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
-            <Component>
-                <File Source="../../export/dbc/j1939.dbc" />
-            </Component>
-        </ComponentGroup>
-        <ComponentGroup Id="EdsComponents" Directory="EDSFOLDER">
-            <Component>
-                <File Source="../../export/eds/DS301_profile.eds" />
-            </Component>
-        </ComponentGroup>
-        <ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
-            <Component>
-                <File Source="../../export/scripts/replay.lua" />
-            </Component>
-            <Component>
-                <File Source="../../export/scripts/rotary.lua" />
-            </Component>
-            <Component>
-                <File Source="../../export/scripts/scanner.lua" />
-            </Component>
-            <Component>
-                <File Source="../../export/scripts/trace.lua" />
-            </Component>
-            <Component>
-                <File Source="../../export/scripts/watch.lua" />
-            </Component>
-        </ComponentGroup>
-        <ComponentGroup Id="UtilsComponents" Directory="UTILSFOLDER">
-            <Component>
-                <File Source="../../export/scripts/utils/init.lua" />
-            </Component>
-        </ComponentGroup>
-    </Fragment>
+			</Component>
+			<Component>
+				<File Source="../../export/cjson.dll" />
+			</Component>
+			<Component>
+				<File Source="../../export/PCANBasic.dll" />
+			</Component>
+			<Component>
+				<File Source="../../export/pocketpy.dll" />
+			</Component>
+			<Component>
+				<File Source="../../export/SDL3.dll" />
+			</Component>
+			<Component>
+				<File Source="../../export/vcruntime140.dll" />
+			</Component>
+		</ComponentGroup>
+		<ComponentGroup Id="CodbComponents" Directory="CODBFOLDER">
+			<Component>
+				<File Source="../../export/codb/codb.schema.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds301.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds302.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds401.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds402.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds404.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds406.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds408.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds410.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds413.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds415.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds416.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds417.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds418.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds419.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds443.json" />
+			</Component>
+			<Component>
+				<File Source="../../export/codb/ds447.json" />
+			</Component>
+		</ComponentGroup>
+		<ComponentGroup Id="DbcComponents" Directory="DBCFOLDER">
+			<Component>
+				<File Source="../../export/dbc/j1939.dbc" />
+			</Component>
+		</ComponentGroup>
+		<ComponentGroup Id="EdsComponents" Directory="EDSFOLDER">
+			<Component>
+				<File Source="../../export/eds/DS301_profile.eds" />
+			</Component>
+		</ComponentGroup>
+		<ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
+			<Component>
+				<File Source="../../export/scripts/replay.lua" />
+			</Component>
+			<Component>
+				<File Source="../../export/scripts/rotary.lua" />
+			</Component>
+			<Component>
+				<File Source="../../export/scripts/scanner.lua" />
+			</Component>
+			<Component>
+				<File Source="../../export/scripts/trace.lua" />
+			</Component>
+			<Component>
+				<File Source="../../export/scripts/watch.lua" />
+			</Component>
+		</ComponentGroup>
+		<ComponentGroup Id="UtilsComponents" Directory="UTILSFOLDER">
+			<Component>
+				<File Source="../../export/scripts/utils/init.lua" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
 </Wix>

@@ -609,7 +609,6 @@ static const char* file_name_to_profile_desc(const char* file_name)
         {"ds401.json", "[CiA 401] I/O devices"},
         {"ds402.json", "[CiA 402] Drives and motion control"},
         {"ds404.json", "[CiA 404] Measurement Devices and Closed Loop Controllers"},
-        {"ds405.json", "[CiA 405] IEC 61131-3 programmable devices"},
         {"ds406.json", "[CiA 406] Encoders"},
         {"ds408.json", "[CiA 408] Fluid Power Technology"},
         {"ds410.json", "[CiA 410] Inclinometer"},
