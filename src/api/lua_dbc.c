@@ -18,7 +18,8 @@ int lua_dbc_decode(lua_State* L)
 {
     int can_id = luaL_checkinteger(L, 1);
     uint64 data = lua_tointeger(L, 2);
-    const char* result = dbc_decode(can_id, data);
+    const char* filter = luaL_optstring(L, 3, NULL);
+    const char* result = dbc_decode(can_id, data, filter);
 
     lua_pushstring(L, result);
 

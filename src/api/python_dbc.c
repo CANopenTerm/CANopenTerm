@@ -33,6 +33,7 @@ bool py_dbc_decode(int argc, py_Ref argv)
     int can_id;
     uint64 data;
     const char* result;
+    const char* filter = NULL;
 
     PY_CHECK_ARGC(2);
     PY_CHECK_ARG_TYPE(0, tp_int);
@@ -40,7 +41,8 @@ bool py_dbc_decode(int argc, py_Ref argv)
 
     can_id = py_toint(py_arg(0));
     data = py_toint(py_arg(1));
-    result = dbc_decode(can_id, data);
+    filter = py_tostr(py_arg(2));
+    result = dbc_decode(can_id, data, filter);
 
     py_newstr(py_retval(), result);
 

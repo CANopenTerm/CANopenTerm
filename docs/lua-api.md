@@ -19,12 +19,14 @@ documented in detail below.
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-dbc_decode (can_id, [data])
+dbc_decode (can_id, [data], [filter])
 ```
 
 > **can_id** CAN-ID.
 
 > **data** Data, default is `0`.
+
+> **filter** Optional filter string, default is `nil`. If provided, only signals whose name contains the filter string will be included in the output.
 
 **Returns**: Decoded output as a string.
 

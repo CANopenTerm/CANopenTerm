@@ -13,12 +13,14 @@ cpython, please refer to the official documentation:
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-str dbc_decode (can_id, [data])
+str dbc_decode (can_id, [data], [filter])
 ```
 
 > **can_id** CAN-ID.
 
 > **data** Data, default is `0`.
+
+> **filter** Optional filter string, default is `None`. If provided, only signals whose name contains the filter string will be included in the output.
 
 **Returns**: Decoded output as a `str`.
 

@@ -20,7 +20,7 @@ static bool starts_with(const char* str, const char* prefix);
 static char* str_tolower(const char* str);
 static char* trim_whitespace(char* str);
 
-const char* dbc_decode(uint32 can_id, uint64 data)
+const char* dbc_decode(uint32 can_id, uint64 data, const char* filter)
 {
     static char result[4096] = {0};
     int pos = 0;
@@ -50,6 +50,11 @@ const char* dbc_decode(uint32 can_id, uint64 data)
                 uint64 raw_value = extract_raw_signal(data, signal->start_bit, signal->length, signal->endianness);
                 double value = (raw_value * signal->scale) + signal->offset;
                 int k;
+
+                if (filter != NULL && os_strstr(signal->name, filter) == NULL)
+                {
+                    continue;
+                }
 
                 n = os_snprintf(result + pos, sizeof(result) - pos, "  %s", signal->name);
                 if (n > 0)
