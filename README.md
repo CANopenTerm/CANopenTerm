@@ -83,6 +83,19 @@ Key functionalities include:
 - **Grahical Widgets**:
   Intuitive graphical widgets for real-time CAN data visualisation.
 
+## Media & Press
+
+CANopenTerm has been featured in various media outlets and has received
+positive feedback from users in the industry. 
+
+Here are some highlights:
+
+- CAN in Automation Newsletter, March 2026:
+[Open-source tool for CANopen development and testing](https://www.can-cia.org/fileadmin/cia/documents/publications/cnlm/march_2026/cnlm_26-1_p44_tool_for_canopen_development_and_testing_michael_fitzmayer_bucher.pdf)
+
+- SPS-Magazin, Nr. 13, Dezember 2025:
+[CANopenTerm als Open-Source-Universalwerkzeug für CANopen](https://sps-magazin.de/kommunikation/canopenterm-als-open-source-universalwerkzeug-fuer-canopen/)
+
 ## Why Your Support Matters
 
 **CANopenTerm** is developed to provide a powerful tool for
