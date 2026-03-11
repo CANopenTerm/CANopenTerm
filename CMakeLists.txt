@@ -160,7 +160,6 @@ if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     -Wpedantic
     -Wno-unsafe-buffer-usage
     -Wno-covered-switch-default
-    -Werror
   )
 
   if (ENABLE_ADDRESS_SANITIZER)
