@@ -78,8 +78,15 @@
 #define os_timer_id SDL_TimerID
 
 #define os_event SDL_Event
+#define os_rect SDL_FRect
 #define os_renderer SDL_Renderer
 #define os_window SDL_Window
+
+#define os_set_color SDL_SetRenderDrawColor
+#define os_draw_pixel SDL_RenderPoint
+#define os_draw_line SDL_RenderLine
+#define os_draw_rect SDL_RenderRect
+#define os_draw_fill_rect SDL_RenderFillRect
 
 #define DIR_t DIR
 #define dirent_t dirent

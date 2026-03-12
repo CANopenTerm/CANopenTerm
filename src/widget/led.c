@@ -7,10 +7,6 @@
  *
  **/
 
-/* TODO: Use OS-abstraction layer. */
-
-#include <SDL3/SDL.h>
-
 #include "os.h"
 #include "palette.h"
 #include "primitives.h"
@@ -18,7 +14,7 @@
 
 void widget_led(uint32 pos_x, uint32 pos_y, uint32 size, bool state)
 {
-    SDL_Renderer* renderer = window_get_renderer();
+    os_renderer* renderer = window_get_renderer();
     pal_color_t color = WIDGET_COLOR;
     uint8 r, g, b;
 
@@ -36,7 +32,7 @@ void widget_led(uint32 pos_x, uint32 pos_y, uint32 size, bool state)
         g = (DRAW_WHITE & 0x00ff00) >> 8;
         b = (DRAW_WHITE & 0x0000ff);
 
-        SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
+        os_set_color(renderer, r, g, b, 0xff);
         draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, true);
     }
 
@@ -44,6 +40,6 @@ void widget_led(uint32 pos_x, uint32 pos_y, uint32 size, bool state)
     g = (WIDGET_COLOR_HIGHLIGHT & 0x00ff00) >> 8;
     b = (WIDGET_COLOR_HIGHLIGHT & 0x0000ff);
 
-    SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
+    os_set_color(renderer, r, g, b, 0xff);
     draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, false);
 }

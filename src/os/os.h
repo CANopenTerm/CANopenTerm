@@ -331,12 +331,48 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error va_list_t not defined
 #endif
 
+#ifndef os_event
+#error os_event not defined
+#endif
+
+#ifndef os_rect
+#error os_rect not defined
+#endif
+
+#ifndef os_renderer
+#error os_renderer not defined
+#endif
+
+#ifndef os_window
+#error os_window not defined
+#endif
+
 #ifndef completions_t
 #error completions_t not defined
 #endif
 
 #ifndef os_completion_add
 #error os_completion_add() not defined
+#endif
+
+#ifndef os_set_color
+#error os_set_color() not defined
+#endif
+
+#ifndef os_draw_pixel
+#error os_draw_pixel() not defined
+#endif
+
+#ifndef os_draw_line
+#error os_draw_line() not defined
+#endif
+
+#ifndef os_draw_rect
+#error os_draw_rect() not defined
+#endif
+
+#ifndef os_draw_fill_rect
+#error os_draw_fill_rect() not defined
 #endif
 
 #ifndef CLEAR_CMD

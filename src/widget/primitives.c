@@ -7,8 +7,6 @@
  *
  **/
 
-#include <SDL3/SDL.h>
-
 #include "os.h"
 
 void draw_circle(os_renderer* renderer, int cx, int cy, int radius, bool fill)
@@ -23,25 +21,25 @@ void draw_circle(os_renderer* renderer, int cx, int cy, int radius, bool fill)
         {
             for (int i = (cx - x); i <= (cx + x); i++)
             {
-                SDL_RenderPoint(renderer, i, cy + y);
-                SDL_RenderPoint(renderer, i, cy - y);
+                os_draw_pixel(renderer, i, cy + y);
+                os_draw_pixel(renderer, i, cy - y);
             }
             for (int i = (cx - y); i <= (cx + y); i++)
             {
-                SDL_RenderPoint(renderer, i, cy + x);
-                SDL_RenderPoint(renderer, i, cy - x);
+                os_draw_pixel(renderer, i, cy + x);
+                os_draw_pixel(renderer, i, cy - x);
             }
         }
         else
         {
-            SDL_RenderPoint(renderer, cx + x, cy + y);
-            SDL_RenderPoint(renderer, cx - x, cy + y);
-            SDL_RenderPoint(renderer, cx + x, cy - y);
-            SDL_RenderPoint(renderer, cx - x, cy - y);
-            SDL_RenderPoint(renderer, cx + y, cy + x);
-            SDL_RenderPoint(renderer, cx - y, cy + x);
-            SDL_RenderPoint(renderer, cx + y, cy - x);
-            SDL_RenderPoint(renderer, cx - y, cy - x);
+            os_draw_pixel(renderer, cx + x, cy + y);
+            os_draw_pixel(renderer, cx - x, cy + y);
+            os_draw_pixel(renderer, cx + x, cy - y);
+            os_draw_pixel(renderer, cx - x, cy - y);
+            os_draw_pixel(renderer, cx + y, cy + x);
+            os_draw_pixel(renderer, cx - y, cy + x);
+            os_draw_pixel(renderer, cx + y, cy - x);
+            os_draw_pixel(renderer, cx - y, cy - x);
         }
 
         if (d < 0)

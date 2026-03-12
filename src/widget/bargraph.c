@@ -7,10 +7,6 @@
  *
  **/
 
-/* TODO: Use OS-abstraction layer. */
-
-#include <SDL3/SDL.h>
-
 #include "ascii.h"
 #include "os.h"
 #include "palette.h"
@@ -18,8 +14,8 @@
 
 void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, const uint32 max, uint32 value)
 {
-    SDL_Renderer* renderer = window_get_renderer();
-    SDL_FRect box = {pos_x, pos_y, width, height};
+    os_renderer* renderer = window_get_renderer();
+    os_rect box = {pos_x, pos_y, width, height};
     pal_color_t colors[] = {STATUS_BAR_LOW_1, STATUS_BAR_LOW_2, STATUS_BAR_MID_1, STATUS_BAR_MID_2, STATUS_BAR_HIGH_1, STATUS_BAR_HIGH_2};
     pal_color_t color;
     uint32 i;
@@ -37,15 +33,15 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
     g = (WIDGET_COLOR & 0x00ff00) >> 8;
     b = (WIDGET_COLOR & 0x0000ff);
 
-    SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
-    SDL_RenderFillRect(renderer, &box);
+    os_set_color(renderer, r, g, b, 0xff);
+    os_draw_fill_rect(renderer, &box);
 
     r = (WIDGET_COLOR_HIGHLIGHT & 0xff0000) >> 16;
     g = (WIDGET_COLOR_HIGHLIGHT & 0x00ff00) >> 8;
     b = (WIDGET_COLOR_HIGHLIGHT & 0x0000ff);
 
-    SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
-    SDL_RenderRect(renderer, &box);
+    os_set_color(renderer, r, g, b, 0xff);
+    os_draw_rect(renderer, &box);
 
     num_bars = width - 2;
     filled_bars = (value * num_bars) / max;
@@ -62,10 +58,10 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
     g = (color & 0x00ff00) >> 8;
     b = (color & 0x0000ff);
 
-    SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
+    os_set_color(renderer, r, g, b, 0xff);
     for (i = 0; i < filled_bars; i++)
     {
-        SDL_RenderLine(renderer, pos_x + 1 + i, pos_y + 1, pos_x + 1 + i, pos_y + height - 2);
+        os_draw_line(renderer, pos_x + 1 + i, pos_y + 1, pos_x + 1 + i, pos_y + height - 2);
     }
 
     widget_print(pos_x + 2, pos_y + 2, DRAW_WHITE, 1u, "%d/%d", value, max);
