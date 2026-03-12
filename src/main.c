@@ -7,7 +7,6 @@
  *
  **/
 
-#include <SDL3/SDL.h>
 #include <stdlib.h>
 
 #include "can.h"
@@ -146,11 +145,11 @@ int main(int argc, char* argv[])
     core->core_th = os_create_thread(core_update, "Core thread", (void*)core);
     while (true == core->is_running)
     {
-        while (SDL_PollEvent(&core->user_event))
+        while (os_poll_event(&core->user_event))
         {
             switch (core->user_event.type)
             {
-                case SDL_EVENT_USER:
+                case OS_EVENT_USER:
                 {
                     if (RUN_SCRIPT_EVENT == core->user_event.user.code)
                     {

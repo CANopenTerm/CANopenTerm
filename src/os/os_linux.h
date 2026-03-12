@@ -88,6 +88,8 @@
 #define os_draw_rect SDL_RenderRect
 #define os_draw_fill_rect SDL_RenderFillRect
 
+#define os_poll_event SDL_PollEvent
+
 #define DIR_t DIR
 #define dirent_t dirent
 #define FILE_t FILE
@@ -103,6 +105,8 @@
 #define DEFAULT_CAN_INTERFACE "can0"
 
 #define CLOCKS_PER_SECOND CLOCKS_PER_SEC
+
+#define OS_EVENT_USER SDL_EVENT_USER
 
 #define OS_LAYER_DEFINED
 
