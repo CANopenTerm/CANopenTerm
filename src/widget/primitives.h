@@ -5,7 +5,7 @@ void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, bool fill);
  *
  *  A versatile software tool to analyse and configure CANopen devices.
  *
- *  Copyright (c) 2025, Michael Fitzmayer. All rights reserved.
+ *  Copyright (c) 2026, Michael Fitzmayer. All rights reserved.
  *  SPDX-License-Identifier: MIT
  *
  **/
