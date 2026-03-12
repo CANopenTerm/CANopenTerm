@@ -145,11 +145,6 @@ status_t dbc_load(char* filename)
             return OS_MEMORY_ALLOCATION_ERROR;
         }
     }
-    else
-    {
-        dbc->message_count = 0;
-        dbc->messages = NULL;
-    }
 
     os_fix_path(filename);
     file = os_fopen(filename, "r");
@@ -256,8 +251,8 @@ void dbc_unload(void)
     }
 
     os_free(dbc->messages);
-    dbc->message_count = 0;
-    dbc->messages = NULL;
+    os_free(dbc);
+    dbc = NULL;
 }
 
 static uint64 extract_raw_signal(uint64 can_frame, uint8 start_bit, uint8 length, endian_t endianness)
