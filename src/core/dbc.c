@@ -31,7 +31,7 @@ const char* dbc_decode(uint32 can_id, uint64 data, const char* filter)
         return "";
     }
 
-    for (i = 0; i <= dbc->message_count; ++i)
+    for (i = 0; i < dbc->message_count; ++i)
     {
         if (dbc->messages[i].id == can_id)
         {
