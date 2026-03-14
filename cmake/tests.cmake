@@ -26,7 +26,6 @@ add_dependencies(
 target_link_libraries(
   run_unit_tests
   core
-  crossline
   ${CMocka_LIBRARY}
   ${CJSON_LIBRARY}
   ${SDL3_LIBRARY}
