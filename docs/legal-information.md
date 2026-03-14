@@ -39,13 +39,13 @@ inih is licensed under the
 "[New BSD License](https://github.com/benhoyt/inih/blob/master/LICENSE.txt)".  
 Copyright (c) 2009, Ben Hoyt, All rights reserved.
 
+isocline is licensed under
+"[MIT License](https://github.com/daanx/isocline/blob/main/LICENSE)".  
+Copyright (c) 2021, Daan Leijen
+
 J1939 DBC from
 [Haskell.org](https://hackage.haskell.org/package/ecu-0.0.8/src/src/j1939_utf8.dbc),
 original author unknown.
-
-Crossline is licensed under
-"[MIT License](https://github.com/CANopenTerm/CANopenTerm/blob/main/src/crossline/LICENSE.md)".  
-Copyright (c) 2019, JC Wang (wang_junchuan@163.com)
 
 pocketpy is licensed under the
 "[MIT License]("https://github.com/pocketpy/pocketpy/blob/main/LICENSE)".  

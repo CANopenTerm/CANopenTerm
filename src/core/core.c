@@ -133,7 +133,6 @@ void core_deinit(core_t* core)
         return;
     }
 
-    os_save_history();
     test_clear_results();
     can_quit(core);
     codb_deinit();

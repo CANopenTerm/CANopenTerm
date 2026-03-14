@@ -13,19 +13,18 @@
 #include <SDL3/SDL.h>
 #include <dirent.h>
 #include <inttypes.h>
+#include <isocline.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-
-#include "crossline.h"
 
 #define os_atof SDL_atof
 #define os_atoi SDL_atoi
 #define os_calloc SDL_calloc
 #define os_clock clock
 #define os_closedir closedir
-#define os_completion_add crossline_completion_add
+#define os_completion_add ic_add_completion_ex
 #define os_exit exit
 #define os_fread fread
 #define os_free SDL_free
@@ -98,7 +97,7 @@
 #define uint32 Uint32
 #define uint64 Uint64
 #define va_list_t va_list
-#define completions_t crossline_completions_t
+#define completions_t ic_completion_env_t
 
 #define CLEAR_CMD "clear"
 

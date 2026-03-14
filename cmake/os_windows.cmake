@@ -111,6 +111,29 @@ ExternalProject_Add(inih_devel
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_inih.cmake" ${INIH_PATH}/CMakeLists.txt
 )
 
+# isocline
+set(ISOCLINE_VERSION     "1.0.9")
+set(ISOCLINE_DEVEL_PKG   "v${ISOCLINE_VERSION}.zip")
+set(ISOCLINE_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/isocline-${ISOCLINE_VERSION})
+set(ISOCLINE_INCLUDE_DIR ${ISOCLINE_PATH}/include)
+set(ISOCLINE_LIBRARY     ${ISOCLINE_PATH}_build/isocline.lib)
+
+ExternalProject_Add(isocline_devel
+  URL https://github.com/daanx/isocline/archive/refs/tags/${ISOCLINE_DEVEL_PKG}
+  URL_HASH SHA1=3c1172c726837bcae98aed49f2efdfc7935011f9
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+  DOWNLOAD_NO_PROGRESS true
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  TLS_VERIFY true
+  SOURCE_DIR ${ISOCLINE_PATH}/
+  BINARY_DIR ${ISOCLINE_PATH}_build/
+  BUILD_BYPRODUCTS ${ISOCLINE_LIBRARY}
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+  )
+
 # Lua
 set(LUA_VERSION     "5.5.0")
 set(LUA_DEVEL_PKG   lua-${LUA_VERSION}.tar.gz)
@@ -246,12 +269,14 @@ set(PLATFORM_LIBS
   ${POCKETPY_LIBRARY}
   ${SDL3_LIBRARY}
   ${INIH_LIBRARY}
+  ${ISOCLINE_LIBRARY}
   ${LUA_LIBRARY}
   ${ADDITIONAL_RUNTIME}
 )
 
 set(PLATFORM_CORE_DEPS
   inih_devel
+  isocline_devel
   Lua_devel
   PCAN_devel
   pocketpy_devel
@@ -266,6 +291,7 @@ include_directories(
   SYSTEM ${POCKETPY_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${INIH_INCLUDE_DIR}
+  SYSTEM ${ISOCLINE_INCLUDE_DIR}
   SYSTEM ${CJSON_INCLUDE_DIR}
   SYSTEM ${DIRENT_INCLUDE_DIR}
 )

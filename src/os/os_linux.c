@@ -17,7 +17,6 @@
 
 #include "buffer.h"
 #include "command.h"
-#include "crossline.h"
 #include "dirent.h"
 #include "os.h"
 #include "palette.h"
@@ -93,13 +92,16 @@ const char* os_get_error(void)
 
 status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
 {
-    char buf[PROMPT_BUFFER_SIZE];
+    char* buf;
     status_t status = ALL_OK;
 
-    if (NULL != crossline_readline(": ", buf, PROMPT_BUFFER_SIZE))
+    buf = ic_readline(NULL);
+    if (buf)
     {
         SDL_strlcpy(prompt, buf, PROMPT_BUFFER_SIZE);
+        os_free(buf);
         prompt[PROMPT_BUFFER_SIZE - 1] = '\0';
+        ic_history_add((const char*)prompt);
     }
     else
     {
@@ -336,15 +338,10 @@ void os_init_history(void)
 {
     char path[256] = {0};
     SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), ".CANopenTerm.history");
-    crossline_history_load(path);
-    crossline_completion_register(completion_callback);
-}
-
-void os_save_history(void)
-{
-    char path[256] = {0};
-    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), ".CANopenTerm.history");
-    crossline_history_save(path);
+    ic_set_prompt_marker(": ", NULL);
+    ic_set_history(path, -1);
+    ic_enable_auto_tab(true);
+    ic_set_default_completer(completion_callback, NULL);
 }
 
 void os_quit(void)
