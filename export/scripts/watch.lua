@@ -5,9 +5,9 @@ License: Public domain
 
 --]]
 
-local utils = require "utils"
+local core = require "core"
 
-local dbc_file = utils.get_file_by_selection("Select CAN DBC Database File", "dbc", "dbc/")
+local dbc_file = core.get_file_by_selection("Select CAN DBC Database File", "dbc", "dbc/")
 if dbc_file == nil then
   print("Exiting.")
   return
@@ -15,7 +15,7 @@ end
 
 dbc_load(dbc_file)
 
-local watch_id = utils.select_variable("Enter CAN-ID or provide a search term to find the ID by message name")
+local watch_id = core.select_variable("Enter CAN-ID or provide a search term to find the ID by message name")
 
 if type(watch_id) == "string" then
   if tonumber(watch_id) then
@@ -35,7 +35,7 @@ end
 local output    = dbc_decode(watch_id, 0x0000000000000000)
 local num_lines = select(2, output:gsub('\n', '\n')) + 1
 
-utils.clear_screen()
+core.clear_screen()
 
 while false == key_is_hit() do
   local id, length, data = can_read()
@@ -43,6 +43,6 @@ while false == key_is_hit() do
   if id == watch_id then
     print(id)
     output = dbc_decode(watch_id, data)
-    utils.print_multiline_at_same_position(output, num_lines)
+    core.print_multiline_at_same_position(output, num_lines)
   end
 end

@@ -331,10 +331,6 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error va_list_t not defined
 #endif
 
-#ifndef os_event
-#error os_event not defined
-#endif
-
 #ifndef os_rect
 #error os_rect not defined
 #endif
@@ -372,11 +368,7 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_draw_fill_rect
-#error os_draw_fill_rect() not defined
-#endif
-
-#ifndef os_poll_event
-#error os_poll_event() not defined
+#error os_draw_fill_rect() not defined.
 #endif
 
 #ifndef CLEAR_CMD
@@ -385,10 +377,6 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 
 #ifndef CLOCKS_PER_SECOND
 #define CLOCKS_PER_SECOND 1000
-#endif
-
-#ifndef OS_EVENT_USER
-#error OS_EVENT_USER not defined
 #endif
 
 #ifndef OS_LAYER_DEFINED

@@ -142,27 +142,11 @@ int main(int argc, char* argv[])
         core->is_running = false;
     }
 
-    core->core_th = os_create_thread(core_update, "Core thread", (void*)core);
     while (true == core->is_running)
     {
-        while (os_poll_event(&core->user_event))
-        {
-            switch (core->user_event.type)
-            {
-                case OS_EVENT_USER:
-                {
-                    if (RUN_SCRIPT_EVENT == core->user_event.user.code)
-                    {
-                        run_script(core->user_event.user.data1, core);
-                    }
-                    break;
-                }
-            }
-        }
+        core_update((void*)core);
         os_delay(10);
     }
-
-    os_detach_thread(core->core_th);
     core_deinit(core);
 
     return status;

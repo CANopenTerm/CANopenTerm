@@ -5,7 +5,7 @@ License: Public domain
 
 --]]
 
-local utils = require "utils"
+local core = require "core"
 
 local initial_timestamp_us
 local trace_filename
@@ -88,7 +88,7 @@ while not key_is_hit() do
     local id, length, data, timestamp_us = can_read()
 
     if data then
-        data = utils.swap_bytes(data, length)
+        data = core.swap_bytes(data, length)
 
         if not initial_timestamp_us then
             initial_timestamp_us = timestamp_us

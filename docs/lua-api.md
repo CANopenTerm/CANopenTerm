@@ -32,7 +32,7 @@ dbc_decode (can_id, [data], [filter])
 
 <!-- tab:Example -->
 ```lua
-local utils    = require "lua/utils"
+local core     = require "core"
 local watch_id = 0x18F01DFE -- Steer Angle Sensor
 
 if false == dbc_load("dbc/j1939.dbc") then
@@ -49,7 +49,7 @@ while false == key_is_hit() do
   if id == watch_id then
     output = dbc_decode(watch_id, data)
 
-    utils.print_multiline_at_same_position(output, num_lines)
+    core.print_multiline_at_same_position(output, num_lines)
   end
 end
 ```
@@ -84,7 +84,7 @@ while false == key_is_hit() do
 
   if id == watch_id then
     output = dbc_decode(watch_id, data)
-    utils.print_multiline_at_same_position(output, num_lines)
+    core.print_multiline_at_same_position(output, num_lines)
   end
 end
 ```
@@ -937,9 +937,9 @@ functions that can be imported.
 
 <!-- tab:Example -->
 ```lua
-local utils      = require "utils"
-local hex_files  = utils.get_file_list("hex")
-local temp, time = utils.measure_time(function() return delay_ms(2) end)
+local core       = require "core"
+local hex_files  = core.get_file_list("hex")
+local temp, time = core.measure_time(function() return delay_ms(2) end)
 print(string.format("Elapsed time: %.2f milliseconds.", time))
 ```
 <!-- tabs:end -->

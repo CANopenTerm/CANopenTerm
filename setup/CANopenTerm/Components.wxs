@@ -104,6 +104,9 @@
 		</ComponentGroup>
 		<ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
 			<Component>
+				<File Source="../../export/scripts/dashboard.lua" />
+			</Component>
+			<Component>
 				<File Source="../../export/scripts/replay.lua" />
 			</Component>
 			<Component>
@@ -121,7 +124,7 @@
 		</ComponentGroup>
 		<ComponentGroup Id="UtilsComponents" Directory="UTILSFOLDER">
 			<Component>
-				<File Source="../../export/scripts/utils/init.lua" />
+				<File Source="../../export/scripts/core/init.lua" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>

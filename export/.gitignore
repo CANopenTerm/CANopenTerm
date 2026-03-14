@@ -4,7 +4,7 @@
 !eds
 !scripts
 !tests
-!utils
+!core
 !.gitignore
 !*.dbc
 !*.eds

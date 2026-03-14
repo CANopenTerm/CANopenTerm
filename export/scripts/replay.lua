@@ -6,7 +6,7 @@ Comment: This script currently only works with 11-bit CAN IDs.
 
 --]]
 
-local utils = require "utils"
+local core = require "core"
 
 local function convert_data_bytes(data_bytes)
     local bytes = {}
@@ -108,9 +108,9 @@ function get_time()
     end
 end
 
-local num_loops   = utils.select_number("How often should the playback be looped?")
+local num_loops   = core.select_number("How often should the playback be looped?")
 local trc_file    = nil
-local filtered_id = utils.select_number("Enter the CAN ID to filter for (0 to disable):")
+local filtered_id = core.select_number("Enter the CAN ID to filter for (0 to disable):")
 
 if num_loops == nil then
   print("Exiting.")
@@ -124,7 +124,7 @@ else
     trc_path = "/tmp/"
 end
 
-trc_file = utils.get_file_by_selection("Enter the number of the file you want to choose", "trc", trc_path)
+trc_file = core.get_file_by_selection("Enter the number of the file you want to choose", "trc", trc_path)
 if trc_file == nil then
   print("Exiting.")
   return

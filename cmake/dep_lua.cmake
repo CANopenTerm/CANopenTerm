@@ -46,6 +46,7 @@ if(UNIX)
   target_compile_definitions(lua
     PUBLIC
     LUA_USE_C89
+    LUA_USE_MKSTEMP
   )
 endif()
 

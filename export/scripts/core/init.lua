@@ -1,6 +1,6 @@
 --[[
 
-Title:   Utility functions
+Title:   Core utilities
 Author:  Michael Fitzmayer
 License: Public domain
 
