@@ -479,6 +479,11 @@ status_t load_codb(uint32 file_no)
         {
             if (os_strstr(dir->d_name, ".json") != NULL)
             {
+                if (0 == os_strcmp(dir->d_name, "codb.schema.json"))
+                {
+                    continue;
+                }
+
                 if (file_no == current_file_no)
                 {
                     const char* data_path = os_find_data_path();
