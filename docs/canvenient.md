@@ -3,8 +3,8 @@
 !> CANvenient is an abstraction layer for multiple CAN APIs on Windows.
 It is currently under development and not yet released.
 
-It can be found in its own repository at
-[CANvenient](https://github.com/CANopenTerm/CANvenient).
+It can be found in its own repository:
+[CANvenient on GitHub](https://github.com/CANopenTerm/CANvenient).
 
 ## API Reference
 
