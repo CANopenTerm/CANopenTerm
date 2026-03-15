@@ -8,7 +8,7 @@ It can be found in its own repository at
 
 ## API Reference
 
-### dbc_decode()
+### can_find_interfaces()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
