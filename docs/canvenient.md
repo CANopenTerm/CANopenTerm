@@ -1,11 +1,15 @@
 # CANvenient
 
-!> CANvenient is an abstraction layer for multiple CAN APIs on
-   Windows and Linux. It is currently under development and not
-   yet released.
+CANvenient is an abstraction layer for multiple CAN APIs on Windows
+and Linux. It provides a unified interface for CAN communication,
+allowing developers to write code that is portable across different
+platforms and CAN hardware.
 
-It can be found in its own repository:
-[CANvenient on GitHub](https://github.com/CANopenTerm/CANvenient).
+!> It is not yet fully functional and may contain bugs and the API is
+   not yet stable and may change without deprecation.
+
+It can be found on GitHub: 
+[CANopenTerm/CANvenient](https://github.com/CANopenTerm/CANvenient).
 
 ## API Reference
 
