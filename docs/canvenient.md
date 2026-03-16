@@ -38,9 +38,17 @@ if (0 == can_find_interfaces(iface, &count))
 {
     for (int i = 0; i < count; i++)
     {
-        if (iface[i] != NULL)
+        struct can_iface* cur = &(*iface)[i];
+        printf("[%d] %s ->", i, cur->name);
+        cur->baudrate = CAN_BAUD_250K;
+
+        if (0 == can_open(cur))
         {
-            printf("[%d] %s ->", i, iface[i]->name);
+            printf(" opened\n");
+        }
+        else
+        {
+            printf(" failed to open\n");
         }
     }
 }
