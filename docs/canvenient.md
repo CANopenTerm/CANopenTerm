@@ -72,7 +72,7 @@ void can_free_interfaces(void);
 int can_open(int index);
 ```
 
-> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
+> **index** CAN interface index.
 
 **Returns**: `0` on success, `-1` on failure.
 
@@ -86,7 +86,7 @@ int can_open(int index);
 int can_open_fd(int index);
 ```
 
-> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
+> **index** CAN interface index.
 
 **Returns**: `0` on success, `-1` on failure.
 
@@ -100,7 +100,7 @@ int can_open_fd(int index);
 void can_close(int index);
 ```
 
-> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
+> **index** CAN interface index.
 
 **Returns**: Nothing.
 
@@ -114,7 +114,7 @@ void can_close(int index);
 ```c
 int can_get_name(int index, char* name_buf, size_t buf_size);
 ```
-> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
+> **index** CAN interface index.
 
 > **name_buf** Buffer to store the name of the CAN interface.
 
@@ -132,7 +132,7 @@ int can_get_name(int index, char* name_buf, size_t buf_size);
 int can_send(int index, struct can_frame* frame);
 ```
 
-> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
+> **index** CAN interface index.
 
 **Returns**: `0` on success, `-1` on failure.
 
@@ -146,7 +146,7 @@ int can_send(int index, struct can_frame* frame);
 int can_recv(int index, struct can_frame* frame);
 ```
 
-> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
+> **index** CAN interface index.
 
 **Returns**: `0` on success, `-1` on failure.
 
