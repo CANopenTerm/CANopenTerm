@@ -6,102 +6,6 @@ It is currently under development and not yet released.
 It can be found in its own repository:
 [CANvenient on GitHub](https://github.com/CANopenTerm/CANvenient).
 
-## Enums
-
-### can_baudrate
-
-> **CAN_BAUD_1M**        1 MBit/s
-
-> **CAN_BAUD_800K**    800 kBit/s
-
-> **CAN_BAUD_500K**    500 kBit/s
-
-> **CAN_BAUD_250K**    250 kBit/s
-
-> **CAN_BAUD_125K**    125 kBit/s
-
-> **CAN_BAUD_100K**    100 kBit/s
-
-> **CAN_BAUD_95K**  95.238 kBit/s
-
-> **CAN_BAUD_83K**  83.333 kBit/s
-
-> **CAN_BAUD_50K**      50 kBit/s
-
-> **CAN_BAUD_47K**  47.619 kBit/s
-
-> **CAN_BAUD_33K**  33.333 kBit/s
-
-> **CAN_BAUD_20K**      20 kBit/s
-
-> **CAN_BAUD_10K**      10 kBit/s
-
-> **CAN_BAUD_5K**        5 kBit/s
-
-## Structures
-
-### can_iface
-
-<!-- tabs:start -->
-<!-- tab:Description -->
-
-```c
-struct can_iface
-{
-    u32 id;
-    u8 opened;
-    char* name;
-    enum can_baudrate baudrate;
-    enum can_vendor vendor;
-    void* internal;
-};
-```
-
-> **id** Unique identifier for the CAN interface.
-
-> **opened** Indicates whether the CAN interface is currently opened (1) or closed (0).
-
-> **name** Name of the CAN interface (e.g., "CAN0", "CAN1", etc.).
-
-> **baudrate** The [baud rate](#can_baudrate) of the CAN interface.
-
-> **vendor** The vendor of the CAN interface.
-
-> **internal** Internal data used by the CAN API.
-
-<!-- tabs:end -->
-
-### can_frame
-
-<!-- tabs:start -->
-<!-- tab:Description -->
-
-```c
-struct can_frame
-{
-    u64 timestamp;
-    u32 can_id;
-    u8 pad;
-    u8 res0;
-    u8 len8_dlc;
-    u8 data[CAN_MAX_DLEN];
-};
-```
-
-> **timestamp** Timestamp in microseconds
-
-> **can_id** 32 bit CAN_ID + EFF/RTR/ERR flags
-
-> **pad** Padding byte
-
-> **res0** Reserved / padding byte
-
-> **len8_dlc** Optional DLC for 8 byte payload length (9 ..
-
-> **data** CAN payload data (0 .. 8 bytes, up to 15 with len8_dlc)
-
-<!-- tabs:end -->
-
 ## API Reference
 
 The API is intentionally designed to blend in with
@@ -255,4 +159,100 @@ int can_recv(struct can_iface* iface, struct can_frame* frame);
 <!-- tab:Example -->
 ```c
 ```
+<!-- tabs:end -->
+
+## Enums
+
+### can_baudrate
+
+> **CAN_BAUD_1M**        1 MBit/s
+
+> **CAN_BAUD_800K**    800 kBit/s
+
+> **CAN_BAUD_500K**    500 kBit/s
+
+> **CAN_BAUD_250K**    250 kBit/s
+
+> **CAN_BAUD_125K**    125 kBit/s
+
+> **CAN_BAUD_100K**    100 kBit/s
+
+> **CAN_BAUD_95K**  95.238 kBit/s
+
+> **CAN_BAUD_83K**  83.333 kBit/s
+
+> **CAN_BAUD_50K**      50 kBit/s
+
+> **CAN_BAUD_47K**  47.619 kBit/s
+
+> **CAN_BAUD_33K**  33.333 kBit/s
+
+> **CAN_BAUD_20K**      20 kBit/s
+
+> **CAN_BAUD_10K**      10 kBit/s
+
+> **CAN_BAUD_5K**        5 kBit/s
+
+## Structures
+
+### can_iface
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+
+```c
+struct can_iface
+{
+    u32 id;
+    u8 opened;
+    char* name;
+    enum can_baudrate baudrate;
+    enum can_vendor vendor;
+    void* internal;
+};
+```
+
+> **id** Unique identifier for the CAN interface.
+
+> **opened** Indicates whether the CAN interface is currently opened (1) or closed (0).
+
+> **name** Name of the CAN interface (e.g., "CAN0", "CAN1", etc.).
+
+> **baudrate** The [baud rate](#can_baudrate) of the CAN interface.
+
+> **vendor** The vendor of the CAN interface.
+
+> **internal** Internal data used by the CAN API.
+
+<!-- tabs:end -->
+
+### can_frame
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+
+```c
+struct can_frame
+{
+    u64 timestamp;
+    u32 can_id;
+    u8 pad;
+    u8 res0;
+    u8 len8_dlc;
+    u8 data[CAN_MAX_DLEN];
+};
+```
+
+> **timestamp** Timestamp in microseconds
+
+> **can_id** 32 bit CAN_ID + EFF/RTR/ERR flags
+
+> **pad** Padding byte
+
+> **res0** Reserved / padding byte
+
+> **len8_dlc** Optional DLC for 8 byte payload length (9 ..
+
+> **data** CAN payload data (0 .. 8 bytes, up to 15 with len8_dlc)
+
 <!-- tabs:end -->
