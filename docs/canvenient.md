@@ -161,7 +161,7 @@ int can_recv(struct can_iface* iface, struct can_frame* frame);
 ```
 <!-- tabs:end -->
 
-## Enums
+## Enumerations
 
 ### can_baudrate
 
