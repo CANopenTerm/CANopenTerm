@@ -8,6 +8,11 @@ It can be found in its own repository:
 
 ## API Reference
 
+The API is intentionally designed to blend in with
+[libsocketcan](https://git.pengutronix.de/cgit/tools/libsocketcan)
+by Pengutronix, making it familiar for developers already working
+with SocketCAN on Linux.
+
 ### can_find_interfaces()
 
 <!-- tabs:start -->
