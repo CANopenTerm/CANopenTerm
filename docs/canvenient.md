@@ -57,7 +57,7 @@ Deinitializes and frees the memory allocated for the CAN interfaces detected by 
    returned `0` interfaces, as it will handle the cleanup gracefully.
 
 ```c
-void can_free_interfaces(void);
+void can_free_interfaces(void)
 ```
 
 **Returns**: Nothing.
@@ -69,7 +69,7 @@ void can_free_interfaces(void);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_open(int index);
+int can_open(int index)
 ```
 
 > **index** CAN interface index.
@@ -83,7 +83,7 @@ int can_open(int index);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_open_fd(int index);
+int can_open_fd(int index)
 ```
 
 > **index** CAN interface index.
@@ -97,7 +97,7 @@ int can_open_fd(int index);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-void can_close(int index);
+void can_close(int index)
 ```
 
 > **index** CAN interface index.
@@ -129,7 +129,7 @@ int can_get_name(int index, char* name_buf, size_t buf_size);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_send(int index, struct can_frame* frame);
+int can_send(int index, struct can_frame* frame)
 ```
 
 > **index** CAN interface index.
@@ -143,7 +143,7 @@ int can_send(int index, struct can_frame* frame);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_recv(int index, struct can_frame* frame);
+int can_recv(int index, struct can_frame* frame)
 ```
 
 > **index** CAN interface index.
