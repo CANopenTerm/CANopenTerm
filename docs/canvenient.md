@@ -20,7 +20,7 @@ with SocketCAN on Linux.
 Retrieves a list of available CAN interfaces on the system.
 
 ```c
-int can_find_interfaces(struct can_iface* iface[], int* count)
+int can_find_interfaces(const struct can_iface* iface[], const int* count)
 ```
 
 > **iface** A pointer to an array of `can_iface` structures that will be populated with the details of the detected CAN interfaces.
@@ -67,7 +67,7 @@ Deinitializes and frees the memory allocated for the CAN interfaces detected by 
    returned `0` interfaces, as it will handle the cleanup gracefully.
 
 ```c
-void can_free_interfaces(struct can_iface* iface[], int count);
+void can_free_interfaces(const struct can_iface* iface[], const int count);
 ```
 
 > **iface** A pointer to an array of `can_iface` structures that will be populated with the details of the detected CAN interfaces.
@@ -117,7 +117,7 @@ int can_open_fd(struct can_iface* iface);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-void can_close(struct can_iface* iface);
+void can_close(const struct can_iface* iface);
 ```
 
 <!-- tab:Example -->
