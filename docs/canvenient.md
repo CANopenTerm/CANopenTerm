@@ -6,6 +6,70 @@ It is currently under development and not yet released.
 It can be found in its own repository:
 [CANvenient on GitHub](https://github.com/CANopenTerm/CANvenient).
 
+## Types
+
+### can_iface
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+
+```c
+struct can_iface
+{
+    u32 id;
+    u8 opened;
+    char* name;
+    enum can_baudrate baudrate;
+    enum can_vendor vendor;
+    void* internal;
+};
+```
+
+> **id** Unique identifier for the CAN interface.
+
+> **opened** Indicates whether the CAN interface is currently opened (1) or closed (0).
+
+> **name** Name of the CAN interface (e.g., "CAN0", "CAN1", etc.).
+
+> **baudrate** The baud rate of the CAN interface.
+
+> **vendor** The vendor of the CAN interface.
+
+> **internal** Internal data used by the CAN API.
+
+<!-- tabs:end -->
+
+### can_frame
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+
+```c
+struct can_frame
+{
+    u64 timestamp;
+    u32 can_id;
+    u8 pad;
+    u8 res0;
+    u8 len8_dlc;
+    u8 data[CAN_MAX_DLEN];
+};
+```
+
+> **timestamp** Timestamp in microseconds
+
+> **can_id** 32 bit CAN_ID + EFF/RTR/ERR flags
+
+> **pad** Padding byte
+
+> **res0** Reserved / padding byte
+
+> **len8_dlc** Optional DLC for 8 byte payload length (9 ..
+
+> **data** CAN payload data (0 .. 8 bytes, up to 15 with len8_dlc)
+
+<!-- tabs:end -->
+
 ## API Reference
 
 The API is intentionally designed to blend in with
@@ -57,7 +121,7 @@ can_free_interfaces(iface, count);
 ```
 <!-- tabs:end -->
 
-### can_free_interfaces();
+### can_free_interfaces()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -74,7 +138,7 @@ void can_free_interfaces(struct can_iface* iface[], int count);
 
 > **count** A pointer to an integer that will be set to the number of CAN interfaces detected and stored in the `iface` array.
 
-**Returns**: `0` on success, `-1` on failure.
+**Returns**: Nothing.
 
 <!-- tab:Example -->
 ```c
@@ -86,7 +150,7 @@ can_free_interfaces(iface, count);
 ```
 <!-- tabs:end -->
 
-### can_open();
+### can_open()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -94,12 +158,14 @@ can_free_interfaces(iface, count);
 int can_open(struct can_iface* iface);
 ```
 
+**Returns**: `0` on success, `-1` on failure.
+
 <!-- tab:Example -->
 ```c
 ```
 <!-- tabs:end -->
 
-### can_open_fd();
+### can_open_fd()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -107,12 +173,14 @@ int can_open(struct can_iface* iface);
 int can_open_fd(struct can_iface* iface);
 ```
 
+**Returns**: `0` on success, `-1` on failure.
+
 <!-- tab:Example -->
 ```c
 ```
 <!-- tabs:end -->
 
-### can_close();
+### can_close()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -120,12 +188,14 @@ int can_open_fd(struct can_iface* iface);
 void can_close(struct can_iface* iface);
 ```
 
+**Returns**: Nothing.
+
 <!-- tab:Example -->
 ```c
 ```
 <!-- tabs:end -->
 
-### can_send();
+### can_send()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -133,18 +203,22 @@ void can_close(struct can_iface* iface);
 int can_send(struct can_iface* iface, struct can_frame* frame);
 ```
 
+**Returns**: `0` on success, `-1` on failure.
+
 <!-- tab:Example -->
 ```c
 ```
 <!-- tabs:end -->
 
-### can_recv();
+### can_recv()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
 int can_recv(struct can_iface* iface, struct can_frame* frame);
 ```
+
+**Returns**: `0` on success, `-1` on failure.
 
 <!-- tab:Example -->
 ```c
