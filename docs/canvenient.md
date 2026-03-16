@@ -18,42 +18,32 @@ with SocketCAN on Linux.
 <!-- tabs:start -->
 <!-- tab:Description -->
 Retrieves a list of available CAN interfaces on the system.
+It needs to be called before any other function, as it initializes
+the internal structures and detects the available CAN interfaces.
 
 ```c
-int can_find_interfaces(struct can_iface* iface[], int* count)
+int can_find_interfaces(void)
 ```
-
-> **iface** A pointer to an array of `can_iface` structures that will be populated with the details of the detected CAN interfaces.
-
-> **count** A pointer to an integer that will be set to the number of CAN interfaces detected and stored in the `iface` array.
 
 **Returns**: `0` on success, `-1` on failure.
 
 <!-- tab:Example -->
 ```c
-struct can_iface* iface[] = {0};
-int count = 0;
-
-if (0 == can_find_interfaces(iface, &count))
+if (0 == can_find_interfaces())
 {
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < CAN_MAX_INTERFACES; i++)
     {
-        struct can_iface* cur = &(*iface)[i];
-        printf("[%d] %s ->", i, cur->name);
-        cur->baudrate = CAN_BAUD_250K;
+        char name[256] = {0};
+        can_get_name(i, name, sizeof(name));
 
-        if (0 == can_open(cur))
+        if (0 == can_open(i))
         {
-            printf(" opened\n");
-        }
-        else
-        {
-            printf(" failed to open\n");
+            printf("[%d] %s -> opened\n", i, name);
         }
     }
 }
 
-can_free_interfaces(iface, count);
+can_free_interfaces();
 ```
 <!-- tabs:end -->
 
@@ -67,23 +57,11 @@ Deinitializes and frees the memory allocated for the CAN interfaces detected by 
    returned `0` interfaces, as it will handle the cleanup gracefully.
 
 ```c
-void can_free_interfaces(struct can_iface* iface[], int count);
+void can_free_interfaces(void);
 ```
-
-> **iface** A pointer to an array of `can_iface` structures that will be populated with the details of the detected CAN interfaces.
-
-> **count** A pointer to an integer that will be set to the number of CAN interfaces detected and stored in the `iface` array.
 
 **Returns**: Nothing.
 
-<!-- tab:Example -->
-```c
-struct can_iface* iface[] = {0};
-int count = 0;
-
-can_find_interfaces(iface, &count))
-can_free_interfaces(iface, count);
-```
 <!-- tabs:end -->
 
 ### can_open()
@@ -91,14 +69,13 @@ can_free_interfaces(iface, count);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_open(struct can_iface* iface);
+int can_open(int index);
 ```
+
+> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
 
 **Returns**: `0` on success, `-1` on failure.
 
-<!-- tab:Example -->
-```c
-```
 <!-- tabs:end -->
 
 ### can_open_fd()
@@ -106,14 +83,13 @@ int can_open(struct can_iface* iface);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_open_fd(struct can_iface* iface);
+int can_open_fd(int index);
 ```
+
+> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
 
 **Returns**: `0` on success, `-1` on failure.
 
-<!-- tab:Example -->
-```c
-```
 <!-- tabs:end -->
 
 ### can_close()
@@ -121,14 +97,31 @@ int can_open_fd(struct can_iface* iface);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-void can_close(struct can_iface* iface);
+void can_close(int index);
 ```
+
+> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
 
 **Returns**: Nothing.
 
-<!-- tab:Example -->
+<!-- tabs:end -->
+
+
+### can_get_name()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
 ```c
+int can_get_name(int index, char* name_buf, size_t buf_size);
 ```
+> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
+
+> **name_buf** Buffer to store the name of the CAN interface.
+
+> **buf_size** Size of the name buffer.
+
+**Returns**: `0` on success, `-1` on failure.
+
 <!-- tabs:end -->
 
 ### can_send()
@@ -136,14 +129,13 @@ void can_close(struct can_iface* iface);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_send(struct can_iface* iface, struct can_frame* frame);
+int can_send(int index, struct can_frame* frame);
 ```
+
+> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
 
 **Returns**: `0` on success, `-1` on failure.
 
-<!-- tab:Example -->
-```c
-```
 <!-- tabs:end -->
 
 ### can_recv()
@@ -151,14 +143,13 @@ int can_send(struct can_iface* iface, struct can_frame* frame);
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_recv(struct can_iface* iface, struct can_frame* frame);
+int can_recv(int index, struct can_frame* frame);
 ```
+
+> **index** CAN interface index, between `0` and `CAN_MAX_INTERFACES - 1`.
 
 **Returns**: `0` on success, `-1` on failure.
 
-<!-- tab:Example -->
-```c
-```
 <!-- tabs:end -->
 
 ## Enumerations
@@ -194,37 +185,6 @@ int can_recv(struct can_iface* iface, struct can_frame* frame);
 > **CAN_BAUD_5K**        5 kBit/s
 
 ## Structures
-
-### can_iface
-
-<!-- tabs:start -->
-<!-- tab:Description -->
-
-```c
-struct can_iface
-{
-    u32 id;
-    u8 opened;
-    char* name;
-    enum can_baudrate baudrate;
-    enum can_vendor vendor;
-    void* internal;
-};
-```
-
-> **id** Unique identifier for the CAN interface.
-
-> **opened** Indicates whether the CAN interface is currently opened (1) or closed (0).
-
-> **name** Name of the CAN interface (e.g., "CAN0", "CAN1", etc.).
-
-> **baudrate** The [baud rate](#can_baudrate) of the CAN interface.
-
-> **vendor** The vendor of the CAN interface.
-
-> **internal** Internal data used by the CAN API.
-
-<!-- tabs:end -->
 
 ### can_frame
 
