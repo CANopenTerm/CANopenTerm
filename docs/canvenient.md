@@ -113,13 +113,30 @@ void can_close(int index)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_get_name(int index, char* name_buf, size_t buf_size);
+int can_get_name(int index, char* name_buf, size_t buf_size)
 ```
 > **index** CAN interface index.
 
 > **name_buf** Buffer to store the name of the CAN interface.
 
 > **buf_size** Size of the name buffer.
+
+**Returns**: `0` on success, `-1` on failure.
+
+<!-- tabs:end -->
+
+### can_set_baudrate()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+int can_set_baudrate(int index, enum can_baudrate baud)
+```
+> **index** CAN interface index.
+
+> **baud** Baud rate to set for the CAN interface.
+  See [can_baudrate](#can_baudrate) enumeration for
+  available baud rates.
 
 **Returns**: `0` on success, `-1` on failure.
 
