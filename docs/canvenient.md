@@ -222,8 +222,14 @@ int can_recv(int index, struct can_frame* frame, u64* timestamp)
 ```c
 struct can_frame
 {
-    u64 timestamp;
     u32 can_id;
+
+    union
+    {
+        u8 len;
+        u8 can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
+    };
+
     u8 pad;
     u8 res0;
     u8 len8_dlc;
@@ -231,9 +237,9 @@ struct can_frame
 };
 ```
 
-> **timestamp** Timestamp in microseconds
-
 > **can_id** 32 bit CAN_ID + EFF/RTR/ERR flags
+
+> **len/can_dlc** frame payload length in byte (0 .. CAN_MAX_DLEN)
 
 > **pad** Padding byte
 
