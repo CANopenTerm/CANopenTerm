@@ -83,20 +83,6 @@ int can_open(int index)
 
 <!-- tabs:end -->
 
-### can_open_fd()
-
-<!-- tabs:start -->
-<!-- tab:Description -->
-```c
-int can_open_fd(int index)
-```
-
-> **index** CAN interface index.
-
-**Returns**: `0` on success, `-1` on failure.
-
-<!-- tabs:end -->
-
 ### can_close()
 
 <!-- tabs:start -->
