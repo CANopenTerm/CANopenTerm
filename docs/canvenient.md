@@ -227,7 +227,7 @@ struct can_frame
     union
     {
         u8 len;
-        u8 can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
+        u8 can_dlc;
     };
 
     u8 pad;
