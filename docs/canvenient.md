@@ -156,6 +156,8 @@ int can_send(int index, struct can_frame* frame)
 
 > **index** CAN interface index.
 
+> **frame** Pointer to a `can_frame` structure containing the CAN frame to be sent.
+
 **Returns**: `0` on success, `-1` on failure.
 
 <!-- tabs:end -->
@@ -165,10 +167,14 @@ int can_send(int index, struct can_frame* frame)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_recv(int index, struct can_frame* frame)
+int can_recv(int index, struct can_frame* frame, u64* timestamp)
 ```
 
 > **index** CAN interface index.
+
+> **frame** Pointer to a `can_frame` structure to store the received CAN frame.
+
+> **timestamp** Pointer to a variable to store the timestamp of the received CAN frame in microseconds.
 
 **Returns**: `0` on success, `-1` on failure.
 
