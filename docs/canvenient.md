@@ -225,34 +225,35 @@ int can_recv(int index, struct can_frame* frame, u64* timestamp)
 <!-- tabs:start -->
 <!-- tab:Description -->
 
+This is a drop-in replacement for the Linux `can_frame` struct defined in `linux/can.h`.
+
 ```c
-struct can_frame
-{
-    u32 can_id;
+struct can_frame {
+	canid_t can_id;
 
-    union
-    {
-        u8 len;
-        u8 can_dlc;
-    };
+	union {
+		u8 len;
+		u8 can_dlc;
 
-    u8 pad;
-    u8 res0;
-    u8 len8_dlc;
-    u8 data[CAN_MAX_DLEN];
+	};
+
+	u8 __pad;
+	u8 __res0;
+	u8 len8_dlc;
+	u8 data[CAN_MAX_DLEN];
 };
 ```
 
-> **can_id** 32 bit CAN_ID + EFF/RTR/ERR flags
+> **can_id** 32 bit CAN_ID + EFF/RTR/ERR flags.
 
-> **len/can_dlc** frame payload length in byte (0 .. CAN_MAX_DLEN)
+> **len/can_dlc** frame payload length in byte (0 .. CAN_MAX_DLEN).
 
-> **pad** Padding byte
+> **__pad** Padding byte.
 
-> **res0** Reserved / padding byte
+> **__res0** Reserved / padding byte.
 
 > **len8_dlc** Optional DLC for 8 byte payload length (9 ..
 
-> **data** CAN payload data (0 .. 8 bytes, up to 15 with len8_dlc)
+> **data** CAN payload data (0 .. 8 bytes, up to 15 with len8_dlc).
 
 <!-- tabs:end -->
