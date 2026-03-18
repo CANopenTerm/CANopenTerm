@@ -97,6 +97,25 @@ void can_close(int index)
 
 <!-- tabs:end -->
 
+### can_get_error_reason()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Retrieves the last error reason for the specified CAN interface index.
+This function can be used to get more information about why a previous
+operation (like `can_open()`, `can_send()`, etc.) failed.
+
+```c
+void can_get_error_reason(char* reason_buf, size_t buf_size)
+```
+
+> **reason_buf** Buffer to store the error reason string.
+
+> **buf_size** Size of the name buffer.
+
+**Returns**: Nothing.
+
+<!-- tabs:end -->
 
 ### can_get_name()
 
@@ -105,6 +124,7 @@ void can_close(int index)
 ```c
 int can_get_name(int index, char* name_buf, size_t buf_size)
 ```
+
 > **index** CAN interface index.
 
 > **name_buf** Buffer to store the name of the CAN interface.
