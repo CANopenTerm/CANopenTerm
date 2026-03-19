@@ -463,7 +463,7 @@ status_t print_usage_information(bool show_all)
         table_print_row(" y ", "(identifer)", "Set CAN channel", &table);
         table_print_row(" c ", " ", "Clear output", &table);
         table_print_row(" l ", " ", "List scripts", &table);
-        table_print_row("(s)", "[identifier](.lua)", "Run script", &table);
+        table_print_row(" s ", "[identifier](.lua)", "Run script", &table);
     }
 
     table_print_row(" n ", "[node_id] [command or alias]", "NMT command", &table);

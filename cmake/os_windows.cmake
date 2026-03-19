@@ -60,6 +60,34 @@ ExternalProject_Add(cJSON_devel
     ${CMAKE_COMMAND} -E copy ${CJSON_PATH}_build/cjson.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
 )
 
+# CANvenient
+set(CANVENIENT_VERSION     "0.1.0")
+set(CANVENIENT_DEVEL_PKG   "v${CANVENIENT_VERSION}.zip")
+set(CANVENIENT_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
+set(CANVENIENT_INCLUDE_DIR ${CANVENIENT_PATH}/include)
+set(CANVENIENT_LIBRARY     ${CANVENIENT_PATH}_build/CANvenient.lib)
+
+ExternalProject_Add(CANvenient_devel
+  URL https://github.com/CANopenTerm/CANvenient/archive/refs/tags/${CANVENIENT_DEVEL_PKG}
+  URL_HASH SHA1=0d106e2003b94e48da00069a76b785cee575f4e9
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+  DOWNLOAD_NO_PROGRESS true
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  TLS_VERIFY true
+  SOURCE_DIR ${CANVENIENT_PATH}/
+  BINARY_DIR ${CANVENIENT_PATH}_build/
+  BUILD_BYPRODUCTS ${CANVENIENT_LIBRARY}
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+    ${CANVENIENT_PATH}_build/canL2_64.dll
+    ${CANVENIENT_PATH}_build/canlib32.dll
+    ${CANVENIENT_PATH}_build/CANvenient.dll
+    ${CANVENIENT_PATH}_build/PCANBasic.dll
+    ${CANVENIENT_PATH}_build/vciapi.dll    
+    ${CMAKE_CURRENT_SOURCE_DIR}/export
+  )
+
 # pocketpy
 set(POCKETPY_VERSION     "2.1.6")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.zip")
@@ -264,6 +292,7 @@ if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 set(PLATFORM_LIBS
+  ${CANVENIENT_LIBRARY}
   ${CJSON_LIBRARY}
   ${PCAN_LIBRARY}
   ${POCKETPY_LIBRARY}
@@ -279,12 +308,14 @@ set(PLATFORM_CORE_DEPS
   isocline_devel
   Lua_devel
   PCAN_devel
+  CANvenient_devel
   pocketpy_devel
   SDL3_devel
 )
 
 include_directories(
   SYSTEM ${SDL3_INCLUDE_DIR}
+  SYSTEM ${CANVENIENT_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
