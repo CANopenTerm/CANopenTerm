@@ -223,33 +223,22 @@ int can_recv(int index, struct can_frame* frame, u64* timestamp)
 
 ### can_baudrate
 
-> **CAN_BAUD_1M**        1 MBit/s
-
-> **CAN_BAUD_800K**    800 kBit/s
-
-> **CAN_BAUD_500K**    500 kBit/s
-
-> **CAN_BAUD_250K**    250 kBit/s
-
-> **CAN_BAUD_125K**    125 kBit/s
-
-> **CAN_BAUD_100K**    100 kBit/s
-
-> **CAN_BAUD_95K**  95.238 kBit/s
-
-> **CAN_BAUD_83K**  83.333 kBit/s
-
-> **CAN_BAUD_50K**      50 kBit/s
-
-> **CAN_BAUD_47K**  47.619 kBit/s
-
-> **CAN_BAUD_33K**  33.333 kBit/s
-
-> **CAN_BAUD_20K**      20 kBit/s
-
-> **CAN_BAUD_10K**      10 kBit/s
-
-> **CAN_BAUD_5K**        5 kBit/s
+| Value          | Description   |
+| :------------- | :------------ |
+| CAN_BAUD_1M    |      1 MBit/s |  
+| CAN_BAUD_800K  |    800 kBit/s |  
+| CAN_BAUD_500K  |    500 kBit/s |  
+| CAN_BAUD_250K  |    250 kBit/s |  
+| CAN_BAUD_125K  |    125 kBit/s |  
+| CAN_BAUD_100K  |    100 kBit/s |  
+| CAN_BAUD_95K   | 95.238 kBit/s |  
+| CAN_BAUD_83K   | 83.333 kBit/s |  
+| CAN_BAUD_50K   |     50 kBit/s |  
+| CAN_BAUD_47K   | 47.619 kBit/s |  
+| CAN_BAUD_33K   | 33.333 kBit/s |  
+| CAN_BAUD_20K   |     20 kBit/s |  
+| CAN_BAUD_10K   |     10 kBit/s |  
+| CAN_BAUD_5K    |      5 kBit/s | 
 
 ## Structures
 
