@@ -11,6 +11,39 @@ platforms and CAN hardware.
 It can be found on GitHub: 
 [CANopenTerm/CANvenient](https://github.com/CANopenTerm/CANvenient).
 
+## Supported Back-Ends
+
+The following back-ends are currently implemented but not fully tested:	
+
+- Ixxat VCI
+- Kvaser CANlib
+- PCAN-Basic
+- SocketCAN
+- Softing CAN Layer 2
+
+## Hardware Contributions
+
+Reliable behavior of CANvenient as a CAN abstraction layer depends on
+validation across a broad range of hardware implementations. Limiting testing
+to a small set of interfaces increases the risk of vendor-specific
+inconsistencies and unhandled edge cases.
+
+Donations of unused or surplus CAN adapters - such as PEAK PCAN-USB, Ixxat
+USB-to-CAN, Kvaser Leaf, or comparable devices - enable:
+
+- Validation of CANvenient against real hardware
+
+- Detection of vendor-specific deviations and timing differences
+
+- Improved backend integration across multiple interfaces
+
+- Broader regression testing and increased platform coverage
+
+CANvenient is an open-source project with no external funding; expanding the
+set of supported interfaces strengthens portability and ensures consistent
+behavior across heterogeneous CAN environments. Contributors can initiate
+hardware donations by opening an issue or contacting the maintainers directly.
+
 ## API Reference
 
 The API is intentionally designed to blend in with
