@@ -85,7 +85,7 @@ can_free_interfaces();
 ```
 <!-- tabs:end -->
 
-### can_free_interfaces()
+### can_release_interfaces()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -95,7 +95,7 @@ Deinitializes and frees the memory allocated for the CAN interfaces detected by 
    returned `0` interfaces, as it will handle the cleanup gracefully.
 
 ```c
-void can_free_interfaces(void)
+void can_release_interfaces(void)
 ```
 
 **Returns**: Nothing.
@@ -122,6 +122,24 @@ int can_open(int index)
 <!-- tab:Description -->
 ```c
 void can_close(int index)
+```
+
+> **index** CAN interface index.
+
+**Returns**: Nothing.
+
+<!-- tabs:end -->
+
+### can_release()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Releases the CAN interface at the specified index, freeing any resources
+associated with it. Implies `can_close()` if the interface is still open.
+After calling this function, the index may no longer be valid.
+
+```c
+void can_release(int index)
 ```
 
 > **index** CAN interface index.
