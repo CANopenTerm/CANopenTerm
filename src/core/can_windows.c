@@ -7,28 +7,11 @@
  *
  **/
 
-#include <windows.h>
+#include <CANvenient.h>
 
-#include "PCANBasic.h"
 #include "can.h"
 #include "core.h"
 #include "table.h"
-
-static TPCANBaudrate baud_rates[] = {
-    PCAN_BAUD_1M,
-    PCAN_BAUD_800K,
-    PCAN_BAUD_500K,
-    PCAN_BAUD_250K,
-    PCAN_BAUD_125K,
-    PCAN_BAUD_100K,
-    PCAN_BAUD_95K,
-    PCAN_BAUD_83K,
-    PCAN_BAUD_50K,
-    PCAN_BAUD_47K,
-    PCAN_BAUD_33K,
-    PCAN_BAUD_20K,
-    PCAN_BAUD_10K,
-    PCAN_BAUD_5K};
 
 static const char* baud_rate_desc[] = {
     "1 MBit/s",
@@ -46,13 +29,10 @@ static const char* baud_rate_desc[] = {
     "10 kBit/s",
     "5 kBit/s"};
 
-static TPCANHandle peak_can_channel;
-static TPCANChannelInformation* pcan_channel_information = NULL;
 static uint32 pcan_channel_count;
-static char err_message[100] = {0};
+static char err_message[1024] = {0};
 
 static int can_monitor(void* core);
-static status_t search_can_channels(void);
 static void search_free_can_configuration(core_t* core, bool search_baud_rate, bool search_channel);
 
 status_t can_init(core_t* core)
@@ -66,7 +46,7 @@ status_t can_init(core_t* core)
 
     can_deinit(core);
 
-    status = search_can_channels();
+    status = can_find_interfaces();
     if (ALL_OK != status)
     {
         return status;
@@ -87,12 +67,12 @@ void can_deinit(core_t* core)
     core->can_status = 0;
     core->is_can_initialised = false;
 
-    CAN_Uninitialize(peak_can_channel);
+    can_close(core->can_channel);
 }
 
 void can_flush(void)
 {
-    CAN_Reset(peak_can_channel);
+    // CAN_Reset(peak_can_channel);
 }
 
 status_t can_print_baud_rate_help(core_t* core)
@@ -147,6 +127,7 @@ status_t can_print_baud_rate_help(core_t* core)
 
 status_t can_print_channel_help(core_t* core)
 {
+#if 0
     status_t status;
     table_t table = {DARK_CYAN, DARK_WHITE, 3, 30, 6};
     char ch_status[33][7] = {0};
@@ -181,7 +162,7 @@ status_t can_print_channel_help(core_t* core)
     if (ALL_OK == status)
     {
         char row_index[4] = {0};
-        char row_desc[MAX_LENGTH_HARDWARE_NAME + 16] = {0};
+        char row_desc[48] = {0};
 
         table_print_header(&table);
         table_print_row("Id.", "Description", "Status", &table);
@@ -192,11 +173,11 @@ status_t can_print_channel_help(core_t* core)
             os_snprintf(row_index, 4, "%3u", index);
             if (ch_status_index == index)
             {
-                os_snprintf(row_desc, MAX_LENGTH_HARDWARE_NAME + 16, "%s (%s)", pcan_channel_information[index].device_name, baud_rate_desc[core->baud_rate]);
+                os_snprintf(row_desc, 48, "%s (%s)", pcan_channel_information[index].device_name, baud_rate_desc[core->baud_rate]);
             }
             else
             {
-                os_snprintf(row_desc, MAX_LENGTH_HARDWARE_NAME, "%s", pcan_channel_information[index].device_name);
+                os_snprintf(row_desc, 32, "%s", pcan_channel_information[index].device_name);
             }
             table_print_row(row_index, row_desc, ch_status[index], &table);
         }
@@ -206,6 +187,8 @@ status_t can_print_channel_help(core_t* core)
     }
 
     return status;
+#endif
+    return 0;
 }
 
 void can_quit(core_t* core)
@@ -220,10 +203,10 @@ void can_quit(core_t* core)
         can_deinit(core);
     }
 
-    if (NULL != pcan_channel_information)
-    {
-        os_free(pcan_channel_information);
-    }
+    // if (NULL != pcan_channel_information)
+    //{
+    //     os_free(pcan_channel_information);
+    // }
 
     os_detach_thread(core->can_monitor_th);
     core->can_monitor_th = NULL;
@@ -231,6 +214,7 @@ void can_quit(core_t* core)
 
 uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
+#if 0
     int index;
     TPCANMsg pcan_message = {0};
 
@@ -256,10 +240,13 @@ uint32 can_write(can_message_t* message, disp_mode_t disp_mode, const char* comm
     }
 
     return (uint32)CAN_Write(peak_can_channel, &pcan_message);
+#endif
+    return 0;
 }
 
 uint32 can_read(can_message_t* message)
 {
+#if 0
     int index;
     uint32 can_status;
     TPCANMsg pcan_message = {0};
@@ -279,6 +266,8 @@ uint32 can_read(can_message_t* message)
     }
 
     return can_status;
+#endif
+    return 0;
 }
 
 void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
@@ -304,6 +293,7 @@ void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
 
 void can_set_channel(uint32 channel, core_t* core)
 {
+#if 0
     if (NULL == core)
     {
         return;
@@ -327,10 +317,12 @@ void can_set_channel(uint32 channel, core_t* core)
     {
         can_deinit(core);
     }
+#endif
 }
 
 const char* can_get_error_message(uint32 can_status)
 {
+#if 0
     if (PCAN_ERROR_OK != can_status)
     {
         CAN_GetErrorText(can_status, 0x09, err_message);
@@ -340,6 +332,8 @@ const char* can_get_error_message(uint32 can_status)
     {
         return "Unknown CAN error or not handled";
     }
+#endif
+    return "CAN error handling not yet implemented.";
 }
 
 static int can_monitor(void* core_pt)
@@ -355,7 +349,7 @@ static int can_monitor(void* core_pt)
 
     while (true == core->is_running)
     {
-        TPCANStatus peak_status;
+        enum can_status status = CAN_STATUS_OK;
 
         while (false == is_can_initialised(core))
         {
@@ -363,8 +357,8 @@ static int can_monitor(void* core_pt)
             os_delay(1);
         }
 
-        peak_status = CAN_GetStatus(peak_can_channel);
-        if (PCAN_ERROR_ILLHW == peak_status)
+        can_get_interface_status(core->can_channel, &status);
+        if (CAN_STATUS_INVALID_HARDWARE == status)
         {
             can_deinit(core);
             os_print(DEFAULT_COLOR, "\n");
@@ -377,108 +371,32 @@ static int can_monitor(void* core_pt)
     return 0;
 }
 
-static status_t search_can_channels(void)
-{
-    TPCANStatus pcan_status;
-    uint32 prev_channel_count = pcan_channel_count;
-
-    pcan_status = CAN_GetValue(PCAN_NONEBUS, PCAN_ATTACHED_CHANNELS_COUNT, &pcan_channel_count, sizeof(uint32));
-    if (PCAN_ERROR_OK != pcan_status)
-    {
-        return CAN_NO_HARDWARE_FOUND;
-    }
-
-    if (pcan_channel_count >= prev_channel_count && pcan_channel_count > 0)
-    {
-        pcan_channel_information = os_realloc(pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
-        if (NULL == pcan_channel_information)
-        {
-            return OS_MEMORY_ALLOCATION_ERROR;
-        }
-    }
-
-    pcan_status = CAN_GetValue(PCAN_NONEBUS, PCAN_ATTACHED_CHANNELS, pcan_channel_information, sizeof(TPCANChannelInformation) * pcan_channel_count);
-    if (PCAN_ERROR_OK != pcan_status)
-    {
-        return CAN_NO_HARDWARE_FOUND;
-    }
-
-    return ALL_OK;
-}
-
 static void search_free_can_configuration(core_t* core, bool search_baud_rate, bool search_channel)
 {
-    int num_baud_rates = sizeof(baud_rates) / sizeof(baud_rates[0]);
-    int chan_i;
-    int rate_i;
+    int channel_count = 0;
 
-    if (ALL_OK != search_can_channels())
+    can_get_interface_count(&channel_count);
+    if (0 == channel_count)
     {
         return;
     }
 
-    for (chan_i = core->can_channel; chan_i < pcan_channel_count; chan_i++)
+    for (int i = 0; i < CAN_MAX_INTERFACES; i++)
     {
-        for (rate_i = 0; rate_i < num_baud_rates; rate_i++)
+        if (0 == can_open(i))
         {
-            TPCANBaudrate baud_rate;
+            enum can_baudrate baud = CAN_BAUD_1M;
+            char name_buf[256] = {0};
 
-            if (true == search_baud_rate)
-            {
-                baud_rate = baud_rates[rate_i];
-            }
-            else
-            {
-                baud_rate = baud_rates[core->baud_rate];
-            }
+            can_get_baudrate(i, &baud);
+            can_get_interface_name(i, name_buf, sizeof(name_buf));
 
-            if (true == search_channel)
-            {
-                peak_can_channel = pcan_channel_information[chan_i].channel_handle;
-            }
-            else
-            {
-                peak_can_channel = pcan_channel_information[core->can_channel].channel_handle;
-            }
+            os_print(DEFAULT_COLOR, "\r");
+            os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", name_buf, baud_rate_desc[baud]);
+            os_print_prompt();
 
-            core->can_status = CAN_Initialize(
-                peak_can_channel,
-                baud_rate,
-                PCAN_NONE,
-                0, 0);
-
-            CAN_GetErrorText(core->can_status, 0x09, err_message);
-
-            if ((core->can_status & PCAN_ERROR_OK) == core->can_status)
-            {
-                core->is_can_initialised = true;
-
-                if (true == search_baud_rate)
-                {
-                    core->baud_rate = rate_i;
-                }
-
-                if (true == search_channel)
-                {
-                    core->can_channel = chan_i;
-                }
-
-                if (false == core->is_plain_mode)
-                {
-                    os_print(DEFAULT_COLOR, "\r");
-                    os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", pcan_channel_information[core->can_channel].device_name, baud_rate_desc[core->baud_rate]);
-                    os_print_prompt();
-                }
-                break;
-            }
-
-            if (core->is_can_initialised == true)
-            {
-                break;
-            }
-        }
-        if (core->is_can_initialised == true)
-        {
+            core->is_can_initialised = true;
+            core->can_channel = i;
             break;
         }
     }
