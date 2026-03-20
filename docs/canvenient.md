@@ -130,7 +130,43 @@ void can_close(int index)
 
 <!-- tabs:end -->
 
-### can_get_error_reason()
+### can_update()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+This function updates the internal state of the CAN interface at the specified index.
+If it returns `-1`, it indicates that the CAN interface is no longer available
+(e.g., it was unplugged).
+
+```c
+void can_update(int index)
+```
+
+> **index** CAN interface index.
+
+**Returns**: `0` on success, `-1` on failure.
+
+<!-- tabs:end -->
+
+### can_get_baudrate()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+```c
+int can_get_baudrate(int index, enum can_baudrate* baud)
+```
+
+> **index** CAN interface index.
+
+> **baud** Pointer to a variable to store the baud rate of the CAN interface.
+  See [can_baudrate](#can_baudrate) enumeration for
+  available baud rates.
+
+**Returns**: `0` on success, `-1` on failure.
+
+<!-- tabs:end -->
+
+### can_get_error()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
@@ -139,7 +175,7 @@ This function can be used to get more information about why a previous
 operation (like `can_open()`, `can_send()`, etc.) failed.
 
 ```c
-void can_get_error_reason(char* reason_buf, size_t buf_size)
+void can_get_error(char* reason_buf, size_t buf_size)
 ```
 
 > **reason_buf** Buffer to store the error reason string.
