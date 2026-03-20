@@ -154,6 +154,30 @@ ExternalProject_Add(cJSON_devel
     ${CMAKE_COMMAND} -E echo "Skipping install step."
 )
 
+# CANvenient
+set(CANVENIENT_VERSION     "0.2.1")
+set(CANVENIENT_DEVEL_PKG   "v${CANVENIENT_VERSION}.tar.gz")
+set(CANVENIENT_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
+set(CANVENIENT_INCLUDE_DIR ${CANVENIENT_PATH}/include)
+set(CANVENIENT_LIBRARY     ${CANVENIENT_PATH}_build/libCANvenient.so)
+
+ExternalProject_Add(CANvenient_devel
+  URL https://github.com/CANopenTerm/CANvenient/archive/refs/tags/${CANVENIENT_DEVEL_PKG}
+  URL_HASH SHA1=98cd0e9309e408f6ca0774aeab8158ef620082c0
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+  DOWNLOAD_NO_PROGRESS true
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  TLS_VERIFY true
+  SOURCE_DIR ${CANVENIENT_PATH}/
+  BINARY_DIR ${CANVENIENT_PATH}_build/
+  BUILD_BYPRODUCTS ${CANVENIENT_LIBRARY}
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+    ${CANVENIENT_PATH}_build/libCANvenient.so
+    ${CMAKE_CURRENT_SOURCE_DIR}/export
+  )
+
 # pocketpy
 set(POCKETPY_VERSION     "2.1.6")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
@@ -303,6 +327,7 @@ if(EXISTS "/proc/cpuinfo")
 endif()
 
 set(PLATFORM_LIBS
+  ${CANVENIENT_LIBRARY}
   ${CJSON_LIBRARY}
   ${SDL3_LIBRARY}
   ${INIH_LIBRARY}
@@ -317,6 +342,7 @@ set(PLATFORM_LIBS
 )
 
 set(PLATFORM_CORE_DEPS
+  CANvenient_devel
   cJSON_devel
   inih_devel
   isocline_devel
@@ -327,6 +353,7 @@ set(PLATFORM_CORE_DEPS
 
 include_directories(
   SYSTEM ${SDL3_INCLUDE_DIR}
+  SYSTEM ${CANVENIENT_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${POCKETPY_INCLUDE_DIR}
   SYSTEM ${INIH_INCLUDE_DIR}

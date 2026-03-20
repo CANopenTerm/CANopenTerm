@@ -61,7 +61,7 @@ ExternalProject_Add(cJSON_devel
 )
 
 # CANvenient
-set(CANVENIENT_VERSION     "0.1.0")
+set(CANVENIENT_VERSION     "0.2.1")
 set(CANVENIENT_DEVEL_PKG   "v${CANVENIENT_VERSION}.zip")
 set(CANVENIENT_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
 set(CANVENIENT_INCLUDE_DIR ${CANVENIENT_PATH}/include)
@@ -69,7 +69,7 @@ set(CANVENIENT_LIBRARY     ${CANVENIENT_PATH}_build/CANvenient.lib)
 
 ExternalProject_Add(CANvenient_devel
   URL https://github.com/CANopenTerm/CANvenient/archive/refs/tags/${CANVENIENT_DEVEL_PKG}
-  URL_HASH SHA1=0d106e2003b94e48da00069a76b785cee575f4e9
+  URL_HASH SHA1=535ed56b2a3499143431ef201886d7c3d2c3671b
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -84,7 +84,7 @@ ExternalProject_Add(CANvenient_devel
     ${CANVENIENT_PATH}_build/canlib32.dll
     ${CANVENIENT_PATH}_build/CANvenient.dll
     ${CANVENIENT_PATH}_build/PCANBasic.dll
-    ${CANVENIENT_PATH}_build/vciapi.dll    
+    ${CANVENIENT_PATH}_build/vciapi.dll
     ${CMAKE_CURRENT_SOURCE_DIR}/export
   )
 
@@ -232,32 +232,6 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 4)
   set(PCAN_PLATFORM "Win32")
 endif()
 
-set(PCAN_DEVEL_PKG  PCAN-Basic_Windows-${PCAN_VERSION_WINDOWS}.zip)
-set(PCAN_DEVEL_URL  https://canopenterm.de/mirror)
-set(PCAN_DEVEL_HASH aca36ff1a766839ffc698f6d1a1d0870f01e395e)
-
-ExternalProject_Add(PCAN_devel
-  URL ${PCAN_DEVEL_URL}/${PCAN_DEVEL_PKG}
-  URL_HASH SHA1=${PCAN_DEVEL_HASH}
-  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
-  DOWNLOAD_NO_PROGRESS true
-  DOWNLOAD_EXTRACT_TIMESTAMP true
-  TLS_VERIFY true
-  SOURCE_DIR ${PCAN_PATH}/
-  BUILD_BYPRODUCTS ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib
-
-  BUILD_COMMAND ${CMAKE_COMMAND} -E echo "Skipping build step."
-
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
-    ${PCAN_PATH}/${PCAN_PLATFORM}/PCANBasic.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
-
-  PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_pcan.cmake" ${PCAN_PATH}/CMakeLists.txt
-)
-
-set(PCAN_INCLUDE_DIR ${PCAN_PATH}/Include)
-set(PCAN_LIBRARY     ${PCAN_PATH}/${PCAN_PLATFORM}/VC_LIB/PCANBasic.lib)
-
 # dirent
 set(DIRENT_VERSION   "1.26")
 set(DIRENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/dirent-${DIRENT_VERSION})
@@ -280,8 +254,6 @@ ExternalProject_Add(dirent_devel
 )
 
 set(DIRENT_INCLUDE_DIR ${DIRENT_PATH}/include)
-
-add_dependencies(${PROJECT_NAME} PCAN_devel)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   set(ADDITIONAL_RUNTIME
@@ -307,7 +279,6 @@ set(PLATFORM_CORE_DEPS
   inih_devel
   isocline_devel
   Lua_devel
-  PCAN_devel
   CANvenient_devel
   pocketpy_devel
   SDL3_devel
@@ -316,8 +287,6 @@ set(PLATFORM_CORE_DEPS
 include_directories(
   SYSTEM ${SDL3_INCLUDE_DIR}
   SYSTEM ${CANVENIENT_INCLUDE_DIR}
-  SYSTEM ${PCAN_INCLUDE_DIR}
-  SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/driver
   SYSTEM ${PCAN_INCLUDE_DIR}/../src/pcan/lib
   SYSTEM ${POCKETPY_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}

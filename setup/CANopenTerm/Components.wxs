@@ -23,6 +23,16 @@
                                Value="1"
                                KeyPath="yes"/>
 			</Component>
+
+			<Component>
+				<File Source="../../export/canL2_64.dll" />
+			</Component>
+			<Component>
+				<File Source="../../export/canlib32.dll" />
+			</Component>
+			<Component>
+				<File Source="../../export/CANvenient.dll" />
+			</Component>
 			<Component>
 				<File Source="../../export/cjson.dll" />
 			</Component>
@@ -34,6 +44,9 @@
 			</Component>
 			<Component>
 				<File Source="../../export/SDL3.dll" />
+			</Component>
+			<Component>
+				<File Source="../../export/vciapi.dll" />
 			</Component>
 			<Component>
 				<File Source="../../export/vcruntime140.dll" />

@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "core.h"
 #include "cmocka.h"
 #include "test_buffer.h"
 #include "test_codb.h"
@@ -20,6 +21,8 @@
 #include "test_os.h"
 #include "test_scripts.h"
 #include "test_sdo.h"
+
+core_t* core = NULL;
 
 int main(void)
 {
