@@ -57,9 +57,9 @@ int main(int argc, char* argv[])
                 char* endptr;
 
                 baud_rate_index = (uint8)os_strtol(argv[++i], &endptr, 0);
-                if (baud_rate_index > 13 || *endptr != '\0')
+                if (baud_rate_index > 14 || *endptr != '\0')
                 {
-                    os_printf("Invalid baud rate.  Must be between 0 and 13.\n");
+                    os_printf("Invalid baud rate.  Must be between 0 and 14.\n");
                     exit(EXIT_FAILURE);
                 }
             }
@@ -95,10 +95,11 @@ int main(int argc, char* argv[])
                 os_printf("    -s SCRIPT         Run script (.lua can be ommited)\n");
                 os_printf("    -i INTERFACE      Set CAN interface\n");
                 os_printf("    -b BAUD           Set baud rate\n");
-                os_printf("                        0 = 1 MBit/s\n");
-                os_printf("                        2 = 500 kBit/s\n");
-                os_printf("                        3 = 250 kBit/s\n");
-                os_printf("                        4 = 125 kBit/s\n");
+                os_printf("                        0 or 1 = 1 MBit/s\n");
+                os_printf("                        2 = 800 kBit/s\n");
+                os_printf("                        3 = 500 kBit/s\n");
+                os_printf("                        4 = 250 kBit/s\n");
+                os_printf("                        5 = 125 kBit/s\n");
                 os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
                 os_printf("    -f                Full screen widget window\n");
                 os_printf("    -p                Run in plain mode\n");

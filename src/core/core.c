@@ -50,6 +50,7 @@ status_t core_init(core_t** core, bool is_plain_mode)
         return status;
     }
 
+    (*core)->baud_rate = 1;
     (*core)->is_plain_mode = is_plain_mode;
     if (false == is_plain_mode)
     {

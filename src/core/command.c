@@ -519,20 +519,20 @@ void completion_callback(completions_t* cenv, const char* prefix)
     }
     else if (prefix[0] == 'b' && prefix[1] == ' ')
     {
-        os_completion_add(cenv, "0", "0", "1 MBit/s");
-        os_completion_add(cenv, "1", "1", "800 kBit/s");
-        os_completion_add(cenv, "2", "2", "500 kBit/s");
-        os_completion_add(cenv, "3", "3", "250 kBit/s");
-        os_completion_add(cenv, "4", "4", "125 kBit/s");
-        os_completion_add(cenv, "5", "5", "100 kBit/s");
-        os_completion_add(cenv, "6", "6", "95.238 kBit/s");
-        os_completion_add(cenv, "7", "7", "83.333 kBit/s");
-        os_completion_add(cenv, "8", "8", "50 kBit/s");
-        os_completion_add(cenv, "9", "9", "47.619 kBit/s");
-        os_completion_add(cenv, "10", "10", "33.333 kBit/s");
-        os_completion_add(cenv, "11", "11", "20 kBit/s");
-        os_completion_add(cenv, "12", "12", "10 kBit/s");
-        os_completion_add(cenv, "13", "13", "5 kBit/s");
+        os_completion_add(cenv, "1", "1", "1 MBit/s");
+        os_completion_add(cenv, "2", "2", "800 kBit/s");
+        os_completion_add(cenv, "3", "3", "500 kBit/s");
+        os_completion_add(cenv, "4", "4", "250 kBit/s");
+        os_completion_add(cenv, "5", "5", "125 kBit/s");
+        os_completion_add(cenv, "6", "6", "100 kBit/s");
+        os_completion_add(cenv, "7", "7", "95.238 kBit/s");
+        os_completion_add(cenv, "8", "8", "83.333 kBit/s");
+        os_completion_add(cenv, "9", "9", "50 kBit/s");
+        os_completion_add(cenv, "10", "10", "47.619 kBit/s");
+        os_completion_add(cenv, "11", "11", "33.333 kBit/s");
+        os_completion_add(cenv, "12", "12", "20 kBit/s");
+        os_completion_add(cenv, "13", "13", "10 kBit/s");
+        os_completion_add(cenv, "14", "14", "5 kBit/s");
     }
     else if (prefix[0] == 'd' && prefix[1] == ' ')
     {

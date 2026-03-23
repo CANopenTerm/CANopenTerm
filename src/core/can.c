@@ -19,6 +19,7 @@
 
 static const char* baud_rate_desc[] = {
     "1 MBit/s",
+    "1 MBit/s",
     "800 kBit/s",
     "500 kBit/s",
     "250 kBit/s",
@@ -122,16 +123,16 @@ status_t can_print_baud_rate_help(core_t* core)
 {
     status_t status;
     table_t table = {DARK_CYAN, DARK_WHITE, 3, 13, 6};
-    char br_status[14][7] = {0};
+    char br_status[15][7] = {0};
     unsigned int br_status_index = core->baud_rate;
     unsigned int index;
 
-    if (br_status_index >= 13)
+    if (br_status_index >= 14)
     {
-        br_status_index = 13;
+        br_status_index = 14;
     }
 
-    for (index = 0; index <= 13; index += 1)
+    for (index = 1; index <= 14; index += 1)
     {
         if (br_status_index == index)
         {
@@ -154,7 +155,7 @@ status_t can_print_baud_rate_help(core_t* core)
         table_print_row("Id.", "Description", "Status", &table);
         table_print_divider(&table);
 
-        for (i = 0; i <= 13; i += 1)
+        for (i = 1; i <= 14; i += 1)
         {
             os_snprintf(row_index, 4, "%3u", i);
             os_snprintf(row_desc, 14, "%s", baud_rate_desc[i]);
@@ -320,14 +321,19 @@ void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
         return;
     }
 
-    if (baud_rate_index >= 13)
+    if (0 == baud_rate_index)
+    {
+        baud_rate_index = 1;
+    }
+
+    if (baud_rate_index >= 14)
     {
         can_print_baud_rate_help(core);
         return;
     }
 
     core->baud_rate = baud_rate_index;
-    can_set_baudrate(core->can_channel, baud_rate_index);
+    can_set_baudrate(core->can_channel, (enum can_baudrate)(baud_rate_index - 1));
 
     if (true == is_can_initialised(core))
     {
@@ -395,7 +401,7 @@ static int can_monitor(void* core_pt)
     {
         while (false == is_can_initialised(core))
         {
-            find_can_channel(core, core->baud_rate);
+            find_can_channel(core, (enum can_baudrate)(core->baud_rate - 1));
             os_delay(1);
         }
 
@@ -428,7 +434,7 @@ static void find_can_channel(core_t* core, enum can_baudrate baud)
             can_get_name(ch, name_buf, sizeof(name_buf));
 
             os_print(DEFAULT_COLOR, "\r");
-            os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", name_buf, baud_rate_desc[baud]);
+            os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", name_buf, baud_rate_desc[(int)baud + 1]);
             os_print_prompt();
 
             core->is_can_initialised = true;

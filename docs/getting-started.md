@@ -33,7 +33,7 @@ Usage: CANopenTerm [OPTION]
     -t EDS            Run EDS conformance test (implies -p)
     -i INTERFACE      Set CAN interface
     -b BAUD           Set baud rate
-                        0 = 1 MBit/s
+                        1 = 1 MBit/s
                         2 = 500 kBit/s
                         3 = 250 kBit/s
                         4 = 125 kBit/s
