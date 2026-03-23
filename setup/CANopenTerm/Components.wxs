@@ -25,6 +25,9 @@
 			</Component>
 
 			<Component>
+				<File Source="../../export/canchd_64.dll" />
+			</Component>
+			<Component>
 				<File Source="../../export/canL2_64.dll" />
 			</Component>
 			<Component>
