@@ -171,7 +171,7 @@ status_t can_print_baud_rate_help(core_t* core)
 status_t can_print_channel_help(core_t* core)
 {
     status_t status = ALL_OK;
-    table_t table = {DARK_CYAN, DARK_WHITE, 3, 30, 6};
+    table_t table = {DARK_CYAN, DARK_WHITE, 3, 48, 6};
     char ch_status[33][7] = {0};
     unsigned int ch_status_index = core->can_channel;
     unsigned int ch_count = 0;
@@ -217,7 +217,7 @@ status_t can_print_channel_help(core_t* core)
 
         for (i = 0; i < ch_count; i++)
         {
-            char name_buf[16] = {0};
+            char name_buf[48] = {0};
             enum can_baudrate baud = 0;
 
             can_get_name(i, name_buf, sizeof(name_buf));
@@ -230,7 +230,7 @@ status_t can_print_channel_help(core_t* core)
             }
             else
             {
-                os_snprintf(row_desc, 32, "%s", name_buf);
+                os_snprintf(row_desc, 48, "%s", name_buf);
             }
             table_print_row(row_index, row_desc, ch_status[i], &table);
         }
