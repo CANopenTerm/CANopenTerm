@@ -80,6 +80,7 @@ ExternalProject_Add(CANvenient_devel
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
   INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+    ${CANVENIENT_PATH}_build/canchd_64.dll
     ${CANVENIENT_PATH}_build/canL2_64.dll
     ${CANVENIENT_PATH}_build/canlib32.dll
     ${CANVENIENT_PATH}_build/CANvenient.dll
