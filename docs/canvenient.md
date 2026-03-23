@@ -81,7 +81,7 @@ if (0 == can_find_interfaces())
     }
 }
 
-can_free_interfaces();
+can_release_interfaces();
 ```
 <!-- tabs:end -->
 
