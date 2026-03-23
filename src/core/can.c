@@ -363,15 +363,13 @@ void can_set_channel(uint32 channel, core_t* core)
         can_print_channel_help(core);
         return;
     }
-    else
-    {
-        core->can_channel = channel;
-    }
 
     if (true == is_can_initialised(core))
     {
         can_deinit(core);
     }
+
+    core->can_channel = channel;
 }
 
 const char* can_get_error_message(uint32 can_status)
@@ -421,18 +419,20 @@ static void find_can_channel(core_t* core, enum can_baudrate baud)
 
     for (i = 0; i < CAN_MAX_INTERFACES; i++)
     {
-        if (0 == can_open(i, baud))
+        int ch = ((int)core->can_channel + i) % CAN_MAX_INTERFACES;
+
+        if (0 == can_open(ch, baud))
         {
             char name_buf[256] = {0};
 
-            can_get_name(i, name_buf, sizeof(name_buf));
+            can_get_name(ch, name_buf, sizeof(name_buf));
 
             os_print(DEFAULT_COLOR, "\r");
             os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", name_buf, baud_rate_desc[baud]);
             os_print_prompt();
 
             core->is_can_initialised = true;
-            core->can_channel = i;
+            core->can_channel = ch;
             break;
         }
     }
