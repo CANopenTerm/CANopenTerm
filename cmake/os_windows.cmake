@@ -111,6 +111,7 @@ ExternalProject_Add(pocketpy_devel
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DPK_ENABLE_OS=ON
     -DPK_BUILD_MODULE_LZ4=OFF
+    -DPK_BUILD_WITH_UNITY=OFF
   INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
     ${POCKETPY_PATH}_build/pocketpy.dll ${CMAKE_CURRENT_SOURCE_DIR}/export
   )
