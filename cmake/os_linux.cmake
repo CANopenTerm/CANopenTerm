@@ -179,7 +179,7 @@ ExternalProject_Add(CANvenient_devel
   )
 
 # pocketpy
-set(POCKETPY_VERSION     "2.1.8")
+set(POCKETPY_VERSION     "2.1.6")
 set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
 set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
@@ -187,7 +187,7 @@ set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.a)
 
 ExternalProject_Add(pocketpy_devel
   URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-  URL_HASH SHA1=25dcda6493c37a848e75d75a11ac17d84fa6d520
+  URL_HASH SHA1=13c53916fbbacfae5c9d3e79984430d88a09bd60
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -201,7 +201,6 @@ ExternalProject_Add(pocketpy_devel
     -DPK_ENABLE_OS=ON
     -DPK_BUILD_MODULE_LZ4=OFF
     -DPK_BUILD_WITH_IPO=OFF
-    -DPK_BUILD_WITH_UNITY=OFF
   INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
   PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step."
 )
