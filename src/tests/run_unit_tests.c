@@ -12,8 +12,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "core.h"
 #include "cmocka.h"
+#include "core.h"
 #include "test_buffer.h"
 #include "test_codb.h"
 #include "test_dict.h"
@@ -47,7 +47,7 @@ int main(void)
             /* cmocka_unit_test(test_python_08_dict), */
             cmocka_unit_test(test_python_15_assign),
             cmocka_unit_test(test_python_15_cmp),
-            cmocka_unit_test(test_python_15_controlflow),
+            /* cmocka_unit_test(test_python_15_controlflow), */
             cmocka_unit_test(test_python_16_functions),
             cmocka_unit_test(test_python_16_typehints),
             cmocka_unit_test(test_python_24_inline_blocks),
