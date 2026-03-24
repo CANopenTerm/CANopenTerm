@@ -61,7 +61,7 @@ ExternalProject_Add(cJSON_devel
 )
 
 # CANvenient
-set(CANVENIENT_VERSION     "0.2.3")
+set(CANVENIENT_VERSION     "0.3.0")
 set(CANVENIENT_DEVEL_PKG   "v${CANVENIENT_VERSION}.zip")
 set(CANVENIENT_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
 set(CANVENIENT_INCLUDE_DIR ${CANVENIENT_PATH}/include)
@@ -69,7 +69,7 @@ set(CANVENIENT_LIBRARY     ${CANVENIENT_PATH}_build/CANvenient.lib)
 
 ExternalProject_Add(CANvenient_devel
   URL https://github.com/CANopenTerm/CANvenient/archive/refs/tags/${CANVENIENT_DEVEL_PKG}
-  URL_HASH SHA1=6e2b9de377b2bd45fd1557cf97bad2da9aac558f
+  URL_HASH SHA1=e582cc6054dddb3a9923d69b0948f8954ab712be
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -80,6 +80,7 @@ ExternalProject_Add(CANvenient_devel
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
   INSTALL_COMMAND ${CMAKE_COMMAND} -E copy
+    ${CANVENIENT_PATH}_build/CANusbM.dll
     ${CANVENIENT_PATH}_build/canchd_64.dll
     ${CANVENIENT_PATH}_build/canL2_64.dll
     ${CANVENIENT_PATH}_build/canlib32.dll

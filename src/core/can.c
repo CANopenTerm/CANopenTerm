@@ -376,6 +376,7 @@ void can_set_channel(uint32 channel, core_t* core)
     }
 
     core->can_channel = channel;
+    core->set_can_channel = true;
 }
 
 const char* can_get_error_message(uint32 can_status)
@@ -440,6 +441,18 @@ static void find_can_channel(core_t* core, enum can_baudrate baud)
             core->is_can_initialised = true;
             core->can_channel = ch;
             break;
+        }
+        else
+        {
+            /* Show error message when switching to a new channel fails. */
+            if (core->set_can_channel)
+            {
+                char reason_buf[1024] = {0};
+                can_get_error(reason_buf, sizeof(reason_buf));
+
+                os_log(LOG_WARNING, "%s", reason_buf);
+                core->set_can_channel = false;
+            }
         }
     }
 }

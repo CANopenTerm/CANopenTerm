@@ -38,6 +38,7 @@ typedef struct core
     bool is_plain_mode;
     bool is_window_fullscreen;
     bool is_window_shown;
+    bool set_can_channel;
     char can_interface[32];
 
 } core_t;
