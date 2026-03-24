@@ -82,7 +82,7 @@ profile format](codb2json?id=file-format-specification), the project is
 actively extending its ecosystem. **[CANvenient](/canvenient)**, a C
 library currently under development, will provide a unified interface to
 various manufacturer-specific CAN drivers on Windows and is scheduled
-for integration in the upcoming major release version 2.0.0. By reducing
+for integration in the upcoming major release version 2.0. By reducing
 fragmentation from proprietary APIs, this open-source library will
 simplify CAN hardware access not only for CANopenTerm but also for other
 current and future CAN software projects. Contributions and feedback
