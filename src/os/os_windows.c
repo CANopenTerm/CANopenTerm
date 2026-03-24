@@ -364,7 +364,7 @@ void os_init_history(void)
 {
     char path[256] = {0};
     SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
-    ic_set_prompt_marker(": ", NULL);
+    ic_set_prompt_marker("[white]:[/] ", NULL);
     ic_set_history(path, -1);
     ic_enable_auto_tab(true);
     ic_set_default_completer(completion_callback, NULL);

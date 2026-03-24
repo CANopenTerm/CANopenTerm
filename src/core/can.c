@@ -221,13 +221,13 @@ status_t can_print_channel_help(core_t* core)
             char name_buf[48] = {0};
             enum can_baudrate baud = 0;
 
-            can_get_name(i, name_buf, sizeof(name_buf));
-            can_get_baudrate(i, &baud);
+            can_get_name(indices[i], name_buf, sizeof(name_buf));
+            can_get_baudrate(indices[i], &baud);
 
             os_snprintf(row_index, 4, "%3u", indices[i]);
             if (ch_status_index == i)
             {
-                os_snprintf(row_desc, 48, "%s (%s)", name_buf, baud_rate_desc[baud]);
+                os_snprintf(row_desc, 48, "%s (%s)", name_buf, baud_rate_desc[baud + 1]);
             }
             else
             {
@@ -435,7 +435,7 @@ static void find_can_channel(core_t* core, enum can_baudrate baud)
             can_get_name(ch, name_buf, sizeof(name_buf));
 
             os_print(DEFAULT_COLOR, "\r");
-            os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s", name_buf, baud_rate_desc[(int)baud + 1]);
+            os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s\n", name_buf, baud_rate_desc[(int)baud + 1]);
             os_print_prompt();
 
             core->is_can_initialised = true;
