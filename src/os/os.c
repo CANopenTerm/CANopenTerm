@@ -7,6 +7,8 @@
  *
  **/
 
+#include <isocline.h>
+
 #include "os.h"
 
 char* os_fix_path(char* path)
@@ -53,3 +55,29 @@ static size_t safe_strnlen(const char* s, size_t maxlen)
     return len;
 }
 #endif
+
+status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
+{
+    char* buf;
+    status_t status = ALL_OK;
+
+    buf = ic_readline(NULL);
+    if (buf)
+    {
+        os_strlcpy(prompt, buf, PROMPT_BUFFER_SIZE);
+        os_free(buf);
+        prompt[PROMPT_BUFFER_SIZE - 1] = '\0';
+        ic_history_add((const char*)prompt);
+    }
+    else
+    {
+        status = 1;
+    }
+
+    return status;
+}
+
+void os_print_prompt(void)
+{
+    os_print(DEFAULT_COLOR, "\r: ");
+}

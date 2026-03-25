@@ -117,27 +117,6 @@ const char* os_get_error(void)
     return SDL_GetError();
 }
 
-status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE])
-{
-    char* buf;
-    status_t status = ALL_OK;
-
-    buf = ic_readline(NULL);
-    if (buf)
-    {
-        SDL_strlcpy(prompt, buf, PROMPT_BUFFER_SIZE);
-        os_free(buf);
-        prompt[PROMPT_BUFFER_SIZE - 1] = '\0';
-        ic_history_add((const char*)prompt);
-    }
-    else
-    {
-        status = 1;
-    }
-
-    return status;
-}
-
 uint64 os_get_ticks(void)
 {
     return SDL_GetTicksNS();
@@ -335,11 +314,6 @@ void os_print(const color_t color, const char* format, ...)
     }
 }
 
-void os_print_prompt(void)
-{
-    os_print(DEFAULT_COLOR, "\r: ");
-}
-
 bool os_remove_timer(os_timer_id id)
 {
     return SDL_RemoveTimer(id);
@@ -363,8 +337,8 @@ void os_quit(void)
 void os_init_history(void)
 {
     char path[256] = {0};
-    SDL_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
-    ic_set_prompt_marker("[white]:[/] ", NULL);
+    os_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    ic_set_prompt_marker("\r[white]:[/] ", NULL);
     ic_set_history(path, -1);
     ic_enable_auto_tab(true);
     ic_set_default_completer(completion_callback, NULL);
