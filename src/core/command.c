@@ -506,14 +506,12 @@ void completion_callback(completions_t* cenv, const char* prefix)
     {
         // Empty line TAB -> suggest commands.
         os_completion_add(cenv, "b", "b", "Set baud rate");
-        os_completion_add(cenv, "c", "c", "Clear output");
         os_completion_add(cenv, "d", "d", "Load data base");
         os_completion_add(cenv, "n", "n", "NMT command");
         os_completion_add(cenv, "q", "q", "Quit");
         os_completion_add(cenv, "r", "r", "Read SDO");
         os_completion_add(cenv, "s", "s", "Run script");
         os_completion_add(cenv, "w", "w", "Write SDO");
-        os_completion_add(cenv, "y", "y", "Set CAN channel");
     }
     else if (prefix[0] == 'b' && prefix[1] == ' ')
     {
@@ -551,11 +549,6 @@ void completion_callback(completions_t* cenv, const char* prefix)
         os_completion_add(cenv, "15", "15", "CiA 443 SIIS level-2 devices");
         os_completion_add(cenv, "16", "16", "CiA 447 Special-purpose car add-on devices");
     }
-    else if (prefix[0] == 'p' && prefix[1] == ' ')
-    {
-        os_completion_add(cenv, "add", "add", "Add PDO (tx)");
-        os_completion_add(cenv, "del", "del", "Remove PDO (tx)");
-    }
     else if (prefix[0] == 'n' && prefix[1] == ' ')
     {
         os_completion_add(cenv, "op", "start", "Start (go to Operational)");
@@ -570,6 +563,8 @@ void completion_callback(completions_t* cenv, const char* prefix)
         os_completion_add(cenv, "0x1008", "0x1008", "Read Manufacturer Device Name");
         os_completion_add(cenv, "0x1009", "0x1009", "Read Manufacturer Hardware Version");
         os_completion_add(cenv, "0x100a", "0x100a", "Read Manufacturer Software Version");
+        os_completion_add(cenv, "0x1016", "0x1016", "Read Consumer Heartbeat Time");
+        os_completion_add(cenv, "0x1017", "0x1017", "Read Producer Heartbeat Time");
         os_completion_add(cenv, "0x1018", "0x1018", "Read Identity Object");
     }
     else if ((prefix[0] == 's' && prefix[1] == ' ') || (prefix[0] == ' '))
