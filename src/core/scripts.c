@@ -483,6 +483,63 @@ status_t run_script_ex(char* name, core_t* core)
     return status;
 }
 
+void scripts_add_completions(completions_t* cenv)
+{
+    char* listed_scripts[256];
+    int listed_count = 0;
+    int i, j;
+
+    for (i = 0; i < max_script_search_paths; i++)
+    {
+        DIR* dir;
+        char search_path[PATH_MAX] = {0};
+
+        os_snprintf(search_path, sizeof(search_path), "%s", script_search_path[i]);
+        dir = os_opendir(search_path);
+
+        if (dir != NULL)
+        {
+            struct dirent* ent;
+            while ((ent = readdir(dir)) != NULL)
+            {
+                if (DT_REG == ent->d_type && has_valid_extension(ent->d_name))
+                {
+                    char script_name[256] = {0};
+
+                    safe_strcpy(script_name, ent->d_name, sizeof(script_name));
+                    strip_lua_extension(script_name);
+
+                    if (false == script_already_listed(listed_scripts, listed_count, script_name))
+                    {
+                        char script_path[512] = {0};
+                        char* description;
+
+                        listed_scripts[listed_count++] = os_strdup(script_name);
+
+                        os_snprintf(script_path, sizeof(script_path), "%s/%s", search_path, ent->d_name);
+                        description = get_script_description(script_path);
+                        if (description != NULL)
+                        {
+                            os_completion_add(cenv, script_name, script_name, description);
+                            os_free(description);
+                        }
+                        else
+                        {
+                            os_completion_add(cenv, script_name, script_name, "Run script");
+                        }
+                    }
+                }
+            }
+            closedir(dir);
+        }
+    }
+
+    for (j = 0; j < listed_count; j++)
+    {
+        os_free(listed_scripts[j]);
+    }
+}
+
 static size_t safe_strcpy(char* dest, const char* src, size_t size)
 {
     size_t src_len = os_strlen(src);

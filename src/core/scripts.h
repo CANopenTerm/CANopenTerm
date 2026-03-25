@@ -15,6 +15,7 @@
 bool has_valid_extension(const char* filename);
 void scripts_init(core_t* core);
 void scripts_deinit(core_t* core);
+void scripts_add_completions(completions_t* cenv);
 status_t list_scripts(void);
 void print_heading(const char* heading);
 void run_script(char* name, core_t* core);
