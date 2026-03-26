@@ -324,7 +324,7 @@ void can_set_baud_rate(uint8 baud_rate_index, core_t* core)
         baud_rate_index = 1;
     }
 
-    if (baud_rate_index >= 14)
+    if (baud_rate_index > 14)
     {
         can_print_baud_rate_help(core);
         return;
