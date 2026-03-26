@@ -562,20 +562,20 @@ static void completion_add(completions_t* cenv, const char* word)
     }
     else if (prefix[0] == 'b' && prefix[1] == ' ')
     {
-        os_completion_add(cenv, "1", "1", "1 MBit/s");
-        os_completion_add(cenv, "2", "2", "800 kBit/s");
-        os_completion_add(cenv, "3", "3", "500 kBit/s");
-        os_completion_add(cenv, "4", "4", "250 kBit/s");
-        os_completion_add(cenv, "5", "5", "125 kBit/s");
-        os_completion_add(cenv, "6", "6", "100 kBit/s");
-        os_completion_add(cenv, "7", "7", "95.238 kBit/s");
-        os_completion_add(cenv, "8", "8", "83.333 kBit/s");
-        os_completion_add(cenv, "9", "9", "50 kBit/s");
-        os_completion_add(cenv, "10", "10", "47.619 kBit/s");
-        os_completion_add(cenv, "11", "11", "33.333 kBit/s");
-        os_completion_add(cenv, "12", "12", "20 kBit/s");
-        os_completion_add(cenv, "13", "13", "10 kBit/s");
-        os_completion_add(cenv, "14", "14", "5 kBit/s");
+        os_completion_add(cenv, "1", "1 (1 MBit/s)", "1 MBit/s");
+        os_completion_add(cenv, "2", "2 (800 kBit/s)", "800 kBit/s");
+        os_completion_add(cenv, "3", "3 (500 kBit/s)", "500 kBit/s");
+        os_completion_add(cenv, "4", "4 (250 kBit/s)", "250 kBit/s");
+        os_completion_add(cenv, "5", "5 (125 kBit/s)", "125 kBit/s");
+        os_completion_add(cenv, "6", "6 (100 kBit/s)", "100 kBit/s");
+        os_completion_add(cenv, "7", "7 (95.238 kBit/s)", "95.238 kBit/s");
+        os_completion_add(cenv, "8", "8 (83.333 kBit/s)", "83.333 kBit/s");
+        os_completion_add(cenv, "9", "9 (50 kBit/s)", "50 kBit/s");
+        os_completion_add(cenv, "10", "10 (47.619 kBit/s)", "47.619 kBit/s");
+        os_completion_add(cenv, "11", "11 (33.333 kBit/s)", "33.333 kBit/s");
+        os_completion_add(cenv, "12", "12 (20 kBit/s)", "20 kBit/s");
+        os_completion_add(cenv, "13", "13 (10 kBit/s)", "10 kBit/s");
+        os_completion_add(cenv, "14", "14 (5 kBit/s)", "5 kBit/s");
     }
     else if (prefix[0] == 'd' && prefix[1] == ' ')
     {
