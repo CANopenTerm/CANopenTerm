@@ -567,7 +567,7 @@ end
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
-can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
+can_write (can_id, data_length, [data], [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
@@ -575,8 +575,6 @@ can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
 > **length** Data length in bytes.
 
 > **data** Data, default is `0`.
-
-> **is_extended** Extended frame, default is `false`.
 
 > **show_output** Show formatted output, default is `false`.
 

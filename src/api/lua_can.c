@@ -21,9 +21,8 @@ int lua_can_write(lua_State* L)
     int can_id = luaL_checkinteger(L, 1);
     int length = luaL_checkinteger(L, 2);
     uint64 data = lua_tointeger(L, 3);
-    bool is_extended = lua_toboolean(L, 4);
-    bool show_output = lua_toboolean(L, 5);
-    const char* comment = lua_tostring(L, 6);
+    bool show_output = lua_toboolean(L, 4);
+    const char* comment = lua_tostring(L, 5);
     can_message_t message = {0};
     disp_mode_t disp_mode = SILENT;
 
@@ -37,15 +36,6 @@ int lua_can_write(lua_State* L)
     message.data[5] = (data >> 16) & 0xFF;
     message.data[6] = (data >> 8) & 0xFF;
     message.data[7] = data & 0xFF;
-
-    if (true == is_extended)
-    {
-        message.is_extended = true;
-    }
-    else
-    {
-        message.is_extended = false;
-    }
 
     if (true == show_output)
     {

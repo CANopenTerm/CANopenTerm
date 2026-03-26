@@ -7,8 +7,6 @@
  *
  **/
 
-/* TODO: Implement extended CAN frames. */
-
 #include <CANvenient.h>
 
 #include "buffer.h"

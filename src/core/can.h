@@ -22,7 +22,6 @@ typedef struct can_message
     uint32 length;
     uint8 data[CAN_BUF_SIZE];
     uint64 timestamp_us;
-    bool is_extended;
 
 } can_message_t;
 

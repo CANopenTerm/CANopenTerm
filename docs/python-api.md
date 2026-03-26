@@ -580,7 +580,7 @@ while not key_is_hit():
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```python
-bool can_write (can_id, data_length, [data], [is_extended], [show_output], [comment])
+bool can_write (can_id, data_length, [data], [show_output], [comment])
 ```
 
 > **can_id** CAN-ID.
@@ -588,8 +588,6 @@ bool can_write (can_id, data_length, [data], [is_extended], [show_output], [comm
 > **length** Data length in bytes.
 
 > **data** Data, default is `0`.
-
-> **is_extended** Extended frame, default is `False`.
 
 > **show_output** Show formatted output, default is `False`.
 

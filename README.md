@@ -48,10 +48,6 @@ Key functionalities include:
 - **Send NMT Messages**:
   Control network management with commands to one or all nodes.
 
-- **Simulate PDOs**:
-  Add asynchronous Process Data Objects to simulate network
-  traffic.
-
 - **Versatile Raw CAN CC Interface**:
   For non-CANopen needs, offering flexibility and control.
 

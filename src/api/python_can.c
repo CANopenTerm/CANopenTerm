@@ -25,7 +25,7 @@ void python_can_init(void)
     py_GlobalRef mod = py_getmodule("__main__");
 
     py_bind(mod, "dict_lookup_raw(can_id, data_length, data=0)", py_dict_lookup_raw);
-    py_bind(mod, "can_write(can_id, data_length, data=0, is_extended=False, show_output=False, comment=\"\")", py_can_write);
+    py_bind(mod, "can_write(can_id, data_length, data=0, show_output=False, comment=\"\")", py_can_write);
 
     py_bindfunc(mod, "can_read", py_can_read);
     py_bindfunc(mod, "can_flush", py_can_flush);
@@ -78,7 +78,6 @@ bool py_can_write(int argc, py_Ref argv)
     int can_id;
     int length;
     uint64 data;
-    bool is_extended;
     bool show_output;
     const char* comment;
     can_message_t message = {0};
@@ -95,9 +94,8 @@ bool py_can_write(int argc, py_Ref argv)
     can_id = py_toint(py_arg(0));
     length = py_toint(py_arg(1));
     data = py_toint(py_arg(2));
-    is_extended = py_tobool(py_arg(3));
-    show_output = py_tobool(py_arg(4));
-    comment = py_tostr(py_arg(5));
+    show_output = py_tobool(py_arg(3));
+    comment = py_tostr(py_arg(4));
     message.id = can_id;
     message.length = length;
     message.data[0] = (data >> 56) & 0xFF;
@@ -108,15 +106,6 @@ bool py_can_write(int argc, py_Ref argv)
     message.data[5] = (data >> 16) & 0xFF;
     message.data[6] = (data >> 8) & 0xFF;
     message.data[7] = data & 0xFF;
-
-    if (true == is_extended)
-    {
-        message.is_extended = true;
-    }
-    else
-    {
-        message.is_extended = false;
-    }
 
     if (true == show_output)
     {

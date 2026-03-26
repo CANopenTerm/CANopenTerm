@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
                 os_printf("    -s SCRIPT         Run script (.lua can be ommited)\n");
                 os_printf("    -i INTERFACE      Set CAN interface\n");
                 os_printf("    -b BAUD           Set baud rate\n");
-                os_printf("                        0 or 1 = 1 MBit/s\n");
+                os_printf("                        1 = 1 MBit/s\n");
                 os_printf("                        2 = 800 kBit/s\n");
                 os_printf("                        3 = 500 kBit/s\n");
                 os_printf("                        4 = 250 kBit/s\n");
@@ -104,7 +104,6 @@ int main(int argc, char* argv[])
                 os_printf("    -f                Full screen widget window\n");
                 os_printf("    -p                Run in plain mode\n");
                 os_printf("    -t                Run conformance test, implies -p\n");
-                /* os_printf("    -e EDS_FILE       Test EDS file, implies -t\n"); */
 
                 exit(EXIT_FAILURE);
             }
