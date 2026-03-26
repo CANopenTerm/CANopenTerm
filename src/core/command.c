@@ -579,30 +579,30 @@ static void completion_add(completions_t* cenv, const char* word)
     }
     else if (prefix[0] == 'd' && prefix[1] == ' ')
     {
-        os_completion_add(cenv, "1", "CiA 301", "CiA 301 Application layer and communication");
-        os_completion_add(cenv, "2", "CiA 302", "CiA 302 Programmable CANopen Devices");
-        os_completion_add(cenv, "3", "CiA 401", "CiA 401 I/O devices");
-        os_completion_add(cenv, "4", "CiA 402", "CiA 402 Drives and motion control");
-        os_completion_add(cenv, "5", "CiA 404", "CiA 404 Measurement Devices and Closed Loop Controllers");
-        os_completion_add(cenv, "6", "CiA 406", "CiA 406 Encoders");
-        os_completion_add(cenv, "7", "CiA 408", "CiA 408 Fluid Power Technology");
-        os_completion_add(cenv, "8", "CiA 410", "CiA 410 Inclinometer");
-        os_completion_add(cenv, "9", "CiA 413", "CiA 413 Truck Gateways");
-        os_completion_add(cenv, "10", "CiA 415", "CiA 415 Road construction machinery");
-        os_completion_add(cenv, "11", "CiA 416", "CiA 416 Building door control");
-        os_completion_add(cenv, "12", "CiA 417", "CiA 417 Lift control systems");
-        os_completion_add(cenv, "13", "CiA 418", "CiA 418 Battery modules");
-        os_completion_add(cenv, "14", "CiA 419", "CiA 419 Battery chargers");
-        os_completion_add(cenv, "15", "CiA 443", "CiA 443 SIIS level-2 devices");
-        os_completion_add(cenv, "16", "CiA 447", "CiA 447 Special-purpose car add-on devices");
+        os_completion_add(cenv, "1", "1 (CiA 301)", "CiA 301 Application layer and communication");
+        os_completion_add(cenv, "2", "2 (CiA 302)", "CiA 302 Programmable CANopen Devices");
+        os_completion_add(cenv, "3", "3 (CiA 401)", "CiA 401 I/O devices");
+        os_completion_add(cenv, "4", "4 (CiA 402)", "CiA 402 Drives and motion control");
+        os_completion_add(cenv, "5", "5 (CiA 404)", "CiA 404 Measurement Devices and Closed Loop Controllers");
+        os_completion_add(cenv, "6", "6 (CiA 406)", "CiA 406 Encoders");
+        os_completion_add(cenv, "7", "7 (CiA 408)", "CiA 408 Fluid Power Technology");
+        os_completion_add(cenv, "8", "8 (CiA 410)", "CiA 410 Inclinometer");
+        os_completion_add(cenv, "9", "9 (CiA 413)", "CiA 413 Truck Gateways");
+        os_completion_add(cenv, "10", "10 (CiA 415)", "CiA 415 Road construction machinery");
+        os_completion_add(cenv, "11", "11 (CiA 416)", "CiA 416 Building door control");
+        os_completion_add(cenv, "12", "12 (CiA 417)", "CiA 417 Lift control systems");
+        os_completion_add(cenv, "13", "13 (CiA 418)", "CiA 418 Battery modules");
+        os_completion_add(cenv, "14", "14 (CiA 419)", "CiA 419 Battery chargers");
+        os_completion_add(cenv, "15", "15 (CiA 443)", "CiA 443 SIIS level-2 devices");
+        os_completion_add(cenv, "16", "16 (CiA 447)", "CiA 447 Special-purpose car add-on devices");
     }
     else if (has_node_id_arg(prefix, 'n'))
     {
-        os_completion_add(cenv, "op",    "op",    "Start (go to Operational)");
-        os_completion_add(cenv, "stop",  "stop",  "Stop (go to Stopped)");
+        os_completion_add(cenv, "op", "op", "Start (go to Operational)");
+        os_completion_add(cenv, "stop", "stop", "Stop (go to Stopped)");
         os_completion_add(cenv, "preop", "preop", "Go to Pre-operational");
         os_completion_add(cenv, "reset", "reset", "Reset node (Application reset)");
-        os_completion_add(cenv, "comm",  "comm",  "Reset communication");
+        os_completion_add(cenv, "comm", "comm", "Reset communication");
     }
     else if (has_node_id_arg(prefix, 'r'))
     {
