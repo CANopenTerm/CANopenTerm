@@ -23,6 +23,7 @@
 
 static void convert_token_to_uint(char* token, uint32* result);
 static void convert_token_to_uint64(char* token, uint64* result);
+static bool has_node_id_arg(const char* prefix, char cmd);
 status_t print_usage_information(bool show_all);
 static bool is_numeric(const char* str);
 
@@ -500,6 +501,42 @@ static bool is_numeric(const char* str)
     return true;
 }
 
+static bool has_node_id_arg(const char* prefix, char cmd)
+{
+    if (prefix[0] != cmd || prefix[1] != ' ')
+    {
+        return false;
+    }
+
+    const char* p = prefix + 2;
+
+    if (p[0] == '0' && (p[1] == 'x' || p[1] == 'X'))
+    {
+        p += 2;
+        if (0 == os_isxdigit(*p))
+        {
+            return false;
+        }
+        while (os_isxdigit(*p))
+        {
+            p++;
+        }
+    }
+    else if (os_isdigit(*p))
+    {
+        while (os_isdigit(*p))
+        {
+            p++;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return *p == ' ';
+}
+
 void completion_callback(completions_t* cenv, const char* prefix)
 {
     if (prefix[0] == '\0')
@@ -549,7 +586,7 @@ void completion_callback(completions_t* cenv, const char* prefix)
         os_completion_add(cenv, "15", "15", "CiA 443 SIIS level-2 devices");
         os_completion_add(cenv, "16", "16", "CiA 447 Special-purpose car add-on devices");
     }
-    else if (prefix[0] == 'n' && prefix[1] == ' ')
+    else if (has_node_id_arg(prefix, 'n'))
     {
         os_completion_add(cenv, "op", "start", "Start (go to Operational)");
         os_completion_add(cenv, "stop", "stop", "Stop (go to Stopped)");
@@ -557,15 +594,23 @@ void completion_callback(completions_t* cenv, const char* prefix)
         os_completion_add(cenv, "reset", "reset", "Reset node (Application reset)");
         os_completion_add(cenv, "comm", "comm", "Reset communication");
     }
-    else if (prefix[0] == 'r' && prefix[1] == ' ')
+    else if (has_node_id_arg(prefix, 'r'))
     {
         os_completion_add(cenv, "0x1000", "0x1000", "Read Device Type");
+        os_completion_add(cenv, "0x1001", "0x1001", "Read Error Register");
+        os_completion_add(cenv, "0x1002", "0x1002", "Read Manufacturer Status Register");
+        os_completion_add(cenv, "0x1003", "0x1003", "Read Pre-defined Error Field");
         os_completion_add(cenv, "0x1008", "0x1008", "Read Manufacturer Device Name");
         os_completion_add(cenv, "0x1009", "0x1009", "Read Manufacturer Hardware Version");
         os_completion_add(cenv, "0x100a", "0x100a", "Read Manufacturer Software Version");
-        os_completion_add(cenv, "0x1016", "0x1016", "Read Consumer Heartbeat Time");
-        os_completion_add(cenv, "0x1017", "0x1017", "Read Producer Heartbeat Time");
         os_completion_add(cenv, "0x1018", "0x1018", "Read Identity Object");
+    }
+    else if (has_node_id_arg(prefix, 'w'))
+    {
+        os_completion_add(cenv, "0x1010", "0x1010", "Write Store Parameters");
+        os_completion_add(cenv, "0x1011", "0x1011", "Write Restore Default Parameters");
+        os_completion_add(cenv, "0x1016", "0x1016", "Write Consumer Heartbeat Time");
+        os_completion_add(cenv, "0x1017", "0x1017", "Write Producer Heartbeat Time");
     }
     else if ((prefix[0] == 's' && prefix[1] == ' ') || (prefix[0] == ' '))
     {
