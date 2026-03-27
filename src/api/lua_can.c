@@ -85,7 +85,6 @@ int lua_can_read(lua_State* L)
     status_t status;
     uint32 length;
     uint64 data = 0;
-    ;
 
     status = can_read(&message);
     if (ALL_OK == status)

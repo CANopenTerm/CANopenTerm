@@ -114,7 +114,7 @@ void can_deinit(core_t* core)
 void can_flush(void)
 {
     can_close(core->can_channel);
-    can_open(core->can_channel, core->baud_rate);
+    can_open(core->can_channel, (enum can_baudrate)(core->baud_rate - 1));
 }
 
 status_t can_print_baud_rate_help(core_t* core)
