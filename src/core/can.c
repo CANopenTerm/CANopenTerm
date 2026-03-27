@@ -306,6 +306,7 @@ uint32 can_read(can_message_t* message)
     }
     else
     {
+        os_memset(message, 0, sizeof(*message));
         return CAN_READ_ERROR;
     }
 }
