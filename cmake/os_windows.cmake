@@ -61,7 +61,7 @@ ExternalProject_Add(cJSON_devel
 )
 
 # CANvenient
-set(CANVENIENT_VERSION   "1.0")
+set(CANVENIENT_VERSION   "1.00")
 set(CANVENIENT_DEVEL_PKG "CANvenient-v${CANVENIENT_VERSION}.zip")
 set(CANVENIENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
 
@@ -71,8 +71,8 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 4)
 endif()
 
 ExternalProject_Add(CANvenient_devel
-  URL https://github.com/CANopenTerm/CANvenient/releases/download/v1.0/${CANVENIENT_DEVEL_PKG}
-  URL_HASH SHA1=4fecb3caa00a5ad6e2656575fd28a814574179f7
+  URL https://github.com/CANopenTerm/CANvenient/releases/download/v${CANVENIENT_VERSION}/${CANVENIENT_DEVEL_PKG}
+  URL_HASH SHA1=f7c8310df9f6bfb88f95c9cc2f4f56be98a068e3
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -94,7 +94,7 @@ ExternalProject_Add(CANvenient_devel
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy
       "${CMAKE_CURRENT_SOURCE_DIR}/cmake/dep_CANvenient.cmake" ${CANVENIENT_PATH}/CMakeLists.txt
-  )
+)
 
 set(CANVENIENT_INCLUDE_DIR ${CANVENIENT_PATH}/include)
 set(CANVENIENT_LIBRARY     ${CANVENIENT_PATH}/lib/${CANVENIENT_PLATFORM}/CANvenient.lib)
