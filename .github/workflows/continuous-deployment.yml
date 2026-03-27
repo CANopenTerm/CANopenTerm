@@ -63,7 +63,7 @@ jobs:
           name: build-artifacts
           path: setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
 
-  Release:
+  Publish:
     if: github.event_name != 'pull_request'
     needs: Windows
     runs-on: ubuntu-latest
@@ -77,7 +77,7 @@ jobs:
         name: build-artifacts
         path: .
 
-    - name: Create Release
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         files: |
