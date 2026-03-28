@@ -1,33 +1,20 @@
 cmake_minimum_required(VERSION 3.16)
 
 # FindCANvenient.cmake
+# Locate CANvenient library and include directories
 
-find_path(CANvenient_INCLUDE_DIR 
-  NAMES CANvenient.h
-  PATH_SUFFIXES include
-)
+find_path(CANvenient_INCLUDE_DIR NAMES CANvenient.h PATHS /usr/include)
+find_library(CANvenient_LIBRARY NAMES libCANvenient.so PATHS /usr/lib)
 
-find_library(CANvenient_LIBRARY 
-  NAMES CANvenient
-  PATH_SUFFIXES lib lib64
-)
+message(STATUS "CANvenient_INCLUDE_DIR: ${CANvenient_INCLUDE_DIR}")
+message(STATUS "CANvenient_LIBRARY: ${CANvenient_LIBRARY}")
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(CANvenient
-  REQUIRED_VARS CANvenient_LIBRARY CANvenient_INCLUDE_DIR
-)
-
-if(CANvenient_FOUND)
-  set(CANvenient_INCLUDE_DIRS ${CANvenient_INCLUDE_DIR})
+if (CANvenient_INCLUDE_DIR AND CANvenient_LIBRARY)
+  set(CANvenient_FOUND TRUE)
+  set(CANvenient_INCLUDE_DIRS ${CANvenient_INCLUDE_DIR}/CANvenient)
   set(CANvenient_LIBRARIES ${CANvenient_LIBRARY})
-
-  if(NOT TARGET CANvenient::CANvenient)
-    add_library(CANvenient::CANvenient UNKNOWN IMPORTED)
-    set_target_properties(CANvenient::CANvenient PROPERTIES
-      IMPORTED_LOCATION "${CANvenient_LIBRARY}"
-      INTERFACE_INCLUDE_DIRECTORIES "${CANvenient_INCLUDE_DIR}"
-    )
-  endif()
+else()
+  set(CANvenient_FOUND FALSE)
 endif()
 
 mark_as_advanced(CANvenient_INCLUDE_DIR CANvenient_LIBRARY)
