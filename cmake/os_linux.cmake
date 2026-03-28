@@ -128,8 +128,8 @@ if (BUILD_YOCTO)
   )
 
   install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/utils/
-    DESTINATION /usr/share/CANopenTerm/scripts/utils
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/core/
+    DESTINATION /usr/share/CANopenTerm/scripts/core
     FILES_MATCHING PATTERN "*"
   )
 
