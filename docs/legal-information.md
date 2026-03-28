@@ -39,7 +39,7 @@ inih is licensed under the
 "[New BSD License](https://github.com/benhoyt/inih/blob/master/LICENSE.txt)".  
 Copyright (c) 2009, Ben Hoyt, All rights reserved.
 
-isocline is licensed under
+Isocline is licensed under
 "[MIT License](https://github.com/daanx/isocline/blob/main/LICENSE)".  
 Copyright (c) 2021, Daan Leijen
 
