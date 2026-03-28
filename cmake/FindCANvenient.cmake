@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 # FindCANvenient.cmake
 # Locate CANvenient library and include directories
 
-find_path(CANvenient_INCLUDE_DIR NAMES CANvenient.h HINTS /usr/include/CANvenient)
+find_path(CANvenient_INCLUDE_DIR NAMES CANvenient.h HINTS /usr/include)
 find_library(CANvenient_LIBRARY NAMES CANvenient HINTS /usr/lib)
 
 if (CANvenient_INCLUDE_DIR AND CANvenient_LIBRARY)
