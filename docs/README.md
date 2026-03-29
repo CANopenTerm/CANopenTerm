@@ -11,6 +11,8 @@ with **CAN CC**-based networks. Additionally, it supports
 **SAE J1939** and **OBD-II** protocols, making it versatile
 for various applications.
 
+![CANopenTerm screenshot](media/screenshot-1.png)
+
 Key functionalities include:
 
 - **Monitoring and Analysis**:
