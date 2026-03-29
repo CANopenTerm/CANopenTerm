@@ -80,13 +80,12 @@ as automated conformance testing.
 Building on the core capabilities of CANopenTerm and the [JSON-based
 profile format](codb2json?id=file-format-specification), the project is
 actively extending its ecosystem. **[CANvenient](/canvenient)**, a C
-library currently under development, will provide a unified interface to
-various manufacturer-specific CAN drivers on Windows and is scheduled
-for integration in the upcoming major release version 2.0. By reducing
-fragmentation from proprietary APIs, this open-source library will
-simplify CAN hardware access not only for CANopenTerm but also for other
-current and future CAN software projects. Contributions and feedback
-from the community are welcome to help shape its evolution.
+library, provides a unified interface to various manufacturer-specific
+CAN APIs on Windows. By reducing fragmentation from proprietary APIs,
+this open-source library simplifies CAN hardware access not only for
+CANopenTerm but also for other current and future CAN software projects.
+Contributions and feedback from the community are welcome to help shape
+its evolution.
 
 ## Get Involved
 
