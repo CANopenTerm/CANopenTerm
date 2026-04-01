@@ -61,7 +61,7 @@ ExternalProject_Add(cJSON_devel
 )
 
 # CANvenient
-set(CANVENIENT_VERSION   "1.00")
+set(CANVENIENT_VERSION   "1.01")
 set(CANVENIENT_DEVEL_PKG "CANvenient-v${CANVENIENT_VERSION}.zip")
 set(CANVENIENT_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
 
@@ -72,7 +72,7 @@ endif()
 
 ExternalProject_Add(CANvenient_devel
   URL https://github.com/CANopenTerm/CANvenient/releases/download/v${CANVENIENT_VERSION}/${CANVENIENT_DEVEL_PKG}
-  URL_HASH SHA1=f7c8310df9f6bfb88f95c9cc2f4f56be98a068e3
+  URL_HASH SHA1=e21ec654d2dc8d6c22f430a42bf16249789e7eef
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
