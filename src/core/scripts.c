@@ -274,7 +274,7 @@ void print_result(uint8 id, uint16 index, uint8 sub_index, uint32 length, bool s
 {
     char comment_format[34] = {0};
 
-    os_print(DARK_CYAN, "Custom   ");
+    os_print(DARK_YELLOW, "Result   ");
     os_print(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", id, index, sub_index, length);
     os_print(LIGHT_GREEN, "SUCC    ");
 
