@@ -110,7 +110,8 @@ end
 
 local num_loops   = core.select_number("How often should the playback be looped?")
 local trc_file    = nil
-local filtered_id = core.select_number("Enter the CAN ID to filter for (0 to disable):")
+local filtered_id_a = core.select_number("Enter the CAN ID to filter for (0 to disable):")
+local filtered_id_b = core.select_number("Enter another CAN ID to filter for (0 to disable):")
 
 if num_loops == nil then
   print("Exiting.")
@@ -156,7 +157,8 @@ for loop = 1, num_loops + 1 do
                 delay_ms(delay)
             end
 
-            if filtered_id == 0 or tonumber(message.can_id, 16) ~= filtered_id then
+            if (filtered_id_a == 0 or tonumber(message.can_id, 16) ~= filtered_id_a) and
+               (filtered_id_b == 0 or tonumber(message.can_id, 16) ~= filtered_id_b) then
                 can_write(tonumber(message.can_id, 16), message.dlc, data)
                 local formatted_can_id = string.format("%5s", message.can_id:match("0*(%x+)") .. "h")
                 print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
