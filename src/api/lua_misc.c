@@ -14,8 +14,6 @@
 #include "os.h"
 #include "scripts.h"
 
-extern void print_heading(const char* heading);
-
 int lua_delay_ms(lua_State* L)
 {
     uint32 delay_in_ms = (uint32)lua_tointeger(L, 1);
@@ -88,6 +86,21 @@ int lua_print_heading(lua_State* L)
     return 0;
 }
 
+int lua_print_result(lua_State* L)
+{
+    uint8 id = (uint8)lua_tointeger(L, 1);
+    uint16 index = (uint16)lua_tointeger(L, 2);
+    uint8 sub_index = (uint8)lua_tointeger(L, 3);
+    uint32 length = (uint32)lua_tointeger(L, 4);
+    bool success = lua_toboolean(L, 5);
+    const char* comment = lua_tostring(L, 6);
+    uint32_t data = (uint32_t)lua_tointeger(L, 7);
+
+    print_result(id, index, sub_index, length, success, comment, data);
+
+    return 0;
+}
+
 void lua_register_misc_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_delay_ms);
@@ -107,4 +120,7 @@ void lua_register_misc_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_print_heading);
     lua_setglobal(core->L, "print_heading");
+
+    lua_pushcfunction(core->L, lua_print_result);
+    lua_setglobal(core->L, "print_result");
 }

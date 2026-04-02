@@ -21,6 +21,7 @@ bool py_console_show(int argc, py_Ref argv);
 bool py_key_is_hit(int argc, py_Ref argv);
 bool py_key_send(int argc, py_Ref argv);
 bool py_print_heading(int argc, py_Ref argv);
+bool py_print_result(int argc, py_Ref argv);
 
 void python_misc_init(void)
 {
@@ -31,8 +32,9 @@ void python_misc_init(void)
     py_bindfunc(mod, "console_hide", py_console_hide);
     py_bindfunc(mod, "console_show", py_console_show);
     py_bindfunc(mod, "key_is_hit", py_key_is_hit);
-    py_bindfunc(mod, "print_heading", py_print_heading);
     py_bindfunc(mod, "key_send", py_key_send);
+    py_bindfunc(mod, "print_heading", py_print_heading);
+    py_bindfunc(mod, "print_result", py_print_result);
 }
 
 bool py_delay_ms(int argc, py_Ref argv)
@@ -128,6 +130,38 @@ bool py_print_heading(int argc, py_Ref argv)
     heading = py_tostr(py_arg(0));
     print_heading(heading);
 
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_print_result(int argc, py_Ref argv)
+{
+    uint8 id;
+    uint16 index;
+    uint8 sub_index;
+    uint32 length;
+    bool success;
+    const char* comment;
+    uint32 data;
+
+    PY_CHECK_ARGC(7);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+    PY_CHECK_ARG_TYPE(3, tp_int);
+    PY_CHECK_ARG_TYPE(4, tp_bool);
+    PY_CHECK_ARG_TYPE(5, tp_str);
+    PY_CHECK_ARG_TYPE(6, tp_int);
+
+    id = (uint8)py_toint(py_arg(0));
+    index = (uint16)py_toint(py_arg(1));
+    sub_index = (uint8)py_toint(py_arg(2));
+    length = (uint32)py_toint(py_arg(3));
+    success = py_tobool(py_arg(4));
+    comment = py_tostr(py_arg(5));
+    data = (uint32)py_toint(py_arg(6));
+
+    print_result(id, index, sub_index, length, success, comment, data);
     py_newnone(py_retval());
     return true;
 }

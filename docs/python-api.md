@@ -755,18 +755,27 @@ sdo_read(node_id, 0x100A, 0x00, True)
 ```
 <!-- tabs:end -->
 
-### print_heading()
+### print_result()
 
 <!-- tabs:start -->
 <!-- tab:Description -->
+Print formatted result, similar to the output of `sdo_read()` and `can_write()` when `show_output` is `True`.
+
 ```python
-print_heading (heading)
+print_result (id , index, sub_index, length, state, comment, data)
 ```
 
-> **heading** Heading to be printed.
+> **id** CAN-ID.*
+> **index** Index.
+> **sub_index** Sub-Index.
+> **length** Data length in bytes.
+> **state** `True` or `False`.
+> **comment** Comment to show in formatted output or `None`.
+> **data** Data.
 
-**Returns**: `None`.
+**Returns**: Nothing.
 
+**Since**: 2.02
 <!-- tabs:end -->
 
 ## Visualisation

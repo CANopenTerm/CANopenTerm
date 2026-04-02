@@ -270,6 +270,44 @@ void print_heading(const char* heading)
     os_print(LIGHT_CYAN, "Command  NodeID  Index   SubIndex  Length  Status  Comment                           Data\n");
 }
 
+void print_result(uint8 id, uint16 index, uint8 sub_index, uint32 length, bool success, const char* comment, uint32_t data)
+{
+    char comment_format[34] = {0};
+
+    os_print(DARK_CYAN, "Custom   ");
+    os_print(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", id, index, sub_index, length);
+    os_print(LIGHT_GREEN, "SUCC    ");
+
+    if (comment != NULL)
+    {
+        os_snprintf(comment_format, sizeof(comment_format), "%-33s", comment);
+    }
+    else
+    {
+        os_snprintf(comment_format, sizeof(comment_format), "%-33s", "");
+    }
+
+    os_print(DARK_MAGENTA, "%s ", comment_format);
+
+    switch (length)
+    {
+        case 4:
+            os_print(DEFAULT_COLOR, "0x%08X %u (U32)", data, data);
+            break;
+        case 3:
+            os_print(DEFAULT_COLOR, "0x%06X %u (U24)", data, data);
+            break;
+        case 2:
+            os_print(DEFAULT_COLOR, "0x%04X %u (U16)", data, data);
+            break;
+        case 1:
+            os_print(DEFAULT_COLOR, "0x%02X %u (U8)", data, data);
+            break;
+    }
+
+    puts("");
+}
+
 void run_script(char* name, core_t* core)
 {
     status_t status = ALL_OK;

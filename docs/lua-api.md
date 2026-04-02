@@ -743,6 +743,29 @@ sdo_read(0x123, 0x100A, 0x00, true)
 ```
 <!-- tabs:end -->
 
+### print_result()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Print formatted result, similar to the output of `sdo_read()` and `can_write()` when `show_output` is `true`.
+
+```lua
+print_result (id , index, sub_index, length, state, comment, data)
+```
+
+> **id** CAN-ID.*
+> **index** Index.
+> **sub_index** Sub-Index.
+> **length** Data length in bytes.
+> **state** `true` or `false`.
+> **comment** Comment to show in formatted output or `nil`.
+> **data** Data.
+
+**Returns**: Nothing.
+
+**Since**: 2.02
+
+<!-- tabs:end -->
 
 ## Visualisation
 
