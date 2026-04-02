@@ -276,7 +276,15 @@ void print_result(uint8 id, uint16 index, uint8 sub_index, uint32 length, bool s
 
     os_print(DARK_YELLOW, "Result   ");
     os_print(DEFAULT_COLOR, "0x%02X    0x%04X  0x%02X      %03u     ", id, index, sub_index, length);
-    os_print(LIGHT_GREEN, "SUCC    ");
+
+    if (success)
+    {
+        os_print(LIGHT_GREEN, "SUCC    ");
+    }
+    else
+    {
+        os_print(LIGHT_RED, "FAIL    ");
+    }
 
     if (comment != NULL)
     {
