@@ -11,7 +11,7 @@ message(STATUS "pocketpy_LIBRARY: ${pocketpy_LIBRARY}")
 
 if (pocketpy_INCLUDE_DIR AND pocketpy_LIBRARY)
   set(pocketpy_FOUND TRUE)
-  set(pocketpy_INCLUDE_DIRS ${pocketpy_INCLUDE_DIR}/pocketpy)
+  set(pocketpy_INCLUDE_DIRS ${pocketpy_INCLUDE_DIR})
   set(pocketpy_LIBRARIES ${pocketpy_LIBRARY})
 else()
   set(pocketpy_FOUND FALSE)
