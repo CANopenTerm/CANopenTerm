@@ -129,9 +129,6 @@
 				<File Source="../../export/scripts/replay.lua" />
 			</Component>
 			<Component>
-				<File Source="../../export/scripts/scanner.lua" />
-			</Component>
-			<Component>
 				<File Source="../../export/scripts/trace.lua" />
 			</Component>
 		</ComponentGroup>
