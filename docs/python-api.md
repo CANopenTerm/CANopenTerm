@@ -636,6 +636,8 @@ dict_lookup_raw (can_id, data_length, [data])
 
 > **data** Data, default is `0`.
 
+**Returns:** Decoded output as a string or `None` if no matching entry was found.
+
 <!-- tab:Example -->
 ```python
 print(dict_lookup_raw(0x730, 1, 0x05)) -- Heartbeat: Operational.

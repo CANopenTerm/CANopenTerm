@@ -53,6 +53,186 @@ local function write_trc_header(start_time)
     file:close()
 end
 
+local function interpret_obd2_message(id, length, data)
+    if length < 2 then
+        return nil
+    end
+
+    local is_request = (id == 0x7DF or (id >= 0x7E0 and id <= 0x7E7))
+    local is_response = (id >= 0x7E8 and id <= 0x7EF)
+
+    if not is_request and not is_response then
+        return nil
+    end
+
+    local byte_len = (data >> 56) & 0xFF
+    local mode = (data >> 48) & 0xFF
+    local pid = (data >> 40) & 0xFF
+    local data_a = (data >> 32) & 0xFF
+    local data_b = (data >> 24) & 0xFF
+    local data_c = (data >> 16) & 0xFF
+    local data_d = (data >> 8) & 0xFF
+
+    local mode_names = {
+        [0x01] = "Req",
+        [0x02] = "Req Freeze",
+        [0x03] = "Req DTCs",
+        [0x04] = "Clear DTCs",
+        [0x05] = "Req O2",
+        [0x06] = "Req Test",
+        [0x07] = "Req Pending",
+        [0x08] = "Req Control",
+        [0x09] = "Req Info",
+        [0x0A] = "Req Perm DTCs",
+        [0x41] = "Rsp",
+        [0x42] = "Rsp Freeze",
+        [0x43] = "Rsp DTCs",
+        [0x45] = "Rsp O2",
+        [0x46] = "Rsp Test",
+        [0x47] = "Rsp Pending",
+        [0x49] = "Rsp Info",
+        [0x4A] = "Rsp Perm",
+        [0x7F] = "Negative Rsp"
+    }
+
+    if mode == 0x7F then
+        local req_mode = pid
+        local error_code = data_a
+        local error_names = {
+            [0x10] = "General reject",
+            [0x11] = "Service not supported",
+            [0x12] = "Sub-function not supported",
+            [0x21] = "Busy, repeat request",
+            [0x22] = "Conditions not correct",
+            [0x31] = "Request out of range"
+        }
+        local error_desc = error_names[error_code] or string.format("Error %02X", error_code)
+        return string.format("OBD-II NEG RSP: Mode %02X - %s", req_mode, error_desc)
+    end
+
+    local msg_type = mode_names[mode] or string.format("Mode %02X", mode)
+
+    if mode == 0x03 or mode == 0x07 or mode == 0x0A then
+        return string.format("OBD-II %s: Request stored DTCs", msg_type)
+    end
+
+    if mode == 0x04 then
+        return "OBD-II: Clear DTCs and stored values"
+    end
+
+    if mode == 0x43 or mode == 0x47 or mode == 0x4A then
+        local num_codes = data_a
+        if byte_len >= 3 then
+            local code1_high = data_b
+            local code1_low = data_c
+            local prefix = {"P", "C", "B", "U"}
+            local prefix_idx = ((code1_high >> 6) & 0x03) + 1
+            local digit1 = (code1_high >> 4) & 0x03
+            local digit2 = code1_high & 0x0F
+            local digit34 = string.format("%02X", code1_low)
+            local dtc = string.format("%s%d%X%s", prefix[prefix_idx], digit1, digit2, digit34)
+            return string.format("OBD-II %s: %d code(s) - %s", msg_type, num_codes, dtc)
+        end
+        return string.format("OBD-II %s: %d trouble code(s)", msg_type, num_codes)
+    end
+
+    local pid_info = {
+        [0x00] = {name = "PIDs supported [01-20]", decode = nil},
+        [0x01] = {name = "Monitor status", decode = nil},
+        [0x03] = {name = "Fuel system status", decode = nil},
+        [0x04] = {name = "Calc engine load", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x05] = {name = "Coolant temp", decode = function(a) return string.format("%d°C", a - 40) end},
+        [0x06] = {name = "Short FT Bank 1", decode = function(a) return string.format("%.1f%%", (a - 128) * 100 / 128) end},
+        [0x07] = {name = "Long FT Bank 1", decode = function(a) return string.format("%.1f%%", (a - 128) * 100 / 128) end},
+        [0x08] = {name = "Short FT Bank 2", decode = function(a) return string.format("%.1f%%", (a - 128) * 100 / 128) end},
+        [0x09] = {name = "Long FT Bank 2", decode = function(a) return string.format("%.1f%%", (a - 128) * 100 / 128) end},
+        [0x0A] = {name = "Fuel pressure", decode = function(a) return string.format("%d kPa", a * 3) end},
+        [0x0B] = {name = "Intake MAP", decode = function(a) return string.format("%d kPa", a) end},
+        [0x0C] = {name = "Engine RPM", decode = function(a, b) return string.format("%d rpm", ((a * 256) + b) / 4) end},
+        [0x0D] = {name = "Vehicle speed", decode = function(a) return string.format("%d km/h", a) end},
+        [0x0E] = {name = "Timing advance", decode = function(a) return string.format("%.1f°", (a - 128) / 2) end},
+        [0x0F] = {name = "Intake air temp", decode = function(a) return string.format("%d°C", a - 40) end},
+        [0x10] = {name = "MAF air flow", decode = function(a, b) return string.format("%.2f g/s", ((a * 256) + b) / 100) end},
+        [0x11] = {name = "Throttle pos", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x12] = {name = "Secondary air status", decode = nil},
+        [0x13] = {name = "O2 sensors present", decode = nil},
+        [0x1C] = {name = "OBD standard", decode = nil},
+        [0x1F] = {name = "Run time", decode = function(a, b) return string.format("%d s", (a * 256) + b) end},
+        [0x20] = {name = "PIDs supported [21-40]", decode = nil},
+        [0x21] = {name = "Dist with MIL on", decode = function(a, b) return string.format("%d km", (a * 256) + b) end},
+        [0x22] = {name = "Fuel rail pressure", decode = function(a, b) return string.format("%.2f kPa", ((a * 256) + b) * 0.079) end},
+        [0x23] = {name = "Fuel rail gauge press", decode = function(a, b) return string.format("%d kPa", ((a * 256) + b) * 10) end},
+        [0x2F] = {name = "Fuel tank level", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x30] = {name = "Warmups since clear", decode = function(a) return string.format("%d", a) end},
+        [0x31] = {name = "Dist since clear", decode = function(a, b) return string.format("%d km", (a * 256) + b) end},
+        [0x33] = {name = "Barometric press", decode = function(a) return string.format("%d kPa", a) end},
+        [0x3C] = {name = "Cat temp B1S1", decode = function(a, b) return string.format("%.1f°C", ((a * 256) + b) / 10 - 40) end},
+        [0x3D] = {name = "Cat temp B2S1", decode = function(a, b) return string.format("%.1f°C", ((a * 256) + b) / 10 - 40) end},
+        [0x3E] = {name = "Cat temp B1S2", decode = function(a, b) return string.format("%.1f°C", ((a * 256) + b) / 10 - 40) end},
+        [0x3F] = {name = "Cat temp B2S2", decode = function(a, b) return string.format("%.1f°C", ((a * 256) + b) / 10 - 40) end},
+        [0x40] = {name = "PIDs supported [41-60]", decode = nil},
+        [0x42] = {name = "Control module volt", decode = function(a, b) return string.format("%.3f V", ((a * 256) + b) / 1000) end},
+        [0x43] = {name = "Absolute load", decode = function(a, b) return string.format("%.1f%%", ((a * 256) + b) * 100 / 255) end},
+        [0x44] = {name = "Cmd equiv ratio", decode = function(a, b) return string.format("%.3f", ((a * 256) + b) / 32768) end},
+        [0x45] = {name = "Relative throttle", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x46] = {name = "Ambient air temp", decode = function(a) return string.format("%d°C", a - 40) end},
+        [0x47] = {name = "Absolute throttle B", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x49] = {name = "Accel pedal D", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x4A] = {name = "Accel pedal E", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x4C] = {name = "Cmd throttle act", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x4D] = {name = "Time MIL on", decode = function(a, b) return string.format("%d min", (a * 256) + b) end},
+        [0x4E] = {name = "Time since clear", decode = function(a, b) return string.format("%d min", (a * 256) + b) end},
+        [0x4F] = {name = "Max values", decode = nil},
+        [0x51] = {name = "Fuel type", decode = nil},
+        [0x52] = {name = "Ethanol fuel %", decode = function(a) return string.format("%.1f%%", a * 100 / 255) end},
+        [0x5C] = {name = "Engine oil temp", decode = function(a) return string.format("%d°C", a - 40) end},
+        [0x5E] = {name = "Engine fuel rate", decode = function(a, b) return string.format("%.2f L/h", ((a * 256) + b) / 20) end},
+        [0x60] = {name = "PIDs supported [61-80]", decode = nil},
+        [0x61] = {name = "Driver demand torque", decode = function(a) return string.format("%d%%", a - 125) end},
+        [0x62] = {name = "Actual engine torque", decode = function(a) return string.format("%d%%", a - 125) end},
+        [0x63] = {name = "Engine ref torque", decode = function(a, b) return string.format("%d Nm", (a * 256) + b) end},
+        [0x66] = {name = "Mass air flow sensor", decode = nil},
+        [0x67] = {name = "Engine coolant temp", decode = nil},
+        [0x80] = {name = "PIDs supported [81-A0]", decode = nil},
+        [0xA0] = {name = "PIDs supported [A1-C0]", decode = nil},
+        [0xC0] = {name = "PIDs supported [C1-E0]", decode = nil}
+    }
+
+    if mode == 0x09 or mode == 0x49 then
+        local info_names = {
+            [0x00] = "Info PIDs supported",
+            [0x02] = "VIN",
+            [0x04] = "Calibration ID",
+            [0x06] = "Calibration verification",
+            [0x08] = "Performance tracking",
+            [0x0A] = "ECU name"
+        }
+        local info_name = info_names[pid] or string.format("Info PID %02X", pid)
+        return string.format("OBD-II %s: %s", msg_type, info_name)
+    end
+
+    local info = pid_info[pid]
+
+    if not info then
+        return string.format("OBD-II %s: PID %02X", msg_type, pid)
+    end
+
+    if mode == 0x01 or mode == 0x02 then
+        return string.format("OBD-II %s: %s", msg_type, info.name)
+    end
+
+    if (mode == 0x41 or mode == 0x42) and is_response then
+        if info.decode and byte_len >= 3 then
+            local value = info.decode(data_a, data_b, data_c, data_d)
+            return string.format("OBD-II %s: %s = %s", msg_type, info.name, value)
+        else
+            return string.format("OBD-II %s: %s", msg_type, info.name)
+        end
+    end
+
+    return string.format("OBD-II %s: %s", msg_type, info.name)
+end
+
 local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, message_number)
     local success, err = pcall(function()
         local file = assert(io.open(trace_filename, "a"))
@@ -102,6 +282,10 @@ while not key_is_hit() do
         local can_data_desc      = dict_lookup_raw(id, length, data)
 
         if can_data_desc == nil then
+            can_data_desc = interpret_obd2_message(id, length, data)
+        end
+
+        if can_data_desc == nil then
             can_data_desc = " "
         end
 
@@ -119,7 +303,18 @@ while not key_is_hit() do
 end
 
 if write_trace then
-    print(string.format("\nSaved as %s", trace_filename))
+    io.write("\nSave trace file? [Y/n]: ")
+    io.flush()
+    local response = io.read()
+
+    if response == nil or response == "" or response:lower() == "y" then
+        print(string.format("Saved as %s", trace_filename))
+    elseif response:lower() == "n" then
+        os.remove(trace_filename)
+        print("Trace file not saved.")
+    else
+        print(string.format("Saved as %s", trace_filename))
+    end
 else
     print("\nCould not write trace file %s", trace_filename)
 end
