@@ -108,12 +108,22 @@ function get_time()
     end
 end
 
-local num_loops = core.select_number("How often should the playback be looped?")
-local trc_file  = nil
+local loop_playback = core.select_variable("Loop playback continuously? (yes/no, default: no)")
+local trc_file      = nil
 
-if num_loops == nil then
+if loop_playback == nil then
   print("Exiting.")
   return
+end
+
+loop_playback = loop_playback:lower()
+if loop_playback ~= "yes" and loop_playback ~= "y" then
+  loop_playback = "no"
+end
+
+local num_loops = 0
+if loop_playback == "yes" or loop_playback == "y" then
+  num_loops = 999999
 end
 
 local filter_count = core.select_number("How many CAN IDs do you want to filter out? (0 to disable):")
