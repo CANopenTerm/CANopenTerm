@@ -108,7 +108,7 @@ function get_time()
     end
 end
 
-local loop_playback = core.select_variable("Loop playback continuously? (yes/no, default: no)")
+local loop_playback = core.select_variable("Loop playback continuously? [y/N]")
 local trc_file      = nil
 
 if loop_playback == nil then
