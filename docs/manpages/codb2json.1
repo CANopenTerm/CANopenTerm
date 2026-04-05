@@ -1,0 +1,44 @@
+.TH CODB2JSON 1 "April 2026" "CANopenTerm 2.01" "User Commands"
+.SH NAME
+codb2json \- convert CANopen Profile data base (codb) files to JSON format
+.SH SYNOPSIS
+.B codb2json
+.I input-file
+.RB [ \-f ]
+.SH DESCRIPTION
+.B codb2json
+converts a CANopen Profile data base (codb) file to JSON format.
+The resulting JSON file can be used by
+.BR CANopenTerm (1)
+to check the conformity of a CANopen CC interface against the CANopen
+application layer and communication profile (CiA 301).
+.PP
+JSON is used as the output format because it is robust, easy to process,
+and widely accepted, in contrast to the binary codb format which is
+antiquated and difficult to maintain.
+.SH OPTIONS
+.TP
+.I input-file
+Path to the input codb file to convert.
+.TP
+.B \-f
+Format (pretty-print) the JSON output.
+.SH EXAMPLES
+Convert a codb file with compact output:
+.PP
+.RS
+.B codb2json v301.codb
+.RE
+.PP
+Convert a codb file with formatted output:
+.PP
+.RS
+.B codb2json v301.codb \-f
+.RE
+.SH SEE ALSO
+.BR CANopenTerm (1)
+.SH AUTHORS
+Michael Fitzmayer.
+.PP
+This manual page was written by Christopher Obbard <obbardc@debian.org>
+for the Debian project.
