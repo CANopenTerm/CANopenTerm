@@ -15,7 +15,7 @@ target_link_libraries(
   ${PLATFORM_LIBS}
 )
 
-if(NOT BUILD_YOCTO)
+if(NOT USE_SYSTEM_LIBS)
   add_dependencies(
     codb2json
     cJSON_devel

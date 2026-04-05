@@ -35,8 +35,8 @@ if(BUILD_TESTS)
   )
 endif(BUILD_TESTS)
 
-# Use system dependencies when building in a Yocto environment.
-if (BUILD_YOCTO)
+# Use system-provided libraries instead of fetching them at build time.
+if (USE_SYSTEM_LIBS)
   find_package(SDL3 REQUIRED)
   if (SDL3_FOUND)
     include_directories(${SDL3_INCLUDE_DIRS})

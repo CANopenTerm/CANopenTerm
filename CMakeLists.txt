@@ -5,7 +5,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)
 
 option(BUILD_TESTS              "Build CMocka unit tests"              OFF)
-option(BUILD_YOCTO              "Build in a Yocto build environment"   OFF)
+option(USE_SYSTEM_LIBS          "Use system-provided libraries"        OFF)
 option(ENABLE_ADDRESS_SANITIZER "Enable address sanitizer (Clang)"     OFF)
 option(ENABLE_VALGRIND_SUPPORT  "Build with Valgrind support"          OFF)
 
@@ -134,7 +134,7 @@ add_dependencies(
   core
 )
 
-if(NOT BUILD_YOCTO)
+if(NOT USE_SYSTEM_LIBS)
   add_dependencies(
     core
     ${PLATFORM_CORE_DEPS})
