@@ -1,0 +1,69 @@
+.TH CANOPENTERM 1 "April 2026" "CANopenTerm 2.01" "User Commands"
+.SH NAME
+CANopenTerm \- tool for developing, testing and analysing CANopen networks and devices
+.SH SYNOPSIS
+.B CANopenTerm
+[\fISCRIPT\fR]
+.br
+.B CANopenTerm
+[\fIOPTION\fR]...
+.SH DESCRIPTION
+.B CANopenTerm
+is an open-source tool for developing, testing and analysing CANopen networks
+and devices.  It provides functionality for interacting with CAN-based systems,
+with support for CANopen as well as SAE J1939 and OBD-II protocols.
+.PP
+When a script path is provided as the sole argument, CANopenTerm runs the script
+in plain (non-graphical) mode.
+.SH OPTIONS
+.TP
+.I SCRIPT
+Run the specified script file and exit.  Implies
+.BR \-p .
+Cannot be combined with other options.
+.TP
+.BI \-s " SCRIPT"
+Run the specified script file (.lua extension may be omitted).
+.TP
+.BI \-i " INTERFACE"
+Set the CAN network interface (e.g.\&
+.IR vcan0 ).
+.TP
+.BI \-b " BAUD"
+Set the baud rate using an index:
+.RS
+.IP 1
+1 Mbit/s
+.IP 2
+800 kbit/s
+.IP 3
+500 kbit/s
+.IP 4
+250 kbit/s
+.IP 5
+125 kbit/s
+.RE
+.TP
+.BI \-n " NODE_ID"
+Set the default node ID (1\(en127, default: 0x01).
+.TP
+.B \-f
+Open the widget window in full-screen mode.
+.TP
+.B \-p
+Run in plain (non-graphical) mode.
+.TP
+.B \-t
+Run the CANopen conformance test and exit.  Implies
+.BR \-p .
+.SH FILES
+.TP
+.I ~/.config/canopenterm/
+Per-user configuration directory.
+.SH SEE ALSO
+.BR codb2json (1)
+.SH AUTHORS
+Michael Fitzmayer.
+.PP
+This manual page was written by Christopher Obbard <obbardc@debian.org>
+for the Debian project.
