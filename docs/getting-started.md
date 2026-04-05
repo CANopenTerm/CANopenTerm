@@ -93,3 +93,10 @@ cd build
 cmake ..
 make
 ```
+
+### System Libraries
+
+When system-provided libraries are available (e.g. via a distribution
+package manager or an embedded Linux build system), pass
+`-DUSE_SYSTEM_LIBS=ON` to CMake to skip fetching dependencies at build
+time and link against the installed libraries instead.
