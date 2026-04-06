@@ -5,6 +5,7 @@
 !scripts
 !tests
 !core
+!obd2
 !.gitignore
 !*.dbc
 !*.eds

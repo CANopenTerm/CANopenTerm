@@ -137,5 +137,10 @@
 				<File Source="../../export/scripts/core/init.lua" />
 			</Component>
 		</ComponentGroup>
+		<ComponentGroup Id="Obd2Components" Directory="OBD2FOLDER">
+			<Component>
+				<File Source="../../export/scripts/obd2/init.lua" />
+			</Component>
+		</ComponentGroup>
 	</Fragment>
 </Wix>

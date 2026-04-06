@@ -7,6 +7,7 @@ Comment: This script currently only works with 11-bit CAN IDs.
 --]]
 
 local core = require "core"
+local obd2 = require "obd2"
 
 local function convert_data_bytes(data_bytes)
     local bytes = {}
@@ -126,6 +127,19 @@ if loop_playback == "yes" or loop_playback == "y" then
   num_loops = 999999
 end
 
+local send_to_bus = core.select_variable("Send data to CAN bus? [Y/n]")
+if send_to_bus == nil then
+  print("Exiting.")
+  return
+end
+
+send_to_bus = send_to_bus:lower()
+if send_to_bus == "no" or send_to_bus == "n" then
+  send_to_bus = false
+else
+  send_to_bus = true
+end
+
 local filter_count = core.select_number("How many CAN IDs do you want to filter out? (0 to disable):")
 if filter_count == nil then
   print("Exiting.")
@@ -190,10 +204,24 @@ for loop = 1, num_loops + 1 do
                 end
             end
             if not is_filtered then
-                can_write(tonumber(message.can_id, 16), message.dlc, data)
+                local swapped_data = core.swap_bytes(data, message.dlc)
+                local can_data_desc = dict_lookup_raw(msg_id, message.dlc, swapped_data)
+
+                if can_data_desc == nil then
+                    can_data_desc = obd2.parse(msg_id, message.dlc, swapped_data)
+                end
+
+                if can_data_desc == nil then
+                    can_data_desc = ""
+                end
+
+                if send_to_bus then
+                    can_write(msg_id, message.dlc, data)
+                end
+
                 local formatted_can_id = string.format("%5s", message.can_id:match("0*(%x+)") .. "h")
-                print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s",
-                    format_float(message.time_offset), message.msg_type, formatted_can_id, message.dlc, message.data_bytes))
+                print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s  %s",
+                    format_float(message.time_offset), message.msg_type, formatted_can_id, message.dlc, message.data_bytes, can_data_desc))
             end
         else
             print("Invalid message format or nil value detected.")
