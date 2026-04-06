@@ -6,7 +6,6 @@ License: Public domain
 --]]
 
 local core = require "core"
-local obd2 = require "obd2"
 
 local initial_timestamp_us
 local trace_filename
@@ -101,10 +100,6 @@ while not key_is_hit() do
         local timestamp_ms       = math.floor(elapsed_us / 1000)
         local timestamp_fraction = math.floor(((elapsed_us / 1000) % 1) * 1000)
         local can_data_desc      = dict_lookup_raw(id, length, data)
-
-        if can_data_desc == nil then
-            can_data_desc = obd2.parse(id, length, data)
-        end
 
         if can_data_desc == nil then
             can_data_desc = " "

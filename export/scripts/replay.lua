@@ -7,7 +7,7 @@ Comment: This script currently only works with 11-bit CAN IDs.
 --]]
 
 local core = require "core"
-local obd2 = require "obd2"
+local obd2 = require "obd2.init"
 
 local function convert_data_bytes(data_bytes)
     local bytes = {}
@@ -58,6 +58,7 @@ function parse_pcan_trc(file_path)
     local patterns = {
       ["1.1"] = "^%s*%d+%)%s*([%d%.]+)%s+(%w+)%s+([%x]+)%s+(%d)%s+(.+)$",
       ["1.3"] = "^%s*%d+%)%s*([%d%.]+)%s+%d%s+(%w+)%s+([%x]+)%s+%-%s+(%d)%s+(.+)$",
+      ["2.0"] = "^%s*%d+%s+([%d%.]+)%s+(%w+)%s+([%x]+)%s+%w+%s+(%d)%s+(.+)$",
     }
 
     local function parse_line(line, pattern)
@@ -107,6 +108,19 @@ function get_time()
     else
         return os.time()
     end
+end
+
+local is_obd2_data = core.select_variable("Is the data provided OBD-II? [y/N]")
+if is_obd2_data == nil then
+  print("Exiting.")
+  return
+end
+
+is_obd2_data = is_obd2_data:lower()
+if is_obd2_data ~= "yes" and is_obd2_data ~= "y" then
+  is_obd2_data = false
+else
+  is_obd2_data = true
 end
 
 local loop_playback = core.select_variable("Loop playback continuously? [y/N]")
@@ -204,11 +218,14 @@ for loop = 1, num_loops + 1 do
                 end
             end
             if not is_filtered then
-                local swapped_data = core.swap_bytes(data, message.dlc)
-                local can_data_desc = dict_lookup_raw(msg_id, message.dlc, swapped_data)
+                local can_data_desc = nil
 
-                if can_data_desc == nil then
-                    can_data_desc = obd2.parse(msg_id, message.dlc, swapped_data)
+                if is_obd2_data and obd2 then
+                    can_data_desc = obd2.parse(msg_id, message.dlc, data)
+                elseif is_obd2_data and not obd2 then
+                    can_data_desc = "OBD-II module not available"
+                else
+                    can_data_desc = dict_lookup_raw(msg_id, message.dlc, data)
                 end
 
                 if can_data_desc == nil then
@@ -219,9 +236,16 @@ for loop = 1, num_loops + 1 do
                     can_write(msg_id, message.dlc, data)
                 end
 
+                local swapped_data = core.swap_bytes(data, message.dlc)
+                local data_bytes_str = ""
+                for i = message.dlc-1, 0, -1 do
+                    local byte = (swapped_data >> (8 * i)) & 0xFF
+                    data_bytes_str = data_bytes_str .. string.format("%02X ", byte)
+                end
+
                 local formatted_can_id = string.format("%5s", message.can_id:match("0*(%x+)") .. "h")
                 print(string.format("Time Offset: %s, Msg Type: %s, CAN ID: %s, DLC: %d, Data Bytes: %s  %s",
-                    format_float(message.time_offset), message.msg_type, formatted_can_id, message.dlc, message.data_bytes, can_data_desc))
+                    format_float(message.time_offset), message.msg_type, formatted_can_id, message.dlc, data_bytes_str, can_data_desc))
             end
         else
             print("Invalid message format or nil value detected.")

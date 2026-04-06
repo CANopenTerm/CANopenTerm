@@ -6,6 +6,9 @@ License: Public domain
 
 --]]
 
+-- Clear any cached version of this module to ensure proper loading
+package.loaded["obd2"] = nil
+
 local function parse(id, length, data)
     if length < 2 then
         return nil
@@ -185,3 +188,9 @@ local function parse(id, length, data)
 
     return string.format("OBD-II %s: %s", msg_type, info.name)
 end
+
+local obd2_module = {
+    parse = parse
+}
+
+return obd2_module
