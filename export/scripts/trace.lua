@@ -6,6 +6,7 @@ License: Public domain
 --]]
 
 local core = require "core"
+local obd2 = require "obd2.init"
 
 local initial_timestamp_us
 local trace_filename
@@ -79,6 +80,19 @@ local function write_to_trc(timestamp_ms, timestamp_fraction, id, length, data, 
     end
 end
 
+local is_obd2_data = core.select_variable("Is the data provided OBD-II? [y/N]")
+if is_obd2_data == nil then
+  print("Exiting.")
+  return
+end
+
+is_obd2_data = is_obd2_data:lower()
+if is_obd2_data ~= "yes" and is_obd2_data ~= "y" then
+  is_obd2_data = false
+else
+  is_obd2_data = true
+end
+
 can_flush()
 print("\nTime         CAN-ID  Length  Data                     Description")
 
@@ -99,7 +113,15 @@ while not key_is_hit() do
 
         local timestamp_ms       = math.floor(elapsed_us / 1000)
         local timestamp_fraction = math.floor(((elapsed_us / 1000) % 1) * 1000)
-        local can_data_desc      = dict_lookup_raw(id, length, data)
+        local can_data_desc      = nil
+
+        if is_obd2_data and obd2 then
+            can_data_desc = obd2.parse(id, length, data)
+        elseif is_obd2_data and not obd2 then
+            can_data_desc = "OBD-II module not available"
+        else
+            can_data_desc = dict_lookup_raw(id, length, data)
+        end
 
         if can_data_desc == nil then
             can_data_desc = " "
