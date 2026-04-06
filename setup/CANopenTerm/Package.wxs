@@ -11,6 +11,7 @@
 			<ComponentGroupRef Id="EdsComponents" />
 			<ComponentGroupRef Id="ScriptsComponents" />
 			<ComponentGroupRef Id="CoreComponents" />
+			<ComponentGroupRef Id="Obd2Components" />
 		</Feature>
 
 		<ui:WixUI
