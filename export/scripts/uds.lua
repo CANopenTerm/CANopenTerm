@@ -5,9 +5,6 @@ License: Public domain
 Comment: Read UDS data according to ISO 14229-1.
          This script currently only works with 11-bit CAN IDs and does not support multi-frame messages.
 
-ToDo:    os.clock() appears to be highly system dependent.  Use something else for timeouts that is
-         portable across different platforms.
-
 --]]
 
 local core = require "core"
@@ -334,7 +331,7 @@ local ok, session_err = session_control(0x01)
 if ok then
     print("OK")
 else
-    print(string.format("FAILED (%s) ── continuing", session_err or "?"))
+    print(string.format("FAILED (%s) - continuing", session_err or "?"))
 end
 
 -- ============================================================
@@ -344,7 +341,7 @@ end
 print("")
 print("── ECU Identification (0x22) " .. string.rep("─", 47))
 print(string.format("  %-6s  %-44s  %s", "DID", "Identifier", "Value"))
-print("  " .. string.rep("─", 74))
+print(string.rep("─", 76))
 
 local found = 0
 for did = 0xF180, 0xF19F do
