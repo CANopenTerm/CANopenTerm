@@ -334,7 +334,7 @@ local ok, session_err = session_control(0x01)
 if ok then
     print("OK")
 else
-    print(string.format("FAILED (%s) -- continuing", session_err or "?"))
+    print(string.format("FAILED (%s) ── continuing", session_err or "?"))
 end
 
 -- ============================================================
@@ -342,9 +342,9 @@ end
 -- ============================================================
 
 print("")
-print("-- ECU Identification (0x22) " .. string.rep("-", 47))
+print("── ECU Identification (0x22) " .. string.rep("─", 47))
 print(string.format("  %-6s  %-44s  %s", "DID", "Identifier", "Value"))
-print("  " .. string.rep("-", 74))
+print("  " .. string.rep("─", 74))
 
 local found = 0
 for did = 0xF180, 0xF19F do
@@ -380,7 +380,7 @@ end
 -- ============================================================
 
 print("")
-print("-- Diagnostic Trouble Codes (0x19) " .. string.rep("-", 41))
+print("── Diagnostic Trouble Codes (0x19) " .. string.rep("─", 41))
 
 -- Sub-function 0x01: reportNumberOfDTCByStatusMask
 io.write("  DTC count  (sub: 0x01, mask: 0xFF) ... ")
@@ -414,7 +414,7 @@ if total_dtcs > 0 then
         else
             print(string.format("%d DTC(s) in frame:", n_in_frame))
             print(string.format("  %-14s  %-6s  %s", "Code", "Status", "Status Flags"))
-            print("  " .. string.rep("-", 74))
+            print("  " .. string.rep("─", 74))
 
             local offset = 4    -- byte offset of first DTC record (0-based)
             for _ = 1, n_in_frame do
@@ -452,5 +452,5 @@ end
 
 tester_present()
 print("")
-print(string.rep("-", 76))
+print(string.rep("─", 76))
 print("Readout complete.")
