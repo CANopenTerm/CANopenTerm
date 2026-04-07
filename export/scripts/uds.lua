@@ -5,6 +5,9 @@ License: Public domain
 Comment: Read UDS data according to ISO 14229-1.
          This script currently only works with 11-bit CAN IDs and does not support multi-frame messages.
 
+ToDo:    os.clock() appears to be highly system dependent.  Use something else for timeouts that is
+         portable across different platforms.
+
 --]]
 
 local core = require "core"
