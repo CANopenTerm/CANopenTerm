@@ -131,6 +131,9 @@
 			<Component>
 				<File Source="../../export/scripts/trace.lua" />
 			</Component>
+			<Component>
+				<File Source="../../export/scripts/uds.lua" />
+			</Component>
 		</ComponentGroup>
 		<ComponentGroup Id="CoreComponents" Directory="COREFOLDER">
 			<Component>
