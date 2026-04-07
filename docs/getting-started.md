@@ -51,7 +51,7 @@ Usage: CANopenTerm [OPTION]
 Setting the baud rate on Linux has no effect, as the CAN bus is
 configured via the `ip` command.
 
-## Compiling
+## Compilation & Installation
 
 First clone the repository:
 ```bash
