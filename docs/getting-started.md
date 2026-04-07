@@ -11,6 +11,12 @@ available.
 
 ## Download
 
+<!---
+CANopenTerm is available for free on the Microsoft Store:
+
+[![Download from the Microsoft Store](https://get.microsoft.com/images/en-us%20light.svg)](https://get.microsoft.com/installer/download/9N1DQ5X8CL6Z?referrer=appbadge)
+--->
+
 A pre-compiled Windows installation package can be found on the
 [Releases page on GitHub](https://github.com/CANopenTerm/CANopenTerm/releases/latest).
 
