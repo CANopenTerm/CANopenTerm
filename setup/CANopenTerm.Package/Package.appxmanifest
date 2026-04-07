@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+         IgnorableNamespaces="uap desktop">
+	<Identity Name="MichaelFitzmayer.CANopenTerm"
+			  Publisher="CN=F0054091-5B24-43BB-B5E2-53AF05C150A4"
+			  Version="2.0.2.0" />
+	<Properties>
+		<DisplayName>CANopenTerm</DisplayName>
+		<PublisherDisplayName>Michael Fitzmayer</PublisherDisplayName>
+		<Logo>Images\StoreLogo.png</Logo>
+	</Properties>
+	<Dependencies>
+		<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22621.0" />
+	</Dependencies>
+	<Resources>
+		<Resource Language="en-us" />
+	</Resources>
+	<Applications>
+		<Application Id="CANopenTerm" Executable="CANopenTerm.exe">
+			<uap:VisualElements DisplayName="CANopenTerm"
+								Description="CANopen Terminal"
+								BackgroundColor="transparent"
+								Square150x150Logo="Images\Square150x150Logo.png"
+								Square44x44Logo="Images\Square44x44Logo.png">
+				<uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
+			</uap:VisualElements>
+		</Application>
+	</Applications>
+</Package>
