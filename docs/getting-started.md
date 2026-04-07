@@ -66,6 +66,24 @@ Windows](https://docs.microsoft.com/en-us/cpp/build/cmake-projects-in-visual-stu
 installed.  Simply open the cloned repository via `File -> Open ->
 Folder`.  All required dependencies are fetched at compile time.
 
+### Debian
+
+![CANopenTerm](media/diversity-2019.svg ':no-zoom')
+
+CANopenTerm and CANvenient will soon be included in Debian. If you’re
+using the `unstable` branch, you'll be able to install them easily with:
+
+```bash
+sudo apt install canopenterm
+```
+
+The Debian packages are maintained by
+[Christopher Obbard](mailto:obbardc@debian.org).
+
+The Debian diversity logo was created by
+[Valessio Brito](https://gitlab.com/valessiobrito/artwork) and it's
+licensed under GPLv3.
+
 ### Yocto
 
 ![CANopenTerm](media/oe-logo-2009.svg ':no-zoom')
