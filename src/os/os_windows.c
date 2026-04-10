@@ -28,9 +28,6 @@ os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param)
 
 status_t os_console_init(bool is_plain_mode)
 {
-    SetConsoleOutputCP(65001);
-    SetConsoleTitle("CANopenTerm");
-
     CONSOLE_SCREEN_BUFFER_INFO info;
 
     if (NULL != console)
@@ -52,6 +49,9 @@ status_t os_console_init(bool is_plain_mode)
 
     default_attr = info.wAttributes;
     console_is_plain_mode = is_plain_mode;
+
+    SetConsoleOutputCP(65001);
+    SetConsoleTitle("CANopenTerm");
 
     return ALL_OK;
 }
@@ -93,21 +93,23 @@ const char* os_find_data_path(void)
 {
     size_t len;
     static char data_path[MAX_PATH] = {0};
-    char* base_path = (char*)SDL_GetBasePath();
+    const char* base_path = SDL_GetBasePath();
 
     if (base_path == NULL)
     {
         return ".";
     }
 
-    len = os_strlen(base_path);
-    if (len > 0 && base_path[len - 1] == '\\')
-    {
-        base_path[len - 1] = '\0';
-    }
-
     os_strlcpy(data_path, base_path, MAX_PATH - 1);
     data_path[MAX_PATH - 1] = '\0';
+
+    len = os_strlen(data_path);
+    if (len > 0 && data_path[len - 1] == '\\')
+    {
+        data_path[len - 1] = '\0';
+    }
+
+    SDL_free((void*)base_path);
 
     return data_path;
 }
@@ -127,7 +129,16 @@ const char* os_get_user_directory(void)
     static char user_directory[MAX_PATH] = {0};
     if (0 == user_directory[0])
     {
-        SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, user_directory);
+        const char* user_folder = SDL_GetUserFolder(SDL_FOLDER_HOME);
+        if (user_folder != NULL)
+        {
+            os_strlcpy(user_directory, user_folder, MAX_PATH - 1);
+            user_directory[MAX_PATH - 1] = '\0';
+        }
+        else
+        {
+            os_strlcpy(user_directory, ".", MAX_PATH - 1);
+        }
     }
 
     return user_directory;
@@ -337,7 +348,17 @@ void os_quit(void)
 void os_init_history(void)
 {
     char path[256] = {0};
-    os_snprintf(path, 256, "%s%s", SDL_GetUserFolder(SDL_FOLDER_HOME), "CANopenTerm.history");
+    const char* user_folder = SDL_GetUserFolder(SDL_FOLDER_HOME);
+
+    if (user_folder != NULL)
+    {
+        os_snprintf(path, 256, "%s/%s", user_folder, "CANopenTerm.history");
+    }
+    else
+    {
+        os_strlcpy(path, "CANopenTerm.history", 256);
+    }
+
     ic_set_prompt_marker("\r[white]:[/] ", NULL);
     ic_set_history(path, -1);
     ic_enable_auto_tab(true);

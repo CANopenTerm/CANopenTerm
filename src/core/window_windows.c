@@ -26,19 +26,19 @@ void window_clear(void)
 os_renderer* window_get_renderer(void)
 {
     extern core_t* core;
-    return core->renderer;
+    return core ? core->renderer : NULL;
 }
 
 bool window_is_shown(void)
 {
     extern core_t* core;
-    return core->is_window_shown;
+    return core ? core->is_window_shown : false;
 }
 
 void window_hide(void)
 {
     extern core_t* core;
-    if (core->window)
+    if (core && core->window)
     {
         SDL_HideWindow(core->window);
         core->is_window_shown = false;
@@ -48,7 +48,7 @@ void window_hide(void)
 void window_fullscreen(bool state)
 {
     extern core_t* core;
-    if (core->window)
+    if (core && core->window)
     {
         core->is_window_fullscreen = state;
         SDL_SetWindowFullscreen(core->window, state);
@@ -59,7 +59,7 @@ void window_get_resolution(uint32* width, uint32* height)
 {
     extern core_t* core;
 
-    if (core->window)
+    if (core && core->window)
     {
         if (false == SDL_GetWindowSize(core->window, (int*)width, (int*)height))
         {
@@ -102,7 +102,7 @@ bool window_init(core_t* core)
 void window_show(void)
 {
     extern core_t* core;
-    if (core->window)
+    if (core && core->window)
     {
         SDL_ShowWindow(core->window);
         core->is_window_shown = true;
@@ -112,7 +112,7 @@ void window_show(void)
 status_t window_update(bool render)
 {
     extern core_t* core;
-    if (core->renderer)
+    if (core && core->renderer)
     {
         if (true == render)
         {

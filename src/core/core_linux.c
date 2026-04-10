@@ -22,6 +22,7 @@ void handle_sigint(int sig)
     if (core != NULL)
     {
         core_deinit(core);
+        core = NULL;
     }
     exit(EXIT_SUCCESS);
 }
