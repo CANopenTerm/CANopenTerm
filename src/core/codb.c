@@ -9,8 +9,8 @@
 
 #include <SDL3/SDL.h>
 
-#include "codb.h"
 #include "cJSON.h"
+#include "codb.h"
 #include "common.h"
 #include "core.h"
 #include "os.h"
@@ -79,7 +79,7 @@ void codb_init(void)
 
     /* Initialize cJSON to use SDL memory allocators to prevent heap corruption */
     hooks.malloc_fn = SDL_malloc;
-    hooks.free_fn = free;
+    hooks.free_fn = SDL_free;
     cJSON_InitHooks(&hooks);
 
     is_init_cancelled = false;
