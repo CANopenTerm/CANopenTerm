@@ -75,6 +75,11 @@ void codb_init(void)
     if (NULL == init_th)
     {
         init_th = os_create_thread(codb_init_ex, "CODB init thread", NULL);
+        if (NULL == init_th)
+        {
+            os_log(LOG_WARNING, "Failed to create CODB initialization thread, loading synchronously.");
+            codb_init_ex(NULL);
+        }
     }
 }
 
@@ -381,7 +386,14 @@ void list_codb(void)
     table_t table = {DARK_CYAN, DEFAULT_COLOR, 3, 57, 1};
     status_t status;
 
+    if (NULL == data_path)
+    {
+        os_log(LOG_ERROR, "Data path not found.");
+        return;
+    }
+
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
+    os_fix_path(file_path);
 
     d = os_opendir(file_path);
     if (NULL == d)
@@ -466,7 +478,14 @@ status_t load_codb(uint32 file_no)
     char file_path[512] = {0};
     DIR_t* d;
 
+    if (NULL == data_path)
+    {
+        os_log(LOG_ERROR, "Data path not found.");
+        return OS_FILE_NOT_FOUND;
+    }
+
     os_snprintf(file_path, sizeof(file_path), "%s/codb", data_path);
+    os_fix_path(file_path);
     d = os_opendir(file_path);
 
     if (d)
@@ -486,21 +505,14 @@ status_t load_codb(uint32 file_no)
 
                 if (file_no == current_file_no)
                 {
-                    const char* data_path = os_find_data_path();
-
                     if (0 == os_strcmp(dir->d_name, "ds301.json"))
                     {
                         unload_codb();
                         break;
                     }
 
-                    if (NULL == data_path)
-                    {
-                        os_log(LOG_ERROR, "Data path not found.");
-                        return OS_FILE_NOT_FOUND;
-                    }
-
                     os_snprintf(file_path, sizeof(file_path), "%s/codb/%s", data_path, dir->d_name);
+                    os_fix_path(file_path);
 
                     if (load_codb_ex(file_path) != ALL_OK)
                     {

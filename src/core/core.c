@@ -44,14 +44,17 @@ status_t core_init(core_t** core, bool is_plain_mode)
         return OS_MEMORY_ALLOCATION_ERROR;
     }
 
+    (*core)->baud_rate = 1;
+    (*core)->is_plain_mode = is_plain_mode;
+
     status = os_console_init(is_plain_mode);
     if (status != ALL_OK)
     {
+        os_free(*core);
+        *core = NULL;
         return status;
     }
 
-    (*core)->baud_rate = 1;
-    (*core)->is_plain_mode = is_plain_mode;
     if (false == is_plain_mode)
     {
         os_print(LIGHT_YELLOW, "<");
@@ -63,6 +66,8 @@ status_t core_init(core_t** core, bool is_plain_mode)
     status = os_init();
     if (status != ALL_OK)
     {
+        os_free(*core);
+        *core = NULL;
         return status;
     }
 
@@ -88,6 +93,8 @@ status_t core_init(core_t** core, bool is_plain_mode)
     }
     else
     {
+        os_free(*core);
+        *core = NULL;
         return SCRIPT_INIT_ERROR;
     }
 
@@ -96,7 +103,7 @@ status_t core_init(core_t** core, bool is_plain_mode)
 
     /* Initialise CAN. */
     (*core)->is_running = true;
-    can_init((*core)); /* Must becalled AFTER is_running has been set to true! */
+    can_init((*core)); /* Must be called AFTER is_running has been set to true! */
 
     os_init_history();
 

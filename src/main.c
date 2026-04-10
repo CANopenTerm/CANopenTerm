@@ -112,7 +112,13 @@ int main(int argc, char* argv[])
 
     if (core_init(&core, is_plain_mode) != ALL_OK)
     {
-        status = EXIT_FAILURE;
+        os_log(LOG_ERROR, "Failed to initialize core.");
+        return EXIT_FAILURE;
+    }
+
+    if (core == NULL)
+    {
+        return EXIT_FAILURE;
     }
 
     os_strlcpy(core->can_interface, can_interface, sizeof(core->can_interface));

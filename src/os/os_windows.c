@@ -148,8 +148,19 @@ status_t os_init(void)
 {
     status_t status = ALL_OK;
     int i;
-    int num_drivers = SDL_GetNumVideoDrivers();
+    int num_drivers;
     const char* selected_driver = NULL;
+
+    /* Initialize SDL if not already initialized */
+    if (!SDL_WasInit(SDL_INIT_VIDEO))
+    {
+        if (!SDL_Init(0)) /* Initialize SDL without any subsystems */
+        {
+            return OS_INIT_ERROR;
+        }
+    }
+
+    num_drivers = SDL_GetNumVideoDrivers();
 
     for (i = 0; i < num_drivers; i++)
     {
