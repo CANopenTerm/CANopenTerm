@@ -7,6 +7,8 @@
  *
  **/
 
+#include <SDL3/SDL.h>
+
 #include "codb.h"
 #include "cJSON.h"
 #include "common.h"
@@ -20,6 +22,7 @@ static uint32 active_no = 0;
 static cJSON* ds301 = NULL;
 static cJSON* codb = NULL;
 static os_thread* init_th = NULL;
+static volatile bool is_init_cancelled = false;
 
 const char* data_type_lookup[] = {
     "-",
@@ -72,6 +75,15 @@ int codb_init_ex(void* unused);
 
 void codb_init(void)
 {
+    cJSON_Hooks hooks;
+
+    /* Initialize cJSON to use SDL memory allocators to prevent heap corruption */
+    hooks.malloc_fn = SDL_malloc;
+    hooks.free_fn = SDL_free;
+    cJSON_InitHooks(&hooks);
+
+    is_init_cancelled = false;
+
     if (NULL == init_th)
     {
         init_th = os_create_thread(codb_init_ex, "CODB init thread", NULL);
@@ -93,6 +105,12 @@ int codb_init_ex(void* unused)
     size_t file_size;
 
     (void)unused;
+
+    /* Check if initialization was cancelled before starting */
+    if (is_init_cancelled)
+    {
+        return 1;
+    }
 
     if (NULL == data_path)
     {
@@ -132,6 +150,13 @@ int codb_init_ex(void* unused)
     file_content[file_size] = '\0';
     os_fclose(file);
 
+    /* Check cancellation before expensive parsing operation */
+    if (is_init_cancelled)
+    {
+        os_free(file_content);
+        return 1;
+    }
+
     ds301 = cJSON_Parse(file_content);
     os_free(file_content);
 
@@ -146,16 +171,22 @@ int codb_init_ex(void* unused)
 
 void codb_deinit(void)
 {
+    int thread_result;
+
+    /* Signal the init thread to cancel */
+    is_init_cancelled = true;
+
+    /* Wait for the init thread to complete */
+    if (init_th != NULL)
+    {
+        SDL_WaitThread(init_th, &thread_result);
+        init_th = NULL;
+    }
+
     if (ds301 != NULL)
     {
         cJSON_Delete(ds301);
         ds301 = NULL;
-    }
-
-    if (init_th != NULL)
-    {
-        os_detach_thread(init_th);
-        init_th = NULL;
     }
 
     unload_codb();

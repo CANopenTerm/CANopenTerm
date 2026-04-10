@@ -21,13 +21,13 @@
 
 #define os_atof SDL_atof
 #define os_atoi SDL_atoi
-#define os_calloc SDL_calloc
+#define os_calloc calloc
 #define os_clock clock
 #define os_closedir closedir
 #define os_completion_add ic_add_completion_ex
 #define os_exit exit
 #define os_fread fread
-#define os_free SDL_free
+#define os_free free
 #define os_freopen freopen
 #define os_fseek fseek
 #define os_ftell ftell
@@ -46,7 +46,7 @@
 #define os_opendir opendir
 #define os_printf printf
 #define os_readdir readdir
-#define os_realloc SDL_realloc
+#define os_realloc realloc
 #define os_rewind rewind
 #define os_sscanf SDL_sscanf
 #define os_snprintf SDL_snprintf
