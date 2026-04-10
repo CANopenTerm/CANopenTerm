@@ -79,7 +79,7 @@ void codb_init(void)
 
     /* Initialize cJSON to use SDL memory allocators to prevent heap corruption */
     hooks.malloc_fn = SDL_malloc;
-    hooks.free_fn = SDL_free;
+    hooks.free_fn = free;
     cJSON_InitHooks(&hooks);
 
     is_init_cancelled = false;

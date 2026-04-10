@@ -119,7 +119,7 @@ const char* os_find_data_path(void)
         data_path[len - 1] = '\0';
     }
 
-    SDL_free((void*)base_path);
+    /* SDL_GetBasePath() returns internally cached memory that should not be freed */
 
     return data_path;
 }
