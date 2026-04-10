@@ -39,15 +39,25 @@ status_t os_console_init(bool is_plain_mode)
 
     if ((INVALID_HANDLE_VALUE == console) || (NULL == console))
     {
-        return OS_CONSOLE_INIT_ERROR;
+        /* In MSIX environments, console may not be available.
+         * This is not a fatal error - the application can still run. */
+        console = NULL;
+        console_is_plain_mode = is_plain_mode;
+        default_attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        return ALL_OK;
     }
 
     if (0 == GetConsoleScreenBufferInfo(console, &info))
     {
-        return OS_CONSOLE_INIT_ERROR;
+        /* Console handle is valid but cannot get info.
+         * Use default attributes and continue. */
+        default_attr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+    }
+    else
+    {
+        default_attr = info.wAttributes;
     }
 
-    default_attr = info.wAttributes;
     console_is_plain_mode = is_plain_mode;
 
     SetConsoleOutputCP(65001);
@@ -152,11 +162,14 @@ status_t os_init(void)
     const char* selected_driver = NULL;
 
     /* Initialize SDL if not already initialized */
-    if (!SDL_WasInit(SDL_INIT_VIDEO))
+    if (! SDL_WasInit(SDL_INIT_VIDEO))
     {
-        if (!SDL_Init(0)) /* Initialize SDL without any subsystems */
+        if (! SDL_Init(0)) /* Initialize SDL without any subsystems */
         {
-            return OS_INIT_ERROR;
+            /* In MSIX environments, SDL initialization might fail.
+             * Log the error but continue - many features still work without SDL. */
+            os_log(LOG_WARNING, "Unable to initialise SDL: %s", os_get_error());
+            return ALL_OK;
         }
     }
 
@@ -177,8 +190,9 @@ status_t os_init(void)
         SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "offscreen");
         if (! SDL_InitSubSystem(SDL_INIT_VIDEO))
         {
-            os_log(LOG_ERROR, "Unable to initialise video sub-system: %s", os_get_error());
-            status = OS_INIT_ERROR;
+            /* Video subsystem is optional - window features won't work but
+             * the application can still run in console/plain mode. */
+            os_log(LOG_WARNING, "Unable to initialise video sub-system: %s", os_get_error());
         }
     }
 
