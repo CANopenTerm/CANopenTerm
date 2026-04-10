@@ -1,14 +1,17 @@
-﻿<Project Sdk="WixToolset.Sdk/6.0.1">
+﻿<Project Sdk="WixToolset.Sdk/7.0.0">
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 		<DefineConstants>ProductVersion=2.0.2;UpgradeCode=4fe8d03a-6f50-4887-a724-66992deef6f8</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup>
 		<OutputName>$(MSBuildProjectName)</OutputName>
 	</PropertyGroup>
+	<PropertyGroup>
+		<AcceptEula>wix7</AcceptEula>
+	</PropertyGroup>
 	<ItemGroup>
 		<None Include=".gitignore" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="WixToolset.UI.wixext" Version="6.0.1" />
+		<PackageReference Include="WixToolset.UI.wixext" Version="7.0.0" />
 	</ItemGroup>
 </Project>
