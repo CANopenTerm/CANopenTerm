@@ -132,6 +132,9 @@
 				<File Source="../../export/scripts/replay.lua" />
 			</Component>
 			<Component>
+				<File Source="../../export/scripts/stm32.lua" />
+			</Component>
+			<Component>
 				<File Source="../../export/scripts/trace.lua" />
 			</Component>
 			<Component>
