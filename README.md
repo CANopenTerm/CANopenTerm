@@ -79,20 +79,35 @@ positive feedback from users in the industry.
 
 Here are some highlights:
 
+- Elektor, May/June 2026:
+[CANopenTerm: An Open-Source Tool That Brings CAN to Makers and Engineers Alike](https://www.elektormagazine.com/articles/canopenterm)
+
 - CAN in Automation Newsletter, March 2026:
 [Open-source tool for CANopen development and testing](https://www.can-cia.org/fileadmin/cia/documents/publications/cnlm/march_2026/cnlm_26-1_p44_tool_for_canopen_development_and_testing_michael_fitzmayer_bucher.pdf)
 
 - SPS-Magazin, Nr. 13, Dezember 2025:
 [CANopenTerm als Open-Source-Universalwerkzeug für CANopen](https://sps-magazin.de/kommunikation/canopenterm-als-open-source-universalwerkzeug-fuer-canopen/)
 
-## Why Your Support Matters
+## Sustaining CANopenTerm for Professional Use
 
-**CANopenTerm** is developed to provide a powerful tool for
-professionals at no cost.  However, maintaining and improving
-such a project requires resources.  Your donations can make a
-significant difference, enabling continued development and support.
+**CANopenTerm** is an open-source tool used by engineers and
+companies working with **CAN** and **CANopen** systems in
+development, testing, and production environments.
 
-Your contribution, no matter how small, will be greatly appreciated
-and will help keep CANopenTerm thriving.
+While the software is freely available under the MIT license,
+its continued maintenance, compatibility updates, and feature
+development require sustained effort-particularly as CAN
+interfaces, operating systems, and engineering workflows
+evolve.
 
-[Donate Now](https://github.com/sponsors/mupfdev)
+Companies using CANopenTerm in production systems, automated
+test setups, or engineering workflows are especially encouraged
+to contribute to its ongoing maintenance through voluntary
+sponsorship. This helps ensure long-term stability,
+compatibility, and reliability for professional use cases.
+
+Unlike one-off donations, sponsorship helps ensure the
+continued availability and development of a tool that may
+already be integrated into your workflows.
+
+[Sponsor CANopenTerm](https://github.com/sponsors/mupfdev)
