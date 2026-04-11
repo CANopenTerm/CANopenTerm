@@ -7,16 +7,6 @@
 <!---
 [![Download from the Microsoft Store](https://get.microsoft.com/images/en-us%20light.svg)](https://get.microsoft.com/installer/download/9N1DQ5X8CL6Z?referrer=appbadge)
 --->
-
-## Table of Contents
-
-- [Overview](#overview)
-
-- [Key Features](#key-features)
-
-- [Additional Features](#additional-features)
-
-- [Why Your Support Matters](#why-your-support-matters)
    
 ## Overview
 
