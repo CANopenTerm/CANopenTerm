@@ -84,7 +84,7 @@ Here are some highlights:
 - SPS-Magazin, Nr. 13, Dezember 2025:
 [CANopenTerm als Open-Source-Universalwerkzeug für CANopen](https://sps-magazin.de/kommunikation/canopenterm-als-open-source-universalwerkzeug-fuer-canopen/)
 
-## Sustaining CANopenTerm for Professional Use
+## Sponsor CANopenTerm
 
 **CANopenTerm** is an open-source tool used by engineers and
 companies working with **CAN** and **CANopen** systems in
