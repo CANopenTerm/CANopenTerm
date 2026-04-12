@@ -106,4 +106,4 @@ Unlike one-off donations, sponsorship helps ensure the
 continued availability and development of a tool that may
 already be integrated into your workflows.
 
-[![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/sponsor-canopenterm.svg ':no-zoom')](https://github.com/sponsors/mupfdev)
+[![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/public-sponsor-default.png ':no-zoom')](https://github.com/sponsors/mupfdev)
