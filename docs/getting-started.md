@@ -41,9 +41,8 @@ Download either:
 
 ![CANopenTerm](media/diversity-2019.svg ':no-zoom')
 
-CANopenTerm and CANvenient will soon be included in Debian. If you're
-using the `unstable` branch, you'll be able to install them easily
-with:
+CANopenTerm is available in Debian. If you're using the `testing`
+branch, you can install it easily with:
 
 ```bash
 sudo apt install canopenterm
@@ -52,7 +51,7 @@ sudo apt install canopenterm
 For other Debian-based distributions, you may need to build from
 source (see below).
 
-The Debian packages are maintained by
+The Debian package is maintained by
 [Christopher Obbard](mailto:obbardc@debian.org).
 
 The Debian diversity logo was created by
