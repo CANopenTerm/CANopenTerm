@@ -2,12 +2,6 @@
 
 [![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg)](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg?raw=true "CANopenTerm")
 
-## Download
-
-<a href="https://get.microsoft.com/installer/download/9N1DQ5X8CL6Z?referrer=appbadge" target="_self" >
-    <img src="https://get.microsoft.com/images/en-us%20light.svg" width="300"/>
-</a>
-
 ## Overview
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d0b16a90be6d4a59beafcabd727b2a2f)](https://app.codacy.com/gh/CANopenTerm/CANopenTerm/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
