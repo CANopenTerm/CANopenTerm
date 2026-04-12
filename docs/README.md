@@ -2,6 +2,8 @@
 
 ![CANopenTerm](https://raw.githubusercontent.com/CANopenTerm/CANopenTerm/main/media/logo.svg ':no-zoom')
 
+[![Download from the Microsoft Store](https://get.microsoft.com/images/en-us%20light.svg)](https://get.microsoft.com/installer/download/9N1DQ5X8CL6Z?referrer=appbadge)
+
 ## Overview
 
 CANopenTerm is an open-source tool for developing, testing,
