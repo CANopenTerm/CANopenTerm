@@ -18,7 +18,9 @@ available.
 The easiest way to install CANopenTerm on Windows is through
 the Microsoft Store:
 
-[![Download from the Microsoft Store](https://get.microsoft.com/images/en-us%20light.svg)](https://get.microsoft.com/installer/download/9N1DQ5X8CL6Z?referrer=appbadge)
+<a href="https://get.microsoft.com/installer/download/9N1DQ5X8CL6Z?referrer=appbadge" target="_self" >
+    <img src="https://get.microsoft.com/images/en-us%20light.svg" width="300"/>
+</a>
 
 The Microsoft Store version automatically receives updates and
 includes all necessary dependencies.
