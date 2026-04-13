@@ -12,8 +12,8 @@
 			</Directory>
 		</StandardDirectory>
 		<StandardDirectory Id="ProgramMenuFolder">
-			<Directory Id="STARTMENUFOLDER" Name="CANopenTerm">
-				<Directory Id="UTILITIESFOLDER" Name="Utilities" />
+			<Directory Id="ProgramMenuCANopenTermFolder" Name="CANopenTerm">
+				<Directory Id="ProgramMenuUtilitiesFolder" Name="Utilities" />
 			</Directory>
 		</StandardDirectory>
 	</Fragment>
