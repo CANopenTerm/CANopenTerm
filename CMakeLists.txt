@@ -214,6 +214,11 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
       "${MSVC_REDIST_DIR}/vcruntime140.dll"
       $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      "${MSVC_REDIST_DIR}/vcruntime140_threads.dll"
+      $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
   else()
     message(WARNING "vcruntime140.dll not found. Please ensure the Visual Studio redistributable is installed.")
   endif()

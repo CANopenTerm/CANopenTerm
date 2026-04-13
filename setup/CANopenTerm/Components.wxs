@@ -57,6 +57,9 @@
 			<Component>
 				<File Source="../../export/vcruntime140.dll" />
 			</Component>
+			<Component>
+				<File Source="../../export/vcruntime140_threads.dll" />
+			</Component>
 		</ComponentGroup>
 		<ComponentGroup Id="CodbComponents" Directory="CODBFOLDER">
 			<Component>
