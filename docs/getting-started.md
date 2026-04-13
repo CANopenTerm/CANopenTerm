@@ -33,7 +33,7 @@ are available on the
 
 Download either:
 - **Portable ZIP package** - Extract and run without installation
-- **MSI installer** - Traditional Windows installer with desktop shortcut
+- **MSI installer** - Traditional Windows installer with start menu entries
 
 ### Linux
 
