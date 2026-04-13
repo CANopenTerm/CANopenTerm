@@ -16,3 +16,8 @@ const char* script_search_path[] = {
     ".",
     "./scripts",
     "/usr/share/CANopenTerm/scripts"};
+
+void init_script_search_paths(void)
+{
+    return;
+}

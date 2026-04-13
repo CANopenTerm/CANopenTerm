@@ -32,6 +32,8 @@ void scripts_init(core_t* core)
         return;
     }
 
+    init_script_search_paths();
+
     py_initialize();
 
     core->L = luaL_newstate();
@@ -187,6 +189,10 @@ status_t list_scripts(void)
     status_t status;
     table_t table = {DARK_CYAN, DARK_WHITE, 3, 10, 40};
 
+#ifdef _WIN32
+    init_script_search_paths();
+#endif
+
     status = table_init(&table, 1024);
     if (ALL_OK == status)
     {
@@ -322,6 +328,10 @@ void run_script(char* name, core_t* core)
     const char* base = os_strrchr(name, '/');
     char basename[PATH_MAX] = {0};
     FILE* file;
+
+#ifdef _WIN32
+    init_script_search_paths();
+#endif
 
     if (core->is_script_running)
     {
@@ -534,6 +544,10 @@ void scripts_add_completions(completions_t* cenv)
     char* listed_scripts[256];
     int listed_count = 0;
     int i, j;
+
+#ifdef _WIN32
+    init_script_search_paths();
+#endif
 
     for (i = 0; i < max_script_search_paths; i++)
     {

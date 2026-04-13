@@ -12,6 +12,7 @@
 
 #include "core.h"
 
+void init_script_search_paths(void);
 bool has_valid_extension(const char* filename);
 void scripts_init(core_t* core);
 void scripts_deinit(core_t* core);

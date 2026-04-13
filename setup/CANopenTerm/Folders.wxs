@@ -1,13 +1,15 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
 		<StandardDirectory Id="ProgramFiles6432Folder">
-			<Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)" />
-			<Directory Id="CODBFOLDER"    Name="!(bind.Property.ProductName)\codb" />
-			<Directory Id="DBCFOLDER"     Name="!(bind.Property.ProductName)\dbc" />
-			<Directory Id="EDSFOLDER"     Name="!(bind.Property.ProductName)\eds" />
-			<Directory Id="SCRIPTSFOLDER" Name="!(bind.Property.ProductName)\scripts" />
-			<Directory Id="COREFOLDER"    Name="!(bind.Property.ProductName)\scripts\core" />
-			<Directory Id="OBD2FOLDER"    Name="!(bind.Property.ProductName)\scripts\obd2" />
+			<Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)">
+				<Directory Id="CODBFOLDER" Name="codb" />
+				<Directory Id="DBCFOLDER" Name="dbc" />
+				<Directory Id="EDSFOLDER" Name="eds" />
+				<Directory Id="SCRIPTSFOLDER" Name="scripts">
+					<Directory Id="COREFOLDER" Name="core" />
+					<Directory Id="OBD2FOLDER" Name="obd2" />
+				</Directory>
+			</Directory>
 		</StandardDirectory>
 	</Fragment>
 </Wix>
