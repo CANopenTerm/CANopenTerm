@@ -12,9 +12,7 @@
 			</Directory>
 		</StandardDirectory>
 		<StandardDirectory Id="ProgramMenuFolder">
-			<Directory Id="ProgramMenuCANopenTermFolder" Name="CANopenTerm">
-				<Directory Id="ProgramMenuUtilitiesFolder" Name="Utilities" />
-			</Directory>
+			<Directory Id="ProgramMenuCANopenTermFolder" Name="CANopenTerm" />
 		</StandardDirectory>
 	</Fragment>
 </Wix>
