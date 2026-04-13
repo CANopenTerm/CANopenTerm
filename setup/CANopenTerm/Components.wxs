@@ -10,18 +10,50 @@
 
 			<Component Id="CANopenTermDesktopShortcut" Guid="e2a1c2b7-2e4a-4e7a-9c2b-1a2b3c4d5e6f">
 				<Shortcut Id="CANopenTermDesktopShortcut"
-                          Name="CANopenTerm"
-                          Description="CANopenTerm Application"
-                          Directory="DesktopFolder"
-                          Target="[INSTALLFOLDER]CANopenTerm.exe"
-                          WorkingDirectory="INSTALLFOLDER" />
+						  Name="CANopenTerm"
+						  Description="CANopenTerm Application"
+						  Directory="DesktopFolder"
+						  Target="[INSTALLFOLDER]CANopenTerm.exe"
+						  WorkingDirectory="INSTALLFOLDER" />
 				<RemoveFolder Id="RemoveDesktopShortcut" Directory="DesktopFolder" On="uninstall"/>
 				<RegistryValue Root="HKCU"
-                               Key="Software\CANopenTerm"
-                               Name="desktopShortcut"
-                               Type="integer"
-                               Value="1"
-                               KeyPath="yes"/>
+							   Key="Software\CANopenTerm"
+							   Name="desktopShortcut"
+							   Type="integer"
+							   Value="1"
+							   KeyPath="yes"/>
+			</Component>
+
+			<Component Id="CANopenTermStartMenuShortcut" Guid="f3b2d3c8-3f5b-5f8b-ad3c-2b3c4d5e6f7a">
+				<Shortcut Id="CANopenTermStartMenuShortcut"
+						  Name="CANopenTerm"
+						  Description="CANopenTerm Application"
+						  Directory="STARTMENUFOLDER"
+						  Target="[INSTALLFOLDER]CANopenTerm.exe"
+						  WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="RemoveStartMenuFolder" Directory="STARTMENUFOLDER" On="uninstall"/>
+				<RegistryValue Root="HKCU"
+							   Key="Software\CANopenTerm"
+							   Name="startMenuShortcut"
+							   Type="integer"
+							   Value="1"
+							   KeyPath="yes"/>
+			</Component>
+
+			<Component Id="Codb2JsonStartMenuShortcut" Guid="a4c3e4d9-4f6c-6f9c-be4d-3c4d5e6f7a8b">
+				<Shortcut Id="Codb2JsonStartMenuShortcut"
+						  Name="codb2json Utility"
+						  Description="CANopenTerm - CAN Object Dictionary to JSON Converter"
+						  Directory="UTILITIESFOLDER"
+						  Target="[INSTALLFOLDER]codb2json.exe"
+						  WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="RemoveUtilitiesFolder" Directory="UTILITIESFOLDER" On="uninstall"/>
+				<RegistryValue Root="HKCU"
+							   Key="Software\CANopenTerm"
+							   Name="codb2jsonShortcut"
+							   Type="integer"
+							   Value="1"
+							   KeyPath="yes"/>
 			</Component>
 
 			<Component>
