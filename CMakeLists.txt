@@ -190,6 +190,7 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   )
 
   set(MSVC_REDIST_DIRS
+    "C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Redist/MSVC"
     "C:/Program Files/Microsoft Visual Studio/2019/Professional/VC/Redist/MSVC"
     "C:/Program Files/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC"
     "C:/Program Files/Microsoft Visual Studio/2019/Enterprise/VC/Redist/MSVC"
