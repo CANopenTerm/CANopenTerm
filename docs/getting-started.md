@@ -51,7 +51,7 @@ sudo apt install canopenterm
 For other Debian-based distributions, you may need to build from
 source (see below).
 
-The Debian package is maintained by
+The [Debian package](https://tracker.debian.org/pkg/canopenterm) is maintained by
 [Christopher Obbard](mailto:obbardc@debian.org).
 
 The Debian diversity logo was created by
