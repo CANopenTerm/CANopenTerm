@@ -11,7 +11,7 @@
 #include "core.h"
 #include "dict.h"
 #include "os.h"
-#include "pocketpy.h"
+#include <pocketpy.h>
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 

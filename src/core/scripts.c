@@ -14,7 +14,7 @@
 #include "lua.h"
 #include "lualib.h"
 #include "os.h"
-#include "pocketpy.h"
+#include <pocketpy.h>
 #include "table.h"
 
 extern const uint8 max_script_search_paths;

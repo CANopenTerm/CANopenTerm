@@ -10,7 +10,7 @@
 #include "core.h"
 #include "eds.h"
 #include "os.h"
-#include "pocketpy.h"
+#include <pocketpy.h>
 #include "test_report.h"
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);

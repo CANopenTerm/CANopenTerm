@@ -13,7 +13,7 @@
 #include "core.h"
 #include "led.h"
 #include "os.h"
-#include "pocketpy.h"
+#include <pocketpy.h>
 #include "tachometer.h"
 #include "window.h"
 
