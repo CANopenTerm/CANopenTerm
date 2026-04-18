@@ -17,6 +17,7 @@ The following back-ends are currently implemented:
 - PCAN-Basic
 - SocketCAN
 - Softing CAN Layer 2
+- MHS Elektronik Tiny-CAN
 
 ## API Reference
 
