@@ -75,20 +75,8 @@ int can_find_interfaces_mask(u32 vendor_mask)
 
 > **vendor_mask** Bitmask of CAN vendor back-ends to probe. Vendors can be OR-ed
   together (e.g. `CAN_VENDOR_IXXAT | CAN_VENDOR_SOFTING`). Use `CAN_VENDOR_ALL`
-  to probe all supported back-ends.
-
-Available `vendor_mask` values:
-
-| Value                | Description             |
-| :------------------- | :---------------------- |
-| CAN_VENDOR_NONE      | No back-end selected    |
-| CAN_VENDOR_IXXAT     | Ixxat VCI               |
-| CAN_VENDOR_KVASER    | Kvaser CANlib           |
-| CAN_VENDOR_PEAK      | PCAN-Basic              |
-| CAN_VENDOR_SOCKETCAN | SocketCAN               |
-| CAN_VENDOR_SOFTING   | Softing CAN Layer 2     |
-| CAN_VENDOR_MHS       | MHS Elektronik Tiny-CAN |
-| CAN_VENDOR_ALL       | All supported back-ends |
+  to probe all supported back-ends.  See [vendor_mask](#vendor_mask) enumeration
+  for available values.
 
 **Returns**: `0` on success, `-1` on failure.
 
