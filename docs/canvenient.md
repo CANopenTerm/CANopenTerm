@@ -49,7 +49,7 @@ if (0 == can_find_interfaces())
         char name[256] = {0};
         can_get_name(i, name, sizeof(name));
 
-        if (0 == can_open(i))
+		if (0 == can_open(i, CAN_BAUD_1M))
         {
             printf("[%d] %s -> opened\n", i, name);
         }
@@ -58,6 +58,38 @@ if (0 == can_find_interfaces())
 
 can_release_interfaces();
 ```
+<!-- tabs:end -->
+
+### can_find_interfaces_mask()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Retrieves a list of available CAN interfaces on the system, limited to the selected
+CAN vendor back-ends.
+
+```c
+int can_find_interfaces_mask(u32 vendor_mask)
+```
+
+> **vendor_mask** Bitmask of CAN vendor back-ends to probe. Vendors can be OR-ed
+  together (e.g. `CAN_VENDOR_IXXAT | CAN_VENDOR_SOFTING`). Use `CAN_VENDOR_ALL`
+  to probe all supported back-ends.
+
+Available `vendor_mask` values:
+
+| Value                | Description              |
+| :------------------- | :----------------------- |
+| CAN_VENDOR_NONE      | No back-end selected     |
+| CAN_VENDOR_IXXAT     | Ixxat VCI                |
+| CAN_VENDOR_KVASER    | Kvaser CANlib            |
+| CAN_VENDOR_PEAK      | PCAN-Basic               |
+| CAN_VENDOR_SOCKETCAN | SocketCAN                |
+| CAN_VENDOR_SOFTING   | Softing CAN Layer 2      |
+| CAN_VENDOR_MHS       | MHS Elektronik Tiny-CAN  |
+| CAN_VENDOR_ALL       | All supported back-ends  |
+
+**Returns**: `0` on success, `-1` on failure.
+
 <!-- tabs:end -->
 
 ### can_release_interfaces()
@@ -82,10 +114,12 @@ void can_release_interfaces(void)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_open(int index)
+int can_open(int index, enum can_baudrate baud)
 ```
 
 > **index** CAN interface index.
+
+> **baud** Baud rate to set for the CAN interface.
 
 **Returns**: `0` on success, `-1` on failure.
 
@@ -132,7 +166,7 @@ If it returns `-1`, it indicates that the CAN interface is no longer available
 (e.g., it was unplugged).
 
 ```c
-void can_update(int index)
+int can_update(int index)
 ```
 
 > **index** CAN interface index.
@@ -219,7 +253,7 @@ int can_set_baudrate(int index, enum can_baudrate baud)
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```c
-int can_send(int index, struct can_frame* frame)
+int can_send(int index, const struct can_frame* frame)
 ```
 
 > **index** CAN interface index.
@@ -268,6 +302,21 @@ int can_recv(int index, struct can_frame* frame, u64* timestamp)
 | CAN_BAUD_20K  | 20 kBit/s     |
 | CAN_BAUD_10K  | 10 kBit/s     |
 | CAN_BAUD_5K   | 5 kBit/s      | 
+
+### can_vendor
+
+The `can_vendor` values are a bitmask and can be OR-ed together.
+
+| Value              | Description              |
+| :----------------- | :----------------------- |
+| CAN_VENDOR_NONE    | No back-end selected     |
+| CAN_VENDOR_IXXAT   | Ixxat VCI                |
+| CAN_VENDOR_KVASER  | Kvaser CANlib            |
+| CAN_VENDOR_PEAK    | PCAN-Basic               |
+| CAN_VENDOR_SOCKETCAN | SocketCAN              |
+| CAN_VENDOR_SOFTING | Softing CAN Layer 2      |
+| CAN_VENDOR_MHS     | MHS Elektronik Tiny-CAN  |
+| CAN_VENDOR_ALL     | All supported back-ends  |
 
 ## Structures
 
