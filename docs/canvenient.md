@@ -111,6 +111,8 @@ void can_release_interfaces(void)
 
 **Returns**: Nothing.
 
+**Since**: 1.00
+
 <!-- tabs:end -->
 
 ### can_open()
