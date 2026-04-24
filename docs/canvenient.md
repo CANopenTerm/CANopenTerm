@@ -75,7 +75,7 @@ int can_find_interfaces_mask(u32 vendor_mask)
 
 > **vendor_mask** Bitmask of CAN vendor back-ends to probe. Vendors can be OR-ed
   together (e.g. `CAN_VENDOR_IXXAT | CAN_VENDOR_SOFTING`). Use `CAN_VENDOR_ALL`
-  to probe all supported back-ends.  See [vendor_mask](#vendor_mask) enumeration
+  to probe all supported back-ends.  See [can_vendor](#can_vendor) enumeration
   for available values.
 
 **Returns**: `0` on success, `-1` on failure.
