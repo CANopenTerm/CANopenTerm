@@ -328,7 +328,6 @@ The `can_vendor` values are a bitmask and can be OR-ed together.
 | CAN_VENDOR_PEAK      | PCAN-Basic              |
 | CAN_VENDOR_SOCKETCAN | SocketCAN               |
 | CAN_VENDOR_SOFTING   | Softing CAN Layer 2     |
-| CAN_VENDOR_MHS       | MHS Elektronik Tiny-CAN |
 | CAN_VENDOR_ALL       | All supported back-ends |
 
 ## Structures
