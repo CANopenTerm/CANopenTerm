@@ -126,6 +126,9 @@
 				<File Source="../../export/scripts/fuzz.lua" />
 			</Component>
 			<Component>
+				<File Source="../../export/scripts/lss.lua" />
+			</Component>
+			<Component>
 				<File Source="../../export/scripts/replay.lua" />
 			</Component>
 			<Component>
