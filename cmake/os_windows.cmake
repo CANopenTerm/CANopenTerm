@@ -89,7 +89,6 @@ ExternalProject_Add(CANvenient_devel
     ${CANVENIENT_PATH}/bin/${CANVENIENT_PLATFORM}/canlib32.dll
     ${CANVENIENT_PATH}/bin/${CANVENIENT_PLATFORM}/CANvenient.dll
     ${CANVENIENT_PATH}/bin/${CANVENIENT_PLATFORM}/PCANBasic.dll
-    ${CANVENIENT_PATH}/bin/${CANVENIENT_PLATFORM}/vciapi.dll
     ${CMAKE_CURRENT_SOURCE_DIR}/export
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy

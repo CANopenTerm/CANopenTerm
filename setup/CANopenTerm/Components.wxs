@@ -49,9 +49,6 @@
 				<File Source="../../export/SDL3.dll" />
 			</Component>
 			<Component>
-				<File Source="../../export/vciapi.dll" />
-			</Component>
-			<Component>
 				<File Source="../../export/vcruntime140.dll" />
 			</Component>
 			<Component>

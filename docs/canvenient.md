@@ -18,6 +18,10 @@ The following back-ends are currently implemented:
 - SocketCAN
 - Softing CAN Layer 2
 
+!> Note: The Ixxat VCI backend only works when the official driver
+is installed and the vciapi.dll is present, since access to the
+interface is subject to licensing and legal requirements.
+
 ## API Reference
 
 The API is intentionally designed to blend in with
