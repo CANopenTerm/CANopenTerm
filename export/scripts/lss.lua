@@ -28,7 +28,9 @@ local LSS_CS = {
     STORE_CONFIGURATION         = 0x17,
     STORE_CONFIGURATION_RESP    = 0x17,
     IDENTIFY_SLAVE              = 0x4F,
+    IDENTIFY_SLAVE_RESP         = 0x4F,
     IDENTIFY_NON_CFG_SLAVE      = 0x4C,
+    IDENTIFY_NON_CFG_SLAVE_RESP = 0x50,
     INQUIRE_VENDOR_ID           = 0x5A,
     INQUIRE_PRODUCT_CODE        = 0x5B,
     INQUIRE_REVISION_NUMBER     = 0x5C,
@@ -194,7 +196,7 @@ local function lss_identify_non_configured_slaves()
         local id, length, data = can_read()
         if id == LSS_RX_ID and length == 8 then
             local cs = byte_at(data, 1)
-            if cs == LSS_CS.IDENTIFY_SLAVE then
+            if cs == LSS_CS.IDENTIFY_NON_CFG_SLAVE_RESP then
                 table.insert(responses, data)
             end
         end
