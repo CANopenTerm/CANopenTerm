@@ -36,7 +36,6 @@ local LSS_CS = {
     INQUIRE_REVISION_NUMBER     = 0x5C,
     INQUIRE_SERIAL_NUMBER       = 0x5D,
     INQUIRE_NODE_ID             = 0x61,
-    INQUIRE_RESP                = 0x5A,  -- same CS range, determined by context
 }
 
 -- Bit-timing table index -> rate
@@ -176,7 +175,7 @@ local function lss_identify_slaves()
         local id, length, data = can_read()
         if id == LSS_RX_ID and length == 8 then
             local cs = byte_at(data, 1)
-            if cs == LSS_CS.IDENTIFY_SLAVE then
+            if cs == LSS_CS.IDENTIFY_SLAVE_RESP then
                 table.insert(responses, data)
             end
         end
