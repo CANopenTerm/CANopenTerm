@@ -624,7 +624,7 @@ can_set_baud_rate (baud_rate_id)
 
 | Baud Rate     | Identifier |
 | ------------- | ---------- |
-| 1 MBit/s      | 0 or 1     |
+| 1 MBit/s      | 1          |
 | 800 kBit/s    | 2          |
 | 500 kBit/s    | 3          |
 | 250 kBit/s    | 4          |
