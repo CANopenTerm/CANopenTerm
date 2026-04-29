@@ -620,6 +620,47 @@ can_flush()
 
 **Returns**: Nothing.
 
+### can_set_baud_rate()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set CAN bus baud rate.
+
+```python
+can_set_baud_rate (baud_rate_id)
+```
+
+> **baud_rate_id** CAN bus baud rate identifier.
+
+!> The following baud rate identifiers are supported:
+
+| Baud Rate     | Identifier |
+| ------------- | ---------- |
+| 1 MBit/s      | 0 or 1     |
+| 800 kBit/s    | 2          |
+| 500 kBit/s    | 3          |
+| 250 kBit/s    | 4          |
+| 125 kBit/s    | 5          |
+| 100 kBit/s    | 6          |
+| 95.238 kBit/s | 7          |
+| 83.333 kBit/s | 8          |
+| 50 kBit/s     | 9          |
+| 47.619 kBit/s | 10         |
+| 33.333 kBit/s | 11         |
+| 20 kBit/s     | 12         |
+| 10 kBit/s     | 13         |
+| 5 kBit/s      | 14         |
+
+<!-- tab:Example -->
+```python
+can_set_baud_rate(4)
+```
+<!-- tabs:end -->
+
+**Returns**: Nothing.
+
+**Since**: 2.03
+
 ### dict_lookup_raw()
 
 <!-- tabs:start -->

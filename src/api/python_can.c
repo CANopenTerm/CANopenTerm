@@ -19,6 +19,7 @@ bool py_dict_lookup_raw(int argc, py_Ref argv);
 bool py_can_write(int argc, py_Ref argv);
 bool py_can_read(int argc, py_Ref argv);
 bool py_can_flush(int argc, py_Ref argv);
+bool py_can_set_baud_rate(int argc, py_Ref argv);
 
 void python_can_init(void)
 {
@@ -29,6 +30,7 @@ void python_can_init(void)
 
     py_bindfunc(mod, "can_read", py_can_read);
     py_bindfunc(mod, "can_flush", py_can_flush);
+    py_bindfunc(mod, "can_set_baud_rate", py_can_set_baud_rate);
 }
 
 bool py_dict_lookup_raw(int argc, py_Ref argv)
@@ -195,5 +197,16 @@ bool py_can_flush(int argc, py_Ref argv)
 {
     PY_CHECK_ARGC(0);
     can_flush();
+    return true;
+}
+
+bool py_can_set_baud_rate(int argc, py_Ref argv)
+{
+    uint8 baud_rate_index;
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    baud_rate_index = (uint8)py_toint(py_arg(0));
+    core->baud_rate = baud_rate_index;
+    can_set_baudrate(core->can_channel, (enum can_baudrate)(baud_rate_index - 1));
     return true;
 }

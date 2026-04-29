@@ -117,6 +117,14 @@ int lua_can_flush(lua_State* L)
     return 0;
 }
 
+int lua_can_set_baud_rate(lua_State* L)
+{
+    int baud_rate_index = luaL_checkinteger(L, 1);
+    core->baud_rate = baud_rate_index;
+    can_set_baudrate(core->can_channel, (enum can_baudrate)(baud_rate_index - 1));
+    return 0;
+}
+
 int lua_dict_lookup_raw(lua_State* L)
 {
     uint32 can_status;
@@ -159,6 +167,8 @@ void lua_register_can_commands(core_t* core)
     lua_setglobal(core->L, "can_read");
     lua_pushcfunction(core->L, lua_can_flush);
     lua_setglobal(core->L, "can_flush");
+    lua_pushcfunction(core->L, lua_can_set_baud_rate);
+    lua_setglobal(core->L, "can_set_baud_rate");
     lua_pushcfunction(core->L, lua_dict_lookup_raw);
     lua_setglobal(core->L, "dict_lookup_raw");
 }
