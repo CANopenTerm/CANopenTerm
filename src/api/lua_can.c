@@ -121,7 +121,7 @@ int lua_can_set_baud_rate(lua_State* L)
 {
     int baud_rate_index = luaL_checkinteger(L, 1);
     core->baud_rate = baud_rate_index;
-    can_set_baudrate(core->can_channel, (enum can_baudrate)(baud_rate_index - 1));
+    can_set_baud_rate(core->can_channel, (uint8)(baud_rate_index - 1));
     return 0;
 }
 
