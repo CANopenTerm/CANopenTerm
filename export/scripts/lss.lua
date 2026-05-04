@@ -35,7 +35,7 @@ local LSS_CS = {
     INQUIRE_PRODUCT_CODE        = 0x5B,
     INQUIRE_REVISION_NUMBER     = 0x5C,
     INQUIRE_SERIAL_NUMBER       = 0x5D,
-    INQUIRE_NODE_ID             = 0x61,
+    INQUIRE_NODE_ID             = 0x5E,
 }
 
 -- Bit-timing table index -> rate
@@ -362,11 +362,11 @@ end
 
 local function action_inquire_identity()
     print("\nInquire Identity  (node must be in Configuration mode)")
-    local vendor   = lss_inquire(LSS_CS.INQUIRE_VENDOR_ID,       0x5A)
-    local product  = lss_inquire(LSS_CS.INQUIRE_PRODUCT_CODE,    0x5B)
-    local revision = lss_inquire(LSS_CS.INQUIRE_REVISION_NUMBER, 0x5C)
-    local serial   = lss_inquire(LSS_CS.INQUIRE_SERIAL_NUMBER,   0x5D)
-    local node_id  = lss_inquire(LSS_CS.INQUIRE_NODE_ID,         0x61)
+    local vendor   = lss_inquire(LSS_CS.INQUIRE_VENDOR_ID,       LSS_CS.INQUIRE_VENDOR_ID)
+    local product  = lss_inquire(LSS_CS.INQUIRE_PRODUCT_CODE,    LSS_CS.INQUIRE_PRODUCT_CODE)
+    local revision = lss_inquire(LSS_CS.INQUIRE_REVISION_NUMBER, LSS_CS.INQUIRE_REVISION_NUMBER)
+    local serial   = lss_inquire(LSS_CS.INQUIRE_SERIAL_NUMBER,   LSS_CS.INQUIRE_SERIAL_NUMBER)
+    local node_id  = lss_inquire(LSS_CS.INQUIRE_NODE_ID,         LSS_CS.INQUIRE_NODE_ID)
 
     print(string.rep("─", 50))
     print(string.format("  Vendor ID      : %s", vendor   and string.format("0x%08X", vendor)   or "timeout"))
