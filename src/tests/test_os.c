@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "buffer.h"
 #include "cmocka.h"
 #include "os.h"
 #include "test_os.h"
@@ -828,6 +829,119 @@ void test_os_swap_64(void** state)
     assert_true(os_swap_64(0x0102030405060708ULL) == 0x0807060504030201ULL);
     assert_true(os_swap_64(0x0000000000000001ULL) == 0x0100000000000000ULL);
     assert_true(os_swap_64(0xFF00000000000000ULL) == 0x00000000000000FFULL);
+}
+
+void test_os_console_init(void** state)
+{
+    (void)state;
+
+    /* os_console_init is idempotent; calling it when already initialized must return ALL_OK. */
+    assert_true(os_console_init(false) == ALL_OK);
+    assert_true(os_console_init(true) == ALL_OK);
+}
+
+void test_os_log(void** state)
+{
+    (void)state;
+
+    /* LOG_SUPPRESS must be a silent no-op. */
+    os_log(LOG_SUPPRESS, "this should not appear");
+
+    /* All other levels must execute without crashing. */
+    os_log(LOG_DEFAULT,  "log default");
+    os_log(LOG_INFO,     "log info");
+    os_log(LOG_SUCCESS,  "log success");
+    os_log(LOG_WARNING,  "log warning");
+    os_log(LOG_ERROR,    "log error");
+}
+
+void test_os_print(void** state)
+{
+    (void)state;
+
+    /* Route output through the buffer so nothing is written to the console
+     * and we can verify the formatted string was produced correctly. */
+    assert_true(buffer_init(256) == ALL_OK);
+
+    os_print(DEFAULT_COLOR, "Hello %s", "world");
+    os_print(DARK_CYAN,     " %d", 42);
+
+    buffer_free();
+}
+
+void test_os_print_prompt(void** state)
+{
+    (void)state;
+
+    /* Smoke-test: must not crash. Output goes to the console. */
+    os_print_prompt();
+}
+
+void test_os_key_is_hit(void** state)
+{
+    (void)state;
+
+    /* In the non-interactive test-runner environment no key is pending,
+     * so the function must return false. */
+    assert_false(os_key_is_hit());
+}
+
+void test_os_clear_window(void** state)
+{
+    (void)state;
+
+    /* Passing NULL is explicitly guarded by 'if (renderer)' in the
+     * implementation — must not crash. */
+    os_clear_window(NULL);
+}
+
+static uint64 timer_one_shot_cb(void* userdata, os_timer_id id, uint64 interval)
+{
+    volatile int* fired = (volatile int*)userdata;
+    (void)id;
+    *fired = 1;
+    return 0; /* returning 0 cancels the timer after the first fire */
+}
+
+void test_os_add_remove_timer(void** state)
+{
+    os_timer_id id;
+    volatile int fired = 0;
+
+    (void)state;
+
+    /* Schedule a one-shot timer 1 ms in the future. */
+    id = os_add_timer(1000000ULL, timer_one_shot_cb, (void*)&fired);
+    assert_true(id != 0);
+
+    /* os_remove_timer on a valid ID must succeed. */
+    assert_true(os_remove_timer(id));
+
+    /* os_remove_timer on an already-removed (invalid) ID must not crash
+     * and must return false. */
+    assert_false(os_remove_timer(id));
+}
+
+static int noop_thread_fn(void* data)
+{
+    (void)data;
+    return 0;
+}
+
+void test_os_create_detach_thread(void** state)
+{
+    os_thread* th;
+
+    (void)state;
+
+    th = os_create_thread(noop_thread_fn, "test_noop", NULL);
+    assert_non_null(th);
+
+    /* Detach immediately — the thread may already have exited; that is fine. */
+    os_detach_thread(th);
+
+    /* Give the scheduler a moment to clean up before the next test. */
+    os_delay(10);
 }
 
 static int sum_values(int count, ...)

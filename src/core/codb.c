@@ -190,6 +190,9 @@ void codb_deinit(void)
     }
 
     unload_codb();
+
+    /* Reset cancellation flag so codb can be re-initialized after a deinit. */
+    is_init_cancelled = false;
 }
 
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)

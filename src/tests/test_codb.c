@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 #include "cmocka.h"
+#include "codb.h"
 #include "codb2json.h"
 #include "os.h"
 #include "test_codb.h"
@@ -57,4 +58,28 @@ static void assert_files_equal(const char* file1_path, const char* file2_path)
 
     os_fclose(file1);
     os_fclose(file2);
+}
+
+void test_codb_loaded_state(void** state)
+{
+    extern int codb_init_ex(void* unused);
+
+    (void)state;
+
+    /* Before initialization neither ds301 nor codb should be loaded. */
+    assert_false(is_ds301_loaded());
+    assert_false(is_codb_loaded());
+
+    /* After synchronous init ds301 should be loaded. */
+    codb_init_ex(NULL);
+    assert_true(is_ds301_loaded());
+
+    /* No manufacturer profile loaded, so codb should still be false. */
+    assert_false(is_codb_loaded());
+
+    codb_deinit();
+
+    /* After deinit both should be unloaded again. */
+    assert_false(is_ds301_loaded());
+    assert_false(is_codb_loaded());
 }

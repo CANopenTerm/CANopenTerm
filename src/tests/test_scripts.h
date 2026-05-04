@@ -100,5 +100,7 @@ void test_python_960_pep695_py312(void** state);
 void test_python_970_inspect(void** state);
 void test_python_980_thread(void** state);
 void test_python_990_extras(void** state);
+void test_print_heading(void** state);
+void test_print_result(void** state);
 
 #endif /* TEST_SCRIPTS_H */

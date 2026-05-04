@@ -6,6 +6,7 @@ add_executable(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_buffer.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_can.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_codb.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dbc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dict.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_nmt.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_os.c
@@ -13,6 +14,7 @@ add_executable(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_scripts.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_sdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_table.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_test_report.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_wrapper.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/codb2json/codb2json.c
 )

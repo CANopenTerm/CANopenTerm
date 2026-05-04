@@ -16,6 +16,13 @@
 #include "pdo.h"
 #include "test_pdo.h"
 
+void test_pdo_print_help(void** state)
+{
+    (void)state;
+
+    assert_true(pdo_print_help() == ALL_OK);
+}
+
 void test_pdo_is_id_valid(void** state)
 {
 	(void)state;

@@ -17,6 +17,7 @@
 #include "test_buffer.h"
 #include "test_can.h"
 #include "test_codb.h"
+#include "test_dbc.h"
 #include "test_dict.h"
 #include "test_nmt.h"
 #include "test_os.h"
@@ -24,6 +25,7 @@
 #include "test_scripts.h"
 #include "test_sdo.h"
 #include "test_table.h"
+#include "test_test_report.h"
 
 core_t* core = NULL;
 
@@ -182,6 +184,14 @@ int main(void)
             cmocka_unit_test(test_os_fix_path),
             cmocka_unit_test(test_os_get_user_directory),
             cmocka_unit_test(test_os_find_data_path),
+            cmocka_unit_test(test_os_console_init),
+            cmocka_unit_test(test_os_log),
+            cmocka_unit_test(test_os_print),
+            cmocka_unit_test(test_os_print_prompt),
+            cmocka_unit_test(test_os_key_is_hit),
+            cmocka_unit_test(test_os_clear_window),
+            cmocka_unit_test(test_os_add_remove_timer),
+            cmocka_unit_test(test_os_create_detach_thread),
             cmocka_unit_test(test_sdo_lookup_abort_code),
             cmocka_unit_test(test_uint8),
             cmocka_unit_test(test_uint16),
@@ -191,9 +201,23 @@ int main(void)
             cmocka_unit_test(test_can_limit_node_id),
             cmocka_unit_test(test_can_is_can_initialised),
             cmocka_unit_test(test_pdo_is_id_valid),
+            cmocka_unit_test(test_pdo_print_help),
             cmocka_unit_test(test_table_init),
             cmocka_unit_test(test_table_lifecycle),
             cmocka_unit_test(test_dict_lookup_unknown),
+            cmocka_unit_test(test_emcy_lookup),
+            cmocka_unit_test(test_codb_loaded_state),
+            cmocka_unit_test(test_dbc_unloaded_guards),
+            cmocka_unit_test(test_dbc_load_invalid_path),
+            cmocka_unit_test(test_dbc_lifecycle),
+            cmocka_unit_test(test_dbc_decode_no_match),
+            cmocka_unit_test(test_dbc_find_id_invalid_args),
+            cmocka_unit_test(test_report_init),
+            cmocka_unit_test(test_report_clear),
+            cmocka_unit_test(test_report_add_and_generate),
+            cmocka_unit_test(test_report_generate_null_filename),
+            cmocka_unit_test(test_print_heading),
+            cmocka_unit_test(test_print_result),
         };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

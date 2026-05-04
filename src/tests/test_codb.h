@@ -11,5 +11,6 @@
 #define TEST_CODB_H
 
 void test_codb2json(void** state);
+void test_codb_loaded_state(void** state);
 
 #endif /* TEST_CODB_H */

@@ -11,5 +11,6 @@
 #define TEST_PDO_H
 
 void test_pdo_is_id_valid(void** state);
+void test_pdo_print_help(void** state);
 
 #endif /* TEST_PDO_H */

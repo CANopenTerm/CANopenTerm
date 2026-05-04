@@ -13,5 +13,6 @@
 void test_dict_lookup(void** state);
 void test_dict_lookup_raw(void** state);
 void test_dict_lookup_unknown(void** state);
+void test_emcy_lookup(void** state);
 
 #endif /* TEST_DICT_H */

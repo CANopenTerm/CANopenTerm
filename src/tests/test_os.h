@@ -67,5 +67,13 @@ void test_uint32(void** state);
 void test_uint64(void** state);
 void test_uint8(void** state);
 void test_variadic_functions(void** state);
+void test_os_console_init(void** state);
+void test_os_log(void** state);
+void test_os_print(void** state);
+void test_os_print_prompt(void** state);
+void test_os_key_is_hit(void** state);
+void test_os_clear_window(void** state);
+void test_os_add_remove_timer(void** state);
+void test_os_create_detach_thread(void** state);
 
 #endif /* TEST_OS_H */
