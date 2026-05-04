@@ -98,6 +98,7 @@ local function wait_for_response(expected_cs)
     while os.clock() < deadline do
         local id, length, data = can_read()
         if id == LSS_RX_ID and length == 8 then
+            data = core.swap_bytes(data, length)
             local cs = byte_at(data, 1)
             if cs == expected_cs then
                 return data
@@ -174,6 +175,7 @@ local function lss_identify_slaves()
     while os.clock() < deadline do
         local id, length, data = can_read()
         if id == LSS_RX_ID and length == 8 then
+            data = core.swap_bytes(data, length)
             local cs = byte_at(data, 1)
             if cs == LSS_CS.IDENTIFY_SLAVE_RESP then
                 table.insert(responses, data)
@@ -194,6 +196,7 @@ local function lss_identify_non_configured_slaves()
     while os.clock() < deadline do
         local id, length, data = can_read()
         if id == LSS_RX_ID and length == 8 then
+            data = core.swap_bytes(data, length)
             local cs = byte_at(data, 1)
             if cs == LSS_CS.IDENTIFY_NON_CFG_SLAVE_RESP then
                 table.insert(responses, data)
