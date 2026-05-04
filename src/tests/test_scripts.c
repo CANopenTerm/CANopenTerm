@@ -10,11 +10,11 @@
 #ifdef _WIN32
 #include <direct.h>
 #include <io.h>
-#define _mkdir(dir, mode) _mkdir(dir)
+#define os_mkdir(dir, mode) _mkdir(dir)
 #else
 #include <sys/stat.h>
 #include <sys/types.h>
-#define _mkdir(dir, mode) mkdir(dir, mode)
+#define os_mkdir(dir, mode) mkdir(dir, mode)
 #endif
 
 #include <errno.h>
@@ -52,7 +52,7 @@ void test_lua(void** state)
 
     (void)state;
 
-    if (_mkdir("tests", 0777) != 0)
+    if (os_mkdir("tests", 0777) != 0)
     {
         if (errno != EEXIST)
         {

@@ -7,6 +7,17 @@
  *
  **/
 
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
+#define os_mkdir(dir, mode) _mkdir(dir)
+#else
+#include <sys/stat.h>
+#include <sys/types.h>
+#define os_mkdir(dir, mode) mkdir(dir, mode)
+#endif
+
+#include <errno.h>
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
@@ -86,7 +97,7 @@ void test_dbc_lifecycle(void** state)
 #ifdef _WIN32
 		_mkdir(path_copy);
 #else
-		mkdir(path_copy, 0777);
+		os_mkdir(path_copy, 0777);
 #endif
 		f = os_fopen(dbc_temp_path, "w");
 	}

@@ -207,6 +207,6 @@ bool py_can_set_baud_rate(int argc, py_Ref argv)
     PY_CHECK_ARG_TYPE(0, tp_int);
     baud_rate_index = (uint8)py_toint(py_arg(0));
     core->baud_rate = baud_rate_index;
-    can_set_baud_rate(core->can_channel, (uint8)(baud_rate_index - 1));
+    can_set_baud_rate((uint8)(baud_rate_index - 1), core);
     return true;
 }
