@@ -12,5 +12,7 @@
 
 void test_buffer_init(void** state);
 void test_use_buffer(void** state);
+void test_buffer_write(void** state);
+void test_buffer_write_grow(void** state);
 
 #endif /* TEST_BUFFER_H */

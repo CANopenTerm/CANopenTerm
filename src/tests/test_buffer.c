@@ -35,3 +35,37 @@ void test_use_buffer(void** state)
     buffer_free();
     assert_true(use_buffer() == false);
 }
+
+void test_buffer_write(void** state)
+{
+    (void)state;
+
+    assert_true(buffer_init(64) == ALL_OK);
+    assert_true(use_buffer() == true);
+
+    buffer_write("Hello");
+    buffer_write(", %s!", "world");
+    buffer_flush();
+
+    assert_true(use_buffer() == true);
+    buffer_free();
+    assert_true(use_buffer() == false);
+}
+
+void test_buffer_write_grow(void** state)
+{
+    int i;
+
+    (void)state;
+
+    assert_true(buffer_init(8) == ALL_OK);
+
+    for (i = 0; i < 20; i += 1)
+    {
+        buffer_write("chunk%d ", i);
+    }
+
+    assert_true(use_buffer() == true);
+    buffer_flush();
+    buffer_free();
+}

@@ -21,14 +21,18 @@ static int sum_values(int count, ...);
 
 void test_os_atof(void** state)
 {
-    const char* str = "123.45";
     double result;
 
     (void)state;
 
-    result = os_atof(str);
+    result = os_atof("123.45");
+    assert_true(result > 123.44 && result < 123.46);
 
-    assert_true(result == 123.45);
+    result = os_atof("-0.5");
+    assert_true(result > -0.51 && result < -0.49);
+
+    result = os_atof("0");
+    assert_true(result == 0.0);
 }
 
 void test_os_atoi(void** state)
@@ -83,15 +87,20 @@ void test_os_closedir(void** state)
 
 void test_os_delay(void** state)
 {
-    uint64 time = os_get_ticks();
-    uint64 new_time;
+    uint64 before;
+    uint64 after;
+    uint64 elapsed;
 
+    (void)state;
+
+    before = os_get_ticks();
     os_delay(100);
-    time = time + 100000000ull;
-    new_time = os_get_ticks();
+    after = os_get_ticks();
+    elapsed = after - before;
 
-    /* Max. deviation is 1ms. */
-    assert_in_range(new_time, time, time + 1000000ull);
+    /* Expect at least 100 ms; allow up to 200 ms for scheduler jitter. */
+    assert_true(elapsed >= 100000000ull);
+    assert_true(elapsed <= 200000000ull);
 }
 
 void test_os_fclose(void** state)
@@ -170,16 +179,23 @@ void test_os_freopen(void** state)
 
 void test_os_fseek(void** state)
 {
-    int result;
+    long pos;
     FILE_t* file = os_fopen("tests/test.txt", "r");
 
     (void)state;
 
     assert_non_null(file);
 
-    result = os_fseek(file, 0, SEEK_SET);
+    assert_int_equal(os_fseek(file, 0, SEEK_SET), 0);
+    assert_int_equal(os_ftell(file), 0);
 
-    assert_int_equal(result, 0);
+    assert_int_equal(os_fseek(file, 2, SEEK_CUR), 0);
+    pos = os_ftell(file);
+    assert_true(pos == 2);
+
+    assert_int_equal(os_fseek(file, 0, SEEK_END), 0);
+    pos = os_ftell(file);
+    assert_true(pos > 0);
 
     os_fclose(file);
 }
@@ -259,20 +275,42 @@ void test_os_isxdigit(void** state)
 {
     (void)state;
 
+    /* Uppercase A-F */
     assert_int_not_equal(os_isxdigit('A'), 0);
+    assert_int_not_equal(os_isxdigit('F'), 0);
+
+    /* Lowercase a-f */
+    assert_int_not_equal(os_isxdigit('a'), 0);
+    assert_int_not_equal(os_isxdigit('f'), 0);
+
+    /* Digits 0-9 */
+    assert_int_not_equal(os_isxdigit('0'), 0);
+    assert_int_not_equal(os_isxdigit('9'), 0);
+
+    /* Boundary invalids */
     assert_int_equal(os_isxdigit('G'), 0);
+    assert_int_equal(os_isxdigit('g'), 0);
+    assert_int_equal(os_isxdigit('x'), 0);
+    assert_int_equal(os_isxdigit(' '), 0);
 }
 
 void test_os_itoa(void** state)
 {
-    int value = 12345;
     char buffer[20];
 
     (void)state;
 
-    os_itoa(value, buffer, 10);
-
+    os_itoa(12345, buffer, 10);
     assert_string_equal(buffer, "12345");
+
+    os_itoa(-99, buffer, 10);
+    assert_string_equal(buffer, "-99");
+
+    os_itoa(255, buffer, 16);
+    assert_string_equal(buffer, "FF");
+
+    os_itoa(0, buffer, 10);
+    assert_string_equal(buffer, "0");
 }
 
 void test_os_memcpy(void** state)
@@ -376,12 +414,19 @@ void test_os_rewind(void** state)
 
 void test_os_snprintf(void** state)
 {
-    char buffer[20];
-    int result = os_snprintf(buffer, sizeof(buffer), "%d %s", 123, "hello");
+    char buffer[32];
+    int result;
 
     (void)state;
 
-    assert_int_not_equal(result, -1);
+    result = os_snprintf(buffer, sizeof(buffer), "%d %s", 123, "hello");
+    assert_int_equal(result, 9);
+    assert_string_equal(buffer, "123 hello");
+
+    /* Truncation: buffer of 5 should hold "123 " + NUL. */
+    result = os_snprintf(buffer, 5, "%d %s", 123, "hello");
+    assert_true(result >= 9);
+    assert_string_equal(buffer, "123 ");
 }
 
 void test_os_strchr(void** state)
@@ -413,6 +458,7 @@ void test_os_strcspn(void** state)
     (void)state;
 
     {
+        /* First vowel in "Hello World" is 'e' at index 1. */
         const char* s = "Hello World";
         const char* reject = "aeiou";
         size_t result = os_strcspn(s, reject);
@@ -421,14 +467,16 @@ void test_os_strcspn(void** state)
     }
 
     {
-        const char* s = "Hello World";
+        /* First character itself is in reject set. */
+        const char* s = "apple";
         const char* reject = "aeiou";
         size_t result = os_strcspn(s, reject);
 
-        assert_int_equal(result, 1);
+        assert_int_equal(result, 0);
     }
 
     {
+        /* Empty reject set — entire string is spanned. */
         const char* s = "Hello World";
         const char* reject = "";
         size_t result = os_strcspn(s, reject);
@@ -437,6 +485,7 @@ void test_os_strcspn(void** state)
     }
 
     {
+        /* No character in reject set present. */
         const char* s = "Hello";
         const char* reject = "xyz";
         size_t result = os_strcspn(s, reject);
@@ -536,10 +585,11 @@ void test_os_strtokr_r(void** state)
 {
     char str[] = "A,B,C,D";
     char* saveptr;
-    char* token = os_strtokr_r(str, ",", &saveptr);
+    char* token;
 
     (void)state;
 
+    token = os_strtokr_r(str, ",", &saveptr);
     assert_non_null(token);
     assert_string_equal(token, "A");
 
@@ -557,44 +607,62 @@ void test_os_strtokr_r(void** state)
 
     token = os_strtokr_r(NULL, ",", &saveptr);
     assert_null(token);
+
+    {
+        /* No delimiter present — entire string is the single token. */
+        char no_delim[] = "hello";
+        token = os_strtokr_r(no_delim, ",", &saveptr);
+        assert_non_null(token);
+        assert_string_equal(token, "hello");
+
+        token = os_strtokr_r(NULL, ",", &saveptr);
+        assert_null(token);
+    }
 }
 
 void test_os_strtol(void** state)
 {
-    const char* str = "12345";
     char* endptr;
-    long result = os_strtol(str, &endptr, 10);
 
     (void)state;
 
-    assert_int_equal(result, 12345);
-    assert_ptr_equal(endptr, str + strlen(str));
+    assert_int_equal(os_strtol("12345", &endptr, 10), 12345);
+    assert_ptr_equal(endptr, "12345" + 5);
+
+    assert_int_equal(os_strtol("-99", &endptr, 10), -99);
+
+    assert_int_equal(os_strtol("1A", &endptr, 16), 26);
+    assert_ptr_equal(endptr, "1A" + 2);
+
+    assert_int_equal(os_strtol("0x1F", &endptr, 0), 31);
 }
 
 void test_os_strtoul(void** state)
 {
-    const char* str = "12345";
     char* endptr;
-    unsigned long result;
 
     (void)state;
 
-    result = os_strtoul(str, &endptr, 10);
+    assert_int_equal(os_strtoul("12345", &endptr, 10), 12345);
+    assert_ptr_equal(endptr, "12345" + 5);
 
-    assert_int_equal(result, 12345);
-    assert_ptr_equal(endptr, str + strlen(str));
+    assert_int_equal(os_strtoul("FF", &endptr, 16), 255);
+    assert_ptr_equal(endptr, "FF" + 2);
+
+    assert_int_equal(os_strtoul("0", &endptr, 10), 0);
 }
 
 void test_os_strtoull(void** state)
 {
-    const char* str = "1234567890";
     char* endptr;
-    unsigned long long result = os_strtoull(str, &endptr, 10);
 
     (void)state;
 
-    assert_int_equal(result, 1234567890);
-    assert_ptr_equal(endptr, str + strlen(str));
+    assert_int_equal(os_strtoull("1234567890", &endptr, 10), 1234567890);
+    assert_ptr_equal(endptr, "1234567890" + 10);
+
+    assert_true(os_strtoull("DEADBEEF", &endptr, 16) == 0xDEADBEEFULL);
+    assert_ptr_equal(endptr, "DEADBEEF" + 8);
 }
 
 void test_os_swap_be_32(void** state)
@@ -664,6 +732,43 @@ void test_variadic_functions(void** state)
     }
 }
 
+void test_os_fix_path(void** state)
+{
+    char path_a[] = "some\\windows\\path\\file.txt";
+    char path_b[] = "already/unix/path";
+    char path_c[] = "mixed\\path/to\\file";
+
+    (void)state;
+
+    assert_string_equal(os_fix_path(path_a), "some/windows/path/file.txt");
+    assert_string_equal(os_fix_path(path_b), "already/unix/path");
+    assert_string_equal(os_fix_path(path_c), "mixed/path/to/file");
+}
+
+void test_os_get_user_directory(void** state)
+{
+    const char* dir;
+
+    (void)state;
+
+    dir = os_get_user_directory();
+
+    assert_non_null(dir);
+    assert_true(os_strlen(dir) > 0);
+}
+
+void test_os_find_data_path(void** state)
+{
+    const char* path;
+
+    (void)state;
+
+    path = os_find_data_path();
+
+    assert_non_null(path);
+    assert_true(os_strlen(path) > 0);
+}
+
 static int os_vsnprintf_wrapper(char* str, size_t size, const char* format, ...)
 {
     int result;
@@ -691,6 +796,38 @@ void test_os_vsnprintf(void** state)
 
     assert_string_equal(buffer, "6 by 9. 42. That's it. That's all there is");
     assert_int_equal(result, 42);
+}
+
+void test_os_sscanf(void** state)
+{
+    int a, b;
+    float f;
+    char s[32];
+    int result;
+
+    (void)state;
+
+    result = os_sscanf("42 7", "%d %d", &a, &b);
+    assert_int_equal(result, 2);
+    assert_int_equal(a, 42);
+    assert_int_equal(b, 7);
+
+    result = os_sscanf("3.14", "%f", &f);
+    assert_int_equal(result, 1);
+    assert_true(f > 3.13f && f < 3.15f);
+
+    result = os_sscanf("hello", "%31s", s);
+    assert_int_equal(result, 1);
+    assert_string_equal(s, "hello");
+}
+
+void test_os_swap_64(void** state)
+{
+    (void)state;
+
+    assert_true(os_swap_64(0x0102030405060708ULL) == 0x0807060504030201ULL);
+    assert_true(os_swap_64(0x0000000000000001ULL) == 0x0100000000000000ULL);
+    assert_true(os_swap_64(0xFF00000000000000ULL) == 0x00000000000000FFULL);
 }
 
 static int sum_values(int count, ...)

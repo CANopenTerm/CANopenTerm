@@ -23,3 +23,10 @@ void test_nmt_print_help(void** state)
 
     assert_true(nmt_print_help(SILENT) == NOTHING_TO_DO);
 }
+
+void test_nmt_send_command_invalid(void** state)
+{
+    (void)state;
+
+    assert_true(nmt_send_command(0x01, (nmt_command_t)0xFF, SILENT, NULL) == NMT_UNKNOWN_COMMAND);
+}

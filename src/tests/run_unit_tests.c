@@ -15,12 +15,15 @@
 #include "core.h"
 #include "cmocka.h"
 #include "test_buffer.h"
+#include "test_can.h"
 #include "test_codb.h"
 #include "test_dict.h"
 #include "test_nmt.h"
 #include "test_os.h"
+#include "test_pdo.h"
 #include "test_scripts.h"
 #include "test_sdo.h"
+#include "test_table.h"
 
 core_t* core = NULL;
 
@@ -29,6 +32,8 @@ int main(void)
     const struct CMUnitTest tests[] =
         {
             cmocka_unit_test(test_buffer_init),
+            cmocka_unit_test(test_buffer_write),
+            cmocka_unit_test(test_buffer_write_grow),
             cmocka_unit_test(test_codb2json),
             cmocka_unit_test(test_use_buffer),
             cmocka_unit_test(test_dict_lookup),
@@ -124,6 +129,7 @@ int main(void)
             cmocka_unit_test(test_python_980_thread),
             cmocka_unit_test(test_python_990_extras),
             cmocka_unit_test(test_nmt_print_help),
+            cmocka_unit_test(test_nmt_send_command_invalid),
             cmocka_unit_test(test_os_atof),
             cmocka_unit_test(test_os_atoi),
             cmocka_unit_test(test_os_calloc),
@@ -171,12 +177,23 @@ int main(void)
             cmocka_unit_test(test_os_tolower),
             cmocka_unit_test(test_os_toupper),
             cmocka_unit_test(test_os_vsnprintf),
+            cmocka_unit_test(test_os_sscanf),
+            cmocka_unit_test(test_os_swap_64),
+            cmocka_unit_test(test_os_fix_path),
+            cmocka_unit_test(test_os_get_user_directory),
+            cmocka_unit_test(test_os_find_data_path),
             cmocka_unit_test(test_sdo_lookup_abort_code),
             cmocka_unit_test(test_uint8),
             cmocka_unit_test(test_uint16),
             cmocka_unit_test(test_uint32),
             cmocka_unit_test(test_uint64),
             cmocka_unit_test(test_variadic_functions),
+            cmocka_unit_test(test_can_limit_node_id),
+            cmocka_unit_test(test_can_is_can_initialised),
+            cmocka_unit_test(test_pdo_is_id_valid),
+            cmocka_unit_test(test_table_init),
+            cmocka_unit_test(test_table_lifecycle),
+            cmocka_unit_test(test_dict_lookup_unknown),
         };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
