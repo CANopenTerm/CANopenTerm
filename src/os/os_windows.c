@@ -248,7 +248,7 @@ void os_log(const log_level_t level, const char* format, ...)
         case LOG_DEFAULT:
             break;
         case LOG_INFO:
-            os_print(DARK_WHITE, "[INFO]    ");
+            os_print(DEFAULT_COLOR, "[INFO]    ");
             break;
         case LOG_SUCCESS:
             os_print(LIGHT_GREEN, "[SUCCESS] ");

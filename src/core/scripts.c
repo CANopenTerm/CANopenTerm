@@ -187,7 +187,7 @@ bool has_valid_extension(const char* filename)
 status_t list_scripts(void)
 {
     status_t status;
-    table_t table = {DARK_CYAN, DARK_WHITE, 3, 10, 40};
+    table_t table = {DARK_CYAN, DEFAULT_COLOR, 3, 10, 40};
 
 #ifdef _WIN32
     init_script_search_paths();

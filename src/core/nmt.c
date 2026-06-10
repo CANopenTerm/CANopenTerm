@@ -104,7 +104,7 @@ status_t nmt_print_help(disp_mode_t disp_mode)
     }
     else
     {
-        table_t table = {DARK_CYAN, DARK_WHITE, 4, 5, 30};
+        table_t table = {DARK_CYAN, DEFAULT_COLOR, 4, 5, 30};
 
         status = table_init(&table, 1024);
         if (ALL_OK == status)
