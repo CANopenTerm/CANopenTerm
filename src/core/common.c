@@ -18,7 +18,7 @@ void list_file_type(const char* dir, const char* ext, uint32 active_no)
     const char* data_path = os_find_data_path();
     char file_path[512] = {0};
     DIR_t* d;
-    table_t table = {DARK_CYAN, DARK_WHITE, 3, 25, 1};
+    table_t table = {DARK_CYAN, DEFAULT_COLOR, 3, 25, 1};
     status_t status;
     uint32 status_width = 1;
 

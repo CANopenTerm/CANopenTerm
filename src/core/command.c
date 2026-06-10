@@ -450,7 +450,7 @@ static void convert_token_to_uint64(char* token, uint64* result)
 status_t print_usage_information(bool show_all)
 {
     status_t status;
-    table_t table = {DARK_CYAN, DARK_WHITE, 3, 45, 17};
+    table_t table = {DARK_CYAN, DEFAULT_COLOR, 3, 45, 17};
 
     status = table_init(&table, 1024);
     table_print_header(&table);

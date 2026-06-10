@@ -106,7 +106,7 @@ static uint64 pdo_send_callback(void* pdo_pt, uint32 id, uint64 interval)
 status_t pdo_print_help(void)
 {
     status_t status;
-    table_t table = {DARK_CYAN, DARK_WHITE, 13, 7, 7};
+    table_t table = {DARK_CYAN, DEFAULT_COLOR, 13, 7, 7};
 
     status = table_init(&table, 1024);
     if (ALL_OK == status)
