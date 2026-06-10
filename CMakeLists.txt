@@ -199,29 +199,42 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Redist/MSVC"
   )
 
-  set(MSVC_REDIST_DIR "")
-  foreach(DIR ${MSVC_REDIST_DIRS})
-    file(GLOB_RECURSE FOUND_DLL "${DIR}/*/x64/Microsoft.VC143.CRT/vcruntime140.dll")
-    if (FOUND_DLL)
-      get_filename_component(MSVC_REDIST_DIR ${FOUND_DLL} DIRECTORY)
-      break()
-    endif()
-  endforeach()
+set(MSVC_REDIST_DIR "")
 
-  if (MSVC_REDIST_DIR)
-    message(STATUS "Found vcruntime140.dll at ${MSVC_REDIST_DIR}")
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${MSVC_REDIST_DIR}/vcruntime140.dll"
-      $<TARGET_FILE_DIR:${PROJECT_NAME}>
+foreach(DIR ${MSVC_REDIST_DIRS})
+    file(GLOB_RECURSE FOUND_DLL
+        "${DIR}/vcruntime140.dll"
     )
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${MSVC_REDIST_DIR}/vcruntime140_threads.dll"
-      $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    )
-  else()
-    message(WARNING "vcruntime140.dll not found. Please ensure the Visual Studio redistributable is installed.")
-  endif()
+
+    foreach(DLL ${FOUND_DLL})
+        get_filename_component(CANDIDATE_DIR "${DLL}" DIRECTORY)
+
+        if(EXISTS "${CANDIDATE_DIR}/vcruntime140_threads.dll")
+            set(MSVC_REDIST_DIR "${CANDIDATE_DIR}")
+            break()
+        endif()
+    endforeach()
+
+    if(MSVC_REDIST_DIR)
+        break()
+    endif()
+endforeach()
+
+if(MSVC_REDIST_DIR)
+    message(STATUS "Found runtime DLLs at ${MSVC_REDIST_DIR}")
+
+    foreach(DLL
+        vcruntime140.dll
+        vcruntime140_threads.dll)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${MSVC_REDIST_DIR}/${DLL}"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        )
+    endforeach()
+else()
+    message(WARNING
+        "Runtime DLLs not found. Please ensure the Visual Studio redistributable is installed.")
+endif()
 
 endif()
