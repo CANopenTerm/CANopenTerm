@@ -108,9 +108,9 @@ cmake -DUSE_SYSTEM_LIBS=ON ..
 make
 ```
 
+This option is useful for distribution packaging or when
+building for embedded systems.
+
 ## Usage
 
 When CANopenTerm is open, type "h" to show a list of commands.
-
-This option is useful for distribution packaging or when
-building for embedded systems.
