@@ -177,7 +177,7 @@ ExternalProject_Add(cJSON_devel
 )
 
 # CANvenient
-set(CANVENIENT_VERSION     "1.01")
+set(CANVENIENT_VERSION     "1.02")
 set(CANVENIENT_DEVEL_PKG   "v${CANVENIENT_VERSION}.tar.gz")
 set(CANVENIENT_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
 set(CANVENIENT_INCLUDE_DIR ${CANVENIENT_PATH}/include)
@@ -185,7 +185,7 @@ set(CANVENIENT_LIBRARY     ${CANVENIENT_PATH}_build/libCANvenient.so)
 
 ExternalProject_Add(CANvenient_devel
   URL https://github.com/CANopenTerm/CANvenient/archive/refs/tags/${CANVENIENT_DEVEL_PKG}
-  URL_HASH SHA1=84cfaf870c5bd4537ca252aece1e33f77a83f7d2
+  URL_HASH SHA1=9b850bde87edf0bd5202d7cd0a8bd6dd0474a7aa
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
