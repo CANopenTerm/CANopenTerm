@@ -460,10 +460,10 @@ status_t print_usage_information(bool show_all)
 
     if (true == show_all)
     {
-        table_print_row(" b ", "(identifer)", "Set baud rate", &table);
+        table_print_row(" b ", "(identifier)", "Set baud rate", &table);
         table_print_row(" d ", "[file_no]", "Load data base", &table);
         table_print_row(" d ", "[index] [sub_index]", "Lookup dictionary", &table);
-        table_print_row(" y ", "(identifer)", "Set CAN channel", &table);
+        table_print_row(" y ", "(identifier)", "Set CAN channel", &table);
         table_print_row(" c ", " ", "Clear output", &table);
         table_print_row(" l ", " ", "List scripts", &table);
         table_print_row(" s ", "[identifier](.lua)", "Run script", &table);
