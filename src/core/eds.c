@@ -39,7 +39,7 @@ status_t run_conformance_test(const char* eds_path, const char* package, uint32 
 
     if (NULL == package)
     {
-        os_log(LOG_ERROR, "No package name provided: this should not happpen.");
+        os_log(LOG_ERROR, "No package name provided: this should not happen.");
         return OS_INVALID_ARGUMENT;
     }
 

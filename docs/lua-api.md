@@ -481,7 +481,7 @@ test_eds_file (node_id, file_name, [package])
 
 > **file_name** EDS file name.
 
-> **package** Package name, "EDS" if ommited.
+> **package** Package name, "EDS" if omitted.
 
 **Returns**: Nothing.
 

@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
                 os_printf("Usage: %s [OPTION]\n\n", argv[0]);
                 os_printf("    SCRIPT            Run script, implies -p\n");
                 os_printf("                      Can't be combined with other options\n\n");
-                os_printf("    -s SCRIPT         Run script (.lua can be ommited)\n");
+                os_printf("    -s SCRIPT         Run script (.lua can be omitted)\n");
                 os_printf("    -i INTERFACE      Set CAN interface\n");
                 os_printf("    -b BAUD           Set baud rate\n");
                 os_printf("                        1 = 1 MBit/s\n");
