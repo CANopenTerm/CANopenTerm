@@ -427,11 +427,11 @@ static void convert_token_to_uint(char* token, uint32* result)
 {
     if (('0' == token[0]) && ('x' == token[1]))
     {
-        *result = (uint32)os_strtol(token, NULL, 16);
+        *result = (uint32)os_strtoul(token, NULL, 16);
     }
     else
     {
-        *result = (uint32)os_strtol(token, NULL, 10);
+        *result = (uint32)os_strtoul(token, NULL, 10);
     }
 }
 
