@@ -685,15 +685,22 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
     msg_out.length = 8;
     msg_out.data[0] = cmd;
 
-    while (msg_out.data[0] != (cmd | 0x01))
+    /* Loop until the output frame has "no more segments" bit set */
+    while (! (msg_out.data[0] & 0x01))
     {
         msg_out.data[0] = cmd;
+
+        if (remaining_length < 7)
+        {
+            /* Calculate amount of non-data bytes in segment data */
+            msg_out.data[0] |= ((7 - remaining_length) << 1);
+        }
 
         for (i = 1; i <= 7; i++)
         {
             char* data_str = (char*)data;
 
-            if ((0 == remaining_length) || ((cmd | 0x01) == msg_out.data[0]))
+            if (0 == remaining_length)
             {
                 msg_out.data[i] = 0x00; /* Fill remaining bytes with 0x00. */
             }
@@ -707,7 +714,7 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
 
         if (0 == remaining_length) /* No more data left to send. */
         {
-            msg_out.data[0] = (cmd | 0x01);
+            msg_out.data[0] |= 0x01;
         }
 
         can_status = can_write(&msg_out, SILENT, NULL);
@@ -717,23 +724,33 @@ sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mo
             return ABORT_TRANSFER;
         }
 
-        if ((cmd | 0x01) == msg_out.data[0])
-        {
-            break;
-        }
-
         if (0 == wait_for_response(node_id, &msg_in))
         {
-            msg_out.data[0] = cmd;
-
-            switch (msg_in.data[0])
+            if (msg_in.length < 1)
             {
-                case DOWNLOAD_RESPONSE_1:
-                    cmd = UPLOAD_SEGMENT_CONTINUE_2;
-                    break;
-                case DOWNLOAD_RESPONSE_2:
-                    cmd = UPLOAD_SEGMENT_CONTINUE_1;
-                    break;
+                /* Invalid response */
+                abort_code = ABORT_CMD_SPECIFIER_INVALID_UNKNOWN;
+                os_snprintf(reason, 300, "0x%08x: %s", abort_code, sdo_lookup_abort_code(abort_code));
+                print_error(reason, IS_WRITE_SEGMENTED, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
+            }
+            if ((msg_in.data[0] & cmd) != (msg_out.data[0] & cmd))
+            {
+                /* Response's toggle bit does not match request */
+                abort_code = ABORT_TOGGLE_BIT_NOT_ALTERED;
+                os_snprintf(reason, 300, "0x%08x: %s", abort_code, sdo_lookup_abort_code(abort_code));
+                print_error(reason, IS_WRITE_SEGMENTED, node_id, index, sub_index, comment, disp_mode);
+                return ABORT_TRANSFER;
+            }
+
+            /* Alter toggle bit on every segment */
+            if (cmd == UPLOAD_SEGMENT_CONTINUE_1)
+            {
+                cmd = UPLOAD_SEGMENT_CONTINUE_2;
+            }
+            else
+            {
+                cmd = UPLOAD_SEGMENT_CONTINUE_1;
             }
         }
         else
