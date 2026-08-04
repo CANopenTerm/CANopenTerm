@@ -39,7 +39,7 @@ int lua_sdo_read(lua_State* L)
     char str_buffer[5] = {0};
     uint32 result;
 
-    limit_node_id((uint8*)&node_id);
+    limit_node_id((uint32*)&node_id);
 
     if (true == show_output)
     {
@@ -49,7 +49,7 @@ int lua_sdo_read(lua_State* L)
     sdo_state = sdo_read(
         &sdo_response,
         disp_mode,
-        (uint8)node_id,
+        (uint32)node_id,
         (uint16)index,
         (uint16)sub_index,
         comment);
@@ -97,7 +97,7 @@ int lua_sdo_write(lua_State* L)
     bool show_output = lua_toboolean(L, 6);
     const char* comment = lua_tostring(L, 7);
 
-    limit_node_id((uint8*)&node_id);
+    limit_node_id((uint32*)&node_id);
 
     if (true == show_output)
     {
@@ -107,7 +107,7 @@ int lua_sdo_write(lua_State* L)
     sdo_state = sdo_write(
         &sdo_response,
         disp_mode,
-        (uint8)node_id,
+        (uint32)node_id,
         (uint16)index,
         (uint8)sub_index,
         (uint32)length,
@@ -146,7 +146,7 @@ int lua_sdo_write_file(lua_State* L)
     status = sdo_write_block(
         &sdo_response,
         disp_mode,
-        (uint8)node_id,
+        (uint32)node_id,
         (uint16)index,
         (uint8)sub_index,
         filename,
@@ -196,7 +196,7 @@ int lua_sdo_write_string(lua_State* L)
     status = sdo_write_segmented(
         &sdo_response,
         disp_mode,
-        (uint8)node_id,
+        (uint32)node_id,
         (uint16)index,
         (uint8)sub_index,
         length,

@@ -26,7 +26,7 @@ int lua_nmt_send_command(lua_State* L)
     bool show_output = lua_toboolean(L, 3);
     const char* comment = lua_tostring(L, 4);
 
-    limit_node_id((uint8*)&node_id);
+    limit_node_id((uint32*)&node_id);
 
     if (true == show_output)
     {

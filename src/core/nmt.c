@@ -14,7 +14,7 @@
 
 void nmt_print_error(const char* reason, nmt_command_t command, disp_mode_t disp_mode);
 
-status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
+status_t nmt_send_command(uint32 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment)
 {
     status_t status = ALL_OK;
     uint32 can_status = 0;

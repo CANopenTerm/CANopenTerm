@@ -46,7 +46,7 @@ bool py_nmt_send_command(int argc, py_Ref argv)
     show_output = py_tobool(py_arg(2));
     comment = py_tostr(py_arg(3));
 
-    limit_node_id((uint8*)&node_id);
+    limit_node_id((uint32*)&node_id);
 
     if (true == show_output)
     {

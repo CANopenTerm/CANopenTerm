@@ -96,7 +96,7 @@ const char* sdo_lookup_abort_code(uint32 abort_code)
     }
 }
 
-sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, const char* comment)
+sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 node_id, uint16 index, uint8 sub_index, const char* comment)
 {
     can_message_t msg_in = {0};
     can_message_t msg_out = {0};
@@ -284,7 +284,7 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 n
     return sdo_state;
 }
 
-sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment)
+sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment)
 {
     can_message_t msg_in = {0};
     can_message_t msg_out = {0};
@@ -375,7 +375,7 @@ sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 
     return IS_WRITE_EXPEDITED;
 }
 
-sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, const char* filename, const char* comment)
+sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 node_id, uint16 index, uint8 sub_index, const char* filename, const char* comment)
 {
     can_message_t msg_in = {0};
     can_message_t msg_out = {0};
@@ -615,7 +615,7 @@ sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, 
     return IS_WRITE_BLOCK;
 }
 
-sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mode, uint8 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment)
+sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment)
 {
     can_message_t msg_in = {0};
     can_message_t msg_out = {0};

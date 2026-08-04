@@ -425,7 +425,14 @@ void parse_command(char* input, core_t* core)
 
 static void convert_token_to_uint(char* token, uint32* result)
 {
-    if (('0' == token[0]) && ('x' == token[1]))
+    if (NULL == token)
+    {
+        *result = 0;
+        return;
+    }
+
+    /* Check for hex format (0x or 0X prefix) */
+    if (token[0] == '0' && (token[1] == 'x' || token[1] == 'X'))
     {
         *result = (uint32)os_strtoul(token, NULL, 16);
     }

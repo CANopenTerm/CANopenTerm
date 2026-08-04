@@ -20,7 +20,7 @@
 
 void test_can_limit_node_id(void** state)
 {
-	uint8 node_id;
+	uint32 node_id;
 
 	(void)state;
 
@@ -37,6 +37,15 @@ void test_can_limit_node_id(void** state)
 	assert_int_equal(node_id, 0x7f);
 
 	node_id = 0xff;
+	limit_node_id(&node_id);
+	assert_int_equal(node_id, 0x7f);
+
+	/* Test that oversized values are capped to 0x7f, not masked */
+	node_id = 0x800;
+	limit_node_id(&node_id);
+	assert_int_equal(node_id, 0x7f);
+
+	node_id = 0x7ff;
 	limit_node_id(&node_id);
 	assert_int_equal(node_id, 0x7f);
 }

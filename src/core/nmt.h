@@ -23,7 +23,7 @@ typedef enum
 
 } nmt_command_t;
 
-status_t nmt_send_command(uint8 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment);
+status_t nmt_send_command(uint32 node_id, nmt_command_t command, disp_mode_t disp_mode, const char* comment);
 status_t nmt_print_help(disp_mode_t disp_mode);
 
 #endif /* NMT_H */

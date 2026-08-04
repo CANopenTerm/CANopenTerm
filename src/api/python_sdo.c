@@ -10,8 +10,8 @@
 #include "core.h"
 #include "dict.h"
 #include "os.h"
-#include <pocketpy.h>
 #include "sdo.h"
+#include <pocketpy.h>
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
@@ -78,7 +78,7 @@ bool py_sdo_read(int argc, py_Ref argv)
     show_output = py_tobool(py_arg(3));
     comment = py_tostr(py_arg(4));
 
-    limit_node_id((uint8*)&node_id);
+    limit_node_id((uint32*)&node_id);
 
     if (true == show_output)
     {
@@ -141,7 +141,7 @@ bool py_sdo_write(int argc, py_Ref argv)
     show_output = py_tobool(py_arg(5));
     comment = py_tostr(py_arg(6));
 
-    limit_node_id((uint8*)&node_id);
+    limit_node_id((uint32*)&node_id);
 
     if (true == show_output)
     {

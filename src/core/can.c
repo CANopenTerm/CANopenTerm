@@ -37,8 +37,9 @@ static uint32 pcan_channel_count;
 static int can_monitor(void* core);
 static void find_can_channel(core_t* core, enum can_baudrate baud);
 
-void limit_node_id(uint8* node_id)
+void limit_node_id(uint32* node_id)
 {
+    /* Limit to 7-bit CANopen node ID range (1-127) */
     if (*node_id > 0x7f)
     {
         *node_id = 0x7f;
