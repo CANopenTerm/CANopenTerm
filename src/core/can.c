@@ -42,6 +42,7 @@ void limit_node_id(uint32* node_id)
     /* Limit to 7-bit CANopen node ID range (1-127) */
     if (*node_id > 0x7f)
     {
+        os_log(LOG_WARNING, "Node ID %u is out of range (1-127). Limiting to 127.", *node_id);
         *node_id = 0x7f;
     }
 }
