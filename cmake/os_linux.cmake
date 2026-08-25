@@ -140,12 +140,12 @@ if (USE_SYSTEM_LIBS)
   )
 
   install(
-    PROGRAMS ${CMAKE_BINARY_DIR}/CANopenTerm
+    PROGRAMS $<TARGET_FILE:CANopenTerm>
     DESTINATION /usr/bin
   )
 
   install(
-    PROGRAMS ${CMAKE_BINARY_DIR}/codb2json
+    PROGRAMS $<TARGET_FILE:codb2json>
     DESTINATION /usr/bin
   )
 
