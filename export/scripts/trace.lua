@@ -7,11 +7,13 @@ License: Public domain
 
 local core = require "core"
 local obd2 = require "obd2.init"
+local isobus = require "isobus.init"
 
 local initial_timestamp_us
 local trace_filename
 local message_number = 1
 local write_trace    = true
+local data_type      = "generic"  -- "obd2", "isobus", or "generic"
 
 local function generate_trace_filename()
     local  timestamp = os.date("%Y%m%d_%H%M%S")
@@ -87,11 +89,25 @@ if is_obd2_data == nil then
 end
 
 is_obd2_data = is_obd2_data:lower()
-if is_obd2_data ~= "yes" and is_obd2_data ~= "y" then
-  is_obd2_data = false
+if is_obd2_data == "yes" or is_obd2_data == "y" then
+  data_type = "obd2"
 else
-  is_obd2_data = true
+  -- Check for ISOBUS data
+  local is_isobus_data = core.select_variable("Is the data provided ISOBUS (ISO 11783)? [y/N]")
+  if is_isobus_data == nil then
+    print("Exiting.")
+    return
+  end
+
+  is_isobus_data = is_isobus_data:lower()
+  if is_isobus_data == "yes" or is_isobus_data == "y" then
+    data_type = "isobus"
+  else
+    data_type = "generic"
+  end
 end
+
+print(string.format("Data type selected: %s", data_type))
 
 can_flush()
 print("\nTime         CAN-ID  Length  Data                     Description")
@@ -115,10 +131,14 @@ while not key_is_hit() do
         local timestamp_fraction = math.floor(((elapsed_us / 1000) % 1) * 1000)
         local can_data_desc      = nil
 
-        if is_obd2_data and obd2 then
+        if data_type == "obd2" and obd2 then
             can_data_desc = obd2.parse(id, length, data)
-        elseif is_obd2_data and not obd2 then
+        elseif data_type == "obd2" and not obd2 then
             can_data_desc = "OBD-II module not available"
+        elseif data_type == "isobus" and isobus then
+            can_data_desc = isobus.parse(id, length, data)
+        elseif data_type == "isobus" and not isobus then
+            can_data_desc = "ISOBUS module not available"
         else
             can_data_desc = dict_lookup_raw(id, length, data)
         end

@@ -5,6 +5,7 @@
 !scripts
 !tests
 !core
+!isobus
 !obd2
 !.gitignore
 !*.dbc
