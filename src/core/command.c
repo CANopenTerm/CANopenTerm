@@ -352,10 +352,19 @@ void parse_command(char* input, core_t* core)
                 token = os_strtokr_r(input_savptr, delim, &input_savptr);
                 if (token != NULL)
                 {
-                    convert_token_to_uint(token, &sdo_data);
+                    if (sdo_data_length > 4)
+                    {
+                        /* For data larger than 4 bytes, treat as hex string */
+                        sdo_state = IS_WRITE_SEGMENTED;
+                        os_strlcpy(buffer, token, sizeof(buffer));
+                    }
+                    else
+                    {
+                        /* For data up to 4 bytes, convert as numeric value */
+                        convert_token_to_uint(token, &sdo_data);
+                        os_memcpy(buffer, &sdo_data, sizeof(uint32));
+                    }
                 }
-
-                os_memcpy(buffer, &sdo_data, sizeof(uint32));
             }
             else
             {
