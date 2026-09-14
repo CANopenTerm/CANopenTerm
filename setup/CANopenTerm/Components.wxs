@@ -120,6 +120,9 @@
 		</ComponentGroup>
 		<ComponentGroup Id="ScriptsComponents" Directory="SCRIPTSFOLDER">
 			<Component>
+				<File Source="../../export/scripts/csv.lua" />
+			</Component>
+			<Component>
 				<File Source="../../export/scripts/dashboard.lua" />
 			</Component>
 			<Component>
