@@ -426,6 +426,30 @@ void parse_command(char* input, core_t* core)
 
         run_script(token, core);
     }
+    else if (0 == os_strncmp(token, "x", 1))
+    {
+        can_message_t msg = {0};
+        uint32 message_count = 0;
+
+        /* Clear all pending CAN messages from buffer */
+        while (0 == can_read(&msg))
+        {
+            if (msg.id != 0)
+            {
+                message_count++;
+            }
+            os_memset(&msg, 0, sizeof(msg));
+        }
+
+        if (message_count > 0)
+        {
+            os_log(LOG_INFO, "Cleared %u pending CAN message(s) from buffer", message_count);
+        }
+        else
+        {
+            os_log(LOG_INFO, "CAN buffer is empty");
+        }
+    }
     else
     {
         print_usage_information(false);
@@ -481,6 +505,7 @@ status_t print_usage_information(bool show_all)
         table_print_row(" d ", "[index] [sub_index]", "Lookup dictionary", &table);
         table_print_row(" y ", "(identifier)", "Set CAN channel", &table);
         table_print_row(" c ", " ", "Clear output", &table);
+        table_print_row(" x ", " ", "Clear operations", &table);
         table_print_row(" l ", " ", "List scripts", &table);
         table_print_row(" s ", "[identifier](.lua)", "Run script", &table);
     }
