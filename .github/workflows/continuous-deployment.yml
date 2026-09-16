@@ -46,6 +46,24 @@ jobs:
           cmake -G "Ninja" -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
           cmake --build build
 
+      - name: Debug - Check build results
+        run: |
+          Write-Host "=== After CMake build ==="
+          Write-Host "`nDirectory structure:"
+          Get-ChildItem -Path "." -Directory | Select-Object Name
+
+          if (Test-Path "export") {
+            Write-Host "`nexport directory contents:"
+            Get-ChildItem -Path "export" -Recurse | Format-Table FullName
+          } else {
+            Write-Host "`nexport directory does NOT exist"
+          }
+
+          if (Test-Path "build") {
+            Write-Host "`nbuild directory - looking for binaries:"
+            Get-ChildItem -Path "build" -Recurse -Include "*.exe", "*.dll" | Format-Table FullName
+          }
+
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v3
 
@@ -59,36 +77,63 @@ jobs:
 
       - name: Prepare artifacts for zip
         run: |
+          Write-Host "=== ARTIFACT PREPARATION ==="
           $artifactDir = "artifacts"
-          New-Item -ItemType Directory -Path $artifactDir -Force
+          New-Item -ItemType Directory -Path $artifactDir -Force | Out-Null
 
-          # Copy executables and DLLs from export directory (where CMake outputs them)
-          if (Test-Path "export") {
-            # Copy all .exe files
-            Get-ChildItem -Path "export" -Include "*.exe" -ErrorAction SilentlyContinue | ForEach-Object {
-              Write-Host "Copying executable: $($_.FullName)"
-              Copy-Item -Path $_.FullName -Destination $artifactDir -Force
+          $filesFound = 0
+
+          # Check all possible locations for executables and DLLs
+          Write-Host "`nSearching for executables..."
+          foreach ($searchPath in @(".", "export", "build")) {
+            if (Test-Path $searchPath) {
+              $exeFiles = Get-ChildItem -Path $searchPath -Recurse -Include "*.exe" -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "CANopenTerm|codb2json" }
+              if ($exeFiles) {
+                foreach ($file in $exeFiles) {
+                  Write-Host "Found: $($file.FullName)"
+                  Copy-Item -Path $file.FullName -Destination $artifactDir -Force
+                  $filesFound++
+                }
+              }
             }
-
-            # Copy all .dll files
-            Get-ChildItem -Path "export" -Include "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
-              Write-Host "Copying DLL: $($_.FullName)"
-              Copy-Item -Path $_.FullName -Destination $artifactDir -Force
-            }
-
-            # Copy data directories
-            if (Test-Path "export\codb") { Copy-Item -Path "export\codb" -Destination "$artifactDir" -Recurse -Force }
-            if (Test-Path "export\dbc") { Copy-Item -Path "export\dbc" -Destination "$artifactDir" -Recurse -Force }
-            if (Test-Path "export\eds") { Copy-Item -Path "export\eds" -Destination "$artifactDir" -Recurse -Force }
-            if (Test-Path "export\scripts") { Copy-Item -Path "export\scripts" -Destination "$artifactDir" -Recurse -Force }
-          } else {
-            Write-Host "ERROR: export directory not found!"
-            Get-ChildItem -Path "." -Directory | Select-Object Name
           }
 
-          # List final contents
-          Write-Host "`n=== Final artifacts directory ==="
-          Get-ChildItem -Path $artifactDir -Recurse | Format-Table FullName
+          Write-Host "`nSearching for DLLs..."
+          foreach ($searchPath in @(".", "export", "build")) {
+            if (Test-Path $searchPath) {
+              $dllFiles = Get-ChildItem -Path $searchPath -Recurse -Include "*.dll" -ErrorAction SilentlyContinue
+              if ($dllFiles) {
+                foreach ($file in $dllFiles) {
+                  Write-Host "Found: $($file.FullName)"
+                  Copy-Item -Path $file.FullName -Destination $artifactDir -Force
+                  $filesFound++
+                }
+              }
+            }
+          }
+
+          Write-Host "`nSearching for data directories..."
+          foreach ($dir in @("codb", "dbc", "eds", "scripts")) {
+            if (Test-Path "export\$dir") {
+              Write-Host "Found: export\$dir"
+              Copy-Item -Path "export\$dir" -Destination "$artifactDir" -Recurse -Force
+              $filesFound++
+            } elseif (Test-Path "$dir") {
+              Write-Host "Found: $dir"
+              Copy-Item -Path $dir -Destination "$artifactDir" -Recurse -Force
+              $filesFound++
+            }
+          }
+
+          Write-Host "`n=== RESULTS ==="
+          Write-Host "Files/dirs copied: $filesFound"
+          Write-Host "`nArtifacts directory contents:"
+          $artifacts = Get-ChildItem -Path $artifactDir -Recurse
+          if ($artifacts) {
+            $artifacts | Format-Table FullName
+          } else {
+            Write-Host "WARNING: Artifacts directory is EMPTY!"
+          }
 
       - name: Create zip archive
         run: |
