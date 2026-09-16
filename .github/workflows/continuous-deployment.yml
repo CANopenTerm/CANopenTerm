@@ -57,11 +57,36 @@ jobs:
           cd setup
           msbuild /p:Configuration=Release /p:Platform=x64
 
+      - name: Prepare artifacts for zip
+        run: |
+          $artifactDir = "artifacts"
+          New-Item -ItemType Directory -Path $artifactDir -Force
+
+          # Copy core executable and DLLs
+          Copy-Item -Path "build\Release\CANopenTerm.exe" -Destination $artifactDir -Force
+          Copy-Item -Path "build\Release\*.dll" -Destination $artifactDir -Force
+
+          # Copy data directories
+          if (Test-Path "export") {
+            Copy-Item -Path "export\codb" -Destination "$artifactDir" -Recurse -Force
+            Copy-Item -Path "export\dbc" -Destination "$artifactDir" -Recurse -Force
+            Copy-Item -Path "export\eds" -Destination "$artifactDir" -Recurse -Force
+            Copy-Item -Path "export\scripts" -Destination "$artifactDir" -Recurse -Force
+          }
+
+      - name: Create zip archive
+        run: |
+          $artifactDir = "artifacts"
+          $zipFile = "CANopenTerm.zip"
+          Compress-Archive -Path "$artifactDir\*" -DestinationPath $zipFile -Force
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
         with:
           name: build-artifacts
-          path: setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
+          path: |
+            setup/CANopenTerm/bin/x64/Release/en-US/CANopenTerm.msi
+            CANopenTerm.zip
 
   Publish:
     if: github.event_name != 'pull_request'
@@ -82,6 +107,7 @@ jobs:
       with:
         files: |
           CANopenTerm.msi
+          CANopenTerm.zip
         tag_name: latest
         name: "Latest Build"
         body: "This is the latest build of CANopenTerm."
