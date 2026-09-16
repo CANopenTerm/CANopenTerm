@@ -62,29 +62,33 @@ jobs:
           $artifactDir = "artifacts"
           New-Item -ItemType Directory -Path $artifactDir -Force
 
-          # Find and copy all executables (.exe) from build directory recursively
-          Get-ChildItem -Path "build" -Recurse -Include "*.exe" | ForEach-Object {
-            Write-Host "Copying $($_.FullName) to $artifactDir"
-            Copy-Item -Path $_.FullName -Destination $artifactDir -Force
-          }
-
-          # Find and copy all DLLs from build directory recursively
-          Get-ChildItem -Path "build" -Recurse -Include "*.dll" | ForEach-Object {
-            Write-Host "Copying $($_.FullName) to $artifactDir"
-            Copy-Item -Path $_.FullName -Destination $artifactDir -Force
-          }
-
-          # Copy data directories
+          # Copy executables and DLLs from export directory (where CMake outputs them)
           if (Test-Path "export") {
+            # Copy all .exe files
+            Get-ChildItem -Path "export" -Include "*.exe" -ErrorAction SilentlyContinue | ForEach-Object {
+              Write-Host "Copying executable: $($_.FullName)"
+              Copy-Item -Path $_.FullName -Destination $artifactDir -Force
+            }
+
+            # Copy all .dll files
+            Get-ChildItem -Path "export" -Include "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
+              Write-Host "Copying DLL: $($_.FullName)"
+              Copy-Item -Path $_.FullName -Destination $artifactDir -Force
+            }
+
+            # Copy data directories
             if (Test-Path "export\codb") { Copy-Item -Path "export\codb" -Destination "$artifactDir" -Recurse -Force }
             if (Test-Path "export\dbc") { Copy-Item -Path "export\dbc" -Destination "$artifactDir" -Recurse -Force }
             if (Test-Path "export\eds") { Copy-Item -Path "export\eds" -Destination "$artifactDir" -Recurse -Force }
             if (Test-Path "export\scripts") { Copy-Item -Path "export\scripts" -Destination "$artifactDir" -Recurse -Force }
+          } else {
+            Write-Host "ERROR: export directory not found!"
+            Get-ChildItem -Path "." -Directory | Select-Object Name
           }
 
-          # List what we copied
-          Write-Host "Contents of artifacts directory:"
-          Get-ChildItem -Path $artifactDir -Recurse
+          # List final contents
+          Write-Host "`n=== Final artifacts directory ==="
+          Get-ChildItem -Path $artifactDir -Recurse | Format-Table FullName
 
       - name: Create zip archive
         run: |
