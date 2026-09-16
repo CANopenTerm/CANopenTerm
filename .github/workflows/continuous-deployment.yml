@@ -62,12 +62,16 @@ jobs:
           $artifactDir = "artifacts"
           New-Item -ItemType Directory -Path $artifactDir -Force
 
-          # Copy core executable and DLLs
-          if (Test-Path "build\CANopenTerm.exe") {
-            Copy-Item -Path "build\CANopenTerm.exe" -Destination $artifactDir -Force
+          # Find and copy all executables (.exe) from build directory recursively
+          Get-ChildItem -Path "build" -Recurse -Include "*.exe" | ForEach-Object {
+            Write-Host "Copying $($_.FullName) to $artifactDir"
+            Copy-Item -Path $_.FullName -Destination $artifactDir -Force
           }
-          if (Test-Path "build\*.dll") {
-            Copy-Item -Path "build\*.dll" -Destination $artifactDir -Force
+
+          # Find and copy all DLLs from build directory recursively
+          Get-ChildItem -Path "build" -Recurse -Include "*.dll" | ForEach-Object {
+            Write-Host "Copying $($_.FullName) to $artifactDir"
+            Copy-Item -Path $_.FullName -Destination $artifactDir -Force
           }
 
           # Copy data directories
@@ -77,6 +81,10 @@ jobs:
             if (Test-Path "export\eds") { Copy-Item -Path "export\eds" -Destination "$artifactDir" -Recurse -Force }
             if (Test-Path "export\scripts") { Copy-Item -Path "export\scripts" -Destination "$artifactDir" -Recurse -Force }
           }
+
+          # List what we copied
+          Write-Host "Contents of artifacts directory:"
+          Get-ChildItem -Path $artifactDir -Recurse
 
       - name: Create zip archive
         run: |
