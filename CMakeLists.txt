@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(CANopenTerm C)
-set(CMAKE_CXX_COMPILER_WORKS TRUE CACHE BOOL "C++ compiler works" FORCE)
-set(CMAKE_CXX_ABI_COMPILED TRUE CACHE BOOL "C++ ABI compiled" FORCE)
 
 # Workaround for Visual Studio misconfiguration on x64 builds
 # When building for x64 but x86 compiler is detected, automatically switch to x64 compiler
