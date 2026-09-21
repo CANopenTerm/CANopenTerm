@@ -1,5 +1,32 @@
 cmake_minimum_required(VERSION 3.16)
+
 project(CANopenTerm C)
+
+# Workaround for Visual Studio misconfiguration on x64 builds
+# When building for x64 but x86 compiler is detected, automatically switch to x64 compiler
+if(WIN32 AND CMAKE_C_COMPILER MATCHES "Hostx86|/x86/")
+  if(CMAKE_BINARY_DIR MATCHES "[xX]64|AMD64|amd64")
+    # Found x86 compiler in x64 build - switch to x64 compiler
+    string(REGEX REPLACE "Hostx86" "Hostx64" CMAKE_C_COMPILER_X64 "${CMAKE_C_COMPILER}")
+    string(REGEX REPLACE "/x86/" "/x64/" CMAKE_C_COMPILER_X64 "${CMAKE_C_COMPILER_X64}")
+
+    if(EXISTS "${CMAKE_C_COMPILER_X64}")
+      message(STATUS "Switching to x64 C compiler")
+      set(CMAKE_C_COMPILER "${CMAKE_C_COMPILER_X64}" CACHE FILEPATH "C compiler" FORCE)
+    endif()
+
+    # Also handle C++ compiler if present
+    if(DEFINED CMAKE_CXX_COMPILER AND CMAKE_CXX_COMPILER MATCHES "Hostx86|/x86/")
+      string(REGEX REPLACE "Hostx86" "Hostx64" CMAKE_CXX_COMPILER_X64 "${CMAKE_CXX_COMPILER}")
+      string(REGEX REPLACE "/x86/" "/x64/" CMAKE_CXX_COMPILER_X64 "${CMAKE_CXX_COMPILER_X64}")
+
+      if(EXISTS "${CMAKE_CXX_COMPILER_X64}")
+        message(STATUS "Switching to x64 C++ compiler")
+        set(CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER_X64}" CACHE FILEPATH "C++ compiler" FORCE)
+      endif()
+    endif()
+  endif()
+endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_CURRENT_SOURCE_DIR}/export)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/export)

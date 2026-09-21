@@ -1,17 +1,20 @@
 cmake_minimum_required(VERSION 3.16)
 
+# Include centralized dependency configuration
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/dependencies.cmake)
+
 if(BUILD_TESTS)
   # CMocka
-  set(CMocka_VERSION     "1.1.7")
-  set(CMocka_DEVEL_PKG   cmocka-${CMocka_VERSION}.tar.xz)
-  set(CMocka_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/cmocka-${CMocka_VERSION})
-  set(CMocka_BUILD_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/cmocka-${CMocka_VERSION}_build)
+  dep_cmocka()
+  set(CMocka_DEVEL_PKG   cmocka-${DEP_CMOCKA_VERSION}.tar.xz)
+  set(CMocka_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/cmocka-${DEP_CMOCKA_VERSION})
+  set(CMocka_BUILD_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/cmocka-${DEP_CMOCKA_VERSION}_build)
   set(CMocka_INCLUDE_DIR ${CMocka_PATH}/include)
   set(CMocka_LIBRARY     ${CMocka_BUILD_PATH}/src/libcmocka.a)
 
   ExternalProject_Add(CMocka_devel
-    URL https://cmocka.org/files/1.1/${CMocka_DEVEL_PKG}
-    URL_HASH SHA1=04cf44545a22e7182803a092a30af5c1a42c31bc
+    URL ${DEP_CMOCKA_URL_BASE}/${CMocka_DEVEL_PKG}
+    URL_HASH SHA1=${DEP_CMOCKA_SHA1}
     DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
     DOWNLOAD_NO_PROGRESS true
     DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -153,15 +156,15 @@ if (USE_SYSTEM_LIBS)
 endif()
 
 # cJSON
-set(CJSON_VERSION     "1.7.19")
-set(CJSON_DEVEL_PKG   "v${CJSON_VERSION}.tar.gz")
-set(CJSON_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CJSON-${CJSON_VERSION})
+dep_cjson()
+set(CJSON_DEVEL_PKG   "v${DEP_CJSON_VERSION}.tar.gz")
+set(CJSON_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CJSON-${DEP_CJSON_VERSION})
 set(CJSON_INCLUDE_DIR ${CJSON_PATH})
-set(CJSON_LIBRARY     ${CJSON_PATH}_build/libcjson.so.${CJSON_VERSION})
+set(CJSON_LIBRARY     ${CJSON_PATH}_build/libcjson.so.${DEP_CJSON_VERSION})
 
 ExternalProject_Add(cJSON_devel
-  URL https://github.com/DaveGamble/cJSON/archive/refs/tags/${CJSON_DEVEL_PKG}
-  URL_HASH SHA1=e66ddd2f99fd321ab53a694e6c74698eb987d056
+  URL ${DEP_CJSON_URL_BASE}/${CJSON_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_CJSON_SHA1_LINUX}
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -177,15 +180,15 @@ ExternalProject_Add(cJSON_devel
 )
 
 # CANvenient
-set(CANVENIENT_VERSION     "1.02")
-set(CANVENIENT_DEVEL_PKG   "v${CANVENIENT_VERSION}.tar.gz")
-set(CANVENIENT_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${CANVENIENT_VERSION})
+dep_canvenient()
+set(CANVENIENT_DEVEL_PKG   "v${DEP_CANVENIENT_VERSION}.tar.gz")
+set(CANVENIENT_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/CANvenient-${DEP_CANVENIENT_VERSION})
 set(CANVENIENT_INCLUDE_DIR ${CANVENIENT_PATH}/include)
 set(CANVENIENT_LIBRARY     ${CANVENIENT_PATH}_build/libCANvenient.so)
 
 ExternalProject_Add(CANvenient_devel
-  URL https://github.com/CANopenTerm/CANvenient/archive/refs/tags/${CANVENIENT_DEVEL_PKG}
-  URL_HASH SHA1=9b850bde87edf0bd5202d7cd0a8bd6dd0474a7aa
+  URL ${DEP_CANVENIENT_URL_BASE_LINUX}/${CANVENIENT_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_CANVENIENT_SHA1_LINUX}
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -201,15 +204,15 @@ ExternalProject_Add(CANvenient_devel
   )
 
 # pocketpy
-set(POCKETPY_VERSION     "2.1.8")
-set(POCKETPY_DEVEL_PKG   "v${POCKETPY_VERSION}.tar.gz")
-set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${POCKETPY_VERSION})
+dep_pocketpy()
+set(POCKETPY_DEVEL_PKG   "v${DEP_POCKETPY_VERSION}.tar.gz")
+set(POCKETPY_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/pocketpy-${DEP_POCKETPY_VERSION})
 set(POCKETPY_INCLUDE_DIR ${POCKETPY_PATH}/include)
 set(POCKETPY_LIBRARY     ${POCKETPY_PATH}_build/libpocketpy.a)
 
 ExternalProject_Add(pocketpy_devel
-  URL https://github.com/pocketpy/pocketpy/archive/refs/tags/${POCKETPY_DEVEL_PKG}
-  URL_HASH SHA1=25dcda6493c37a848e75d75a11ac17d84fa6d520
+  URL ${DEP_POCKETPY_URL_BASE}/${POCKETPY_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_POCKETPY_SHA1_LINUX}
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -228,15 +231,15 @@ ExternalProject_Add(pocketpy_devel
 )
 
 # inih
-set(INIH_VERSION     "58")
-set(INIH_DEVEL_PKG   r${INIH_VERSION}.zip)
-set(INIH_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/inih-${INIH_VERSION})
+dep_inih()
+set(INIH_DEVEL_PKG   r${DEP_INIH_VERSION}.zip)
+set(INIH_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/inih-${DEP_INIH_VERSION})
 set(INIH_INCLUDE_DIR ${INIH_PATH})
 set(INIH_LIBRARY     ${INIH_PATH}_build/libinih.a)
 
 ExternalProject_Add(inih_devel
-  URL https://github.com/benhoyt/inih/archive/refs/tags/${INIH_DEVEL_PKG}
-  URL_HASH SHA1=4ab39673da3a84ccf9828428616acced69f0528e
+  URL ${DEP_INIH_URL_BASE}/${INIH_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_INIH_SHA1_LINUX}
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -254,15 +257,15 @@ ExternalProject_Add(inih_devel
 )
 
 # isocline
-set(ISOCLINE_VERSION     "1.0.9")
-set(ISOCLINE_DEVEL_PKG   "v${ISOCLINE_VERSION}.tar.gz")
-set(ISOCLINE_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/isocline-${ISOCLINE_VERSION})
+dep_isocline()
+set(ISOCLINE_DEVEL_PKG   "v${DEP_ISOCLINE_VERSION}.tar.gz")
+set(ISOCLINE_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/isocline-${DEP_ISOCLINE_VERSION})
 set(ISOCLINE_INCLUDE_DIR ${ISOCLINE_PATH}/include)
 set(ISOCLINE_LIBRARY     ${ISOCLINE_PATH}_build/libisocline.a)
 
 ExternalProject_Add(isocline_devel
-  URL https://github.com/daanx/isocline/archive/refs/tags/${ISOCLINE_DEVEL_PKG}
-  URL_HASH SHA1=10bdca2e54a2d0a9960e7897e2e948c72e7801a9
+  URL ${DEP_ISOCLINE_URL_BASE}/${ISOCLINE_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_ISOCLINE_SHA1_LINUX}
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -277,15 +280,15 @@ ExternalProject_Add(isocline_devel
   )
 
 # Lua
-set(LUA_VERSION     "5.5.0")
-set(LUA_DEVEL_PKG   lua-${LUA_VERSION}.tar.gz)
-set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/lua-${LUA_VERSION}_${PLATFORM})
+dep_lua()
+set(LUA_DEVEL_PKG   lua-${DEP_LUA_VERSION}.tar.gz)
+set(LUA_PATH        ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/lua-${DEP_LUA_VERSION}_${PLATFORM})
 set(LUA_INCLUDE_DIR ${LUA_PATH}/src)
 set(LUA_LIBRARY     ${LUA_PATH}/liblua.a)
 
 ExternalProject_Add(Lua_devel
-  URL https://www.lua.org/ftp/${LUA_DEVEL_PKG}
-  URL_HASH SHA1=71c930fa188fd244f353f227175c6f5ee5b52f6a
+  URL ${DEP_LUA_URL_BASE}/${LUA_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_LUA_SHA1_LINUX}
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
@@ -303,13 +306,13 @@ ExternalProject_Add(Lua_devel
 )
 
 # SDL3
-set(SDL3_VERSION  "3.4.14")
-set(SDL3_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${SDL3_VERSION})
-set(SDL3_DEVEL_PKG SDL3-${SDL3_VERSION}.tar.gz)
+dep_sdl3()
+set(SDL3_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3-${DEP_SDL3_VERSION})
+set(SDL3_DEVEL_PKG SDL3-${DEP_SDL3_VERSION}.tar.gz)
 
 ExternalProject_Add(SDL3_devel
-  URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/${SDL3_DEVEL_PKG}
-  URL_HASH SHA1=5852ef231f8640f099477f634c7476173d2f3fff
+  URL ${DEP_SDL3_URL_BASE}/${SDL3_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_SDL3_SHA1_LINUX}
   DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
   DOWNLOAD_NO_PROGRESS true
   DOWNLOAD_EXTRACT_TIMESTAMP true
