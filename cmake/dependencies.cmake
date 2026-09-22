@@ -6,10 +6,10 @@ cmake_minimum_required(VERSION 3.16)
 
 # CMocka
 function(dep_cmocka)
-  set(DEP_CMOCKA_VERSION "1.1.7" PARENT_SCOPE)
-  set(DEP_CMOCKA_URL_BASE "https://cmocka.org/files/1.1" PARENT_SCOPE)
-  set(DEP_CMOCKA_PACKAGE_NAME "cmocka-1.1.7.tar.xz" PARENT_SCOPE)
-  set(DEP_CMOCKA_SHA1 "04cf44545a22e7182803a092a30af5c1a42c31bc" PARENT_SCOPE)
+  set(DEP_CMOCKA_VERSION "2.0.2" PARENT_SCOPE)
+  set(DEP_CMOCKA_URL_BASE "https://cmocka.org/files/2.0" PARENT_SCOPE)
+  set(DEP_CMOCKA_PACKAGE_NAME "cmocka-${DEP_CMOCKA_VERSION}.tar.xz" PARENT_SCOPE)
+  set(DEP_CMOCKA_SHA1 "4e22351f8bd8836d9359b287571eec2bcc937e0e" PARENT_SCOPE)
 endfunction()
 
 # cJSON
