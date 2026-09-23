@@ -43,16 +43,19 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
         return;
     }
 
-    r = (WIDGET_COLOR & 0xff0000) >> 16;
-    g = (WIDGET_COLOR & 0x00ff00) >> 8;
-    b = (WIDGET_COLOR & 0x0000ff);
+    uint32 widget_color = palette_get_color(WIDGET_COLOR);
+    uint32 highlight_color = palette_get_color(WIDGET_COLOR_HIGHLIGHT);
+
+    r = (widget_color & 0xff0000) >> 16;
+    g = (widget_color & 0x00ff00) >> 8;
+    b = (widget_color & 0x0000ff);
 
     os_set_color(renderer, r, g, b, 0xff);
     draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, true);
 
-    r = (WIDGET_COLOR_HIGHLIGHT & 0xff0000) >> 16;
-    g = (WIDGET_COLOR_HIGHLIGHT & 0x00ff00) >> 8;
-    b = (WIDGET_COLOR_HIGHLIGHT & 0x0000ff);
+    r = (highlight_color & 0xff0000) >> 16;
+    g = (highlight_color & 0x00ff00) >> 8;
+    b = (highlight_color & 0x0000ff);
 
     os_set_color(renderer, r, g, b, 0xff);
     draw_circle(renderer, pos_x + (size / 2), pos_y + (size / 2), size / 2, false);
@@ -69,9 +72,12 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     needle_x = center_x + (int)(needle_length * SDL_cos(radians));
     needle_y = center_y - (int)(needle_length * SDL_sin(radians));
 
-    r = (DRAW_COLOR & 0xff0000) >> 16;
-    g = (DRAW_COLOR & 0x00ff00) >> 8;
-    b = (DRAW_COLOR & 0x0000ff);
+    uint32 draw_color = palette_get_color(DRAW_COLOR);
+    uint32 draw_white = palette_get_color(DRAW_WHITE);
+
+    r = (draw_color & 0xff0000) >> 16;
+    g = (draw_color & 0x00ff00) >> 8;
+    b = (draw_color & 0x0000ff);
 
     os_set_color(renderer, r, g, b, 0xff);
     os_draw_line(renderer, center_x, center_y, needle_x, needle_y);
@@ -83,5 +89,5 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     widget_print(
         pos_x + (size / 2) - (text_width / 2),
         pos_y + size / 2 + (CHAR_HEIGHT * 2),
-        DRAW_WHITE, scale, "%s", buffer);
+        draw_white, scale, "%s", buffer);
 }

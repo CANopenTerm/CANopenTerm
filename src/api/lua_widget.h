@@ -18,6 +18,7 @@ int lua_window_is_shown(lua_State* L);
 int lua_hide_window(lua_State* L);
 int lua_show_window(lua_State* L);
 int lua_widget_tachometer(lua_State* L);
+int lua_widget_theme(lua_State* L);
 void lua_register_widget_commands(core_t* core);
 
 #endif /* LUA_WIDGET_H */

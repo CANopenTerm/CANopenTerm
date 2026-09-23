@@ -13,9 +13,10 @@
 #include "core.h"
 #include "led.h"
 #include "os.h"
-#include <pocketpy.h>
+#include "palette.h"
 #include "tachometer.h"
 #include "window.h"
+#include <pocketpy.h>
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
@@ -29,6 +30,7 @@ bool py_widget_bargraph(int argc, py_Ref argv);
 bool py_widget_led(int argc, py_Ref argv);
 bool py_widget_print(int argc, py_Ref argv);
 bool py_widget_tachometer(int argc, py_Ref argv);
+bool py_widget_theme(int argc, py_Ref argv);
 
 void python_widget_init(void)
 {
@@ -45,6 +47,7 @@ void python_widget_init(void)
     py_bindfunc(mod, "widget_bargraph", py_widget_bargraph);
     py_bindfunc(mod, "widget_led", py_widget_led);
     py_bindfunc(mod, "widget_tachometer", py_widget_tachometer);
+    py_bindfunc(mod, "widget_theme", py_widget_theme);
 }
 
 bool py_window_clear(int argc, py_Ref argv)
@@ -225,6 +228,21 @@ bool py_widget_tachometer(int argc, py_Ref argv)
     value = (uint32)py_toint(py_arg(4));
 
     widget_tachometer(pos_x, pos_y, size, (const uint32)max, value);
+
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_theme(int argc, py_Ref argv)
+{
+    pal_theme_t theme;
+
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    theme = (pal_theme_t)py_toint(py_arg(0));
+
+    palette_set_theme(theme);
 
     py_newnone(py_retval());
     return true;

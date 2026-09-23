@@ -394,9 +394,10 @@ void os_clear_window(os_renderer* renderer)
 {
     if (renderer)
     {
-        uint8 r = (BG_COLOR & 0xff0000) >> 16;
-        uint8 g = (BG_COLOR & 0x00ff00) >> 8;
-        uint8 b = (BG_COLOR & 0x0000ff);
+        uint32 bg_color = palette_get_color(BG_COLOR);
+        uint8 r = (bg_color & 0xff0000) >> 16;
+        uint8 g = (bg_color & 0x00ff00) >> 8;
+        uint8 b = (bg_color & 0x0000ff);
 
         SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
         SDL_RenderClear(renderer);

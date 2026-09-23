@@ -26,6 +26,10 @@ Always verify supported PIDs.
 -- Hide the console and show the graphical window.
 console_hide()
 window_show()
+widget_theme(3)
+
+-- Give the window time to initialize properly
+delay_ms(100)
 
 -- Global state variables.
 offset = 10              -- Horizontal offset for widget positioning.
@@ -141,6 +145,12 @@ function process_obd_response(id, data)
 end
 
 function calculate_layout(width, height)
+    -- Use default dimensions if window hasn't initialized yet
+    if width == 0 or height == 0 then
+        width = 800
+        height = 600
+    end
+
     local layout = {}
     layout.size = width / 3
     layout.spacing = width / 6

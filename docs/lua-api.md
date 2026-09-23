@@ -992,6 +992,45 @@ widget_tachometer (pos_x, pos_y, size, max, value)
 
 <!-- tabs:end -->
 
+### widget_theme()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set the color theme for widget rendering.
+
+```lua
+widget_theme (theme)
+```
+
+> **theme** Theme ID (0-9). Available themes:
+> - `0` = NEON_ECLIPSE (default, purple/cyan)
+> - `1` = OBSIDIAN_LUXE (gold/dark)
+> - `2` = DEEP_OCEAN (cyan/blue)
+> - `3` = EMBER_CORE (orange/warm)
+> - `4` = TOXIC_LAB (green/neon)
+> - `5` = ARCTIC_DAY (blue/white)
+> - `6` = IVORY_LUXE (cream/gold)
+> - `7` = SKYLINE (cyan/blue)
+> - `8` = SUNLIT_EMBER (orange/warm)
+> - `9` = MINT_LAB (green/mint)
+
+**Returns**: Nothing.
+
+**Since**: 2.04
+
+<!-- tab:Example -->
+```lua
+-- Switch to Obsidian Luxe theme
+widget_theme(1)
+
+-- Draw widgets with the new theme
+window_show()
+widget_print(10, 10, "Luxe Theme", 2)
+widget_led(50, 50, 16, true)
+window_update()
+```
+<!-- tabs:end -->
+
 ## Utilities
 
 <!-- tabs:start -->

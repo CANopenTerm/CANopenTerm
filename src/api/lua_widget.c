@@ -14,6 +14,7 @@
 #include "led.h"
 #include "lua.h"
 #include "os.h"
+#include "palette.h"
 #include "tachometer.h"
 #include "window.h"
 
@@ -130,6 +131,14 @@ int lua_widget_tachometer(lua_State* L)
     return 0;
 }
 
+int lua_widget_theme(lua_State* L)
+{
+    pal_theme_t theme = (pal_theme_t)luaL_checkinteger(L, 1);
+
+    palette_set_theme(theme);
+    return 0;
+}
+
 void lua_register_widget_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_window_clear);
@@ -152,4 +161,6 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "widget_print");
     lua_pushcfunction(core->L, lua_widget_tachometer);
     lua_setglobal(core->L, "widget_tachometer");
+    lua_pushcfunction(core->L, lua_widget_theme);
+    lua_setglobal(core->L, "widget_theme");
 }

@@ -16,29 +16,32 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
 {
     os_renderer* renderer = window_get_renderer();
     os_rect box = {pos_x, pos_y, width, height};
-    pal_color_t colors[] = {STATUS_BAR_LOW_1, STATUS_BAR_LOW_2, STATUS_BAR_MID_1, STATUS_BAR_MID_2, STATUS_BAR_HIGH_1, STATUS_BAR_HIGH_2};
-    pal_color_t color;
+    pal_color_t color_indices[] = {STATUS_BAR_LOW_1, STATUS_BAR_LOW_2, STATUS_BAR_MID_1, STATUS_BAR_MID_2, STATUS_BAR_HIGH_1, STATUS_BAR_HIGH_2};
+    uint32 color;
     uint32 i;
     uint32 num_bars = width - 2;
     uint32 filled_bars;
     uint32 color_index;
     uint8 r, g, b;
+    uint32 widget_color = palette_get_color(WIDGET_COLOR);
+    uint32 highlight_color = palette_get_color(WIDGET_COLOR_HIGHLIGHT);
+    uint32 draw_white = palette_get_color(DRAW_WHITE);
 
     if (! renderer || max == 0)
     {
         return;
     }
 
-    r = (WIDGET_COLOR & 0xff0000) >> 16;
-    g = (WIDGET_COLOR & 0x00ff00) >> 8;
-    b = (WIDGET_COLOR & 0x0000ff);
+    r = (widget_color & 0xff0000) >> 16;
+    g = (widget_color & 0x00ff00) >> 8;
+    b = (widget_color & 0x0000ff);
 
     os_set_color(renderer, r, g, b, 0xff);
     os_draw_fill_rect(renderer, &box);
 
-    r = (WIDGET_COLOR_HIGHLIGHT & 0xff0000) >> 16;
-    g = (WIDGET_COLOR_HIGHLIGHT & 0x00ff00) >> 8;
-    b = (WIDGET_COLOR_HIGHLIGHT & 0x0000ff);
+    r = (highlight_color & 0xff0000) >> 16;
+    g = (highlight_color & 0x00ff00) >> 8;
+    b = (highlight_color & 0x0000ff);
 
     os_set_color(renderer, r, g, b, 0xff);
     os_draw_rect(renderer, &box);
@@ -52,7 +55,7 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
         color_index = 5;
     }
 
-    color = colors[color_index];
+    color = palette_get_color(color_indices[color_index]);
 
     r = (color & 0xff0000) >> 16;
     g = (color & 0x00ff00) >> 8;
@@ -64,5 +67,5 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
         os_draw_line(renderer, pos_x + 1 + i, pos_y + 1, pos_x + 1 + i, pos_y + height - 2);
     }
 
-    widget_print(pos_x + 2, pos_y + 2, DRAW_WHITE, 1u, "%d/%d", value, max);
+    widget_print(pos_x + 2, pos_y + 2, draw_white, 1u, "%d/%d", value, max);
 }
