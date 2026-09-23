@@ -124,9 +124,10 @@ static void draw_char(char c, int x, int y, pal_color_t color, uint8 scale)
     const char_t* glyph;
     int row, col, dx, dy;
 
-    uint8 r = (color & 0xff0000) >> 16;
-    uint8 g = (color & 0x00ff00) >> 8;
-    uint8 b = (color & 0x0000ff);
+    uint32 actual_color = palette_get_color(color);
+    uint8 r = (actual_color & 0xff0000) >> 16;
+    uint8 g = (actual_color & 0x00ff00) >> 8;
+    uint8 b = (actual_color & 0x0000ff);
 
     if (c < 32 || c > 127)
     {
