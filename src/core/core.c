@@ -135,6 +135,9 @@ void core_deinit(core_t* core)
         return;
     }
 
+    /* Signal threads to exit gracefully before cleanup */
+    core->is_running = false;
+
     test_clear_results();
     can_quit(core);
     codb_deinit();

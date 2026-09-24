@@ -21,8 +21,8 @@ void handle_sigint(int sig)
     os_log(LOG_INFO, "Ctrl+C pressed. Cleaning up...");
     if (core != NULL)
     {
-        core_deinit(core);
-        core = NULL;
+        /* Signal graceful shutdown to all threads. */
+        core->is_running = false;
     }
     exit(EXIT_SUCCESS);
 }

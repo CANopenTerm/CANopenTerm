@@ -23,8 +23,8 @@ BOOL WINAPI handle_ctrl_c(DWORD signal)
             printf("\r");
             os_log(LOG_INFO, "Ctrl+C pressed. Cleaning up...");
             fflush(stdout);
-            core_deinit(core);
-            core = NULL;
+            /* Signal graceful shutdown to all threads. */
+            core->is_running = false;
         }
         exit(EXIT_SUCCESS);
     }
@@ -32,8 +32,8 @@ BOOL WINAPI handle_ctrl_c(DWORD signal)
     {
         if (core != NULL)
         {
-            core_deinit(core);
-            core = NULL;
+            /* Signal graceful shutdown to all threads. */
+            core->is_running = false;
         }
         exit(EXIT_SUCCESS);
     }
