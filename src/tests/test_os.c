@@ -477,7 +477,7 @@ void test_os_strcspn(void** state)
     }
 
     {
-        /* Empty reject set — entire string is spanned. */
+        /* Empty reject set; entire string is spanned. */
         const char* s = "Hello World";
         const char* reject = "";
         size_t result = os_strcspn(s, reject);
@@ -610,7 +610,7 @@ void test_os_strtokr_r(void** state)
     assert_null(token);
 
     {
-        /* No delimiter present — entire string is the single token. */
+        /* No delimiter present; entire string is the single token. */
         char no_delim[] = "hello";
         token = os_strtokr_r(no_delim, ",", &saveptr);
         assert_non_null(token);
@@ -848,11 +848,11 @@ void test_os_log(void** state)
     os_log(LOG_SUPPRESS, "this should not appear");
 
     /* All other levels must execute without crashing. */
-    os_log(LOG_DEFAULT,  "log default");
-    os_log(LOG_INFO,     "log info");
-    os_log(LOG_SUCCESS,  "log success");
-    os_log(LOG_WARNING,  "log warning");
-    os_log(LOG_ERROR,    "log error");
+    os_log(LOG_DEFAULT, "log default");
+    os_log(LOG_INFO, "log info");
+    os_log(LOG_SUCCESS, "log success");
+    os_log(LOG_WARNING, "log warning");
+    os_log(LOG_ERROR, "log error");
 }
 
 void test_os_print(void** state)
@@ -864,7 +864,7 @@ void test_os_print(void** state)
     assert_true(buffer_init(256) == ALL_OK);
 
     os_print(DEFAULT_COLOR, "Hello %s", "world");
-    os_print(DARK_CYAN,     " %d", 42);
+    os_print(DARK_CYAN, " %d", 42);
 
     buffer_free();
 }
@@ -891,7 +891,7 @@ void test_os_clear_window(void** state)
     (void)state;
 
     /* Passing NULL is explicitly guarded by 'if (renderer)' in the
-     * implementation — must not crash. */
+     * implementation; must not crash. */
     os_clear_window(NULL);
 }
 
@@ -937,7 +937,7 @@ void test_os_create_detach_thread(void** state)
     th = os_create_thread(noop_thread_fn, "test_noop", NULL);
     assert_non_null(th);
 
-    /* Detach immediately — the thread may already have exited; that is fine. */
+    /* Detach immediately the thread may already have exited; that is fine. */
     os_detach_thread(th);
 
     /* Give the scheduler a moment to clean up before the next test. */

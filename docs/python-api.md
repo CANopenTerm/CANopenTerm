@@ -1041,3 +1041,171 @@ widget_led(50, 50, 16, True)
 window_update()
 ```
 <!-- tabs:end -->
+
+### oscilloscope_buffer_create()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Create an oscilloscope buffer to store time-series data samples.
+
+```python
+int oscilloscope_buffer_create (min_value, max_value)
+```
+
+> **min_value** Minimum value for scaling.
+
+> **max_value** Maximum value for scaling.
+
+**Returns**: Buffer ID (0-15) on success, -1 on failure.
+
+**Since**: 2.04
+
+<!-- tab:Example -->
+```python
+# Create an oscilloscope buffer (0-100 range)
+osc_id = oscilloscope_buffer_create(0, 100)
+
+if osc_id >= 0:
+    print("Oscilloscope buffer created: " + str(osc_id))
+else:
+    print("Failed to create oscilloscope buffer")
+```
+<!-- tabs:end -->
+
+### oscilloscope_buffer_destroy()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Destroy and deallocate an oscilloscope buffer.
+
+```python
+oscilloscope_buffer_destroy (buffer_id)
+```
+
+> **buffer_id** Buffer ID returned by oscilloscope_buffer_create().
+
+**Returns**: Nothing.
+
+**Since**: 2.04
+
+<!-- tab:Example -->
+```python
+osc_id = oscilloscope_buffer_create(0, 100)
+
+# ... use the buffer ...
+
+# Clean up when done
+oscilloscope_buffer_destroy(osc_id)
+```
+<!-- tabs:end -->
+
+### oscilloscope_buffer_push()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Add a new sample value to an oscilloscope buffer.
+
+```python
+oscilloscope_buffer_push (buffer_id, value)
+```
+
+> **buffer_id** Buffer ID returned by oscilloscope_buffer_create().
+
+> **value** Sample value to add to the buffer.
+
+**Returns**: Nothing.
+
+**Since**: 2.04
+
+<!-- tab:Example -->
+```python
+import random
+
+osc_id = oscilloscope_buffer_create(0, 100)
+
+# Add sample values
+for i in range(50):
+    oscilloscope_buffer_push(osc_id, random.randint(0, 100))
+
+# Now render the oscilloscope
+```
+<!-- tabs:end -->
+
+### widget_oscilloscope()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw an oscilloscope-style waveform display widget.
+
+```python
+widget_oscilloscope (pos_x, pos_y, width, height, buffer_id, current_value, label)
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **width** Width in pixels.
+
+> **height** Height in pixels.
+
+> **buffer_id** Buffer ID returned by oscilloscope_buffer_create().
+
+> **current_value** Current value to display numerically.
+
+> **label** Label string to display.
+
+**Returns**: Nothing.
+
+**Since**: 2.04
+
+<!-- tab:Example -->
+```python
+import math
+import random
+
+# Initialize display
+window_show()
+window_clear()
+
+# Create oscilloscope buffer
+osc_id = oscilloscope_buffer_create(0, 100)
+
+# Simulate data collection and display
+current_value = 50
+time_counter = 0
+demo_running = True
+
+while demo_running and not key_is_hit():
+    # Simulate sensor readings with combined waveforms for variety
+    sine_component = 30 * math.sin(time_counter / 10)
+    triangle_component = 20 * (abs((time_counter % 40) - 20) / 20 - 1)
+    noise = random.randint(-8, 8)
+
+    current_value = 50 + sine_component + triangle_component + noise
+    current_value = max(0, min(100, int(current_value)))
+
+    # Add to buffer
+    oscilloscope_buffer_push(osc_id, current_value)
+
+    # Clear and render
+    window_clear()
+
+    # Draw oscilloscope at position (10, 10) with size 300x150
+    widget_oscilloscope(10, 10, 300, 150, osc_id, current_value, "Temperature")
+
+    # Update display
+    window_update(True)
+
+    time_counter = time_counter + 1
+    delay_ms(50)
+
+    # Limit demo duration if needed (optional safety exit)
+    if time_counter > 2000:
+        demo_running = False
+
+# Cleanup
+oscilloscope_buffer_destroy(osc_id)
+window_hide()
+```
+<!-- tabs:end -->

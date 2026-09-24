@@ -27,7 +27,7 @@ scripting.
 In the following sections, the article first outlines the core
 capabilities of CANopenTerm, then introduces the JSON-based alternative
 to CANopen profile database files, and finally looks ahead to future
-directions of this work — including the ongoing development of
+directions of this work - including the ongoing development of
 CANvenient, a CAN abstraction layer for Windows. I also warmly invite
 feedback, ideas, and contributions from anyone interested in supporting
 the further evolution of these tools.
@@ -99,4 +99,4 @@ access the source code, report issues, or participate in development.
 Collaboration from the community helps guide future features, improve
 functionality, and extend the ecosystem for all users.
 
-— *Michael Fitzmayer, Developer of CANopenTerm*
+- *Michael Fitzmayer, Developer of CANopenTerm*

@@ -89,7 +89,7 @@ bool window_init(core_t* core)
 
     if (! SDL_CreateWindowAndRenderer(
             "CANopenTerm", mode->h / 2, mode->h / 2,
-            SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_HIDDEN | SDL_WINDOW_UTILITY,
+            SDL_WINDOW_HIDDEN,
             &core->window, &core->renderer))
     {
         return false;

@@ -13,10 +13,15 @@
 #include "lauxlib.h"
 #include "led.h"
 #include "lua.h"
+#include "oscilloscope.h"
 #include "os.h"
 #include "palette.h"
 #include "tachometer.h"
 #include "window.h"
+
+#define MAX_OSCILLOSCOPE_BUFFERS 16
+
+static oscilloscope_ringbuffer_t* g_oscilloscope_buffers[MAX_OSCILLOSCOPE_BUFFERS] = {NULL};
 
 int lua_window_clear(lua_State* L)
 {
@@ -139,6 +144,80 @@ int lua_widget_theme(lua_State* L)
     return 0;
 }
 
+int lua_oscilloscope_buffer_create(lua_State* L)
+{
+    uint32 min_value = luaL_checkinteger(L, 1);
+    uint32 max_value = luaL_checkinteger(L, 2);
+    int buffer_id = -1;
+    int i;
+
+    for (i = 0; i < MAX_OSCILLOSCOPE_BUFFERS; i++)
+    {
+        if (g_oscilloscope_buffers[i] == NULL)
+        {
+            g_oscilloscope_buffers[i] = oscilloscope_buffer_create(min_value, max_value);
+            if (g_oscilloscope_buffers[i])
+            {
+                buffer_id = i;
+            }
+            break;
+        }
+    }
+
+    lua_pushinteger(L, buffer_id);
+    return 1;
+}
+
+int lua_oscilloscope_buffer_destroy(lua_State* L)
+{
+    int buffer_id = luaL_checkinteger(L, 1);
+
+    if (buffer_id >= 0 && buffer_id < MAX_OSCILLOSCOPE_BUFFERS)
+    {
+        if (g_oscilloscope_buffers[buffer_id])
+        {
+            oscilloscope_buffer_destroy(g_oscilloscope_buffers[buffer_id]);
+            g_oscilloscope_buffers[buffer_id] = NULL;
+        }
+    }
+    return 0;
+}
+
+int lua_oscilloscope_buffer_push(lua_State* L)
+{
+    int buffer_id = luaL_checkinteger(L, 1);
+    uint32 value = luaL_checkinteger(L, 2);
+
+    if (buffer_id >= 0 && buffer_id < MAX_OSCILLOSCOPE_BUFFERS)
+    {
+        if (g_oscilloscope_buffers[buffer_id])
+        {
+            oscilloscope_buffer_push(g_oscilloscope_buffers[buffer_id], value);
+        }
+    }
+    return 0;
+}
+
+int lua_widget_oscilloscope(lua_State* L)
+{
+    uint32 pos_x = luaL_checkinteger(L, 1);
+    uint32 pos_y = luaL_checkinteger(L, 2);
+    uint32 width = luaL_checkinteger(L, 3);
+    uint32 height = luaL_checkinteger(L, 4);
+    int buffer_id = luaL_checkinteger(L, 5);
+    uint32 current_value = luaL_checkinteger(L, 6);
+    const char* label = luaL_optstring(L, 7, "OSC");
+
+    if (buffer_id >= 0 && buffer_id < MAX_OSCILLOSCOPE_BUFFERS)
+    {
+        if (g_oscilloscope_buffers[buffer_id])
+        {
+            widget_oscilloscope(pos_x, pos_y, width, height, g_oscilloscope_buffers[buffer_id], current_value, label);
+        }
+    }
+    return 0;
+}
+
 void lua_register_widget_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_window_clear);
@@ -163,4 +242,12 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "widget_tachometer");
     lua_pushcfunction(core->L, lua_widget_theme);
     lua_setglobal(core->L, "widget_theme");
+    lua_pushcfunction(core->L, lua_oscilloscope_buffer_create);
+    lua_setglobal(core->L, "oscilloscope_buffer_create");
+    lua_pushcfunction(core->L, lua_oscilloscope_buffer_destroy);
+    lua_setglobal(core->L, "oscilloscope_buffer_destroy");
+    lua_pushcfunction(core->L, lua_oscilloscope_buffer_push);
+    lua_setglobal(core->L, "oscilloscope_buffer_push");
+    lua_pushcfunction(core->L, lua_widget_oscilloscope);
+    lua_setglobal(core->L, "widget_oscilloscope");
 }

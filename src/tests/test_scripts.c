@@ -24,10 +24,10 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "buffer.h"
 #include "cmocka.h"
 #include "core.h"
 #include "os.h"
-#include "buffer.h"
 #include "scripts.h"
 #include "test_scripts.h"
 
@@ -577,17 +577,17 @@ void test_print_result(void** state)
     assert_true(buffer_init(1024) == ALL_OK);
 
     /* Success path, all length variants, with a comment. */
-    print_result(0x01, 0x1000, 0x00, 4, true,  "device type",  0x00020192);
-    print_result(0x01, 0x1001, 0x00, 3, true,  "24-bit value", 0x00AABBCC);
-    print_result(0x01, 0x1002, 0x00, 2, true,  "16-bit value", 0x1234);
-    print_result(0x01, 0x1003, 0x00, 1, true,  "8-bit value",  0xFF);
+    print_result(0x01, 0x1000, 0x00, 4, true, "device type", 0x00020192);
+    print_result(0x01, 0x1001, 0x00, 3, true, "24-bit value", 0x00AABBCC);
+    print_result(0x01, 0x1002, 0x00, 2, true, "16-bit value", 0x1234);
+    print_result(0x01, 0x1003, 0x00, 1, true, "8-bit value", 0xFF);
 
     /* Failure path, no comment (NULL). */
     print_result(0x02, 0x1000, 0x00, 4, false, NULL, 0);
 
-    /* Length not in switch (0, 5, 8) — must not crash. */
-    print_result(0x03, 0x1000, 0x00, 0, true,  "no data", 0);
-    print_result(0x03, 0x1000, 0x00, 8, false, "8 bytes",  0);
+    /* Length not in switch (0, 5, 8); must not crash. */
+    print_result(0x03, 0x1000, 0x00, 0, true, "no data", 0);
+    print_result(0x03, 0x1000, 0x00, 8, false, "8 bytes", 0);
 
     buffer_free();
 }
