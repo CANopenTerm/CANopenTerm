@@ -2,9 +2,9 @@
 
 ## Theme Support
 
-Version 2.4.0 of CANopenTerm introduces themes that allow users to customize
+Version 2.4.0 of CANopenTerm introduces themes that allow users to customise
 the appearance of scriptable graphical widgets. Themes can be configured using
-the newly introduced `widget_theme() API function.
+the newly introduced `widget_theme()` API function.
 
 The following theme IDs are currently available:
 
