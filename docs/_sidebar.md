@@ -4,6 +4,7 @@
 - [CANvenient](canvenient.md)
 - [Lua API](lua-api.md)
 - [Python API](python-api.md) 
+- [Themes](themes.md) 
 - [codb2json](codb2json.md)
 - [Report issue](report-issue.md)
 - [Legal information](legal-information.md)
