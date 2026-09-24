@@ -115,7 +115,7 @@ int lua_widget_print(lua_State* L)
     const char* str = luaL_checkstring(L, 3);
     uint32 scale = luaL_optinteger(L, 4, 1);
 
-    widget_print(pos_x, pos_y, DRAW_WHITE, scale, "%s", str);
+    widget_print(pos_x, pos_y, DRAW_COLOR, scale, "%s", str);
     return 0;
 }
 

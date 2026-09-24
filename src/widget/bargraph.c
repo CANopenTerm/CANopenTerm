@@ -25,7 +25,7 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
     uint8 r, g, b;
     uint32 widget_color = palette_get_color(WIDGET_COLOR);
     uint32 highlight_color = palette_get_color(WIDGET_COLOR_HIGHLIGHT);
-    uint32 draw_white = palette_get_color(DRAW_WHITE);
+    uint32 draw_color = palette_get_color(DRAW_COLOR);
 
     if (! renderer || max == 0)
     {
@@ -49,7 +49,7 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
     num_bars = width - 2;
     filled_bars = (value * num_bars) / max;
 
-    color_index = (filled_bars * 6) / num_bars;
+    color_index = (value * 6) / max;
     if (color_index > 5)
     {
         color_index = 5;
@@ -67,5 +67,5 @@ void widget_bargraph(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, co
         os_draw_line(renderer, pos_x + 1 + i, pos_y + 1, pos_x + 1 + i, pos_y + height - 2);
     }
 
-    widget_print(pos_x + 2, pos_y + 2, draw_white, 1u, "%d/%d", value, max);
+    widget_print(pos_x + 2, pos_y + 2, draw_color, 1u, "%d/%d", value, max);
 }

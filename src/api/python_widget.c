@@ -200,7 +200,7 @@ bool py_widget_print(int argc, py_Ref argv)
     str = py_tostr(py_arg(2));
     scale = (uint32)py_toint(py_arg(3));
 
-    widget_print(pos_x, pos_y, DRAW_WHITE, scale, "%s", str);
+    widget_print(pos_x, pos_y, DRAW_COLOR, scale, "%s", str);
 
     py_newnone(py_retval());
     return true;

@@ -73,7 +73,6 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     needle_y = center_y - (int)(needle_length * SDL_sin(radians));
 
     uint32 draw_color = palette_get_color(DRAW_COLOR);
-    uint32 draw_white = palette_get_color(DRAW_WHITE);
 
     r = (draw_color & 0xff0000) >> 16;
     g = (draw_color & 0x00ff00) >> 8;
@@ -89,5 +88,5 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     widget_print(
         pos_x + (size / 2) - (text_width / 2),
         pos_y + size / 2 + (CHAR_HEIGHT * 2),
-        draw_white, scale, "%s", buffer);
+        DRAW_COLOR, scale, "%s", buffer);
 }
