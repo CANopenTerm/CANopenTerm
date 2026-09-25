@@ -132,10 +132,10 @@
                 <File Source="../../export/scripts/lss.lua" />
             </Component>
             <Component>
-                <File Source="../../export/scripts/osci.lua" />
+                <File Source="../../export/scripts/replay.lua" />
             </Component>
             <Component>
-                <File Source="../../export/scripts/replay.lua" />
+                <File Source="../../export/scripts/scope.lua" />
             </Component>
             <Component>
                 <File Source="../../export/scripts/stm32.lua" />

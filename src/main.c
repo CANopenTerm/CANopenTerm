@@ -154,6 +154,9 @@ int main(int argc, char* argv[])
         os_delay(10);
     }
     core_deinit(core);
+    os_print(DEFAULT_COLOR, "\nKeep the Heartbeat alive.");
+    os_print(DARK_RED, " \u2665 ");
+    os_print(DEFAULT_COLOR, "Consider supporting CANopenTerm.\n");
 
     return status;
 }

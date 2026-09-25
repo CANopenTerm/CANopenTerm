@@ -137,6 +137,12 @@ if (USE_SYSTEM_LIBS)
   )
 
   install(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/isobus/
+    DESTINATION /usr/share/CANopenTerm/scripts/isobus
+    FILES_MATCHING PATTERN "*"
+  )
+
+  install(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/export/scripts/obd2/
     DESTINATION /usr/share/CANopenTerm/scripts/obd2
     FILES_MATCHING PATTERN "*"
