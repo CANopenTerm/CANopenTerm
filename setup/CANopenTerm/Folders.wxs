@@ -7,7 +7,8 @@
 				<Directory Id="EDSFOLDER" Name="eds" />
 				<Directory Id="SCRIPTSFOLDER" Name="scripts">
 					<Directory Id="COREFOLDER" Name="core" />
-					<Directory Id="OBD2FOLDER" Name="obd2" />
+					<Directory Id="ISOBUSFOLDER" Name="isobus" />
+                    <Directory Id="OBD2FOLDER" Name="obd2" />
 				</Directory>
 			</Directory>
 		</StandardDirectory>
