@@ -104,6 +104,9 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
     uint32 samples_to_show;
     uint32 v_grid_spacing;
     uint32 v;
+    uint32 average_value;
+    uint64 sum_value;
+    int average_y_pos;
 
     if (! renderer || ! buffer)
     {
@@ -162,6 +165,14 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
             value_range = 1;
         }
 
+        /* Calculate average value */
+        sum_value = 0;
+        for (i = 0; i < buffer->size; i++)
+        {
+            sum_value += oscilloscope_buffer_get(buffer, i);
+        }
+        average_value = (uint32)(sum_value / buffer->size);
+
         r = (draw_color & 0xff0000) >> 16;
         g = (draw_color & 0x00ff00) >> 8;
         b = (draw_color & 0x0000ff);
@@ -199,10 +210,15 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
             prev_plot_x = plot_x;
             prev_plot_y = plot_y;
         }
+
+        /* Draw average value line */
+        average_y_pos = pos_y + height - 2 - ((average_value - buffer->min_value) * (height - 4)) / value_range;
+        os_set_color(renderer, (draw_color & 0xff0000) >> 16, (draw_color & 0x00ff00) >> 8, (draw_color & 0x0000ff), 0x80);
+        os_draw_line(renderer, pos_x + 2, average_y_pos, pos_x + width - 2, average_y_pos);
     }
 
     /* Display label, current value, and axis information */
-    widget_print(pos_x + 2, pos_y + 2, DRAW_COLOR, 1u, "%s: %d/%d", label ? label : "OSC", current_value, buffer->max_value);
+    widget_print(pos_x + 2, pos_y + 2, DRAW_COLOR, 1u, "%s: %d/%d | Avg: %d", label ? label : "OSC", current_value, buffer->max_value, average_value);
 
     /* Display Y-axis min/max values on the right side */
     widget_print(pos_x + width - 65, pos_y + 2, DRAW_COLOR, 1u, "Max: %05d", buffer->max_value);
