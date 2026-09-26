@@ -17,6 +17,7 @@ local osc_id = oscilloscope_buffer_create(0, 100)
 local current_value = 50
 local time_counter = 0
 local demo_running = true
+local samples_per_frame = 4  -- Collect multiple samples per display frame for smoother curves
 
 -- Calculate layout based on window dimensions.
 function calculate_layout(width, height)
@@ -36,16 +37,21 @@ function calculate_layout(width, height)
 end
 
 while demo_running and not key_is_hit() do
-  -- Simulate sensor readings with combined waveforms for variety
-  local sine_component = 30 * math.sin(time_counter / 10)
-  local triangle_component = 20 * (math.abs((time_counter % 40) - 20) / 20 - 1)
-  local noise = math.random(-8, 8)
+  -- Collect multiple samples per frame for smoother interpolation
+  for sample = 1, samples_per_frame do
+    -- Simulate sensor readings with combined waveforms for variety
+    local sine_component = 30 * math.sin(time_counter / 10)
+    local triangle_component = 20 * (math.abs((time_counter % 40) - 20) / 20 - 1)
+    local noise = math.random(-8, 8)
 
-  current_value = 50 + sine_component + triangle_component + noise
-  current_value = math.max(0, math.min(100, math.floor(current_value)))
+    current_value = 50 + sine_component + triangle_component + noise
+    current_value = math.max(0, math.min(100, math.floor(current_value)))
 
-  -- Add to buffer.
-  oscilloscope_buffer_push(osc_id, current_value)
+    -- Add to buffer.
+    oscilloscope_buffer_push(osc_id, current_value)
+
+    time_counter = time_counter + 1
+  end
 
   -- Clear and render.
   window_clear()
@@ -60,7 +66,6 @@ while demo_running and not key_is_hit() do
   -- Update display.
   window_update(true)
 
-  time_counter = time_counter + 1
   delay_ms(50)
 
   -- Limit demo duration if needed (optional safety exit).
