@@ -80,17 +80,6 @@ uint32 oscilloscope_buffer_get_size(oscilloscope_ringbuffer_t* buffer)
     return buffer->size;
 }
 
-static double oscilloscope_catmull_rom(double p0, double p1, double p2, double p3, double t)
-{
-    double t2 = t * t;
-    double t3 = t2 * t;
-
-    return 0.5 * (2.0 * p1 +
-                  (-p0 + p2) * t +
-                  (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2 +
-                  (-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t3);
-}
-
 void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, oscilloscope_ringbuffer_t* buffer, uint32 current_value, const char* label)
 {
     os_renderer* renderer = window_get_renderer();
@@ -186,78 +175,29 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
             actual_display_width = buffer->size;
         }
 
-        /* Use Catmull-Rom spline interpolation for smooth curves */
-        uint32 interpolation_steps = 32; /* Number of points between data points for very smooth curves */
-        int first_point = 1;
-
-        for (i = 0; i < samples_to_show - 1; i++)
+        for (i = 0; i < samples_to_show; i++)
         {
-            /* Get four control points for the Catmull-Rom spline */
-            /* p0: point before current */
-            double p0 = (double)oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + ((i > 0) ? i - 1 : i));
-            /* p1: current point (start of curve segment) */
-            double p1 = (double)oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + i);
-            /* p2: next point (end of curve segment) */
-            double p2 = (double)oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + i + 1);
-            /* p3: point after next */
-            double p3 = (double)oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + ((i < samples_to_show - 2) ? i + 2 : i + 1));
+            value = oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + i);
 
-            /* Clamp all control points to min/max range */
-            if (p0 > buffer->max_value)
+            if (value > buffer->max_value)
             {
-                p0 = buffer->max_value;
+                value = buffer->max_value;
             }
-            if (p0 < buffer->min_value)
+            if (value < buffer->min_value)
             {
-                p0 = buffer->min_value;
-            }
-            if (p1 > buffer->max_value)
-            {
-                p1 = buffer->max_value;
-            }
-            if (p1 < buffer->min_value)
-            {
-                p1 = buffer->min_value;
-            }
-            if (p2 > buffer->max_value)
-            {
-                p2 = buffer->max_value;
-            }
-            if (p2 < buffer->min_value)
-            {
-                p2 = buffer->min_value;
-            }
-            if (p3 > buffer->max_value)
-            {
-                p3 = buffer->max_value;
-            }
-            if (p3 < buffer->min_value)
-            {
-                p3 = buffer->min_value;
+                value = buffer->min_value;
             }
 
-            /* Draw interpolated curve as pixels between p1 and p2 */
-            for (uint32 step = 0; step <= interpolation_steps; step++)
+            plot_x = pos_x + 2 + (i * actual_display_width) / samples_to_show;
+            plot_y = pos_y + height - 2 - ((value - buffer->min_value) * (height - 4)) / value_range;
+
+            if (i > 0)
             {
-                double t = (double)step / interpolation_steps;
-                double interpolated_value = oscilloscope_catmull_rom(p0, p1, p2, p3, t);
-
-                /* Clamp interpolated value */
-                if (interpolated_value > buffer->max_value)
-                {
-                    interpolated_value = buffer->max_value;
-                }
-                if (interpolated_value < buffer->min_value)
-                {
-                    interpolated_value = buffer->min_value;
-                }
-
-                plot_x = pos_x + 2 + ((i * interpolation_steps + step) * actual_display_width) / ((samples_to_show - 1) * interpolation_steps);
-                plot_y = pos_y + height - 2 - ((interpolated_value - buffer->min_value) * (height - 4)) / value_range;
-
-                /* Draw pixel at interpolated point */
-                os_draw_pixel(renderer, plot_x, plot_y);
+                os_draw_line(renderer, prev_plot_x, prev_plot_y, plot_x, plot_y);
             }
+
+            prev_plot_x = plot_x;
+            prev_plot_y = plot_y;
         }
     }
 
