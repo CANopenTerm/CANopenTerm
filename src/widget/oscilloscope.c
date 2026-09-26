@@ -168,6 +168,13 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
 
         os_set_color(renderer, r, g, b, 0xff);
 
+        /* Scale the available width based on how many samples we actually have */
+        uint32 actual_display_width = (samples_to_show * display_samples) / display_samples;
+        if (buffer->size < display_samples)
+        {
+            actual_display_width = buffer->size;
+        }
+
         for (i = 0; i < samples_to_show; i++)
         {
             value = oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + i);
@@ -181,7 +188,7 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
                 value = buffer->min_value;
             }
 
-            plot_x = pos_x + 2 + (i * display_samples) / samples_to_show;
+            plot_x = pos_x + 2 + (i * actual_display_width) / samples_to_show;
             plot_y = pos_y + height - 2 - ((value - buffer->min_value) * (height - 4)) / value_range;
 
             if (i > 0)
