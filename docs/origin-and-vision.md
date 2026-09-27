@@ -53,13 +53,17 @@ Beyond interactive use, CANopenTerm includes built-in
 expose similar APIs, making it possible to reproduce test conditions or
 integrate CAN interaction into larger workflows. Utilities such as a
 **DBC parser** and a JSON-based representation of CANopen profiles
-further extend its scope.  Scriptable graphical widgets enable real-time
+further extend its scope.
+
+
+Scriptable graphical widgets enable real-time
 CAN data visualization, and test results can be exported in **JUnit
 XML** format for integration with continuous testing workflows.  These
 features complement the core monitoring, configuration, and automation
 capabilities.
 
 ![CANopenTerm screenshot](media/screenshot-2.png)
+![CANopenTerm screenshot](media/screenshot-4.png)
 
 ## A JSON-Based Alternative to CODB
 

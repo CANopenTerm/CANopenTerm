@@ -6,7 +6,7 @@ License: Public domain
 --]]
 
 -- Initialize display.
-widget_theme(1)
+widget_theme(3)
 window_show()
 window_clear()
 
