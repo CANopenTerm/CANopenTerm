@@ -99,4 +99,4 @@ access the source code, report issues, or participate in development.
 Collaboration from the community helps guide future features, improve
 functionality, and extend the ecosystem for all users.
 
-- *Michael Fitzmayer, Developer of CANopenTerm*
+– *Michael Fitzmayer, Developer of CANopenTerm*
