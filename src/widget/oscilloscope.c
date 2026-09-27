@@ -47,6 +47,7 @@ void oscilloscope_buffer_push(oscilloscope_ringbuffer_t* buffer, uint32 value)
     }
 
     buffer->buffer[buffer->head] = value;
+    buffer->timestamps[buffer->head] = os_get_ticks();
     buffer->head = (buffer->head + 1) % OSCILLOSCOPE_BUFFER_SIZE;
 
     if (buffer->size < OSCILLOSCOPE_BUFFER_SIZE)
@@ -80,7 +81,7 @@ uint32 oscilloscope_buffer_get_size(oscilloscope_ringbuffer_t* buffer)
     return buffer->size;
 }
 
-void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, oscilloscope_ringbuffer_t* buffer, uint32 current_value, const char* label)
+void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height, oscilloscope_ringbuffer_t* buffer, uint32 current_value, const char* label, uint64 time_window_ms)
 {
     os_renderer* renderer = window_get_renderer();
     os_rect box = {pos_x, pos_y, width, height};
@@ -151,13 +152,13 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
     /* Draw waveform */
     if (buffer->size > 0)
     {
-        display_samples = width - 4;
-        samples_to_show = buffer->size;
-
-        if (samples_to_show > display_samples)
-        {
-            samples_to_show = display_samples;
-        }
+        uint64 current_time = os_get_ticks();
+        uint64 time_window_ns;
+        uint64 display_duration_ns;
+        uint64 cutoff_time;
+        uint32 display_width = width - 4;
+        int plot_x_prev = -1;
+        int plot_y_prev = -1;
 
         value_range = buffer->max_value - buffer->min_value;
         if (value_range == 0)
@@ -165,7 +166,7 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
             value_range = 1;
         }
 
-        /* Calculate average value */
+        /* Calculate average value for all samples in buffer */
         sum_value = 0;
         for (i = 0; i < buffer->size; i++)
         {
@@ -179,36 +180,92 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
 
         os_set_color(renderer, r, g, b, 0xff);
 
-        /* Scale the available width based on how many samples we actually have */
-        uint32 actual_display_width = (samples_to_show * display_samples) / display_samples;
-        if (buffer->size < display_samples)
+        if (time_window_ms > 0)
         {
-            actual_display_width = buffer->size;
+            /* Time/division mode: display time_window_ms per grid division */
+            /* 5 grid divisions, so total display time = 5 * time_window_ms */
+            time_window_ns = time_window_ms * 1000000;  /* Convert to nanoseconds */
+            display_duration_ns = 5 * time_window_ns;   /* Total time to display */
+            cutoff_time = (current_time > display_duration_ns) ? (current_time - display_duration_ns) : 0;
+
+            /* Draw samples that fall within the time window */
+            for (i = 0; i < buffer->size; i++)
+            {
+                uint32 actual_index = (buffer->tail + i) % OSCILLOSCOPE_BUFFER_SIZE;
+                uint64 sample_time = buffer->timestamps[actual_index];
+
+                /* Only draw samples within the display window */
+                if (sample_time >= cutoff_time)
+                {
+                    /* Calculate time offset from the start of display window */
+                    uint64 time_offset = sample_time - cutoff_time;
+
+                    /* Map time offset to X position */
+                    plot_x = pos_x + 2 + (int)((time_offset * display_width) / display_duration_ns);
+
+                    value = oscilloscope_buffer_get(buffer, i);
+                    if (value > buffer->max_value)
+                    {
+                        value = buffer->max_value;
+                    }
+                    if (value < buffer->min_value)
+                    {
+                        value = buffer->min_value;
+                    }
+
+                    plot_y = pos_y + height - 2 - ((value - buffer->min_value) * (height - 4)) / value_range;
+
+                    if (plot_x_prev >= 0)
+                    {
+                        os_draw_line(renderer, plot_x_prev, plot_y_prev, plot_x, plot_y);
+                    }
+
+                    plot_x_prev = plot_x;
+                    plot_y_prev = plot_y;
+                }
+            }
         }
-
-        for (i = 0; i < samples_to_show; i++)
+        else
         {
-            value = oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + i);
+            /* Default mode (time_window_ms == 0): adaptive scaling to show all data */
+            display_samples = width - 4;
+            samples_to_show = buffer->size;
 
-            if (value > buffer->max_value)
+            if (samples_to_show > display_samples)
             {
-                value = buffer->max_value;
-            }
-            if (value < buffer->min_value)
-            {
-                value = buffer->min_value;
+                samples_to_show = display_samples;
             }
 
-            plot_x = pos_x + 2 + (i * actual_display_width) / samples_to_show;
-            plot_y = pos_y + height - 2 - ((value - buffer->min_value) * (height - 4)) / value_range;
-
-            if (i > 0)
+            uint32 actual_display_width = (samples_to_show * display_samples) / display_samples;
+            if (buffer->size < display_samples)
             {
-                os_draw_line(renderer, prev_plot_x, prev_plot_y, plot_x, plot_y);
+                actual_display_width = buffer->size;
             }
 
-            prev_plot_x = plot_x;
-            prev_plot_y = plot_y;
+            for (i = 0; i < samples_to_show; i++)
+            {
+                value = oscilloscope_buffer_get(buffer, buffer->size - samples_to_show + i);
+
+                if (value > buffer->max_value)
+                {
+                    value = buffer->max_value;
+                }
+                if (value < buffer->min_value)
+                {
+                    value = buffer->min_value;
+                }
+
+                plot_x = pos_x + 2 + (i * actual_display_width) / samples_to_show;
+                plot_y = pos_y + height - 2 - ((value - buffer->min_value) * (height - 4)) / value_range;
+
+                if (i > 0)
+                {
+                    os_draw_line(renderer, prev_plot_x, prev_plot_y, plot_x, plot_y);
+                }
+
+                prev_plot_x = plot_x;
+                prev_plot_y = plot_y;
+            }
         }
 
         /* Draw average value line */

@@ -347,8 +347,13 @@ bool py_widget_oscilloscope(int argc, py_Ref argv)
     int buffer_id;
     uint32 current_value;
     const char* label = "OSC";
+    uint64 time_window_ms = 0;
 
-    PY_CHECK_ARGC(7);
+    if (argc < 7 || argc > 8)
+    {
+        return false;
+    }
+
     PY_CHECK_ARG_TYPE(0, tp_int);
     PY_CHECK_ARG_TYPE(1, tp_int);
     PY_CHECK_ARG_TYPE(2, tp_int);
@@ -365,11 +370,17 @@ bool py_widget_oscilloscope(int argc, py_Ref argv)
     current_value = (uint32)py_toint(py_arg(5));
     label = py_tostr(py_arg(6));
 
+    if (argc > 7)
+    {
+        PY_CHECK_ARG_TYPE(7, tp_int);
+        time_window_ms = (uint64)py_toint(py_arg(7));
+    }
+
     if (buffer_id >= 0 && buffer_id < MAX_OSCILLOSCOPE_BUFFERS)
     {
         if (g_py_oscilloscope_buffers[buffer_id])
         {
-            widget_oscilloscope(pos_x, pos_y, width, height, g_py_oscilloscope_buffers[buffer_id], current_value, label);
+            widget_oscilloscope(pos_x, pos_y, width, height, g_py_oscilloscope_buffers[buffer_id], current_value, label, time_window_ms);
         }
     }
 

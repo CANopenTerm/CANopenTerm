@@ -207,12 +207,13 @@ int lua_widget_oscilloscope(lua_State* L)
     int buffer_id = luaL_checkinteger(L, 5);
     uint32 current_value = luaL_checkinteger(L, 6);
     const char* label = luaL_optstring(L, 7, "OSC");
+    uint64 time_window_ms = luaL_optinteger(L, 8, 0);
 
     if (buffer_id >= 0 && buffer_id < MAX_OSCILLOSCOPE_BUFFERS)
     {
         if (g_oscilloscope_buffers[buffer_id])
         {
-            widget_oscilloscope(pos_x, pos_y, width, height, g_oscilloscope_buffers[buffer_id], current_value, label);
+            widget_oscilloscope(pos_x, pos_y, width, height, g_oscilloscope_buffers[buffer_id], current_value, label, time_window_ms);
         }
     }
     return 0;

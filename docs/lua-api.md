@@ -1124,10 +1124,10 @@ end
 
 <!-- tabs:start -->
 <!-- tab:Description -->
-Draw an oscilloscope-style waveform display widget.
+Draw an oscilloscope-style waveform display widget with real-time time/division scaling.
 
 ```lua
-widget_oscilloscope (pos_x, pos_y, width, height, buffer_id, current_value, [label])
+widget_oscilloscope (pos_x, pos_y, width, height, buffer_id, current_value, [label], [time_window_ms])
 ```
 
 > **pos_x** Horizontal position on widget window.
@@ -1143,6 +1143,10 @@ widget_oscilloscope (pos_x, pos_y, width, height, buffer_id, current_value, [lab
 > **current_value** Current value to display numerically.
 
 > **label** Optional label string, default is "OSC".
+
+> **time_window_ms** Optional time/division in milliseconds. Specifies how many milliseconds each vertical grid division represents.
+                     For example, 1000 ms means each grid division shows 1 second of data (5 divisions = 5 seconds total).  If 0 or
+                     omitted, uses adaptive scaling to display all buffered data.
 
 **Returns**: Nothing.
 
@@ -1178,7 +1182,8 @@ while demo_running and not key_is_hit() do
   window_clear()
 
   -- Draw oscilloscope at position (10, 10) with size 300x150
-  widget_oscilloscope(10, 10, 300, 150, osc_id, current_value, "Temperature")
+  -- Each grid division represents 1000ms (1 second) of data
+  widget_oscilloscope(10, 10, 300, 150, osc_id, current_value, "Temperature", 1000)
 
   -- Update display
   window_update(true)
