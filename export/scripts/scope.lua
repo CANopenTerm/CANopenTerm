@@ -55,7 +55,7 @@ while demo_running and not key_is_hit() do
   local layout = calculate_layout(width, height)
 
   -- Draw oscilloscope using dynamic layout.
-  widget_oscilloscope(layout.pos_x, layout.pos_y, layout.width, layout.height, osc_id, current_value, "Temperature")
+  widget_oscilloscope(layout.pos_x, layout.pos_y, layout.width, layout.height, osc_id, current_value, "Temperature", 1000)
 
   -- Update display.
   window_update(true)

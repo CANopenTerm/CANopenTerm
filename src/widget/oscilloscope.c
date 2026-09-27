@@ -184,8 +184,8 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
         {
             /* Time/division mode: display time_window_ms per grid division */
             /* 5 grid divisions, so total display time = 5 * time_window_ms */
-            time_window_ns = time_window_ms * 1000000;  /* Convert to nanoseconds */
-            display_duration_ns = 5 * time_window_ns;   /* Total time to display */
+            time_window_ns = time_window_ms * 1000000; /* Convert to nanoseconds */
+            display_duration_ns = 5 * time_window_ns;  /* Total time to display */
             cutoff_time = (current_time > display_duration_ns) ? (current_time - display_duration_ns) : 0;
 
             /* Draw samples that fall within the time window */
@@ -280,4 +280,10 @@ void widget_oscilloscope(uint32 pos_x, uint32 pos_y, uint32 width, uint32 height
     /* Display Y-axis min/max values on the right side */
     widget_print(pos_x + width - 65, pos_y + 2, DRAW_COLOR, 1u, "Max: %05d", buffer->max_value);
     widget_print(pos_x + width - 65, pos_y + height - 11, DRAW_COLOR, 1u, "Min: %05d", buffer->min_value);
+
+    /* Display time-per-division scaling when in time/division mode */
+    if (time_window_ms > 0)
+    {
+        widget_print(pos_x + 2, pos_y + height - 11, DRAW_COLOR, 1u, "%llu ms/div", time_window_ms);
+    }
 }
