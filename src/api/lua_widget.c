@@ -13,8 +13,8 @@
 #include "lauxlib.h"
 #include "led.h"
 #include "lua.h"
-#include "oscilloscope.h"
 #include "os.h"
+#include "oscilloscope.h"
 #include "palette.h"
 #include "tachometer.h"
 #include "window.h"
@@ -52,6 +52,16 @@ int lua_window_get_resolution(lua_State* L)
     lua_pushinteger(L, height);
 
     return 2;
+}
+
+int lua_window_resize(lua_State* L)
+{
+    uint32 width = luaL_checkinteger(L, 1);
+    uint32 height = luaL_checkinteger(L, 2);
+
+    window_resize(width, height);
+
+    return 0;
 }
 
 int lua_window_show(lua_State* L)
@@ -148,6 +158,7 @@ int lua_oscilloscope_buffer_create(lua_State* L)
 {
     uint32 min_value = luaL_checkinteger(L, 1);
     uint32 max_value = luaL_checkinteger(L, 2);
+    uint32 size = luaL_optinteger(L, 3, 1024);
     int buffer_id = -1;
     int i;
 
@@ -155,7 +166,7 @@ int lua_oscilloscope_buffer_create(lua_State* L)
     {
         if (g_oscilloscope_buffers[i] == NULL)
         {
-            g_oscilloscope_buffers[i] = oscilloscope_buffer_create(min_value, max_value);
+            g_oscilloscope_buffers[i] = oscilloscope_buffer_create(min_value, max_value, size);
             if (g_oscilloscope_buffers[i])
             {
                 buffer_id = i;
@@ -219,6 +230,34 @@ int lua_widget_oscilloscope(lua_State* L)
     return 0;
 }
 
+int lua_widget_oscilloscope_2ch(lua_State* L)
+{
+    uint32 pos_x = luaL_checkinteger(L, 1);
+    uint32 pos_y = luaL_checkinteger(L, 2);
+    uint32 width = luaL_checkinteger(L, 3);
+    uint32 height = luaL_checkinteger(L, 4);
+    int buffer_id1 = luaL_checkinteger(L, 5);
+    uint32 current_value1 = luaL_checkinteger(L, 6);
+    const char* label1 = luaL_optstring(L, 7, "OSC1");
+    int buffer_id2 = luaL_checkinteger(L, 8);
+    uint32 current_value2 = luaL_checkinteger(L, 9);
+    const char* label2 = luaL_optstring(L, 10, "OSC2");
+    uint64 time_window_ms = luaL_optinteger(L, 11, 0);
+
+    if (buffer_id1 >= 0 && buffer_id1 < MAX_OSCILLOSCOPE_BUFFERS &&
+        buffer_id2 >= 0 && buffer_id2 < MAX_OSCILLOSCOPE_BUFFERS)
+    {
+        if (g_oscilloscope_buffers[buffer_id1] && g_oscilloscope_buffers[buffer_id2])
+        {
+            widget_oscilloscope_2ch(pos_x, pos_y, width, height,
+                                     g_oscilloscope_buffers[buffer_id1], current_value1, label1,
+                                     g_oscilloscope_buffers[buffer_id2], current_value2, label2,
+                                     time_window_ms);
+        }
+    }
+    return 0;
+}
+
 void lua_register_widget_commands(core_t* core)
 {
     lua_pushcfunction(core->L, lua_window_clear);
@@ -229,6 +268,8 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "window_hide");
     lua_pushcfunction(core->L, lua_window_get_resolution);
     lua_setglobal(core->L, "window_get_resolution");
+    lua_pushcfunction(core->L, lua_window_resize);
+    lua_setglobal(core->L, "window_resize");
     lua_pushcfunction(core->L, lua_window_show);
     lua_setglobal(core->L, "window_show");
     lua_pushcfunction(core->L, lua_window_update);
@@ -251,4 +292,6 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "oscilloscope_buffer_push");
     lua_pushcfunction(core->L, lua_widget_oscilloscope);
     lua_setglobal(core->L, "widget_oscilloscope");
+    lua_pushcfunction(core->L, lua_widget_oscilloscope_2ch);
+    lua_setglobal(core->L, "widget_oscilloscope_2ch");
 }

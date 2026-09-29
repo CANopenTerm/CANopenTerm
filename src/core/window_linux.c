@@ -7,10 +7,12 @@
  *
  **/
 
+#include <SDL3/SDL.h>
+
 #include "core.h"
 #include "os.h"
 #include "palette.h"
-#include <SDL3/SDL.h>
+#include "window.h"
 
 void window_clear(void)
 {
@@ -88,14 +90,28 @@ bool window_init(core_t* core)
 
     if (! SDL_CreateWindowAndRenderer(
             "CANopenTerm", mode->h / 2, mode->h / 2,
-            SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_HIDDEN | SDL_WINDOW_UTILITY,
+            SDL_WINDOW_HIDDEN,
             &core->window, &core->renderer))
     {
         return false;
     }
 
-    SDL_SetWindowPosition(core->window, (mode->w - mode->h / 2) - 64, 64);
+    SDL_SetWindowPosition(core->window, 128, 128);
     return true;
+}
+
+void window_resize(uint32 width, uint32 height)
+{
+    extern core_t* core;
+    if (core && core->window)
+    {
+        SDL_SetWindowSize(core->window, width, height);
+
+    SDL_SetWindowPosition(
+            core->window,
+            SDL_WINDOWPOS_CENTERED_DISPLAY(SDL_GetDisplayForWindow(core->window)),
+            SDL_WINDOWPOS_CENTERED_DISPLAY(SDL_GetDisplayForWindow(core->window)));
+    }
 }
 
 void window_show(void)

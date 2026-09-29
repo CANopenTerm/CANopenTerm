@@ -12,8 +12,8 @@
 #include "bargraph.h"
 #include "core.h"
 #include "led.h"
-#include "oscilloscope.h"
 #include "os.h"
+#include "oscilloscope.h"
 #include "palette.h"
 #include "tachometer.h"
 #include "window.h"
@@ -29,6 +29,7 @@ bool py_window_clear(int argc, py_Ref argv);
 bool py_window_is_shown(int argc, py_Ref argv);
 bool py_window_hide(int argc, py_Ref argv);
 bool py_window_get_resolution(int argc, py_Ref argv);
+bool py_window_resize(int argc, py_Ref argv);
 bool py_window_show(int argc, py_Ref argv);
 bool py_window_update(int argc, py_Ref argv);
 bool py_widget_bargraph(int argc, py_Ref argv);
@@ -40,6 +41,7 @@ bool py_oscilloscope_buffer_create(int argc, py_Ref argv);
 bool py_oscilloscope_buffer_destroy(int argc, py_Ref argv);
 bool py_oscilloscope_buffer_push(int argc, py_Ref argv);
 bool py_widget_oscilloscope(int argc, py_Ref argv);
+bool py_widget_oscilloscope_2ch(int argc, py_Ref argv);
 
 void python_widget_init(void)
 {
@@ -52,6 +54,7 @@ void python_widget_init(void)
     py_bindfunc(mod, "window_is_shown", py_window_is_shown);
     py_bindfunc(mod, "window_hide", py_window_hide);
     py_bindfunc(mod, "window_get_resolution", py_window_get_resolution);
+    py_bindfunc(mod, "window_resize", py_window_resize);
     py_bindfunc(mod, "window_show", py_window_show);
     py_bindfunc(mod, "widget_bargraph", py_widget_bargraph);
     py_bindfunc(mod, "widget_led", py_widget_led);
@@ -61,6 +64,7 @@ void python_widget_init(void)
     py_bindfunc(mod, "oscilloscope_buffer_destroy", py_oscilloscope_buffer_destroy);
     py_bindfunc(mod, "oscilloscope_buffer_push", py_oscilloscope_buffer_push);
     py_bindfunc(mod, "widget_oscilloscope", py_widget_oscilloscope);
+    py_bindfunc(mod, "widget_oscilloscope_2ch", py_widget_oscilloscope_2ch);
 }
 
 bool py_window_clear(int argc, py_Ref argv)
@@ -104,6 +108,23 @@ bool py_window_get_resolution(int argc, py_Ref argv)
     py_tuple_setitem(py_retval(), 0, py_r0());
     py_tuple_setitem(py_retval(), 1, py_r1());
 
+    return true;
+}
+
+bool py_window_resize(int argc, py_Ref argv)
+{
+    uint32 width, height;
+
+    PY_CHECK_ARGC(2);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+
+    width = (uint32)py_toint(py_arg(0));
+    height = (uint32)py_toint(py_arg(1));
+
+    window_resize(width, height);
+
+    py_newnone(py_retval());
     return true;
 }
 
@@ -265,21 +286,32 @@ bool py_oscilloscope_buffer_create(int argc, py_Ref argv)
 {
     uint32 min_value;
     uint32 max_value;
+    uint32 size = 1024;
     int buffer_id = -1;
     int i;
 
-    PY_CHECK_ARGC(2);
+    if (argc < 2 || argc > 3)
+    {
+        return false;
+    }
+
     PY_CHECK_ARG_TYPE(0, tp_int);
     PY_CHECK_ARG_TYPE(1, tp_int);
 
     min_value = (uint32)py_toint(py_arg(0));
     max_value = (uint32)py_toint(py_arg(1));
 
+    if (argc >= 3)
+    {
+        PY_CHECK_ARG_TYPE(2, tp_int);
+        size = (uint32)py_toint(py_arg(2));
+    }
+
     for (i = 0; i < MAX_OSCILLOSCOPE_BUFFERS; i++)
     {
         if (g_py_oscilloscope_buffers[i] == NULL)
         {
-            g_py_oscilloscope_buffers[i] = oscilloscope_buffer_create(min_value, max_value);
+            g_py_oscilloscope_buffers[i] = oscilloscope_buffer_create(min_value, max_value, size);
             if (g_py_oscilloscope_buffers[i])
             {
                 buffer_id = i;
@@ -381,6 +413,69 @@ bool py_widget_oscilloscope(int argc, py_Ref argv)
         if (g_py_oscilloscope_buffers[buffer_id])
         {
             widget_oscilloscope(pos_x, pos_y, width, height, g_py_oscilloscope_buffers[buffer_id], current_value, label, time_window_ms);
+        }
+    }
+
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_oscilloscope_2ch(int argc, py_Ref argv)
+{
+    uint32 pos_x;
+    uint32 pos_y;
+    uint32 width;
+    uint32 height;
+    int buffer_id1;
+    int buffer_id2;
+    uint32 current_value1;
+    uint32 current_value2;
+    const char* label1 = "OSC1";
+    const char* label2 = "OSC2";
+    uint64 time_window_ms = 0;
+
+    if (argc < 10 || argc > 11)
+    {
+        return false;
+    }
+
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+    PY_CHECK_ARG_TYPE(3, tp_int);
+    PY_CHECK_ARG_TYPE(4, tp_int);
+    PY_CHECK_ARG_TYPE(5, tp_int);
+    PY_CHECK_ARG_TYPE(6, tp_str);
+    PY_CHECK_ARG_TYPE(7, tp_int);
+    PY_CHECK_ARG_TYPE(8, tp_int);
+    PY_CHECK_ARG_TYPE(9, tp_str);
+
+    pos_x = (uint32)py_toint(py_arg(0));
+    pos_y = (uint32)py_toint(py_arg(1));
+    width = (uint32)py_toint(py_arg(2));
+    height = (uint32)py_toint(py_arg(3));
+    buffer_id1 = (int)py_toint(py_arg(4));
+    current_value1 = (uint32)py_toint(py_arg(5));
+    label1 = py_tostr(py_arg(6));
+    buffer_id2 = (int)py_toint(py_arg(7));
+    current_value2 = (uint32)py_toint(py_arg(8));
+    label2 = py_tostr(py_arg(9));
+
+    if (argc > 10)
+    {
+        PY_CHECK_ARG_TYPE(10, tp_int);
+        time_window_ms = (uint64)py_toint(py_arg(10));
+    }
+
+    if (buffer_id1 >= 0 && buffer_id1 < MAX_OSCILLOSCOPE_BUFFERS &&
+        buffer_id2 >= 0 && buffer_id2 < MAX_OSCILLOSCOPE_BUFFERS)
+    {
+        if (g_py_oscilloscope_buffers[buffer_id1] && g_py_oscilloscope_buffers[buffer_id2])
+        {
+            widget_oscilloscope_2ch(pos_x, pos_y, width, height,
+                                     g_py_oscilloscope_buffers[buffer_id1], current_value1, label1,
+                                     g_py_oscilloscope_buffers[buffer_id2], current_value2, label2,
+                                     time_window_ms);
         }
     }
 

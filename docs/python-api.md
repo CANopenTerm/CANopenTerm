@@ -879,6 +879,23 @@ tuple window_get_resolution ()
 
 <!-- tabs:end -->
 
+### window_resize()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Resize widget window.
+
+```python
+window_resize (width, height)
+```
+
+> **width** Width in pixel.
+> **height** Height in pixel.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
 ### window_show()
 
 <!-- tabs:start -->
@@ -1049,12 +1066,14 @@ window_update()
 Create an oscilloscope buffer to store time-series data samples.
 
 ```python
-int oscilloscope_buffer_create (min_value, max_value)
+int oscilloscope_buffer_create (min_value, max_value, size=1024)
 ```
 
 > **min_value** Minimum value for scaling.
 
 > **max_value** Maximum value for scaling.
+
+> **size** (Optional) Buffer size in samples. Default is 1024. (Since 2.05)
 
 **Returns**: Buffer ID (0-15) on success, -1 on failure.
 
@@ -1062,8 +1081,8 @@ int oscilloscope_buffer_create (min_value, max_value)
 
 <!-- tab:Example -->
 ```python
-# Create an oscilloscope buffer (0-100 range)
-osc_id = oscilloscope_buffer_create(0, 100)
+# Create an oscilloscope buffer (0-100 range) with custom size
+osc_id = oscilloscope_buffer_create(0, 100, 4096)
 
 if osc_id >= 0:
     print("Oscilloscope buffer created: " + str(osc_id))
@@ -1157,7 +1176,7 @@ widget_oscilloscope (pos_x, pos_y, width, height, buffer_id, current_value, labe
 
 > **time_window_ms** Optional time/division in milliseconds. Specifies how many milliseconds each vertical grid division represents.
                      For example, 1000 ms means each grid division shows 1 second of data (5 divisions = 5 seconds total).  If 0 or
-                     omitted, uses adaptive scaling to display all buffered data.
+                     omitted, uses adaptive scaling to display all buffered data. (Since 2.05)
 
 **Returns**: Nothing.
 
@@ -1211,6 +1230,96 @@ while demo_running and not key_is_hit():
 
 # Cleanup
 oscilloscope_buffer_destroy(osc_id)
+window_hide()
+```
+<!-- tabs:end -->
+
+### widget_oscilloscope_2ch()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw two oscilloscope-style waveforms side-by-side for direct comparison. No average value bar is displayed in this variant.
+
+```python
+widget_oscilloscope_2ch (pos_x, pos_y, width, height, buffer_id1, current_value1, label1, buffer_id2, current_value2, label2, [time_window_ms])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **width** Width in pixels.
+
+> **height** Height in pixels.
+
+> **buffer_id1** First buffer ID returned by oscilloscope_buffer_create().
+
+> **current_value1** Current value to display for first buffer.
+
+> **label1** Label string for first buffer.
+
+> **buffer_id2** Second buffer ID returned by oscilloscope_buffer_create().
+
+> **current_value2** Current value to display for second buffer.
+
+> **label2** Label string for second buffer.
+
+> **time_window_ms** Optional time/division in milliseconds. If 0 or omitted, uses adaptive scaling. (Since 2.05)
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+import math
+import os
+
+# Initialize display
+window_show()
+window_clear()
+
+# Create two oscilloscope buffers for comparison
+osc_id1 = oscilloscope_buffer_create(0, 100)
+osc_id2 = oscilloscope_buffer_create(0, 100)
+
+# Simulate data collection and display with two different signals
+time_counter = 0
+demo_running = True
+
+while demo_running and not key_is_hit():
+    # Generate first signal (sine wave)
+    value1 = 50 + 30 * math.sin(time_counter / 10)
+    value1 = max(0, min(100, int(value1)))
+
+    # Generate second signal (triangle wave)
+    triangle = abs((time_counter % 40) - 20) / 20 - 1
+    value2 = 50 + 20 * triangle
+    value2 = max(0, min(100, int(value2)))
+
+    # Add to buffers
+    oscilloscope_buffer_push(osc_id1, value1)
+    oscilloscope_buffer_push(osc_id2, value2)
+
+    # Clear and render
+    window_clear()
+
+    # Draw dual oscilloscope for comparison
+    widget_oscilloscope_2ch(10, 10, 300, 200, osc_id1, value1, "Signal A",
+                             osc_id2, value2, "Signal B", 1000)
+
+    # Update display
+    window_update(True)
+
+    time_counter = time_counter + 1
+    delay_ms(50)
+
+    if time_counter > 2000:
+        demo_running = False
+
+# Cleanup
+oscilloscope_buffer_destroy(osc_id1)
+oscilloscope_buffer_destroy(osc_id2)
 window_hide()
 ```
 <!-- tabs:end -->
