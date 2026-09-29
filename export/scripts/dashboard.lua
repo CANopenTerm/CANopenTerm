@@ -152,9 +152,9 @@ function calculate_layout(width, height)
     end
 
     local layout = {}
-    layout.size = width / 3
-    layout.spacing = width / 6
-    layout.pos_y = (height / 2) - (layout.size / 2)
+    layout.size = math.floor(width / 3)
+    layout.spacing = math.floor(width / 6)
+    layout.pos_y = math.floor((height / 2) - (layout.size / 2))
     layout.pos_x_kmh = layout.spacing
     layout.pos_x_rpm = width - layout.spacing - layout.size
     return layout
