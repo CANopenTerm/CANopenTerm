@@ -1,0 +1,53 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "x64-Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTS": "True"
+            },
+            "environment": {
+                "VSCMD_ARG_TGT_ARCH": "x64",
+                "VSCMD_ARG_HOST_ARCH": "x64"
+            }
+        },
+        {
+            "name": "x64-Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_TESTS": "True"
+            },
+            "environment": {
+                "VSCMD_ARG_TGT_ARCH": "x64",
+                "VSCMD_ARG_HOST_ARCH": "x64"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "x64-Debug",
+            "configurePreset": "x64-Debug"
+        },
+        {
+            "name": "x64-Release",
+            "configurePreset": "x64-Release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "x64-Debug",
+            "configurePreset": "x64-Debug"
+        },
+        {
+            "name": "x64-Release",
+            "configurePreset": "x64-Release"
+        }
+    ]
+}
