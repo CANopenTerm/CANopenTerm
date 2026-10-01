@@ -26,7 +26,8 @@ Always verify supported PIDs.
 -- Hide the console and show the graphical window.
 console_hide()
 window_show()
-widget_theme(3)
+widget_theme(5)
+window_resize(600, 600)
 
 -- Give the window time to initialize properly
 delay_ms(100)
@@ -147,7 +148,7 @@ end
 function calculate_layout(width, height)
     -- Use default dimensions if window hasn't initialized yet
     if width == 0 or height == 0 then
-        width = 800
+        width = 600
         height = 600
     end
 
@@ -167,8 +168,8 @@ function render_dashboard(layout)
     widget_print(10, 75, string.format("%4d", kmh) .. " km/h", 4)
     widget_print(10, 125, string.format("%4d", rpm) .. " RPM", 4)
 
-    widget_print(layout.pos_x_kmh - offset, layout.pos_y - 10, "KM/H", 2)
-    widget_print(layout.pos_x_rpm + offset, layout.pos_y - 10, "RPM", 2)
+    widget_print(layout.pos_x_kmh - offset, layout.pos_y - 20, "KM/H", 2)
+    widget_print(layout.pos_x_rpm + offset, layout.pos_y - 20, "RPM", 2)
 
     widget_tachometer(layout.pos_x_kmh - offset, layout.pos_y, layout.size, 260, kmh)
     widget_tachometer(layout.pos_x_rpm + offset, layout.pos_y, layout.size, 8000, rpm)
