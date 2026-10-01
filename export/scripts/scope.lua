@@ -9,7 +9,7 @@ License: Public domain
 widget_theme(3)
 window_show()
 window_clear()
-window_resize(800, 600)
+window_resize(600, 600)
 
 -- Create oscilloscope buffer.
 local osc_id = oscilloscope_buffer_create(0, 100, 2048)
