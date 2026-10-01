@@ -126,6 +126,9 @@
                 <File Source="../../export/scripts/dashboard.lua" />
             </Component>
             <Component>
+                <File Source="../../export/scripts/demo.lua" />
+            </Component>
+            <Component>
                 <File Source="../../export/scripts/fuzz.lua" />
             </Component>
             <Component>
