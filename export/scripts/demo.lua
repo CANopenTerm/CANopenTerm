@@ -7,7 +7,7 @@ License: Public domain
 
 console_hide()
 window_show()
-widget_theme(2)
+widget_theme(1)
 window_resize(900, 900)
 
 delay_ms(100)

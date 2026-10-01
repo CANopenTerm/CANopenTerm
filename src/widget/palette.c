@@ -12,140 +12,140 @@
 
 /* Theme palettes. */
 static const pal_color_palette_t themes[] = {
-    /* NEON_ECLIPSE */
+    /* MIDNIGHT_BLUE */
     {
-        .bg_color = 0x0b0d14,
-        .widget_color = 0x171a25,
-        .widget_color_highlight = 0x9b6cff,
-        .draw_color = 0x00e6d0,
-        .draw_white = 0xf4f6ff,
-        .status_bar_low_1 = 0x00e5a8,
-        .status_bar_low_2 = 0x007f8a,
-        .status_bar_mid_1 = 0xffd84d,
-        .status_bar_mid_2 = 0xff7a45,
-        .status_bar_high_1 = 0xff4668,
-        .status_bar_high_2 = 0xff00ff},
-    /* OBSIDIAN_LUXE */
+        .bg_color = 0x0b1220,
+        .widget_color = 0x162033,
+        .widget_color_highlight = 0x243653,
+        .draw_color = 0x6ea8fe,
+        .draw_color_alt = 0x7ee7d8,
+        .status_bar_low_1 = 0x43d17d,
+        .status_bar_low_2 = 0x62df91,
+        .status_bar_mid_1 = 0xe0c85a,
+        .status_bar_mid_2 = 0xf0a84b,
+        .status_bar_high_1 = 0xf06a62,
+        .status_bar_high_2 = 0xff5c67},
+    /* DEEP_FOREST */
     {
-        .bg_color = 0x101011,
-        .widget_color = 0x1d1d20,
-        .widget_color_highlight = 0xd4af37,
-        .draw_color = 0xf2ede2,
-        .draw_white = 0xffffff,
-        .status_bar_low_1 = 0x7bb661,
-        .status_bar_low_2 = 0x3f7950,
-        .status_bar_mid_1 = 0xe8c75a,
-        .status_bar_mid_2 = 0xc77b3c,
-        .status_bar_high_1 = 0xd94b4b,
-        .status_bar_high_2 = 0xd4af37},
-    /* DEEP_OCEAN */
+        .bg_color = 0x0b1713,
+        .widget_color = 0x13251e,
+        .widget_color_highlight = 0x1e3a2f,
+        .draw_color = 0x72d6a0,
+        .draw_color_alt = 0x8ed8ff,
+        .status_bar_low_1 = 0x48d98a,
+        .status_bar_low_2 = 0x68e5a0,
+        .status_bar_mid_1 = 0xd9d65d,
+        .status_bar_mid_2 = 0xeeb04c,
+        .status_bar_high_1 = 0xee7060,
+        .status_bar_high_2 = 0xff5c63},
+    /* DARK_PLUM */
     {
-        .bg_color = 0x06141d,
-        .widget_color = 0x0d2633,
-        .widget_color_highlight = 0x249fca,
-        .draw_color = 0x16d9ed,
-        .draw_white = 0xe6f8fc,
-        .status_bar_low_1 = 0x00d6b0,
-        .status_bar_low_2 = 0x008b9a,
-        .status_bar_mid_1 = 0xffdf58,
-        .status_bar_mid_2 = 0xff9650,
-        .status_bar_high_1 = 0xff526d,
-        .status_bar_high_2 = 0x0a5f7a},
-    /* EMBER_CORE */
+        .bg_color = 0x160f1c,
+        .widget_color = 0x25172d,
+        .widget_color_highlight = 0x392343,
+        .draw_color = 0xd49af5,
+        .draw_color_alt = 0xffa6c9,
+        .status_bar_low_1 = 0x55d78b,
+        .status_bar_low_2 = 0x72e59d,
+        .status_bar_mid_1 = 0xe2ce63,
+        .status_bar_mid_2 = 0xf0a85b,
+        .status_bar_high_1 = 0xef6b78,
+        .status_bar_high_2 = 0xff5c79},
+    /* CHARCOAL_AMBER */
     {
-        .bg_color = 0x150d09,
-        .widget_color = 0x261712,
-        .widget_color_highlight = 0xf0643c,
-        .draw_color = 0xffb86a,
-        .draw_white = 0xfff3e7,
-        .status_bar_low_1 = 0x7acb67,
-        .status_bar_low_2 = 0x4a8f45,
-        .status_bar_mid_1 = 0xffca45,
-        .status_bar_mid_2 = 0xf17a32,
-        .status_bar_high_1 = 0xff5145,
-        .status_bar_high_2 = 0xff3d1a},
-    /* TOXIC_LAB */
+        .bg_color = 0x121212,
+        .widget_color = 0x1e1e1e,
+        .widget_color_highlight = 0x303030,
+        .draw_color = 0xffb454,
+        .draw_color_alt = 0x62d9ff,
+        .status_bar_low_1 = 0x52d77c,
+        .status_bar_low_2 = 0x6ee58d,
+        .status_bar_mid_1 = 0xe2cc51,
+        .status_bar_mid_2 = 0xf1aa45,
+        .status_bar_high_1 = 0xf06455,
+        .status_bar_high_2 = 0xff5955},
+    /* DARK_WINE */
     {
-        .bg_color = 0x090d08,
-        .widget_color = 0x14200e,
-        .widget_color_highlight = 0x74e62e,
-        .draw_color = 0xaaf45d,
-        .draw_white = 0xf1f9e8,
-        .status_bar_low_1 = 0x83eb32,
-        .status_bar_low_2 = 0x42b94a,
-        .status_bar_mid_1 = 0xe8ed35,
-        .status_bar_mid_2 = 0xff9a27,
-        .status_bar_high_1 = 0xff4848,
-        .status_bar_high_2 = 0x00ff00},
-    /* ARCTIC_DAY */
+        .bg_color = 0x1a0d14,
+        .widget_color = 0x2a151f,
+        .widget_color_highlight = 0x422332,
+        .draw_color = 0xf07891,
+        .draw_color_alt = 0xb58cff,
+        .status_bar_low_1 = 0x48d88a,
+        .status_bar_low_2 = 0x68e59b,
+        .status_bar_mid_1 = 0xe0c45c,
+        .status_bar_mid_2 = 0xf0a04c,
+        .status_bar_high_1 = 0xf06a73,
+        .status_bar_high_2 = 0xff586d},
+    /* DEERE_FIELD */
     {
-        .bg_color = 0xf1f6fa,
-        .widget_color = 0xffffff,
-        .widget_color_highlight = 0x1976c9,
-        .draw_color = 0x075d68,
-        .draw_white = 0xffffff,
-        .status_bar_low_1 = 0x36a078,
-        .status_bar_low_2 = 0x4e9cc4,
-        .status_bar_mid_1 = 0xf3b34c,
-        .status_bar_mid_2 = 0xe87d62,
-        .status_bar_high_1 = 0xd84c58,
-        .status_bar_high_2 = 0x00b8e6},
-    /* IVORY_LUXE */
+        .bg_color = 0x10251a,
+        .widget_color = 0x183523,
+        .widget_color_highlight = 0x285038,
+        .draw_color = 0x63c957,
+        .draw_color_alt = 0xf4d23c,
+        .status_bar_low_1 = 0x39c96b,
+        .status_bar_low_2 = 0x5cdb7b,
+        .status_bar_mid_1 = 0xd8cf45,
+        .status_bar_mid_2 = 0xe8ad3d,
+        .status_bar_high_1 = 0xe75d4f,
+        .status_bar_high_2 = 0xf0444b},
+    /* NEW_AMSTERDAM*/
     {
-        .bg_color = 0xf7f3e9,
-        .widget_color = 0xffffff,
-        .widget_color_highlight = 0xb28722,
-        .draw_color = 0x403b35,
-        .draw_white = 0xffffff,
-        .status_bar_low_1 = 0x6b9b45,
-        .status_bar_low_2 = 0x72a989,
-        .status_bar_mid_1 = 0xd7ad3f,
-        .status_bar_mid_2 = 0xd88745,
-        .status_bar_high_1 = 0xb94a43,
-        .status_bar_high_2 = 0xc9985a},
-    /* SKYLINE */
+        .bg_color = 0x102438,
+        .widget_color = 0x19334d,
+        .widget_color_highlight = 0x285171,
+        .draw_color = 0x4fa9e8,
+        .draw_color_alt = 0xf3c84b,
+        .status_bar_low_1 = 0x3bd084,
+        .status_bar_low_2 = 0x5cde91,
+        .status_bar_mid_1 = 0xd9cc4b,
+        .status_bar_mid_2 = 0xe7aa3e,
+        .status_bar_high_1 = 0xe85e55,
+        .status_bar_high_2 = 0xf0474d},
+    /* CRIMSON_HARVEST */
     {
-        .bg_color = 0xe9f4fb,
-        .widget_color = 0xffffff,
-        .widget_color_highlight = 0x0785bd,
-        .draw_color = 0x075589,
-        .draw_white = 0xffffff,
-        .status_bar_low_1 = 0x159a91,
-        .status_bar_low_2 = 0x3f9bc0,
-        .status_bar_mid_1 = 0xf2a26b,
-        .status_bar_mid_2 = 0xe97b69,
-        .status_bar_high_1 = 0xc94a55,
-        .status_bar_high_2 = 0x0066cc},
-    /* SUNLIT_EMBER */
+        .bg_color = 0x261417,
+        .widget_color = 0x351c20,
+        .widget_color_highlight = 0x55282d,
+        .draw_color = 0xf04f52,
+        .draw_color_alt = 0xffc83d,
+        .status_bar_low_1 = 0x3dca76,
+        .status_bar_low_2 = 0x5ddd85,
+        .status_bar_mid_1 = 0xe0c749,
+        .status_bar_mid_2 = 0xeea43e,
+        .status_bar_high_1 = 0xef6255,
+        .status_bar_high_2 = 0xff4647},
+    /* EMERALD_DRIVE */
     {
-        .bg_color = 0xfff6e9,
-        .widget_color = 0xffffff,
-        .widget_color_highlight = 0xe15b18,
-        .draw_color = 0xb53c13,
-        .draw_white = 0xffffff,
-        .status_bar_low_1 = 0x6c9d45,
-        .status_bar_low_2 = 0x8eb76c,
-        .status_bar_mid_1 = 0xf5b34d,
-        .status_bar_mid_2 = 0xef7f3d,
-        .status_bar_high_1 = 0xd94d4d,
-        .status_bar_high_2 = 0xff8c00},
-    /* MINT_LAB */
+        .bg_color = 0x10231c,
+        .widget_color = 0x183429,
+        .widget_color_highlight = 0x28513d,
+        .draw_color = 0x62c96b,
+        .draw_color_alt = 0xe95757,
+        .status_bar_low_1 = 0x3bd17a,
+        .status_bar_low_2 = 0x5cde88,
+        .status_bar_mid_1 = 0xd7cc4a,
+        .status_bar_mid_2 = 0xe7a83e,
+        .status_bar_high_1 = 0xe85b55,
+        .status_bar_high_2 = 0xf0444b},    
+    /* IRON_HARVEST */
     {
-        .bg_color = 0xf0f7ef,
-        .widget_color = 0xffffff,
-        .widget_color_highlight = 0x568d3c,
-        .draw_color = 0x356b27,
-        .draw_white = 0xffffff,
-        .status_bar_low_1 = 0x159b8d,
-        .status_bar_low_2 = 0x4fae9c,
-        .status_bar_mid_1 = 0xf0b83d,
-        .status_bar_mid_2 = 0xe98935,
-        .status_bar_high_1 = 0xd64d50,
-        .status_bar_high_2 = 0x00cc99}
-};
+        .bg_color = 0x1c2022,
+        .widget_color = 0x292e30,
+        .widget_color_highlight = 0x41484a,
+        .draw_color = 0xe6534d,
+        .draw_color_alt = 0xf1c33c,
+        .status_bar_low_1 = 0x42c978,
+        .status_bar_low_2 = 0x60dc88,
+        .status_bar_mid_1 = 0xd9c645,
+        .status_bar_mid_2 = 0xe7a53b,
+        .status_bar_high_1 = 0xe75b52,
+        .status_bar_high_2 = 0xf04448}
+    };
 
-/* Current theme (default to NEON_ECLIPSE) */
-static pal_theme_t current_theme = NEON_ECLIPSE;
+/* Current theme (default to MIDNIGHT_BLUE) */
+static pal_theme_t current_theme = MIDNIGHT_BLUE;
 
 /**
  * @brief Get the current theme palette
@@ -162,7 +162,7 @@ const pal_color_palette_t* palette_get_current_theme(void)
  */
 void palette_set_theme(pal_theme_t theme)
 {
-    if (theme >= NEON_ECLIPSE && theme <= MINT_LAB)
+    if (theme >= MIDNIGHT_BLUE && theme <= IRON_HARVEST)
     {
         current_theme = theme;
     }
@@ -196,8 +196,8 @@ uint32 palette_get_color(pal_color_t color)
             return theme->widget_color_highlight;
         case DRAW_COLOR:
             return theme->draw_color;
-        case DRAW_WHITE:
-            return theme->draw_white;
+        case DRAW_COLOR_ALT:
+            return theme->draw_color_alt;
         case STATUS_BAR_LOW_1:
             return theme->status_bar_low_1;
         case STATUS_BAR_LOW_2:

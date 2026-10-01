@@ -16,7 +16,7 @@ void widget_led(uint32 pos_x, uint32 pos_y, uint32 size, bool state)
 {
     os_renderer* renderer = window_get_renderer();
     uint32 highlight_color = palette_get_color(WIDGET_COLOR_HIGHLIGHT);
-    uint32 draw_white_color = palette_get_color(DRAW_WHITE);
+    uint32 draw_white_color = palette_get_color(DRAW_COLOR_ALT);
     uint32 widget_color = palette_get_color(WIDGET_COLOR);
     uint8 r, g, b;
     os_rect frame_rect;

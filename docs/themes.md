@@ -8,16 +8,16 @@ the newly introduced `widget_theme()` API function.
 
 The following theme IDs are currently available:
 
-> - `0` = NEON_ECLIPSE (default, purple/cyan)
-> - `1` = OBSIDIAN_LUXE (gold/dark)
-> - `2` = DEEP_OCEAN (cyan/blue)
-> - `3` = EMBER_CORE (orange/warm)
-> - `4` = TOXIC_LAB (green/neon)
-> - `5` = ARCTIC_DAY (blue/white)
-> - `6` = IVORY_LUXE (cream/gold)
-> - `7` = SKYLINE (cyan/blue)
-> - `8` = SUNLIT_EMBER (orange/warm)
-> - `9` = MINT_LAB (green/mint)
+> - `0` = MIDNIGHT_BLUE (default)
+> - `1` = DEEP_FOREST
+> - `2` = DARK_PLUM
+> - `3` = CHARCOAL_AMBER
+> - `4` = DARK_WINE
+> - `5` = DEERE_FIELD
+> - `6` = NEW_AMSTERDAM
+> - `7` = CRIMSON_HARVEST
+> - `8` = EMERALD_DRIVE
+> - `9` = IRON_HARVEST
 
 For details how to use the function, please refer to the [Lua](/lua-api.md)
 or [Python](/python-api.md) API documentation.
@@ -27,42 +27,42 @@ or [Python](/python-api.md) API documentation.
 Here are previews of the available themes. The screenshots show the same
 widget layout with different themes applied.
 
-### Neon Eclipse
+### Midnight Blue
 
-![Neon Eclipse theme](media/theme-neon-eclipse.png)
+![Midnight Blue theme](media/theme-midnight-blue.png)
 
-### Obsidian Luxe
+### Deep Forest
 
-![Obsidian Luxe theme](media/theme-obsidian-luxe.png)
+![Deep Forest theme](media/theme-deep-forest.png)
 
-### Deep Ocean
+### Dark Plum
 
-![Deep Ocean theme](media/theme-deep-ocean.png)
+![Dark Plum theme](media/theme-dark-plum.png)
 
-### Ember Core
+### Charcoal Amber
 
-![Ember Core theme](media/theme-ember-core.png)
+![Charcoal Amber theme](media/theme-charcoal-amber.png)
 
-### Toxic Lab
+### Dark Wine
 
-![Toxic Lab theme](media/theme-toxic-lab.png)
+![Dark Wine theme](media/theme-dark-wine.png)
 
-### Arctic Day
+### Deere Field
 
-![Arctic Day theme](media/theme-arctic-day.png)
+![Deere Field theme](media/theme-deere-field.png)
 
-### Ivory Luxe
+### New Amsterdam
 
-![Ivory Luxe theme](media/theme-ivory-luxe.png)
+![New Amsterdam theme](media/theme-new-amsterdam.png)
 
-### Skyline
+### Crimson Harvest
 
-![Skyline theme](media/theme-skyline.png)
+![Crimson Harvest theme](media/theme-crimson-harvest.png)
 
-### Sunlit Ember
+### Emerald Drive
 
-![Sunlit Ember theme](media/theme-sunlit-ember.png)
+![Emerald Drive theme](media/theme-emerald-drive.png)
 
-### Mint Lab
+### Iron Harvest
 
-![Mint Lab theme](media/theme-mint-lab.png)
+![Iron Harvest theme](media/theme-iron-harvest.png)

@@ -424,7 +424,7 @@ void widget_oscilloscope_2ch(uint32 pos_x, uint32 pos_y, uint32 width, uint32 he
     uint32 widget_color = palette_get_color(WIDGET_COLOR);
     uint32 highlight_color = palette_get_color(WIDGET_COLOR_HIGHLIGHT);
     uint32 draw_color = palette_get_color(DRAW_COLOR);
-    uint32 highlight_draw_color = palette_get_color(WIDGET_COLOR_HIGHLIGHT);
+    uint32 highlight_draw_color = palette_get_color(DRAW_COLOR_ALT);
     uint32 grid_color = palette_get_color(STATUS_BAR_LOW_1);
     uint8 r, g, b;
     uint32 i;

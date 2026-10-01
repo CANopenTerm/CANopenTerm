@@ -15,18 +15,16 @@
 /* Theme enumeration for widget_theme() API */
 typedef enum pal_theme
 {
-    NEON_ECLIPSE = 0,
-    OBSIDIAN_LUXE = 1,
-    DEEP_OCEAN = 2,
-    EMBER_CORE = 3,
-    TOXIC_LAB = 4,
-
-    /* Light themes */
-    ARCTIC_DAY = 5,
-    IVORY_LUXE = 6,
-    SKYLINE = 7,
-    SUNLIT_EMBER = 8,
-    MINT_LAB = 9
+    MIDNIGHT_BLUE = 0,
+    DEEP_FOREST = 1,
+    DARK_PLUM = 2,
+    CHARCOAL_AMBER = 3,
+    DARK_WINE = 4,
+    DEERE_FIELD = 5,
+    NEW_AMSTERDAM = 6,
+    CRIMSON_HARVEST = 7,
+    EMERALD_DRIVE = 8,
+    IRON_HARVEST = 9
 
 } pal_theme_t;
 
@@ -37,7 +35,7 @@ typedef struct pal_color_palette
     uint32 widget_color;
     uint32 widget_color_highlight;
     uint32 draw_color;
-    uint32 draw_white;
+    uint32 draw_color_alt;
     uint32 status_bar_low_1;
     uint32 status_bar_low_2;
     uint32 status_bar_mid_1;
@@ -54,7 +52,7 @@ typedef enum pal_color
     WIDGET_COLOR = 1,
     WIDGET_COLOR_HIGHLIGHT = 2,
     DRAW_COLOR = 3,
-    DRAW_WHITE = 4,
+    DRAW_COLOR_ALT = 4,
     STATUS_BAR_LOW_1 = 5,
     STATUS_BAR_LOW_2 = 6,
     STATUS_BAR_MID_1 = 7,
