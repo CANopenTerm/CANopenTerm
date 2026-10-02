@@ -1059,6 +1059,171 @@ window_update()
 ```
 <!-- tabs:end -->
 
+### widget_toggle_register()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Register a toggle switch widget that can be clicked to toggle state and invoke callbacks.
+
+```python
+int widget_toggle_register (pos_x, pos_y, size, [initial_state])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel. The toggle width will be 2x the size.
+
+> **initial_state** Initial state (True=ON, False=OFF), default is `False`.
+
+**Returns**: Toggle widget ID (int) or -1 on failure.
+
+<!-- tab:Example -->
+```python
+# Create a toggle switch at position (100, 50) with size 20
+toggle_id = widget_toggle_register(100, 50, 20, False)
+
+# Draw and update the window
+window_show()
+window_update()
+```
+<!-- tabs:end -->
+
+### widget_toggle()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw a toggle switch widget (without registration). Use `widget_toggle_register()` if you need state tracking.
+
+```python
+widget_toggle (pos_x, pos_y, size, [state])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel. The toggle width will be 2x the size.
+
+> **state** Current state (True=ON, False=OFF), default is `False`.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```python
+# Draw a toggle switch at position (100, 50) with size 20 in OFF state
+widget_toggle(100, 50, 20, False)
+
+# Draw another toggle in ON state
+widget_toggle(100, 100, 20, True)
+
+window_update()
+```
+<!-- tabs:end -->
+
+### widget_toggle_set_callback()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set a callback function for a registered toggle widget. Note: Full callback support is limited in the Python API. Use `widget_toggle_get_state()` to poll the state instead.
+
+```python
+bool widget_toggle_set_callback (toggle_id, callback_function)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+> **callback_function** Function to call (callback support may be limited).
+
+**Returns**: `False` (callback support not fully implemented in Python API).
+
+<!-- tab:Example -->
+```python
+toggle_id = widget_toggle_register(100, 50, 20, False)
+
+# Callback support is limited - use get_state() to check state instead
+# You can poll the state in your game loop
+```
+<!-- tabs:end -->
+
+### widget_toggle_get_state()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Get the current state of a registered toggle widget.
+
+```python
+bool widget_toggle_get_state (toggle_id)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+**Returns**: Boolean state (`True` or `False`), or `False` if toggle_id is invalid.
+
+<!-- tab:Example -->
+```python
+toggle_id = widget_toggle_register(100, 50, 20, False)
+
+# Later, check the state
+current_state = widget_toggle_get_state(toggle_id)
+if current_state:
+    print("Toggle is ON")
+else:
+    print("Toggle is OFF")
+```
+<!-- tabs:end -->
+
+### widget_toggle_set_state()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Programmatically set the state of a registered toggle widget.
+
+```python
+widget_toggle_set_state (toggle_id, state)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+> **state** New state (True=ON, False=OFF).
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```python
+toggle_id = widget_toggle_register(100, 50, 20, False)
+
+# Programmatically turn the toggle ON
+widget_toggle_set_state(toggle_id, True)
+```
+<!-- tabs:end -->
+
+### widget_toggle_unregister()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Unregister a toggle widget and clean up its resources.
+
+```python
+widget_toggle_unregister (toggle_id)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```python
+toggle_id = widget_toggle_register(100, 50, 20, False)
+
+# ... use the toggle ...
+
+# Clean up when done
+widget_toggle_unregister(toggle_id)
+```
+<!-- tabs:end -->
+
 ### oscilloscope_buffer_create()
 
 <!-- tabs:start -->

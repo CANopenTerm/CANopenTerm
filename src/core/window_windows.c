@@ -12,6 +12,7 @@
 #include "core.h"
 #include "os.h"
 #include "palette.h"
+#include "toggle.h"
 #include "window.h"
 
 void window_clear(void)
@@ -167,6 +168,14 @@ status_t window_update(bool render)
                             }
                             break;
                         }
+                    }
+                    break;
+                }
+                case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                {
+                    if (event.button.button == SDL_BUTTON_LEFT)
+                    {
+                        widget_toggle_check_click(event.button.x, event.button.y);
                     }
                     break;
                 }

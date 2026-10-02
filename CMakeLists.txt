@@ -133,6 +133,7 @@ set(common_widget_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/palette.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/primitives.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/tachometer.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/widget/toggle.c
 )
 
 set(core_sources ${common_core_sources})

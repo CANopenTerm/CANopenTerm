@@ -16,6 +16,7 @@
 #include "oscilloscope.h"
 #include "palette.h"
 #include "tachometer.h"
+#include "toggle.h"
 #include "window.h"
 #include <pocketpy.h>
 
@@ -37,6 +38,12 @@ bool py_widget_led(int argc, py_Ref argv);
 bool py_widget_print(int argc, py_Ref argv);
 bool py_widget_tachometer(int argc, py_Ref argv);
 bool py_widget_theme(int argc, py_Ref argv);
+bool py_widget_toggle_register(int argc, py_Ref argv);
+bool py_widget_toggle(int argc, py_Ref argv);
+bool py_widget_toggle_set_callback(int argc, py_Ref argv);
+bool py_widget_toggle_get_state(int argc, py_Ref argv);
+bool py_widget_toggle_set_state(int argc, py_Ref argv);
+bool py_widget_toggle_unregister(int argc, py_Ref argv);
 bool py_oscilloscope_buffer_create(int argc, py_Ref argv);
 bool py_oscilloscope_buffer_destroy(int argc, py_Ref argv);
 bool py_oscilloscope_buffer_push(int argc, py_Ref argv);
@@ -60,6 +67,12 @@ void python_widget_init(void)
     py_bindfunc(mod, "widget_led", py_widget_led);
     py_bindfunc(mod, "widget_tachometer", py_widget_tachometer);
     py_bindfunc(mod, "widget_theme", py_widget_theme);
+    py_bindfunc(mod, "widget_toggle_register", py_widget_toggle_register);
+    py_bindfunc(mod, "widget_toggle", py_widget_toggle);
+    py_bindfunc(mod, "widget_toggle_set_callback", py_widget_toggle_set_callback);
+    py_bindfunc(mod, "widget_toggle_get_state", py_widget_toggle_get_state);
+    py_bindfunc(mod, "widget_toggle_set_state", py_widget_toggle_set_state);
+    py_bindfunc(mod, "widget_toggle_unregister", py_widget_toggle_unregister);
     py_bindfunc(mod, "oscilloscope_buffer_create", py_oscilloscope_buffer_create);
     py_bindfunc(mod, "oscilloscope_buffer_destroy", py_oscilloscope_buffer_destroy);
     py_bindfunc(mod, "oscilloscope_buffer_push", py_oscilloscope_buffer_push);
@@ -482,3 +495,124 @@ bool py_widget_oscilloscope_2ch(int argc, py_Ref argv)
     py_newnone(py_retval());
     return true;
 }
+
+bool py_widget_toggle_register(int argc, py_Ref argv)
+{
+    uint32 pos_x;
+    uint32 pos_y;
+    uint32 size;
+    bool initial_state = false;
+
+    if (argc < 3 || argc > 4)
+    {
+        return false;
+    }
+
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+
+    pos_x = (uint32)py_toint(py_arg(0));
+    pos_y = (uint32)py_toint(py_arg(1));
+    size = (uint32)py_toint(py_arg(2));
+
+    if (argc > 3)
+    {
+        PY_CHECK_ARG_TYPE(3, tp_bool);
+        initial_state = py_tobool(py_arg(3));
+    }
+
+    uint32 toggle_id = widget_toggle_register(pos_x, pos_y, size, initial_state);
+    py_newint(py_retval(), toggle_id);
+    return true;
+}
+
+bool py_widget_toggle(int argc, py_Ref argv)
+{
+    uint32 pos_x;
+    uint32 pos_y;
+    uint32 size;
+    bool state = false;
+
+    if (argc < 3 || argc > 4)
+    {
+        return false;
+    }
+
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+
+    pos_x = (uint32)py_toint(py_arg(0));
+    pos_y = (uint32)py_toint(py_arg(1));
+    size = (uint32)py_toint(py_arg(2));
+
+    if (argc > 3)
+    {
+        PY_CHECK_ARG_TYPE(3, tp_bool);
+        state = py_tobool(py_arg(3));
+    }
+
+    widget_toggle(pos_x, pos_y, size, state);
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_toggle_set_callback(int argc, py_Ref argv)
+{
+    uint32 toggle_id;
+
+    PY_CHECK_ARGC(2);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    toggle_id = (uint32)py_toint(py_arg(0));
+
+    /* Python callbacks are more complex - for now, we'll support basic toggle without callbacks */
+    /* Full callback support would require storing Python function references */
+    py_newbool(py_retval(), false);
+    return true;
+}
+
+bool py_widget_toggle_get_state(int argc, py_Ref argv)
+{
+    uint32 toggle_id;
+
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    toggle_id = (uint32)py_toint(py_arg(0));
+    py_newbool(py_retval(), widget_toggle_get_state(toggle_id));
+    return true;
+}
+
+bool py_widget_toggle_set_state(int argc, py_Ref argv)
+{
+    uint32 toggle_id;
+    bool state;
+
+    PY_CHECK_ARGC(2);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_bool);
+
+    toggle_id = (uint32)py_toint(py_arg(0));
+    state = py_tobool(py_arg(1));
+
+    widget_toggle_set_state(toggle_id, state);
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_toggle_unregister(int argc, py_Ref argv)
+{
+    uint32 toggle_id;
+
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    toggle_id = (uint32)py_toint(py_arg(0));
+    widget_toggle_unregister(toggle_id);
+
+    py_newnone(py_retval());
+    return true;
+}
+

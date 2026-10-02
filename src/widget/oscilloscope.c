@@ -769,15 +769,15 @@ void widget_oscilloscope_2ch(uint32 pos_x, uint32 pos_y, uint32 width, uint32 he
 
     /* Display labels and values (no average bar) */
     widget_print(pos_x + 2, pos_y + 2, DRAW_COLOR, 1u, "%s: %d/%d", label1 ? label1 : "OSC1", current_value1, buffer1->max_value);
-    widget_print(pos_x + 2, pos_y + 12, WIDGET_COLOR_HIGHLIGHT, 1u, "%s: %d/%d", label2 ? label2 : "OSC2", current_value2, buffer2->max_value);
+    widget_print(pos_x + 2, pos_y + 12, DRAW_COLOR_ALT, 1u, "%s: %d/%d", label2 ? label2 : "OSC2", current_value2, buffer2->max_value);
 
     /* Display Y-axis min/max values on the right side for buffer1 */
     widget_print(pos_x + width - 65, pos_y + 2, DRAW_COLOR, 1u, "Max1: %05d", buffer1->max_value);
     widget_print(pos_x + width - 65, pos_y + height - 11, DRAW_COLOR, 1u, "Min1: %05d", buffer1->min_value);
 
     /* Display Y-axis min/max values for buffer2 */
-    widget_print(pos_x + width - 140, pos_y + 2, WIDGET_COLOR_HIGHLIGHT, 1u, "Max2: %05d", buffer2->max_value);
-    widget_print(pos_x + width - 140, pos_y + height - 11, WIDGET_COLOR_HIGHLIGHT, 1u, "Min2: %05d", buffer2->min_value);
+    widget_print(pos_x + width - 140, pos_y + 2, DRAW_COLOR_ALT, 1u, "Max2: %05d", buffer2->max_value);
+    widget_print(pos_x + width - 140, pos_y + height - 11, DRAW_COLOR_ALT, 1u, "Min2: %05d", buffer2->min_value);
 
     /* Display time-per-division scaling when in time/division mode */
     if (time_window_ms > 0)

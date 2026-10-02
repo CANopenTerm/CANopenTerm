@@ -1050,6 +1050,186 @@ window_update()
 ```
 <!-- tabs:end -->
 
+### widget_toggle_register()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Register a toggle switch widget that can be clicked to toggle state and invoke callbacks.
+
+```lua
+widget_toggle_register (pos_x, pos_y, size, [initial_state])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel. The toggle width will be 2x the size.
+
+> **initial_state** Initial state (true=ON, false=OFF), default is `false`.
+
+**Returns**: Toggle widget ID (integer) or -1 on failure.
+
+<!-- tab:Example -->
+```lua
+-- Create a toggle switch at position (100, 50) with size 20
+local toggle_id = widget_toggle_register(100, 50, 20, false)
+
+-- Set a callback function
+widget_toggle_set_callback(toggle_id, function(id, state)
+    if state then
+        print("Toggle " .. id .. " is ON")
+    else
+        print("Toggle " .. id .. " is OFF")
+    end
+end)
+
+-- Draw and update the window
+window_show()
+window_update()
+```
+<!-- tabs:end -->
+
+### widget_toggle()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw a toggle switch widget (without registration). Use `widget_toggle_register()` if you need callback support and state tracking.
+
+```lua
+widget_toggle (pos_x, pos_y, size, [state])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **size** Size in pixel. The toggle width will be 2x the size.
+
+> **state** Current state (true=ON, false=OFF), default is `false`.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```lua
+-- Draw a toggle switch at position (100, 50) with size 20 in OFF state
+widget_toggle(100, 50, 20, false)
+
+-- Draw another toggle in ON state
+widget_toggle(100, 100, 20, true)
+
+window_update()
+```
+<!-- tabs:end -->
+
+### widget_toggle_set_callback()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set a callback function for a registered toggle widget. The callback is invoked when the toggle is clicked.
+
+```lua
+widget_toggle_set_callback (toggle_id, callback_function)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+> **callback_function** Function to call with signature: `function(toggle_id, state)` where:
+>   - `toggle_id` is the widget ID (integer)
+>   - `state` is the new boolean state (true=ON, false=OFF)
+
+**Returns**: `true` on success, `false` on failure.
+
+<!-- tab:Example -->
+```lua
+local toggle_id = widget_toggle_register(100, 50, 20, false)
+
+local function on_toggle_changed(id, state)
+    print("Toggle " .. id .. " state changed to: " .. tostring(state))
+end
+
+widget_toggle_set_callback(toggle_id, on_toggle_changed)
+```
+<!-- tabs:end -->
+
+### widget_toggle_get_state()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Get the current state of a registered toggle widget.
+
+```lua
+widget_toggle_get_state (toggle_id)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+**Returns**: Boolean state (`true` or `false`), or `false` if toggle_id is invalid.
+
+<!-- tab:Example -->
+```lua
+local toggle_id = widget_toggle_register(100, 50, 20, false)
+
+-- Later, check the state
+local current_state = widget_toggle_get_state(toggle_id)
+if current_state then
+    print("Toggle is ON")
+else
+    print("Toggle is OFF")
+end
+```
+<!-- tabs:end -->
+
+### widget_toggle_set_state()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Programmatically set the state of a registered toggle widget (without triggering the callback).
+
+```lua
+widget_toggle_set_state (toggle_id, state)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+> **state** New state (true=ON, false=OFF).
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```lua
+local toggle_id = widget_toggle_register(100, 50, 20, false)
+
+-- Programmatically turn the toggle ON
+widget_toggle_set_state(toggle_id, true)
+```
+<!-- tabs:end -->
+
+### widget_toggle_unregister()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Unregister a toggle widget and clean up its resources.
+
+```lua
+widget_toggle_unregister (toggle_id)
+```
+
+> **toggle_id** Toggle widget ID returned by `widget_toggle_register()`.
+
+**Returns**: Nothing.
+
+<!-- tab:Example -->
+```lua
+local toggle_id = widget_toggle_register(100, 50, 20, false)
+
+-- ... use the toggle ...
+
+-- Clean up when done
+widget_toggle_unregister(toggle_id)
+```
+<!-- tabs:end -->
+
 ### oscilloscope_buffer_create()
 
 <!-- tabs:start -->

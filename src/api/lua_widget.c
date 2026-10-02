@@ -17,6 +17,7 @@
 #include "oscilloscope.h"
 #include "palette.h"
 #include "tachometer.h"
+#include "toggle.h"
 #include "window.h"
 
 #define MAX_OSCILLOSCOPE_BUFFERS 16
@@ -250,11 +251,148 @@ int lua_widget_oscilloscope_2ch(lua_State* L)
         if (g_oscilloscope_buffers[buffer_id1] && g_oscilloscope_buffers[buffer_id2])
         {
             widget_oscilloscope_2ch(pos_x, pos_y, width, height,
-                                     g_oscilloscope_buffers[buffer_id1], current_value1, label1,
-                                     g_oscilloscope_buffers[buffer_id2], current_value2, label2,
-                                     time_window_ms);
+                                    g_oscilloscope_buffers[buffer_id1], current_value1, label1,
+                                    g_oscilloscope_buffers[buffer_id2], current_value2, label2,
+                                    time_window_ms);
         }
     }
+    return 0;
+}
+
+/* Global Lua callback storage for toggle widgets */
+#define MAX_LUA_TOGGLE_CALLBACKS 32
+static int g_lua_toggle_callbacks[MAX_LUA_TOGGLE_CALLBACKS] = {LUA_NOREF};
+static lua_State* g_lua_toggle_state = NULL;
+
+/* C callback wrapper for Lua */
+static void lua_toggle_callback_wrapper(uint32 toggle_id, bool state)
+{
+    if (toggle_id >= MAX_LUA_TOGGLE_CALLBACKS || ! g_lua_toggle_state)
+    {
+        return;
+    }
+
+    if (g_lua_toggle_callbacks[toggle_id] != LUA_NOREF)
+    {
+        lua_rawgeti(g_lua_toggle_state, LUA_REGISTRYINDEX, g_lua_toggle_callbacks[toggle_id]);
+        lua_pushinteger(g_lua_toggle_state, toggle_id);
+        lua_pushboolean(g_lua_toggle_state, state);
+        lua_call(g_lua_toggle_state, 2, 0);
+    }
+}
+
+int lua_widget_toggle_register(lua_State* L)
+{
+    uint32 pos_x = luaL_checkinteger(L, 1);
+    uint32 pos_y = luaL_checkinteger(L, 2);
+    uint32 size = luaL_checkinteger(L, 3);
+    bool initial_state = false;
+
+    if (lua_isboolean(L, 4))
+    {
+        initial_state = (bool)lua_toboolean(L, 4);
+    }
+
+    uint32 toggle_id = widget_toggle_register(pos_x, pos_y, size, initial_state);
+    lua_pushinteger(L, toggle_id);
+    return 1;
+}
+
+int lua_widget_toggle(lua_State* L)
+{
+    uint32 pos_x = luaL_checkinteger(L, 1);
+    uint32 pos_y = luaL_checkinteger(L, 2);
+    uint32 size = luaL_checkinteger(L, 3);
+    bool state = false;
+
+    if (lua_isboolean(L, 4))
+    {
+        state = (bool)lua_toboolean(L, 4);
+    }
+
+    widget_toggle(pos_x, pos_y, size, state);
+    return 0;
+}
+
+int lua_widget_toggle_set_callback(lua_State* L)
+{
+    uint32 toggle_id = luaL_checkinteger(L, 1);
+
+    if (toggle_id >= MAX_LUA_TOGGLE_CALLBACKS)
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    /* Store the Lua callback in the registry */
+    g_lua_toggle_state = L;
+
+    if (lua_isfunction(L, 2))
+    {
+        /* Remove old callback if it exists */
+        if (g_lua_toggle_callbacks[toggle_id] != LUA_NOREF)
+        {
+            luaL_unref(L, LUA_REGISTRYINDEX, g_lua_toggle_callbacks[toggle_id]);
+        }
+
+        /* Store new callback */
+        lua_pushvalue(L, 2);
+        g_lua_toggle_callbacks[toggle_id] = luaL_ref(L, LUA_REGISTRYINDEX);
+
+        /* Set the C callback wrapper */
+        widget_toggle_set_callback(toggle_id, lua_toggle_callback_wrapper);
+        lua_pushboolean(L, true);
+    }
+    else
+    {
+        lua_pushboolean(L, false);
+    }
+    return 1;
+}
+
+int lua_widget_toggle_get_state(lua_State* L)
+{
+    uint32 toggle_id = luaL_checkinteger(L, 1);
+    bool state = widget_toggle_get_state(toggle_id);
+    lua_pushboolean(L, state);
+    return 1;
+}
+
+int lua_widget_toggle_set_state(lua_State* L)
+{
+    uint32 toggle_id = luaL_checkinteger(L, 1);
+    bool state = false;
+
+    if (lua_isboolean(L, 2))
+    {
+        state = (bool)lua_toboolean(L, 2);
+    }
+
+    widget_toggle_set_state(toggle_id, state);
+    return 0;
+}
+
+int lua_widget_toggle_set_position(lua_State* L)
+{
+    uint32 toggle_id = luaL_checkinteger(L, 1);
+    uint32 pos_x = (uint32)luaL_checkinteger(L, 2);
+    uint32 pos_y = (uint32)luaL_checkinteger(L, 3);
+
+    widget_toggle_set_position(toggle_id, pos_x, pos_y);
+    return 0;
+}
+
+int lua_widget_toggle_unregister(lua_State* L)
+{
+    uint32 toggle_id = luaL_checkinteger(L, 1);
+
+    if (toggle_id < MAX_LUA_TOGGLE_CALLBACKS && g_lua_toggle_callbacks[toggle_id] != LUA_NOREF)
+    {
+        luaL_unref(L, LUA_REGISTRYINDEX, g_lua_toggle_callbacks[toggle_id]);
+        g_lua_toggle_callbacks[toggle_id] = LUA_NOREF;
+    }
+
+    widget_toggle_unregister(toggle_id);
     return 0;
 }
 
@@ -284,6 +422,20 @@ void lua_register_widget_commands(core_t* core)
     lua_setglobal(core->L, "widget_tachometer");
     lua_pushcfunction(core->L, lua_widget_theme);
     lua_setglobal(core->L, "widget_theme");
+    lua_pushcfunction(core->L, lua_widget_toggle_register);
+    lua_setglobal(core->L, "widget_toggle_register");
+    lua_pushcfunction(core->L, lua_widget_toggle);
+    lua_setglobal(core->L, "widget_toggle");
+    lua_pushcfunction(core->L, lua_widget_toggle_set_callback);
+    lua_setglobal(core->L, "widget_toggle_set_callback");
+    lua_pushcfunction(core->L, lua_widget_toggle_get_state);
+    lua_setglobal(core->L, "widget_toggle_get_state");
+    lua_pushcfunction(core->L, lua_widget_toggle_set_state);
+    lua_setglobal(core->L, "widget_toggle_set_state");
+    lua_pushcfunction(core->L, lua_widget_toggle_set_position);
+    lua_setglobal(core->L, "widget_toggle_set_position");
+    lua_pushcfunction(core->L, lua_widget_toggle_unregister);
+    lua_setglobal(core->L, "widget_toggle_unregister");
     lua_pushcfunction(core->L, lua_oscilloscope_buffer_create);
     lua_setglobal(core->L, "oscilloscope_buffer_create");
     lua_pushcfunction(core->L, lua_oscilloscope_buffer_destroy);
