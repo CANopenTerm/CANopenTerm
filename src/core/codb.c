@@ -7,8 +7,6 @@
  *
  **/
 
-#include <SDL3/SDL.h>
-
 #include "cJSON.h"
 #include "codb.h"
 #include "common.h"
@@ -76,10 +74,12 @@ int codb_init_ex(void* unused);
 void codb_init(void)
 {
     cJSON_Hooks hooks;
+    os_memory_hooks mem_hooks;
 
     /* Initialize cJSON to use SDL memory allocators to prevent heap corruption */
-    hooks.malloc_fn = SDL_malloc;
-    hooks.free_fn = SDL_free;
+    mem_hooks = os_get_allocator_hooks();
+    hooks.malloc_fn = mem_hooks.malloc_fn;
+    hooks.free_fn = mem_hooks.free_fn;
     cJSON_InitHooks(&hooks);
 
     is_init_cancelled = false;
@@ -179,7 +179,7 @@ void codb_deinit(void)
     /* Wait for the init thread to complete */
     if (init_th != NULL)
     {
-        SDL_WaitThread(init_th, &thread_result);
+        thread_result = os_wait_thread(init_th);
         init_th = NULL;
     }
 

@@ -63,6 +63,16 @@ void os_detach_thread(os_thread* thread)
     SDL_DetachThread(thread);
 }
 
+int os_wait_thread(os_thread* thread)
+{
+    int result = 0;
+    if (thread != NULL)
+    {
+        SDL_WaitThread(thread, &result);
+    }
+    return result;
+}
+
 const char* os_find_data_path(void)
 {
     size_t i;
@@ -387,3 +397,39 @@ static void reset_terminal_mode(struct termios* orig_termios)
 {
     tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }
+
+float os_cos(float x)
+{
+    return SDL_cos(x);
+}
+
+float os_sin(float x)
+{
+    return SDL_sin(x);
+}
+
+os_memory_hooks os_get_allocator_hooks(void)
+{
+    os_memory_hooks hooks = {
+        .malloc_fn = SDL_malloc,
+        .free_fn = SDL_free
+    };
+    return hooks;
+}
+
+void os_destroy_renderer(os_renderer* renderer)
+{
+    if (renderer != NULL)
+    {
+        SDL_DestroyRenderer(renderer);
+    }
+}
+
+void os_destroy_window(os_window* window)
+{
+    if (window != NULL)
+    {
+        SDL_DestroyWindow(window);
+    }
+}
+

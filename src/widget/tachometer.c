@@ -102,10 +102,10 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
         tick_angle = 180.0f - ((float)i / (tick_count - 1) * 180.0f);
         tick_radians = tick_angle * (3.14159f / 180.0f);
 
-        tick_outer_x = center_x + (int)(tick_radius_outer * SDL_cos(tick_radians));
-        tick_outer_y = center_y - (int)(tick_radius_outer * SDL_sin(tick_radians));
-        tick_inner_x = center_x + (int)(tick_radius_inner * SDL_cos(tick_radians));
-        tick_inner_y = center_y - (int)(tick_radius_inner * SDL_sin(tick_radians));
+        tick_outer_x = center_x + (int)(tick_radius_outer * os_cos(tick_radians));
+        tick_outer_y = center_y - (int)(tick_radius_outer * os_sin(tick_radians));
+        tick_inner_x = center_x + (int)(tick_radius_inner * os_cos(tick_radians));
+        tick_inner_y = center_y - (int)(tick_radius_inner * os_sin(tick_radians));
 
         os_draw_line(renderer, tick_outer_x, tick_outer_y, tick_inner_x, tick_inner_y);
     }
@@ -116,10 +116,10 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     draw_circle(renderer, center_x, center_y, pivot_radius, true);
 
     /* Draw indicator marks at edges using same tick length */
-    int indicator_outer_x_left = center_x + (int)(tick_radius_outer * SDL_cos(3.14159f));
-    int indicator_inner_x_left = center_x + (int)(tick_radius_inner * SDL_cos(3.14159f));
-    int indicator_outer_x_right = center_x + (int)(tick_radius_outer * SDL_cos(0.0f));
-    int indicator_inner_x_right = center_x + (int)(tick_radius_inner * SDL_cos(0.0f));
+    int indicator_outer_x_left = center_x + (int)(tick_radius_outer * os_cos(3.14159f));
+    int indicator_inner_x_left = center_x + (int)(tick_radius_inner * os_cos(3.14159f));
+    int indicator_outer_x_right = center_x + (int)(tick_radius_outer * os_cos(0.0f));
+    int indicator_inner_x_right = center_x + (int)(tick_radius_inner * os_cos(0.0f));
 
     os_draw_line(renderer, indicator_outer_x_left, pos_y + (size / 2), indicator_inner_x_left, pos_y + (size / 2));
     os_draw_line(renderer, indicator_inner_x_right, pos_y + (size / 2), indicator_outer_x_right, pos_y + (size / 2));
@@ -131,8 +131,8 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     /* Make needle extend almost to the edge of the gauge for better visibility */
     needle_length = gauge_radius - 2;
 
-    needle_x = center_x + (int)(needle_length * SDL_cos(radians));
-    needle_y = center_y - (int)(needle_length * SDL_sin(radians));
+    needle_x = center_x + (int)(needle_length * os_cos(radians));
+    needle_y = center_y - (int)(needle_length * os_sin(radians));
 
     r = (draw_color & 0xff0000) >> 16;
     g = (draw_color & 0x00ff00) >> 8;

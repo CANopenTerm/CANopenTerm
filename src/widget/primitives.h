@@ -1,6 +1,4 @@
 
-
-void draw_circle(SDL_Renderer* renderer, int cx, int cy, int radius, bool fill);
 /** @file primitives.h
  *
  *  A versatile software tool to analyse and configure CANopen devices.

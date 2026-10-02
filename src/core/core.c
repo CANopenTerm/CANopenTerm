@@ -144,15 +144,15 @@ void core_deinit(core_t* core)
     dbc_unload();
     scripts_deinit(core);
 
-    /* Clean up SDL resources before calling SDL_Quit() */
+    /* Clean up renderer and window resources */
     if (core->renderer != NULL)
     {
-        SDL_DestroyRenderer(core->renderer);
+        os_destroy_renderer(core->renderer);
         core->renderer = NULL;
     }
     if (core->window != NULL)
     {
-        SDL_DestroyWindow(core->window);
+        os_destroy_window(core->window);
         core->window = NULL;
     }
 

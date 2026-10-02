@@ -390,6 +390,7 @@ void os_console_show(void);
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data);
 void os_delay(uint32 delay_in_ms);
 void os_detach_thread(os_thread* thread);
+int os_wait_thread(os_thread* thread);
 char* os_fix_path(char* path);
 const char* os_find_data_path(void);
 const char* os_get_error(void);
@@ -410,5 +411,18 @@ void os_quit(void);
 void os_init_history(void);
 
 void os_clear_window(os_renderer* renderer);
+
+float os_cos(float x);
+float os_sin(float x);
+
+typedef struct {
+    void* (*malloc_fn)(size_t);
+    void (*free_fn)(void*);
+} os_memory_hooks;
+
+os_memory_hooks os_get_allocator_hooks(void);
+
+void os_destroy_renderer(os_renderer* renderer);
+void os_destroy_window(os_window* window);
 
 #endif /* OS_H */
