@@ -18,6 +18,11 @@ The following theme IDs are currently available:
 > - `7` = CRIMSON_HARVEST
 > - `8` = EMERALD_DRIVE
 > - `9` = IRON_HARVEST
+> - `10` = HYDRAULIC_AMBER
+> - `11` = SAFETY_SIGNAL
+> - `12` = SIGNAL_RED
+> - `13` = ELECTRIC_INDIGO
+> - `14` = BUS_SIGNAL
 
 For details how to use the function, please refer to the [Lua](/lua-api.md)
 or [Python](/python-api.md) API documentation.
@@ -66,3 +71,23 @@ widget layout with different themes applied.
 ### Iron Harvest
 
 ![Iron Harvest theme](media/theme-iron-harvest.png)
+
+### Hydraulic Amber
+
+![Hydraulic Amber theme](media/theme-hydraulic-amber.png)
+
+### Safety Signal
+
+![Safety Signal theme](media/theme-safety-signal.png)
+
+### Signal Red
+
+![Signal Red theme](media/theme-signal-red.png)
+
+### Electric Indigo
+
+![Electric Indigo theme](media/theme-electric-indigo.png)
+
+### Bus Signal
+
+![Bus Signal theme](media/theme-bus-signal.png)

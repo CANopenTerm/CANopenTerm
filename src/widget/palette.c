@@ -141,8 +141,79 @@ static const pal_color_palette_t themes[] = {
         .status_bar_mid_1 = 0xd9c645,
         .status_bar_mid_2 = 0xe7a53b,
         .status_bar_high_1 = 0xe75b52,
-        .status_bar_high_2 = 0xf04448}
-    };
+        .status_bar_high_2 = 0xf04448
+    },
+    /* HYDRAULIC_AMBER */
+    {
+        .bg_color = 0x0c151d,
+        .widget_color = 0x17232c,
+        .widget_color_highlight = 0x293945,
+        .draw_color = 0xf28c28,
+        .draw_color_alt = 0x72b9d4,
+        .status_bar_low_1 = 0x3fc978,
+        .status_bar_low_2 = 0x64dc8d,
+        .status_bar_mid_1 = 0xd8c54b,
+        .status_bar_mid_2 = 0xeea443,
+        .status_bar_high_1 = 0xe85e4f,
+        .status_bar_high_2 = 0xff5149
+    },
+    /* SAFETY_SIGNAL */
+    {
+        .bg_color = 0x111514,
+        .widget_color = 0x1d2422,
+        .widget_color_highlight = 0x303a36,
+        .draw_color = 0xffd23f,
+        .draw_color_alt = 0xff7a32,
+        .status_bar_low_1 = 0x4bd17b,
+        .status_bar_low_2 = 0x6be28f,
+        .status_bar_mid_1 = 0xe4c843,
+        .status_bar_mid_2 = 0xf3a43b,
+        .status_bar_high_1 = 0xef6248,
+        .status_bar_high_2 = 0xff4542
+    },
+    /* SIGNAL_RED */
+    {
+        .bg_color = 0x101416,
+        .widget_color = 0x1b2023,
+        .widget_color_highlight = 0x30383c,
+        .draw_color = 0xe83232,
+        .draw_color_alt = 0x63b7df,
+        .status_bar_low_1 = 0x43cc7b,
+        .status_bar_low_2 = 0x65df91,
+        .status_bar_mid_1 = 0xd7c84a,
+        .status_bar_mid_2 = 0xeea342,
+        .status_bar_high_1 = 0xe94d4b,
+        .status_bar_high_2 = 0xff3f42
+    },
+    /* ELECTRIC_INDIGO */
+    {
+        .bg_color = 0x110f1d,
+        .widget_color = 0x1d1830,
+        .widget_color_highlight = 0x31274b,
+        .draw_color = 0xa87cff,
+        .draw_color_alt = 0x46d9e8,
+        .status_bar_low_1 = 0x43d28a,
+        .status_bar_low_2 = 0x68e3a0,
+        .status_bar_mid_1 = 0xd8cb57,
+        .status_bar_mid_2 = 0xeea84a,
+        .status_bar_high_1 = 0xeb6078,
+        .status_bar_high_2 = 0xff4e69
+    },
+    /* BUS_SIGNAL */
+    {
+        .bg_color = 0x0b1821,
+        .widget_color = 0x142631,
+        .widget_color_highlight = 0x213c4b,
+        .draw_color = 0x38c9e6,
+        .draw_color_alt = 0x7cdb73,
+        .status_bar_low_1 = 0x3dce83,
+        .status_bar_low_2 = 0x61df98,
+        .status_bar_mid_1 = 0xd5ca4d,
+        .status_bar_mid_2 = 0xe9a844,
+        .status_bar_high_1 = 0xe75f59,
+        .status_bar_high_2 = 0xff4b55
+    }
+};
 
 /* Current theme (default to MIDNIGHT_BLUE) */
 static pal_theme_t current_theme = MIDNIGHT_BLUE;
@@ -162,7 +233,7 @@ const pal_color_palette_t* palette_get_current_theme(void)
  */
 void palette_set_theme(pal_theme_t theme)
 {
-    if (theme >= MIDNIGHT_BLUE && theme <= IRON_HARVEST)
+    if (theme >= MIDNIGHT_BLUE && theme <= BUS_SIGNAL)
     {
         current_theme = theme;
     }

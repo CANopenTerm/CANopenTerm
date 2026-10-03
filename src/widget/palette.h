@@ -24,7 +24,12 @@ typedef enum pal_theme
     NEW_AMSTERDAM = 6,
     CRIMSON_HARVEST = 7,
     EMERALD_DRIVE = 8,
-    IRON_HARVEST = 9
+    IRON_HARVEST = 9,
+    HYDRAULIC_AMBER = 10,
+    SAFETY_SIGNAL = 11,
+    SIGNAL_RED = 12,
+    ELECTRIC_INDIGO = 13,
+    BUS_SIGNAL = 14
 
 } pal_theme_t;
 
