@@ -63,18 +63,16 @@ endfunction()
 
 # SDL3
 function(dep_sdl3)
-  set(DEP_SDL3_VERSION "3.4.16" PARENT_SCOPE)
-  # Linux and generic URL base
-  set(DEP_SDL3_URL_BASE "https://github.com/libsdl-org/SDL/releases/download/release-3.4.16" PARENT_SCOPE)
-  set(DEP_SDL3_SHA1_LINUX "f4b6a2f11208bd02b73ac6f1b2bc03409b23fd63" PARENT_SCOPE)
-  set(DEP_SDL3_SHA1_WINDOWS "edcf1f567837e7464cf80df402661b41acd78dbf" PARENT_SCOPE)
+  set(DEP_SDL3_VERSION "3.4.18" PARENT_SCOPE)
+  set(DEP_SDL3_URL_BASE "https://github.com/libsdl-org/SDL/releases/download/release-3.4.18" PARENT_SCOPE)
+  set(DEP_SDL3_SHA1_LINUX "847b04b4db4c1f8e4c8f55df90728a62f701adeb" PARENT_SCOPE)
+  set(DEP_SDL3_SHA1_WINDOWS "1efa2d90821b844d7f427c254d92a6b4624e3639" PARENT_SCOPE)
 endfunction()
 
 # dirent
 function(dep_dirent)
   set(DEP_DIRENT_VERSION "1.26" PARENT_SCOPE)
   set(DEP_DIRENT_URL_BASE "https://github.com/tronkko/dirent/archive/refs/tags" PARENT_SCOPE)
-  # Windows: 1.26.zip (SHA1=5a9dfd1204dcf29d418ec1678fd961a42b84f5fb)
   set(DEP_DIRENT_SHA1_WINDOWS "5a9dfd1204dcf29d418ec1678fd961a42b84f5fb" PARENT_SCOPE)
 endfunction()
 
