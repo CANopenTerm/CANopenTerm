@@ -84,7 +84,7 @@ status_t core_init(core_t** core, bool is_plain_mode)
         lua_register_widget_commands((*core));
         python_can_init();
         python_dbc_init();
-        python_misc_init();
+        python_misc_init((*core));
         python_nmt_init();
         python_pdo_init();
         python_sdo_init();
@@ -122,7 +122,7 @@ int core_update(void* core_pt)
 
     if (ALL_OK == os_get_prompt(command))
     {
-        parse_command(command, core);
+        parse_command(command, core, TERM_MODE);
     }
 
     return 0;

@@ -15,7 +15,7 @@
 
 #define COMMAND_BUFFER_SIZE 1024
 
-void parse_command(char* input, core_t* core);
+void parse_command(char* input, core_t* core, disp_mode_t disp_mode);
 void completion_callback(completions_t* cenv, const char* prefix);
 
 #endif /* COMMAND_H */

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(CANopenTerm C)
+project(CANopenTerm C CXX)
 
 # Workaround for Visual Studio misconfiguration on x64 builds
 # When building for x64 but x86 compiler is detected, automatically switch to x64 compiler

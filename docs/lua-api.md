@@ -810,6 +810,34 @@ print_result (id , index, sub_index, length, state, comment, data)
 
 <!-- tabs:end -->
 
+## Miscellaneous
+
+### run_sequence()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Execute a sequence of commands through the command parser.
+
+```lua
+run_sequence (command1, [command2], [command3], ...)
+```
+
+> **command1, command2, ...** Command strings to execute in sequence. Each string is passed to the command parser.
+
+**Returns**: A boolean indicating success.
+
+<!-- tab:Example -->
+```lua
+-- Execute a sequence of commands
+run_sequence("y 0", "b 5", "n 0x01 op")
+
+-- Or use variables for commands
+local cmd1 = "r 0x01 0x1000"
+local cmd2 = "r 0x01 0x1001"
+run_sequence(cmd1, cmd2)
+```
+<!-- tabs:end -->
+
 ## Visualisation
 
 ### window_clear()

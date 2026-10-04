@@ -821,6 +821,32 @@ print_result (id , index, sub_index, length, state, comment, data)
 **Since**: 2.02
 <!-- tabs:end -->
 
+### run_sequence()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Execute a sequence of commands through the command parser.
+
+```python
+run_sequence (command1, [command2], [command3], ...)
+```
+
+> **command1, command2, ...** Command strings to execute in sequence. Each string is passed to the command parser.
+
+**Returns**: A boolean indicating success.
+
+<!-- tab:Example -->
+```python
+# Execute a sequence of commands
+run_sequence("y 0", "b 5", "n 0x01 op")
+
+# Or use variables for commands
+cmd1 = "r 0x01 0x1000"
+cmd2 = "r 0x01 0x1001"
+run_sequence(cmd1, cmd2)
+```
+<!-- tabs:end -->
+
 ## Visualisation
 
 ### window_clear()

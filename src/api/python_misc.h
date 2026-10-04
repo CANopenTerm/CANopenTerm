@@ -10,6 +10,8 @@
 #ifndef PYTHON_MISC_H
 #define PYTHON_MISC_H
 
-void python_misc_init(void);
+#include "core.h"
+
+void python_misc_init(core_t* core);
 
 #endif /* PYTHON_MISC_H */

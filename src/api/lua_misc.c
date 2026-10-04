@@ -8,6 +8,7 @@
  **/
 
 #include "lua_misc.h"
+#include "command.h"
 #include "core.h"
 #include "lauxlib.h"
 #include "lua.h"
@@ -101,8 +102,57 @@ int lua_print_result(lua_State* L)
     return 0;
 }
 
+int lua_run_sequence(lua_State* L)
+{
+    int arg_count = lua_gettop(L);
+    core_t* core = NULL;
+    int i;
+
+    if (arg_count < 1)
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    /* Get core pointer from Lua registry */
+    lua_getfield(L, LUA_REGISTRYINDEX, "core_ptr");
+    if (! lua_islightuserdata(L, -1))
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+    core = (core_t*)lua_touserdata(L, -1);
+    lua_pop(L, 1);
+
+    if (NULL == core)
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    /* Execute each command in the sequence */
+    for (i = 1; i <= arg_count; ++i)
+    {
+        if (lua_isstring(L, i))
+        {
+            char buffer[512];
+            const char* cmd = lua_tostring(L, i);
+
+            os_strlcpy(buffer, cmd, sizeof(buffer));
+            parse_command(buffer, core, SCRIPT_MODE);
+        }
+    }
+
+    lua_pushboolean(L, true);
+    return 1;
+}
+
 void lua_register_misc_commands(core_t* core)
 {
+    /* Store core pointer in Lua registry for use by lua_run_sequence. */
+    lua_pushlightuserdata(core->L, (void*)core);
+    lua_setfield(core->L, LUA_REGISTRYINDEX, "core_ptr");
+
     lua_pushcfunction(core->L, lua_delay_ms);
     lua_setglobal(core->L, "delay_ms");
 
@@ -123,4 +173,7 @@ void lua_register_misc_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_print_result);
     lua_setglobal(core->L, "print_result");
+
+    lua_pushcfunction(core->L, lua_run_sequence);
+    lua_setglobal(core->L, "run_sequence");
 }

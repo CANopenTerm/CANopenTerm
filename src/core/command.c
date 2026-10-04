@@ -27,7 +27,7 @@ static bool has_node_id_arg(const char* prefix, char cmd);
 status_t print_usage_information(bool show_all);
 static bool is_numeric(const char* str);
 
-void parse_command(char* input, core_t* core)
+void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
 {
     int index;
     char* delim = " \n";
@@ -139,7 +139,7 @@ void parse_command(char* input, core_t* core)
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
-            nmt_print_help(TERM_MODE);
+            nmt_print_help(disp_mode);
             return;
         }
 
@@ -170,7 +170,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &command);
         }
 
-        nmt_send_command((uint16)node_id, (uint8)command, TERM_MODE, NULL);
+        nmt_send_command((uint16)node_id, (uint8)command, disp_mode, NULL);
     }
     else if (0 == os_strncmp(token, "l", 1))
     {
@@ -240,7 +240,7 @@ void parse_command(char* input, core_t* core)
                 return;
             }
 
-            pdo_add((uint16)can_id, event_time_ms, length, data, TERM_MODE);
+            pdo_add((uint16)can_id, event_time_ms, length, data, disp_mode);
         }
         else if (0 == os_strncmp(token, "del", 3))
         {
@@ -265,7 +265,7 @@ void parse_command(char* input, core_t* core)
                 return;
             }
 
-            pdo_del((uint16)can_id, TERM_MODE);
+            pdo_del((uint16)can_id, disp_mode);
         }
         else
         {
@@ -304,7 +304,7 @@ void parse_command(char* input, core_t* core)
             convert_token_to_uint(token, &sub_index);
         }
 
-        sdo_read(&sdo_response, TERM_MODE, node_id, sdo_index, sub_index, NULL);
+        sdo_read(&sdo_response, disp_mode, node_id, sdo_index, sub_index, NULL);
     }
     else if (0 == os_strncmp(token, "w", 1))
     {
@@ -396,11 +396,11 @@ void parse_command(char* input, core_t* core)
             {
                 if (IS_WRITE_EXPEDITED == sdo_state)
                 {
-                    sdo_write(&sdo_response, TERM_MODE, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
+                    sdo_write(&sdo_response, disp_mode, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
                 }
                 else
                 {
-                    sdo_write_segmented(&sdo_response, TERM_MODE, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
+                    sdo_write_segmented(&sdo_response, disp_mode, node_id, sdo_index, sub_index, sdo_data_length, (void*)buffer, NULL);
                 }
             }
             else
