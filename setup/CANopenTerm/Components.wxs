@@ -144,6 +144,12 @@
                 <File Source="../../export/scripts/scopes.lua" />
             </Component>
             <Component>
+                <File Source="../../export/scripts/seqrun.lua" />
+            </Component>
+            <Component>
+                <File Source="../../export/scripts/seqsav.lua" />
+            </Component>
+            <Component>
                 <File Source="../../export/scripts/stm32.lua" />
             </Component>
             <Component>
