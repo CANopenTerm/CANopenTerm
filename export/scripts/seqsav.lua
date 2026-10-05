@@ -93,6 +93,19 @@ if #history_lines > 0 then
     end
 end
 
+-- Filter to only keep command calls (lines starting with single character and space)
+local function is_command_call(line)
+    return line:match("^%S ") ~= nil
+end
+
+local filtered_lines = {}
+for _, line in ipairs(history_lines) do
+    if is_command_call(line) then
+        table.insert(filtered_lines, line)
+    end
+end
+history_lines = filtered_lines
+
 -- Warn if fewer commands are available than requested
 if #history_lines < num_commands then
     print(string.format("Warning: Only %d command(s) available in history (requested %d)", #history_lines, num_commands))
