@@ -138,12 +138,6 @@
                 <File Source="../../export/scripts/replay.lua" />
             </Component>
             <Component>
-                <File Source="../../export/scripts/scope.lua" />
-            </Component>
-            <Component>
-                <File Source="../../export/scripts/scopes.lua" />
-            </Component>
-            <Component>
                 <File Source="../../export/scripts/seqrun.lua" />
             </Component>
             <Component>

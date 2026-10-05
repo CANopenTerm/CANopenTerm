@@ -835,6 +835,8 @@ run_sequence (command1, [command2], [command3], ...)
 
 **Returns**: A boolean indicating success.
 
+**Since**: 2.05
+
 <!-- tab:Example -->
 ```python
 # Execute a sequence of commands
