@@ -1252,6 +1252,224 @@ widget_toggle_unregister(toggle_id)
 ```
 <!-- tabs:end -->
 
+### widget_input_register()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Register an input widget to accept text input. Use this for interactive text input with state tracking.
+
+```python
+int widget_input_register (pos_x, pos_y, width, height, [initial_text])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **width** Width in pixels.
+
+> **height** Height in pixels.
+
+> **initial_text** (Optional) Initial text content. Default is empty string. (Since 2.05)
+
+**Returns**: Input widget ID on success, or a valid ID for state management.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+input_id = widget_input_register(100, 50, 200, 25, "Enter text")
+
+# Note: Python API has limited callback support
+# Use widget_input_get_text() to poll the current text
+
+while not key_is_hit():
+    # The input widget is automatically rendered and handles user interaction
+    pass
+
+widget_input_unregister(input_id)
+```
+<!-- tabs:end -->
+
+### widget_input()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw a single input widget without registration. Use this for one-off input widgets that don't need state tracking. For interactive input with state management, use `widget_input_register()` instead.
+
+```python
+widget_input (pos_x, pos_y, width, height, text, [is_active])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **width** Width in pixels.
+
+> **height** Height in pixels.
+
+> **text** Text content to display.
+
+> **is_active** (Optional) Whether the input field should appear active/focused. Default is False. (Since 2.05)
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+# Draw a simple input widget
+widget_input(100, 50, 200, 25, "Type here", False)
+
+# Draw an active input widget
+widget_input(100, 100, 200, 25, "Active input", True)
+```
+<!-- tabs:end -->
+
+### widget_input_set_callback()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set a callback function for an input widget. Note: Full callback support is limited in the Python API. Use `widget_input_get_text()` to poll the state instead.
+
+```python
+bool widget_input_set_callback (input_id, callback_function)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+> **callback_function** Callback function (currently returns False in Python API).
+
+**Returns**: `False` - Full callback support not available in Python API. Use polling instead.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+input_id = widget_input_register(100, 50, 200, 25)
+
+# Polling approach (recommended in Python API)
+while not key_is_hit():
+    current_text = widget_input_get_text(input_id)
+    # Process current_text as needed
+```
+<!-- tabs:end -->
+
+### widget_input_get_text()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Retrieve the current text content of an input widget.
+
+```python
+str widget_input_get_text (input_id)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+**Returns**: Current text content as a `str`.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+input_id = widget_input_register(100, 50, 200, 25, "Initial text")
+
+current_text = widget_input_get_text(input_id)
+print("Current text: " + current_text)
+```
+<!-- tabs:end -->
+
+### widget_input_set_text()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set or update the text content of an input widget.
+
+```python
+widget_input_set_text (input_id, text)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+> **text** Text content to set.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+input_id = widget_input_register(100, 50, 200, 25)
+
+# Set new text
+widget_input_set_text(input_id, "New text content")
+
+# Retrieve what was set
+text = widget_input_get_text(input_id)
+print("Text is now: " + text)
+```
+<!-- tabs:end -->
+
+### widget_input_set_position()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Reposition an input widget to a new location on the window.
+
+```python
+widget_input_set_position (input_id, pos_x, pos_y)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+> **pos_x** New horizontal position on widget window.
+
+> **pos_y** New vertical position on widget window.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+input_id = widget_input_register(100, 50, 200, 25)
+
+# ... use the input widget ...
+
+# Move it to a new position
+widget_input_set_position(input_id, 150, 100)
+```
+<!-- tabs:end -->
+
+### widget_input_unregister()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Unregister an input widget and clean up its resources.
+
+```python
+widget_input_unregister (input_id)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+input_id = widget_input_register(100, 50, 200, 25)
+
+# ... use the input widget ...
+
+# Clean up when done
+widget_input_unregister(input_id)
+```
+<!-- tabs:end -->
+
 ### oscilloscope_buffer_create()
 
 <!-- tabs:start -->

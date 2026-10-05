@@ -11,6 +11,7 @@
 #include "ascii.h"
 #include "bargraph.h"
 #include "core.h"
+#include "input.h"
 #include "led.h"
 #include "os.h"
 #include "oscilloscope.h"
@@ -38,6 +39,13 @@ bool py_widget_led(int argc, py_Ref argv);
 bool py_widget_print(int argc, py_Ref argv);
 bool py_widget_tachometer(int argc, py_Ref argv);
 bool py_widget_theme(int argc, py_Ref argv);
+bool py_widget_input_register(int argc, py_Ref argv);
+bool py_widget_input(int argc, py_Ref argv);
+bool py_widget_input_set_callback(int argc, py_Ref argv);
+bool py_widget_input_get_text(int argc, py_Ref argv);
+bool py_widget_input_set_text(int argc, py_Ref argv);
+bool py_widget_input_set_position(int argc, py_Ref argv);
+bool py_widget_input_unregister(int argc, py_Ref argv);
 bool py_widget_toggle_register(int argc, py_Ref argv);
 bool py_widget_toggle(int argc, py_Ref argv);
 bool py_widget_toggle_set_callback(int argc, py_Ref argv);
@@ -67,6 +75,13 @@ void python_widget_init(void)
     py_bindfunc(mod, "widget_led", py_widget_led);
     py_bindfunc(mod, "widget_tachometer", py_widget_tachometer);
     py_bindfunc(mod, "widget_theme", py_widget_theme);
+    py_bindfunc(mod, "widget_input_register", py_widget_input_register);
+    py_bindfunc(mod, "widget_input", py_widget_input);
+    py_bindfunc(mod, "widget_input_set_callback", py_widget_input_set_callback);
+    py_bindfunc(mod, "widget_input_get_text", py_widget_input_get_text);
+    py_bindfunc(mod, "widget_input_set_text", py_widget_input_set_text);
+    py_bindfunc(mod, "widget_input_set_position", py_widget_input_set_position);
+    py_bindfunc(mod, "widget_input_unregister", py_widget_input_unregister);
     py_bindfunc(mod, "widget_toggle_register", py_widget_toggle_register);
     py_bindfunc(mod, "widget_toggle", py_widget_toggle);
     py_bindfunc(mod, "widget_toggle_set_callback", py_widget_toggle_set_callback);
@@ -492,6 +507,156 @@ bool py_widget_oscilloscope_2ch(int argc, py_Ref argv)
         }
     }
 
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_input_register(int argc, py_Ref argv)
+{
+    uint32 pos_x;
+    uint32 pos_y;
+    uint32 width;
+    uint32 height;
+    const char* initial_text = "";
+
+    if (argc < 4 || argc > 5)
+    {
+        return false;
+    }
+
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+    PY_CHECK_ARG_TYPE(3, tp_int);
+
+    pos_x = (uint32)py_toint(py_arg(0));
+    pos_y = (uint32)py_toint(py_arg(1));
+    width = (uint32)py_toint(py_arg(2));
+    height = (uint32)py_toint(py_arg(3));
+
+    if (argc > 4)
+    {
+        PY_CHECK_ARG_TYPE(4, tp_str);
+        initial_text = py_tostr(py_arg(4));
+    }
+
+    uint32 input_id = widget_input_register(pos_x, pos_y, width, height, initial_text);
+    py_newint(py_retval(), input_id);
+    return true;
+}
+
+bool py_widget_input(int argc, py_Ref argv)
+{
+    uint32 pos_x;
+    uint32 pos_y;
+    uint32 width;
+    uint32 height;
+    const char* text;
+    bool is_active = false;
+
+    if (argc < 5 || argc > 6)
+    {
+        return false;
+    }
+
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+    PY_CHECK_ARG_TYPE(3, tp_int);
+    PY_CHECK_ARG_TYPE(4, tp_str);
+
+    pos_x = (uint32)py_toint(py_arg(0));
+    pos_y = (uint32)py_toint(py_arg(1));
+    width = (uint32)py_toint(py_arg(2));
+    height = (uint32)py_toint(py_arg(3));
+    text = py_tostr(py_arg(4));
+
+    if (argc > 5)
+    {
+        PY_CHECK_ARG_TYPE(5, tp_bool);
+        is_active = py_tobool(py_arg(5));
+    }
+
+    widget_input(pos_x, pos_y, width, height, text, is_active);
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_input_set_callback(int argc, py_Ref argv)
+{
+    uint32 input_id;
+
+    PY_CHECK_ARGC(2);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    input_id = (uint32)py_toint(py_arg(0));
+
+    /* Python callbacks are more complex - for now, we'll support basic input without callbacks */
+    /* Full callback support would require storing Python function references */
+    py_newbool(py_retval(), false);
+    return true;
+}
+
+bool py_widget_input_get_text(int argc, py_Ref argv)
+{
+    uint32 input_id;
+    const char* text;
+
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    input_id = (uint32)py_toint(py_arg(0));
+    text = widget_input_get_text(input_id);
+    py_newstr(py_retval(), text);
+    return true;
+}
+
+bool py_widget_input_set_text(int argc, py_Ref argv)
+{
+    uint32 input_id;
+    const char* text;
+
+    PY_CHECK_ARGC(2);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_str);
+
+    input_id = (uint32)py_toint(py_arg(0));
+    text = py_tostr(py_arg(1));
+
+    widget_input_set_text(input_id, text);
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_input_set_position(int argc, py_Ref argv)
+{
+    uint32 input_id;
+    uint32 pos_x;
+    uint32 pos_y;
+
+    PY_CHECK_ARGC(3);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+    PY_CHECK_ARG_TYPE(1, tp_int);
+    PY_CHECK_ARG_TYPE(2, tp_int);
+
+    input_id = (uint32)py_toint(py_arg(0));
+    pos_x = (uint32)py_toint(py_arg(1));
+    pos_y = (uint32)py_toint(py_arg(2));
+
+    widget_input_set_position(input_id, pos_x, pos_y);
+    py_newnone(py_retval());
+    return true;
+}
+
+bool py_widget_input_unregister(int argc, py_Ref argv)
+{
+    uint32 input_id;
+
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    input_id = (uint32)py_toint(py_arg(0));
+    widget_input_unregister(input_id);
     py_newnone(py_retval());
     return true;
 }

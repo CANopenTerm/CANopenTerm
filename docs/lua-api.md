@@ -1260,6 +1260,255 @@ widget_toggle_unregister(toggle_id)
 ```
 <!-- tabs:end -->
 
+### widget_input_register()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Register an input widget to accept text input. Use this for interactive text input with state tracking and optional callbacks.
+
+```lua
+int widget_input_register (pos_x, pos_y, width, height, [initial_text])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **width** Width in pixels.
+
+> **height** Height in pixels.
+
+> **initial_text** (Optional) Initial text content. Default is empty string. (Since 2.05)
+
+**Returns**: Input widget ID on success, or a valid ID for state management.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+local input_id = widget_input_register(100, 50, 200, 25, "Enter text")
+
+widget_input_set_callback(input_id, function(id, text)
+  print("Input " .. id .. " text: " .. text)
+end)
+
+while false == key_is_hit() do
+  -- The input widget is automatically rendered and handles user interaction
+end
+
+widget_input_unregister(input_id)
+```
+<!-- tabs:end -->
+
+### widget_input()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Draw a single input widget without registration. Use this for one-off input widgets that don't need state tracking. For interactive input with callbacks and state management, use `widget_input_register()` instead.
+
+```lua
+widget_input (pos_x, pos_y, width, height, text, [is_active])
+```
+
+> **pos_x** Horizontal position on widget window.
+
+> **pos_y** Vertical position on widget window.
+
+> **width** Width in pixels.
+
+> **height** Height in pixels.
+
+> **text** Text content to display.
+
+> **is_active** (Optional) Whether the input field should appear active/focused. Default is false. (Since 2.05)
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+-- Draw a simple input widget
+widget_input(100, 50, 200, 25, "Type here", false)
+
+-- Draw an active input widget
+widget_input(100, 100, 200, 25, "Active input", true)
+```
+<!-- tabs:end -->
+
+### widget_input_set_callback()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set a callback function that will be invoked when the user submits text in an input widget (by pressing Enter).
+
+```lua
+bool widget_input_set_callback (input_id, callback_function)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+> **callback_function** Function to call with signature: `function(input_id, text)`. The callback receives the widget ID and the input text.
+
+**Returns**: `true` on success, `false` if callback function is invalid.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+local input_id = widget_input_register(100, 50, 200, 25)
+
+local function on_input_changed(id, text)
+  print("User entered: " .. text)
+end
+
+widget_input_set_callback(input_id, on_input_changed)
+```
+<!-- tabs:end -->
+
+### widget_input_get_text()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Retrieve the current text content of an input widget.
+
+```lua
+string widget_input_get_text (input_id)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+**Returns**: Current text content as a string.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+local input_id = widget_input_register(100, 50, 200, 25, "Initial text")
+
+local current_text = widget_input_get_text(input_id)
+print("Current text: " .. current_text)
+```
+<!-- tabs:end -->
+
+### widget_input_is_active()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Check whether an input widget is currently active (has focus).
+
+```lua
+bool widget_input_is_active (input_id)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+**Returns**: `true` if the input widget has focus, `false` otherwise.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+local input_id = widget_input_register(100, 50, 200, 25)
+
+-- Check if input is active
+if widget_input_is_active(input_id) then
+  print("Input widget has focus")
+else
+  print("Input widget does not have focus")
+end
+```
+<!-- tabs:end -->
+
+### widget_input_set_text()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set or update the text content of an input widget.
+
+```lua
+widget_input_set_text (input_id, text)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+> **text** Text content to set.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+local input_id = widget_input_register(100, 50, 200, 25)
+
+-- Set new text
+widget_input_set_text(input_id, "New text content")
+
+-- Retrieve what was set
+local text = widget_input_get_text(input_id)
+print("Text is now: " .. text)
+```
+<!-- tabs:end -->
+
+### widget_input_set_position()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Reposition an input widget to a new location on the window.
+
+```lua
+widget_input_set_position (input_id, pos_x, pos_y)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+> **pos_x** New horizontal position on widget window.
+
+> **pos_y** New vertical position on widget window.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+local input_id = widget_input_register(100, 50, 200, 25)
+
+-- ... use the input widget ...
+
+-- Move it to a new position
+widget_input_set_position(input_id, 150, 100)
+```
+<!-- tabs:end -->
+
+### widget_input_unregister()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Unregister an input widget and clean up its resources.
+
+```lua
+widget_input_unregister (input_id)
+```
+
+> **input_id** Input widget ID returned by `widget_input_register()`.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+local input_id = widget_input_register(100, 50, 200, 25)
+
+-- ... use the input widget ...
+
+-- Clean up when done
+widget_input_unregister(input_id)
+```
+<!-- tabs:end -->
+
 ### oscilloscope_buffer_create()
 
 <!-- tabs:start -->

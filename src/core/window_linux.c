@@ -13,6 +13,7 @@
 #include "os.h"
 #include "palette.h"
 #include "toggle.h"
+#include "input.h"
 #include "window.h"
 
 void window_clear(void)
@@ -160,14 +161,30 @@ status_t window_update(bool render)
                             }
                             break;
                         }
+                        case SDLK_BACKSPACE:
+                        {
+                            widget_input_handle_backspace();
+                            break;
+                        }
+                        case SDLK_RETURN:
+                        {
+                            widget_input_handle_return();
+                            break;
+                        }
                     }
+                    break;
+                }
+                case SDL_EVENT_TEXT_INPUT:
+                {
+                    widget_input_handle_text(event.text.text);
                     break;
                 }
                 case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 {
                     if (event.button.button == SDL_BUTTON_LEFT)
                     {
-                        widget_toggle_check_click(event.button.x, event.button.y);
+                        widget_input_check_click((uint32)event.button.x, (uint32)event.button.y);
+                        widget_toggle_check_click((uint32)event.button.x, (uint32)event.button.y);
                     }
                     break;
                 }

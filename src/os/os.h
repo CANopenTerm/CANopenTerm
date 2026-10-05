@@ -279,6 +279,14 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error os_vsnprintf() not defined
 #endif
 
+#ifndef os_start_text_input
+#error os_start_text_input() not defined
+#endif
+
+#ifndef os_stop_text_input
+#error os_stop_text_input() not defined
+#endif
+
 #ifndef os_thread
 #error os_thread not defined
 #endif
@@ -415,7 +423,8 @@ void os_clear_window(os_renderer* renderer);
 float os_cos(float x);
 float os_sin(float x);
 
-typedef struct {
+typedef struct
+{
     void* (*malloc_fn)(size_t);
     void (*free_fn)(void*);
 } os_memory_hooks;

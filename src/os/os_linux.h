@@ -71,6 +71,9 @@
 #define os_va_start va_start
 #define os_vsnprintf SDL_vsnprintf
 
+#define os_start_text_input SDL_StartTextInput
+#define os_stop_text_input SDL_StopTextInput
+
 #define os_thread SDL_Thread
 #define os_thread_func SDL_ThreadFunction
 #define os_timer_cb SDL_NSTimerCallback
