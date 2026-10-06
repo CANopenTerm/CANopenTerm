@@ -570,6 +570,26 @@ void test_print_heading(void** state)
     buffer_free();
 }
 
+void test_print_heading_extended(void** state)
+{
+    (void)state;
+
+    /* Test with empty string */
+    assert_true(buffer_init(256) == ALL_OK);
+    print_heading("");
+    buffer_free();
+
+    /* Test with long heading */
+    assert_true(buffer_init(1024) == ALL_OK);
+    print_heading("This is a very long heading that tests the buffer capacity and formatting");
+    buffer_free();
+
+    /* Test with special characters */
+    assert_true(buffer_init(512) == ALL_OK);
+    print_heading("Test [123] - Special: @#$%");
+    buffer_free();
+}
+
 void test_print_result(void** state)
 {
     (void)state;
@@ -591,6 +611,37 @@ void test_print_result(void** state)
 
     buffer_free();
 }
+
+void test_print_result_extended(void** state)
+{
+    (void)state;
+
+    assert_true(buffer_init(2048) == ALL_OK);
+
+    /* Test with different index values */
+    print_result(0xFF, 0x1234, 0x00, 4, true, "max index", 0xFFFFFFFF);
+    print_result(0x00, 0x0000, 0x00, 4, true, "min values", 0x00000000);
+
+    /* Test with different sub-indices */
+    print_result(0x01, 0x1000, 0xFF, 4, true, "max sub-index", 0x12345678);
+
+    /* Test with zero length (edge case) */
+    print_result(0x01, 0x1000, 0x00, 0, true, "zero length", 0);
+
+    /* Test with no comment */
+    print_result(0x01, 0x1000, 0x00, 4, true, NULL, 0);
+
+    /* Test both success and failure with various length formats */
+    print_result(0x01, 0x2000, 0x01, 1, true, "1 byte success", 0xAB);
+    print_result(0x01, 0x2001, 0x02, 2, true, "2 byte success", 0xABCD);
+    print_result(0x01, 0x2002, 0x03, 4, true, "4 byte success", 0x12345678);
+
+    print_result(0x01, 0x3000, 0x01, 1, false, "1 byte failure", 0);
+    print_result(0x01, 0x3001, 0x02, 2, false, "2 byte failure", 0);
+
+    buffer_free();
+}
+
 
 static status_t test_python_script(const char* script_name)
 {

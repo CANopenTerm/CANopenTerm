@@ -101,6 +101,8 @@ void test_python_970_inspect(void** state);
 void test_python_980_thread(void** state);
 void test_python_990_extras(void** state);
 void test_print_heading(void** state);
+void test_print_heading_extended(void** state);
 void test_print_result(void** state);
+void test_print_result_extended(void** state);
 
 #endif /* TEST_SCRIPTS_H */

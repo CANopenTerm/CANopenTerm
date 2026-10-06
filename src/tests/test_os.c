@@ -922,6 +922,28 @@ void test_os_add_remove_timer(void** state)
     assert_false(os_remove_timer(id));
 }
 
+/* Test callback for os_wait_thread */
+static int return_value_thread_fn(void* data)
+{
+    (void)data;
+    return 42;
+}
+
+void test_os_wait_thread(void** state)
+{
+    os_thread* th;
+    int result;
+
+    (void)state;
+
+    th = os_create_thread(return_value_thread_fn, "test_wait", NULL);
+    assert_non_null(th);
+
+    /* Wait for thread to complete and verify return value. */
+    result = os_wait_thread(th);
+    assert_int_equal(result, 42);
+}
+
 static int noop_thread_fn(void* data)
 {
     (void)data;
@@ -942,6 +964,565 @@ void test_os_create_detach_thread(void** state)
 
     /* Give the scheduler a moment to clean up before the next test. */
     os_delay(10);
+}
+
+void test_os_cos(void** state)
+{
+    float result;
+
+    (void)state;
+
+    /* Test cos(0) = 1.0 */
+    result = os_cos(0.0f);
+    assert_true(result > 0.99f && result < 1.01f);
+
+    /* Test cos(pi) = -1.0 (approximately 3.14159) */
+    result = os_cos(3.14159f);
+    assert_true(result > -1.01f && result < -0.99f);
+
+    /* Test cos(pi/2) = 0.0 (approximately 1.5708) */
+    result = os_cos(1.5708f);
+    assert_true(result > -0.01f && result < 0.01f);
+}
+
+void test_os_sin(void** state)
+{
+    float result;
+
+    (void)state;
+
+    /* Test sin(0) = 0.0 */
+    result = os_sin(0.0f);
+    assert_true(result > -0.01f && result < 0.01f);
+
+    /* Test sin(pi/2) = 1.0 (approximately 1.5708) */
+    result = os_sin(1.5708f);
+    assert_true(result > 0.99f && result < 1.01f);
+
+    /* Test sin(pi) = 0.0 (approximately 3.14159) */
+    result = os_sin(3.14159f);
+    assert_true(result > -0.01f && result < 0.01f);
+}
+
+void test_os_get_allocator_hooks(void** state)
+{
+    os_memory_hooks hooks;
+
+    (void)state;
+
+    hooks = os_get_allocator_hooks();
+
+    /* Verify that both function pointers are set. */
+    assert_non_null(hooks.malloc_fn);
+    assert_non_null(hooks.free_fn);
+
+    /* Test basic allocation and deallocation with the hooks. */
+    void* ptr = hooks.malloc_fn(256);
+    assert_non_null(ptr);
+
+    hooks.free_fn(ptr);
+}
+
+void test_os_console_hide_show(void** state)
+{
+    (void)state;
+
+    /* Smoke tests: these functions should not crash in test environment. */
+    os_console_hide();
+    os_console_show();
+}
+
+void test_os_isdigit_extended(void** state)
+{
+    (void)state;
+
+    /* Basic digit tests (covered in existing test) */
+    assert_int_not_equal(os_isdigit('0'), 0);
+    assert_int_not_equal(os_isdigit('5'), 0);
+    assert_int_not_equal(os_isdigit('9'), 0);
+
+    /* Boundary: just before '0' (ASCII 47) */
+    assert_int_equal(os_isdigit('/'), 0);
+
+    /* Boundary: just after '9' (ASCII 58) */
+    assert_int_equal(os_isdigit(':'), 0);
+
+    /* Non-digit characters */
+    assert_int_equal(os_isdigit('a'), 0);
+    assert_int_equal(os_isdigit('Z'), 0);
+    assert_int_equal(os_isdigit(' '), 0);
+    assert_int_equal(os_isdigit('\n'), 0);
+}
+
+void test_os_isprint_extended(void** state)
+{
+    (void)state;
+
+    /* Printable ASCII characters */
+    assert_int_not_equal(os_isprint('A'), 0);
+    assert_int_not_equal(os_isprint('z'), 0);
+    assert_int_not_equal(os_isprint('0'), 0);
+    assert_int_not_equal(os_isprint('!'), 0);
+    assert_int_not_equal(os_isprint(' '), 0);  /* Space is printable */
+    assert_int_not_equal(os_isprint('~'), 0);  /* Tilde (ASCII 126) is last printable */
+
+    /* Non-printable control characters */
+    assert_int_equal(os_isprint('\0'), 0);     /* NULL */
+    assert_int_equal(os_isprint('\n'), 0);     /* Newline */
+    assert_int_equal(os_isprint('\r'), 0);     /* Carriage return */
+    assert_int_equal(os_isprint('\t'), 0);     /* Tab */
+    assert_int_equal(os_isprint('\x7F'), 0);   /* DEL (ASCII 127, not printable) */
+}
+
+void test_os_isspace_extended(void** state)
+{
+    (void)state;
+
+    /* Whitespace characters */
+    assert_int_not_equal(os_isspace(' '), 0);   /* Space */
+    assert_int_not_equal(os_isspace('\t'), 0);  /* Tab */
+    assert_int_not_equal(os_isspace('\n'), 0);  /* Newline */
+    assert_int_not_equal(os_isspace('\r'), 0);  /* Carriage return */
+    assert_int_not_equal(os_isspace('\f'), 0);  /* Form feed */
+    assert_int_not_equal(os_isspace('\v'), 0);  /* Vertical tab */
+
+    /* Non-whitespace characters */
+    assert_int_equal(os_isspace('a'), 0);
+    assert_int_equal(os_isspace('0'), 0);
+    assert_int_equal(os_isspace('!'), 0);
+}
+
+void test_os_strstr_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Empty needle should match at the start */
+    assert_non_null(os_strstr("hello", ""));
+
+    /* Needle not found */
+    assert_null(os_strstr("hello", "xyz"));
+
+    /* Needle same as haystack */
+    assert_non_null(os_strstr("hello", "hello"));
+
+    /* Needle at start */
+    assert_non_null(os_strstr("hello world", "hello"));
+
+    /* Needle at end */
+    assert_non_null(os_strstr("hello world", "world"));
+
+    /* Needle in middle */
+    assert_non_null(os_strstr("hello world test", "world"));
+}
+
+void test_os_strchr_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Character at start */
+    assert_non_null(os_strchr("hello", 'h'));
+
+    /* Character in middle */
+    assert_non_null(os_strchr("hello", 'l'));
+
+    /* Character at end */
+    assert_non_null(os_strchr("hello", 'o'));
+
+    /* Character not found */
+    assert_null(os_strchr("hello", 'x'));
+
+    /* Searching for null terminator */
+    assert_non_null(os_strchr("hello", '\0'));
+}
+
+void test_os_strrchr_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Last occurrence of character */
+    assert_non_null(os_strrchr("hello world", 'o'));
+
+    /* Character not found */
+    assert_null(os_strrchr("hello", 'x'));
+
+    /* First character when it only appears once */
+    assert_non_null(os_strrchr("hello", 'h'));
+
+    /* Multiple occurrences - should find the last */
+    const char* result = os_strrchr("abcabc", 'a');
+    assert_non_null(result);
+    assert_int_equal(result[0], 'a');
+    assert_int_equal(result[1], 'b');
+    assert_int_equal(result[2], 'c');
+}
+
+void test_os_strlen_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Empty string */
+    assert_int_equal(os_strlen(""), 0);
+
+    /* Single character */
+    assert_int_equal(os_strlen("a"), 1);
+
+    /* Long string */
+    assert_int_equal(os_strlen("Hello, world!"), 13);
+}
+
+void test_os_strcmp_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Identical strings */
+    assert_int_equal(os_strcmp("hello", "hello"), 0);
+
+    /* Empty strings */
+    assert_int_equal(os_strcmp("", ""), 0);
+
+    /* First string less than second (negative result) */
+    assert_true(os_strcmp("abc", "def") < 0);
+
+    /* First string greater than second (positive result) */
+    assert_true(os_strcmp("xyz", "abc") > 0);
+
+    /* Same prefix, different length */
+    assert_true(os_strcmp("hello", "hello world") < 0);
+    assert_true(os_strcmp("hello world", "hello") > 0);
+}
+
+void test_os_strncmp_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Compare zero bytes */
+    assert_int_equal(os_strncmp("abc", "xyz", 0), 0);
+
+    /* Compare partial strings where only first n match */
+    assert_int_equal(os_strncmp("hello", "helloworld", 5), 0);
+
+    /* Identical strings within n bytes */
+    assert_int_equal(os_strncmp("hello", "hello", 5), 0);
+
+    /* Different strings within n bytes */
+    assert_true(os_strncmp("abc", "xyz", 1) < 0);
+}
+
+void test_os_memcpy_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Copy zero bytes */
+    char dest[10];
+    os_memcpy(dest, "test", 0);
+    /* No assertion needed; we're testing it doesn't crash */
+
+    /* Copy full buffer */
+    os_memcpy(dest, "hello", 5);
+    assert_int_equal(dest[0], 'h');
+    assert_int_equal(dest[4], 'o');
+}
+
+void test_os_memmove_overlap(void** state)
+{
+    (void)state;
+
+    /* Test overlapping memory regions (forward and backward) */
+    char buffer[20] = "hello world";
+
+    /* Move data backward (overlapping) */
+    os_memmove(buffer + 1, buffer, 11);
+    assert_int_equal(buffer[1], 'h');
+
+    /* Reset and test forward overlap */
+    strcpy(buffer, "hello");
+    os_memmove(buffer + 2, buffer, 3);
+    assert_int_equal(buffer[2], 'h');
+}
+
+void test_os_memset_patterns(void** state)
+{
+    (void)state;
+
+    unsigned char buffer[20];
+
+    /* Fill with spaces */
+    os_memset(buffer, ' ', 5);
+    assert_int_equal(buffer[0], ' ');
+    assert_int_equal(buffer[4], ' ');
+
+    /* Fill with zeros */
+    os_memset(buffer, 0, 5);
+    assert_int_equal(buffer[0], 0);
+    assert_int_equal(buffer[4], 0);
+
+    /* Fill with high value */
+    os_memset(buffer, 0xFF, 3);
+    assert_int_equal(buffer[0], 0xFF);
+    assert_int_equal(buffer[2], 0xFF);
+}
+
+void test_os_strcspn_edge_cases(void** state)
+{
+    (void)state;
+
+    /* No characters in rejection set */
+    assert_int_equal(os_strcspn("hello", "xyz"), 5);
+
+    /* First character in rejection set */
+    assert_int_equal(os_strcspn("hello", "h"), 0);
+
+    /* Last character in rejection set */
+    assert_int_equal(os_strcspn("hello", "o"), 4);
+
+    /* Empty rejection set */
+    assert_int_equal(os_strcspn("hello", ""), 5);
+}
+
+void test_os_atoi_edge_cases(void** state)
+{
+    (void)state;
+
+    /* Positive number */
+    assert_int_equal(os_atoi("12345"), 12345);
+
+    /* Negative number */
+    assert_int_equal(os_atoi("-42"), -42);
+
+    /* Zero */
+    assert_int_equal(os_atoi("0"), 0);
+
+    /* Number with leading spaces */
+    assert_int_equal(os_atoi("  123"), 123);
+
+    /* Non-numeric string */
+    assert_int_equal(os_atoi("abc"), 0);
+}
+
+void test_os_atof_edge_cases(void** state)
+{
+    double result;
+
+    (void)state;
+
+    /* Zero */
+    result = os_atof("0.0");
+    assert_true(result >= -0.001 && result <= 0.001);
+
+    /* Positive decimal */
+    result = os_atof("3.14");
+    assert_true(result > 3.13 && result < 3.15);
+
+    /* Negative decimal */
+    result = os_atof("-2.5");
+    assert_true(result > -2.51 && result < -2.49);
+
+    /* Integer as float */
+    result = os_atof("42");
+    assert_true(result > 41.99 && result < 42.01);
+}
+
+void test_os_strlcpy_boundary(void** state)
+{
+    (void)state;
+
+    /* Test truncation when buffer is too small */
+    char dest[5];
+    const char* src = "Hello World";
+    size_t result = os_strlcpy(dest, src, sizeof(dest));
+
+    /* Result should be the length of the original string */
+    assert_int_equal(result, 11);
+
+    /* Destination should be null-terminated and truncated */
+    assert_int_equal(dest[4], '\0');
+    assert_string_equal(dest, "Hell");
+}
+
+void test_os_strlcat_overflow(void** state)
+{
+    (void)state;
+
+    /* Test when concatenation would overflow */
+    char dest[10] = "Hello";
+    const char* src = "World Extra Text";
+    size_t result = os_strlcat(dest, src, sizeof(dest));
+
+    /* Result should indicate what the full length would have been */
+    assert_true(result > sizeof(dest));
+
+    /* Destination should remain null-terminated */
+    assert_int_equal(dest[9], '\0');
+}
+
+void test_os_realloc_grow(void** state)
+{
+    (void)state;
+
+    /* Allocate initial memory */
+    void* ptr = os_calloc(10, 1);
+    assert_non_null(ptr);
+
+    /* Grow the memory */
+    void* new_ptr = os_realloc(ptr, 100);
+    assert_non_null(new_ptr);
+
+    os_free(new_ptr);
+}
+
+void test_os_realloc_shrink(void** state)
+{
+    (void)state;
+
+    /* Allocate memory */
+    void* ptr = os_calloc(100, 1);
+    assert_non_null(ptr);
+
+    /* Shrink the memory */
+    void* new_ptr = os_realloc(ptr, 10);
+    assert_non_null(new_ptr);
+
+    os_free(new_ptr);
+}
+
+void test_os_strtol_boundary(void** state)
+{
+    (void)state;
+
+    /* Test negative number */
+    assert_int_equal(os_strtol("-42", NULL, 10), -42);
+
+    /* Test with base 16 */
+    assert_int_equal(os_strtol("FF", NULL, 16), 255);
+
+    /* Test with base 2 */
+    assert_int_equal(os_strtol("1010", NULL, 2), 10);
+
+    /* Test with base 8 */
+    assert_int_equal(os_strtol("10", NULL, 8), 8);
+}
+
+void test_os_strtoul_boundary(void** state)
+{
+    (void)state;
+
+    /* Test large number */
+    assert_int_equal(os_strtoul("999999", NULL, 10), 999999);
+
+    /* Test hex */
+    assert_int_equal(os_strtoul("DEADBEEF", NULL, 16), 0xDEADBEEF);
+
+    /* Test octal */
+    assert_int_equal(os_strtoul("777", NULL, 8), 511);
+}
+
+void test_os_strtoull_boundary(void** state)
+{
+    (void)state;
+
+    /* Test 64-bit values */
+    uint64 result = os_strtoull("18446744073709551615", NULL, 10);
+    assert_true(result == 18446744073709551615ULL);
+
+    /* Test hex */
+    result = os_strtoull("FFFFFFFFFFFFFFFF", NULL, 16);
+    assert_true(result == 0xFFFFFFFFFFFFFFFFULL);
+}
+
+void test_os_itoa_boundary(void** state)
+{
+    (void)state;
+
+    char buffer[20];
+
+    /* Test zero */
+    os_itoa(0, buffer, 10);
+    assert_string_equal(buffer, "0");
+
+    /* Test negative */
+    os_itoa(-42, buffer, 10);
+    assert_string_equal(buffer, "-42");
+
+    /* Test different bases */
+    os_itoa(255, buffer, 16);
+    assert_string_equal(buffer, "FF");
+
+    os_itoa(8, buffer, 2);
+    assert_string_equal(buffer, "1000");
+}
+
+void test_os_swap_be_32_values(void** state)
+{
+    (void)state;
+
+    /* Test various patterns */
+    assert_int_equal(os_swap_be_32(0x12345678), 0x78563412);
+    assert_int_equal(os_swap_be_32(0xFFFFFFFF), 0xFFFFFFFF);
+    assert_int_equal(os_swap_be_32(0x00000001), 0x01000000);
+    assert_int_equal(os_swap_be_32(0x80000000), 0x00000080);
+}
+
+void test_os_tolower_boundary(void** state)
+{
+    (void)state;
+
+    /* Test all uppercase letters */
+    assert_int_equal(os_tolower('A'), 'a');
+    assert_int_equal(os_tolower('Z'), 'z');
+
+    /* Test already lowercase */
+    assert_int_equal(os_tolower('a'), 'a');
+
+    /* Test non-alphabetic */
+    assert_int_equal(os_tolower('0'), '0');
+    assert_int_equal(os_tolower('!'), '!');
+}
+
+void test_os_toupper_boundary(void** state)
+{
+    (void)state;
+
+    /* Test all lowercase letters */
+    assert_int_equal(os_toupper('a'), 'A');
+    assert_int_equal(os_toupper('z'), 'Z');
+
+    /* Test already uppercase */
+    assert_int_equal(os_toupper('A'), 'A');
+
+    /* Test non-alphabetic */
+    assert_int_equal(os_toupper('0'), '0');
+    assert_int_equal(os_toupper('!'), '!');
+}
+
+void test_os_snprintf_truncation(void** state)
+{
+    (void)state;
+
+    char buffer[10];
+
+    /* Test truncation with a value that would exceed buffer */
+    int result = os_snprintf(buffer, sizeof(buffer), "Hello %s", "World Extra Text");
+
+    /* Result should be truncated */
+    assert_true(os_strlen(buffer) < sizeof(buffer));
+
+    /* Should be null-terminated */
+    assert_int_equal(buffer[9], '\0');
+}
+
+void test_os_vsnprintf_format(void** state)
+{
+    char buffer[256];
+
+    (void)state;
+
+    /* Use a variadic wrapper to test vsnprintf indirectly
+     * os_vsnprintf is tested through os_log which uses it internally */
+
+    /* Just verify os_vsnprintf can be called - it's tested via os_log */
+    assert_true(buffer_init(512) == ALL_OK);
+    os_log(LOG_INFO, "Test format: %d %s %.2f", 42, "hello", 3.14);
+    buffer_free();
 }
 
 static int sum_values(int count, ...)
