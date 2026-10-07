@@ -142,6 +142,11 @@ void test_python_041_str(void** state)
     assert_true(test_python_script("041_str.py") == ALL_OK);
 }
 
+void test_python_043_str_splitlines(void** state)
+{
+    assert_true(test_python_script("043_str_splitlines.py") == ALL_OK);
+}
+
 void test_python_042_str_mod(void** state)
 {
     assert_true(test_python_script("042_str_mod.py") == ALL_OK);
@@ -170,6 +175,11 @@ void test_python_080_dict(void** state)
 void test_python_081_dictcomp(void** state)
 {
     assert_true(test_python_script("081_dictcomp.py") == ALL_OK);
+}
+
+void test_python_90_walrus(void** state)
+{
+    assert_true(test_python_script("90_walrus.py") == ALL_OK);
 }
 
 void test_python_150_assign(void** state)
@@ -527,6 +537,11 @@ void test_python_930_deterministic_float(void** state)
     assert_true(test_python_script("930_deterministic_float.py") == ALL_OK);
 }
 
+void test_python_931_math(void** state)
+{
+    assert_true(test_python_script("931_math.py") == ALL_OK);
+}
+
 void test_python_950_bugs(void** state)
 {
     assert_true(test_python_script("950_bugs.py") == ALL_OK);
@@ -641,7 +656,6 @@ void test_print_result_extended(void** state)
 
     buffer_free();
 }
-
 
 static status_t test_python_script(const char* script_name)
 {

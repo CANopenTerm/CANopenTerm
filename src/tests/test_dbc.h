@@ -10,10 +10,13 @@
 #ifndef TEST_DBC_H
 #define TEST_DBC_H
 
+/* DBC file operations and lifecycle tests */
 void test_dbc_unloaded_guards(void** state);
 void test_dbc_load_invalid_path(void** state);
 void test_dbc_lifecycle(void** state);
 void test_dbc_decode_no_match(void** state);
 void test_dbc_find_id_invalid_args(void** state);
+
+/* NOTE: dbc_print() outputs formatted DBC content; tested through output validation in integration tests */
 
 #endif /* TEST_DBC_H */

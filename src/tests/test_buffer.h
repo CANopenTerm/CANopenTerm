@@ -10,9 +10,13 @@
 #ifndef TEST_BUFFER_H
 #define TEST_BUFFER_H
 
+/* Buffer lifecycle and write operations tests */
 void test_buffer_init(void** state);
 void test_use_buffer(void** state);
 void test_buffer_write(void** state);
 void test_buffer_write_grow(void** state);
+
+/* NOTE: buffer_flush() outputs to console and is validated through integration tests */
+/* NOTE: buffer_free() is a cleanup function with no observable side effects to unit test */
 
 #endif /* TEST_BUFFER_H */

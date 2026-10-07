@@ -209,9 +209,15 @@ status_t os_init(void)
     return status;
 }
 
+/* Internal wrapper for _kbhit() that can be mocked in tests */
+int os_kbhit(void)
+{
+    return _kbhit();
+}
+
 bool os_key_is_hit(void)
 {
-    if (0 != _kbhit())
+    if (0 != os_kbhit())
     {
         char key = _getch();
         (void)key;

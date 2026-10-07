@@ -10,7 +10,10 @@
 #ifndef TEST_NMT_H
 #define TEST_NMT_H
 
+/* NMT help and validation tests */
 void test_nmt_print_help(void** state);
 void test_nmt_send_command_invalid(void** state);
+
+/* NOTE: nmt_send_command() performs actual CAN communication and is tested through integration tests */
 
 #endif /* TEST_NMT_H */

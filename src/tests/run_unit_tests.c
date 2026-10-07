@@ -12,13 +12,16 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "core.h"
 #include "cmocka.h"
+#include "core.h"
 #include "test_buffer.h"
 #include "test_can.h"
 #include "test_codb.h"
+#include "test_command.h"
+#include "test_common.h"
 #include "test_dbc.h"
 #include "test_dict.h"
+#include "test_eds.h"
 #include "test_nmt.h"
 #include "test_os.h"
 #include "test_pdo.h"
@@ -48,11 +51,13 @@ int main(void)
             cmocka_unit_test(test_python_040_line_continue),
             cmocka_unit_test(test_python_041_str),
             cmocka_unit_test(test_python_042_str_mod),
+            cmocka_unit_test(test_python_043_str_splitlines),
             cmocka_unit_test(test_python_050_list),
             cmocka_unit_test(test_python_060_tuple),
             cmocka_unit_test(test_python_070_listcomp),
             cmocka_unit_test(test_python_080_dict),
             cmocka_unit_test(test_python_081_dictcomp),
+            cmocka_unit_test(test_python_90_walrus),
             cmocka_unit_test(test_python_150_assign),
             cmocka_unit_test(test_python_151_cmp),
             cmocka_unit_test(test_python_152_controlflow),
@@ -124,6 +129,7 @@ int main(void)
             cmocka_unit_test(test_python_921_pkpy),
             /* cmocka_unit_test(test_python_922_py_compile), */
             cmocka_unit_test(test_python_930_deterministic_float),
+            /* cmocka_unit_test(test_python_931_math), */
             cmocka_unit_test(test_python_950_bugs),
             cmocka_unit_test(test_python_951_dis),
             cmocka_unit_test(test_python_960_pep695_py312),
@@ -226,6 +232,8 @@ int main(void)
             cmocka_unit_test(test_os_snprintf_truncation),
             cmocka_unit_test(test_os_vsnprintf_format),
             cmocka_unit_test(test_sdo_lookup_abort_code),
+            cmocka_unit_test(test_sdo_read_null_check),
+            cmocka_unit_test(test_sdo_write_boundary_values),
             cmocka_unit_test(test_uint8),
             cmocka_unit_test(test_uint16),
             cmocka_unit_test(test_uint32),
@@ -233,6 +241,8 @@ int main(void)
             cmocka_unit_test(test_variadic_functions),
             cmocka_unit_test(test_can_limit_node_id),
             cmocka_unit_test(test_can_is_can_initialised),
+            cmocka_unit_test(test_can_get_error_message),
+            cmocka_unit_test(test_can_error_message_invalid_code),
             cmocka_unit_test(test_pdo_is_id_valid),
             cmocka_unit_test(test_pdo_print_help),
             cmocka_unit_test(test_table_init),
@@ -253,6 +263,22 @@ int main(void)
             cmocka_unit_test(test_print_heading_extended),
             cmocka_unit_test(test_print_result),
             cmocka_unit_test(test_print_result_extended),
+            cmocka_unit_test(test_list_file_type_invalid_dir),
+            cmocka_unit_test(test_list_file_type_valid_dir),
+            cmocka_unit_test(test_list_file_type_with_active_no),
+            cmocka_unit_test(test_list_file_type_empty_extension),
+            cmocka_unit_test(test_list_file_type_no_matching_files),
+            cmocka_unit_test(test_parse_command_empty_input),
+            cmocka_unit_test(test_parse_command_help),
+            cmocka_unit_test(test_parse_command_clear),
+            cmocka_unit_test(test_parse_command_quit),
+            cmocka_unit_test(test_parse_command_script_run),
+            cmocka_unit_test(test_completion_callback_help),
+            cmocka_unit_test(test_completion_callback_empty_prefix),
+            cmocka_unit_test(test_list_eds),
+            cmocka_unit_test(test_run_conformance_test_invalid_path),
+            cmocka_unit_test(test_run_conformance_test_missing_package),
+            cmocka_unit_test(test_validate_eds_invalid_file_no),
         };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

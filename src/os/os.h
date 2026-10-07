@@ -406,6 +406,7 @@ status_t os_get_prompt(char prompt[PROMPT_BUFFER_SIZE]);
 uint64 os_get_ticks(void);
 const char* os_get_user_directory(void);
 status_t os_init(void);
+int os_kbhit(void);      /* Wrapper for keyboard check - can be mocked in tests */
 bool os_key_is_hit(void);
 void os_key_send(uint16 key);
 void os_log(const log_level_t level, const char* format, ...);

@@ -13,6 +13,12 @@
 #include "can.h"
 #include "os.h"
 
+/* Mock wrapper for os_kbhit() - returns 0 (no key) in test environment */
+int __wrap_os_kbhit(void)
+{
+    return 0;
+}
+
 uint32 __wrap_can_read(can_message_t* message, disp_mode_t disp_mode, const char* comment)
 {
     uint32 status = 0;

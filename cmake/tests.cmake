@@ -16,6 +16,9 @@ add_executable(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_table.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_test_report.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_wrapper.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_common.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_command.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_eds.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/codb2json/codb2json.c
 )
 
@@ -42,6 +45,7 @@ if(NOT MSVC)
   add_link_options(
     -Wl,--wrap=can_read
     -Wl,--wrap=can_write
+    -Wl,--wrap=os_kbhit
   )
 endif()
 
