@@ -142,7 +142,7 @@ void widget_tachometer(uint32 pos_x, uint32 pos_y, uint32 size, const uint32 max
     os_draw_line(renderer, center_x, center_y, needle_x, needle_y);
 
     /* Display value */
-    os_snprintf(buffer, 9, "%Xh", value);
+    os_snprintf(buffer, 9, "%04u", value);
     len = os_strlen(buffer);
     text_width = (CHAR_WIDTH + CHAR_SPACING) * scale * len - (CHAR_SPACING);
 
