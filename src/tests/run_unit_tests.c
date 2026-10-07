@@ -70,6 +70,7 @@ int main(void)
             cmocka_unit_test(test_python_290_iter),
             /* cmocka_unit_test(test_python_300_import), */
             /* cmocka_unit_test(test_python_301_import1), */
+            /* cmocka_unit_test(test_python_302_import_multi), */
             /* cmocka_unit_test(test_python_310_modulereload), */
             cmocka_unit_test(test_python_400_class),
             cmocka_unit_test(test_python_410_class_ex),

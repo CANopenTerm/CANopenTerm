@@ -242,6 +242,11 @@ void test_python_301_import1(void** state)
     assert_true(test_python_script("301_import1.py") == ALL_OK);
 }
 
+void test_python_302_import_multi(void** state)
+{
+    assert_true(test_python_script("302_import_multi.py") == ALL_OK);
+}
+
 void test_python_310_modulereload(void** state)
 {
     assert_true(test_python_script("310_modulereload.py") == ALL_OK);
