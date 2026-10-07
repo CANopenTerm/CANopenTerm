@@ -142,7 +142,18 @@ jobs:
         run: |
           $artifactDir = "artifacts"
           $zipFile = "CANopenTerm.zip"
-          Compress-Archive -Path "$artifactDir\*" -DestinationPath $zipFile -Force
+          $tempDir = "$artifactDir\CANopenTerm"
+
+          # Reorganize artifacts into CANopenTerm folder structure
+          New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+
+          # Move all files and folders from artifacts to artifacts\CANopenTerm
+          Get-ChildItem -Path $artifactDir -Exclude "CANopenTerm" | ForEach-Object {
+            Move-Item -Path $_.FullName -Destination "$tempDir\$($_.Name)" -Force
+          }
+
+          # Create zip with CANopenTerm folder at root
+          Compress-Archive -Path "$tempDir" -DestinationPath $zipFile -Force
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
