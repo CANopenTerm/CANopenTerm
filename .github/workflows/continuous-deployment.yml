@@ -183,8 +183,8 @@ jobs:
         files: |
           CANopenTerm.msi
           CANopenTerm.zip
-        tag_name: latest
-        name: "Latest Build"
+        tag_name: ci-build
+        name: "CANopenTerm CI Build"
         body: "This is the latest build of CANopenTerm."
         draft: false
         prerelease: true
