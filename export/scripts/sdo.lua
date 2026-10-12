@@ -213,7 +213,7 @@ function render_gui()
         input_widgets[1].text,
         input_widgets[1].is_active
     )
-    widget_print(math.floor(input_widgets[1].x), math.floor(input_widgets[1].y - 20), input_widgets[1].label, 1)
+    widget_print(math.floor(input_widgets[1].x), math.floor(input_widgets[1].y - 20), input_widgets[1].label .. string.format(": 0x%02X", node_id), 1)
 
     -- Input widget 2: Index.
     widget_input(
@@ -224,7 +224,7 @@ function render_gui()
         input_widgets[2].text,
         input_widgets[2].is_active
     )
-    widget_print(math.floor(input_widgets[2].x), math.floor(input_widgets[2].y - 20), input_widgets[2].label, 1)
+    widget_print(math.floor(input_widgets[2].x), math.floor(input_widgets[2].y - 20), input_widgets[2].label .. string.format(": 0x%04X", sdo_index), 1)
 
     -- Input widget 3: Sub-Index.
     widget_input(
@@ -235,7 +235,7 @@ function render_gui()
         input_widgets[3].text,
         input_widgets[3].is_active
     )
-    widget_print(math.floor(input_widgets[3].x), math.floor(input_widgets[3].y - 20), input_widgets[3].label, 1)
+    widget_print(math.floor(input_widgets[3].x), math.floor(input_widgets[3].y - 20), input_widgets[3].label .. string.format(": 0x%02X", sdo_sub_index), 1)
 
     -- Display submitted values.
     widget_print(32, 128, "Output:", 1)
