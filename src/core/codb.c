@@ -195,6 +195,45 @@ void codb_deinit(void)
     is_init_cancelled = false;
 }
 
+uint32 codb_get_data_type_size(data_type_t data_type)
+{
+    switch (data_type)
+    {
+        case NONE_T:
+        case BOOLEAN_T:
+            return 1;
+        case INTEGER8:
+        case UNSIGNED8:
+            return 1;
+        case INTEGER16:
+        case UNSIGNED16:
+            return 2;
+        case INTEGER24:
+        case UNSIGNED24:
+            return 3;
+        case INTEGER32:
+        case UNSIGNED32:
+        case REAL32:
+            return 4;
+        case INTEGER48:
+        case UNSIGNED48:
+            return 6;
+        case INTEGER56:
+        case UNSIGNED56:
+            return 7;
+        case INTEGER64:
+        case UNSIGNED64:
+        case REAL64:
+        case TIME_OF_DAY:
+            return 8;
+        case VISIBLE_STRING:
+        case OCTET_STRING:
+        case DOMAIN_T:
+        default:
+            return 0;  /* Variable or unknown size */
+    }
+}
+
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index)
 {
     char object_desc[256] = {0};
@@ -303,10 +342,8 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
                 cJSON* sub_index_item = cJSON_GetArrayItem(sub_indices, sub_index);
                 int num_sub_indices = cJSON_GetArraySize(sub_indices);
 
-                if (num_sub_indices > info->entry_count)
-                {
-                    info->entry_count = num_sub_indices;
-                }
+                /* Set entry_count to the actual number of sub-indices in this object */
+                info->entry_count = num_sub_indices;
 
                 if (sub_index_item != NULL)
                 {
@@ -341,7 +378,7 @@ void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* 
 
                         if (sub_access_type_type != NULL)
                         {
-                            info->access_type = (bool)sub_access_type_type->valueint;
+                            info->access_type = (acc_type_t)sub_access_type_type->valueint;
                         }
                     }
 

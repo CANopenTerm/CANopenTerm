@@ -412,7 +412,10 @@ static int can_monitor(void* core_pt)
             can_deinit(core);
             os_print(DEFAULT_COLOR, "\n");
             os_log(LOG_WARNING, "CAN de-initialised: Hardware removed?");
-            os_print_prompt();
+            if (false == core->is_test_mode)
+            {
+                os_print_prompt();
+            }
         }
         os_delay(1);
     }
@@ -437,7 +440,10 @@ static void find_can_channel(core_t* core, enum can_baudrate baud)
 
             os_print(DEFAULT_COLOR, "\r");
             os_log(LOG_SUCCESS, "CAN successfully initialised on %s with baud rate %s\n", name_buf, baud_rate_desc[(int)baud + 1]);
-            os_print_prompt();
+            if (false == core->is_test_mode)
+            {
+                os_print_prompt();
+            }
 
             core->is_can_initialised = true;
             core->can_channel = ch;

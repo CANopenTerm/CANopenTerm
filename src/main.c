@@ -27,6 +27,8 @@ int main(int argc, char* argv[])
     bool fullscreen = false;
     char* can_interface = DEFAULT_CAN_INTERFACE;
     char* script = NULL;
+    char* db_file = NULL;
+    char* report_file = NULL;
     int status = EXIT_SUCCESS;
     uint32 node_id = 0x01;
     uint8 baud_rate_index = 0;
@@ -62,6 +64,14 @@ int main(int argc, char* argv[])
                     os_printf("Invalid baud rate.  Must be between 0 and 14.\n");
                     exit(EXIT_FAILURE);
                 }
+            }
+            else if (0 == os_strcmp(argv[i], "-d") && (i + 1) < argc)
+            {
+                db_file = argv[++i];
+            }
+            else if (0 == os_strcmp(argv[i], "-r") && (i + 1) < argc)
+            {
+                report_file = argv[++i];
             }
             else if (0 == os_strcmp(argv[i], "-n") && (i + 1) < argc)
             {
@@ -100,6 +110,8 @@ int main(int argc, char* argv[])
                 os_printf("                        3 = 500 kBit/s\n");
                 os_printf("                        4 = 250 kBit/s\n");
                 os_printf("                        5 = 125 kBit/s\n");
+                os_printf("    -d DATABASE       Load custom database file (JSON)\n");
+                os_printf("    -r REPORT         Generate conformance test report (JUnit XML)\n");
                 os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
                 os_printf("    -f                Full screen widget window\n");
                 os_printf("    -p                Run in plain mode\n");
@@ -121,6 +133,20 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
+    if (db_file != NULL)
+    {
+        if (load_codb_ex(db_file) != ALL_OK)
+        {
+            os_log(LOG_ERROR, "Failed to load database file: %s", db_file);
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (true == run_cct)
+    {
+        core->is_test_mode = true;
+    }
+
     os_strlcpy(core->can_interface, can_interface, sizeof(core->can_interface));
     if (baud_rate_index != 0)
     {
@@ -139,7 +165,9 @@ int main(int argc, char* argv[])
 
     if (true == run_cct)
     {
-        cct_run_test(node_id);
+        /* Wait for DS301 database to be loaded before running conformance test */
+        while (false == is_ds301_loaded()) {}
+        cct_run_test(node_id, report_file);
         core->is_running = false;
     }
     else if (script != NULL)

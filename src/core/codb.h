@@ -114,6 +114,7 @@ typedef cJSON codb_t;
 
 void codb_init(void);
 void codb_deinit(void);
+uint32 codb_get_data_type_size(data_type_t data_type);
 const char* codb_desc_lookup(codb_t* db, uint16 index, uint8 sub_index);
 const char* codb_desc_lookup_ex(codb_t* db, uint16 index, uint8 sub_index, char* object_desc, char* sub_index_desc);
 void codb_info_lookup(codb_t* db, uint16 index, uint8 sub_index, object_info_t* info);

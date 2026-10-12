@@ -36,6 +36,7 @@ typedef struct core
     volatile bool is_running;
     bool is_script_running;
     bool is_plain_mode;
+    bool is_test_mode;
     bool is_window_fullscreen;
     bool is_window_shown;
     bool set_can_channel;

@@ -394,7 +394,10 @@ void run_script(char* name, core_t* core)
         {
             os_log(LOG_ERROR, "Script \"%s\" not found.\n", basename);
         }
-        os_print_prompt();
+        if (false == core->is_test_mode)
+        {
+            os_print_prompt();
+        }
     }
 
     core->is_script_running = false;

@@ -12,6 +12,6 @@
 
 #include "os.h"
 
-status_t cct_run_test(uint32 node_id);
+status_t cct_run_test(uint32 node_id, const char* report_file);
 
 #endif /* CTT_H */
