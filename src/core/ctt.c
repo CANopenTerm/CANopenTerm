@@ -614,6 +614,7 @@ status_t cct_run_test(uint32 node_id, const char* report_file)
             }
         }
 
+        os_printf("\n");
         os_printf("Testing Extended Database Optional Objects:\n");
         os_printf("----------------\n");
 
