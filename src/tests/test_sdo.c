@@ -52,7 +52,7 @@ void test_sdo_lookup_abort_code(void** state)
     assert_string_equal(sdo_lookup_abort_code(ABORT_DATA_CANNOT_TRANSFERRED_DEV_STATE), "Data cannot be transferred because of the present device state");
     assert_string_equal(sdo_lookup_abort_code(ABORT_NO_OBJECT_DICTIONARY_PRESENT), "Object dictionary dynamic generation fails or no object dictionary present");
     assert_string_equal(sdo_lookup_abort_code(ABORT_NO_DATA_AVAILABLE), "No data available");
-    assert_string_equal(sdo_lookup_abort_code(0x12345678), "Unknown abort code");
+    assert_string_equal(sdo_lookup_abort_code(0x1234ABCD), "Unknown abort code: 0x1234ABCD");
 }
 
 /**
