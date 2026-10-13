@@ -27,6 +27,8 @@ bool is_printable_string(const char* str, size_t length);
 
 const char* sdo_lookup_abort_code(uint32 abort_code)
 {
+    static char unknown_code_buffer[64];
+
     switch (abort_code)
     {
         case ABORT_TOGGLE_BIT_NOT_ALTERED:
@@ -92,7 +94,8 @@ const char* sdo_lookup_abort_code(uint32 abort_code)
         case ABORT_NO_DATA_AVAILABLE:
             return "No data available";
         default:
-            return "Unknown abort code";
+            os_snprintf(unknown_code_buffer, sizeof(unknown_code_buffer), "Unknown abort code: 0x%08X", abort_code);
+            return unknown_code_buffer;
     }
 }
 
