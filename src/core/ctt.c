@@ -10,11 +10,15 @@
 #include "ctt.h"
 #include "can.h"
 #include "codb.h"
-#include "eds.h"
+#include "ini.h"
+#include "os.h"
 #include "sdo.h"
 #include "test_report.h"
 
-status_t cct_run_test(uint32 node_id, const char* report_file)
+static int parse_eds(void* user, const char* section, const char* name, const char* value);
+static eds_t ctt_eds_data;
+
+status_t cct_run_test(uint32 node_id, const char* report_file, const char* eds_file)
 {
     status_t status = ALL_OK;
     codb_t* ds301_db = codb_get_ds301_profile();
@@ -811,6 +815,114 @@ status_t cct_run_test(uint32 node_id, const char* report_file)
         }
     }
 
+    /* Test EDS file if specified */
+    if (eds_file != NULL)
+    {
+        int error;
+        int i;
+
+        os_printf("\n");
+        os_printf("Testing EDS File: %s\n", eds_file);
+        os_printf("----------------\n");
+
+        /* Reset EDS data */
+        if (ctt_eds_data.entries != NULL)
+        {
+            os_free(ctt_eds_data.entries);
+            ctt_eds_data.entries = NULL;
+            ctt_eds_data.num_entries = 0;
+        }
+
+        /* Parse EDS file */
+        error = ini_parse(eds_file, parse_eds, &eds_file);
+        if (error < 0)
+        {
+            os_log(LOG_ERROR, "Failed to parse EDS file: %s (%d)", eds_file, error);
+        }
+        else if (ctt_eds_data.num_entries == 0)
+        {
+            os_printf("  No objects found in EDS file.\n");
+        }
+        else
+        {
+            os_printf("  Found %u objects in EDS file.\n\n", ctt_eds_data.num_entries);
+
+            /* Test EDS entries like extended objects */
+            for (i = 0; i < ctt_eds_data.num_entries; i++)
+            {
+                bool read_succeeded;
+                char test_name[128] = {0};
+                char error_msg[256] = {0};
+                sdo_state_t sdo_state;
+                test_result_t result = {0};
+
+                test_count++;
+
+                /* Send SDO read request to verify object exists */
+                sdo_state = sdo_read(&sdo_response, SILENT, node_id, ctt_eds_data.entries[i].Index, ctt_eds_data.entries[i].SubIndex, NULL);
+
+                /* Format test name */
+                if (ctt_eds_data.entries[i].SubIndex == 0)
+                {
+                    os_snprintf(test_name, sizeof(test_name), "0x%04X (EDS)", ctt_eds_data.entries[i].Index);
+                }
+                else
+                {
+                    os_snprintf(test_name, sizeof(test_name), "0x%04X:%02X (EDS)", ctt_eds_data.entries[i].Index, ctt_eds_data.entries[i].SubIndex);
+                }
+
+                result.test_name = test_name;
+                result.class_name = "EDS_Object";
+                result.package = "CANopenTerm.Conformance";
+                result.time = 0.0f;
+                result.call_stack = NULL;
+                result.error_type = NULL;
+                result.error_message = NULL;
+
+                /* Check if object is available */
+                read_succeeded = (sdo_state == IS_READ_EXPEDITED || sdo_state == IS_READ_SEGMENTED || sdo_state == IS_READ_BLOCK);
+
+                if (read_succeeded)
+                {
+                    result.has_passed = true;
+                    os_printf("  [OK] %s - %s\n", test_name, ctt_eds_data.entries[i].ParameterName);
+                    passed_count++;
+                }
+                else if (sdo_state == ABORT_TRANSFER)
+                {
+                    uint32 abort_code = (sdo_response.data[4] << 24) | (sdo_response.data[5] << 16) | (sdo_response.data[6] << 8) | sdo_response.data[7];
+                    abort_code = os_swap_be_32(abort_code);
+
+                    result.has_passed = false;
+                    result.error_type = "SDOAbort";
+                    result.error_message = sdo_lookup_abort_code(abort_code);
+                    os_snprintf(error_msg, sizeof(error_msg), "SDO Abort: %s", result.error_message);
+                    result.error_message = error_msg;
+                    os_printf("  [!!] %s - %s: %s\n", test_name, ctt_eds_data.entries[i].ParameterName, result.error_message);
+                    failed_count++;
+                }
+                else
+                {
+                    result.has_passed = false;
+                    result.error_type = "ReadFailed";
+                    result.error_message = "Failed to read object";
+                    os_printf("  [!!] %s - %s: Read operation failed\n", test_name, ctt_eds_data.entries[i].ParameterName);
+                    failed_count++;
+                }
+
+                test_add_result(&result);
+            }
+
+            /* Clean up EDS data after testing */
+            if (ctt_eds_data.entries != NULL)
+            {
+                os_free(ctt_eds_data.entries);
+                ctt_eds_data.entries = NULL;
+                ctt_eds_data.num_entries = 0;
+            }
+        }
+    }
+
     os_printf("\n");
     os_printf("================================================================================\n");
     os_printf("Test Results Summary:\n");
@@ -843,4 +955,111 @@ status_t cct_run_test(uint32 node_id, const char* report_file)
     os_printf("\n");
 
     return status;
+}
+
+static int parse_eds(void* user, const char* section, const char* name, const char* value)
+{
+    size_t len = os_strlen(section);
+
+    if (len > 7 &&
+        os_isxdigit(section[0]) &&
+        os_isxdigit(section[1]) &&
+        os_isxdigit(section[2]) &&
+        os_isxdigit(section[3]) &&
+        section[4] == 's' &&
+        section[5] == 'u' &&
+        section[6] == 'b' &&
+        os_isxdigit(section[7]) &&
+        (len == 8 || (len == 9 && os_isxdigit(section[8]))))
+    {
+        static char prev_section[50] = "";
+
+        if (0 != os_strcmp(section, prev_section))
+        {
+            char index[5] = {0};
+            char sub_index[3] = {0};
+
+            os_strlcpy(index, section, 5);
+            os_strlcpy(sub_index, section + 7, 3);
+            os_strlcpy(prev_section, section, sizeof(prev_section));
+
+            prev_section[sizeof(prev_section) - 1] = '\0';
+
+            ctt_eds_data.entries = os_realloc(ctt_eds_data.entries, (ctt_eds_data.num_entries + 1) * sizeof(eds_entry_t));
+            if (NULL == ctt_eds_data.entries)
+            {
+                os_log(LOG_ERROR, "Memory allocation error.");
+                return 0;
+            }
+
+            ctt_eds_data.entries[ctt_eds_data.num_entries].Index = (uint16)os_strtoul(index, NULL, 16);
+            ctt_eds_data.entries[ctt_eds_data.num_entries].SubIndex = (uint8)os_strtoul(sub_index, NULL, 16);
+            ctt_eds_data.num_entries++;
+        }
+    }
+
+    if (0 == ctt_eds_data.num_entries)
+    {
+        return 1;
+    }
+
+    if (0 == os_strcmp(name, "ParameterName"))
+    {
+        size_t len = os_strlen(value) + 1;
+        if (len > 242)
+        {
+            len = 242;
+        }
+
+        os_strlcpy(ctt_eds_data.entries[ctt_eds_data.num_entries - 1].ParameterName, value, len);
+    }
+    else if (0 == os_strcmp(name, "ObjectType"))
+    {
+        ctt_eds_data.entries[ctt_eds_data.num_entries - 1].ObjectType = (uint8)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "DataType"))
+    {
+        ctt_eds_data.entries[ctt_eds_data.num_entries - 1].DataType = (uint16)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "LowLimit"))
+    {
+        ctt_eds_data.entries[ctt_eds_data.num_entries - 1].LowLimit = (uint32)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "HighLimit"))
+    {
+        ctt_eds_data.entries[ctt_eds_data.num_entries - 1].HighLimit = (uint32)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "AccessType"))
+    {
+        if (0 == os_strcmp(value, "ro"))
+        {
+            ctt_eds_data.entries[ctt_eds_data.num_entries - 1].AccessType = RO;
+        }
+        else if (0 == os_strcmp(value, "wo"))
+        {
+            ctt_eds_data.entries[ctt_eds_data.num_entries - 1].AccessType = WO;
+        }
+        else if (0 == os_strcmp(value, "rw"))
+        {
+            ctt_eds_data.entries[ctt_eds_data.num_entries - 1].AccessType = RW;
+        }
+        else if (0 == os_strcmp(value, "rww"))
+        {
+            ctt_eds_data.entries[ctt_eds_data.num_entries - 1].AccessType = RWW;
+        }
+        else if (0 == os_strcmp(value, "const"))
+        {
+            ctt_eds_data.entries[ctt_eds_data.num_entries - 1].AccessType = CONST_T;
+        }
+    }
+    else if (0 == os_strcmp(name, "DefaultValue"))
+    {
+        ctt_eds_data.entries[ctt_eds_data.num_entries - 1].DefaultValue = (uint32)os_strtoul(value, NULL, 0);
+    }
+    else if (0 == os_strcmp(name, "PDOMapping"))
+    {
+        ctt_eds_data.entries[ctt_eds_data.num_entries - 1].PDOMapping = (bool)os_strtoul(value, NULL, 0);
+    }
+
+    return 1;
 }

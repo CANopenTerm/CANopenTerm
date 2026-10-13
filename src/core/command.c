@@ -13,7 +13,6 @@
 #include "command.h"
 #include "core.h"
 #include "dict.h"
-#include "eds.h"
 #include "nmt.h"
 #include "os.h"
 #include "pdo.h"

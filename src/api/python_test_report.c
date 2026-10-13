@@ -8,7 +8,6 @@
  **/
 
 #include "core.h"
-#include "eds.h"
 #include "os.h"
 #include <pocketpy.h>
 #include "test_report.h"
@@ -62,20 +61,11 @@ bool py_test_add_result(int argc, py_Ref argv)
 
 bool py_test_eds_file(int argc, py_Ref argv)
 {
-    int node_id;
-    const char* file_name;
-    const char* package;
-
     (void)argc;
     (void)argv;
 
-    PY_CHECK_ARGC(3);
-
-    node_id = py_toint(py_arg(0));
-    file_name = py_tostr(py_arg(1));
-    package = py_tostr(py_arg(2));
-
-    run_conformance_test(file_name, package, node_id, SCRIPT_MODE);
+    /* Deprecated as of version 2.05. Use -e command-line parameter instead. */
+    os_log(LOG_WARNING, "test_eds_file() is deprecated as of version 2.05. Please use the -e command-line parameter instead.");
 
     py_newnone(py_retval());
 

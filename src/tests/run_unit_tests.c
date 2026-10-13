@@ -21,7 +21,6 @@
 #include "test_common.h"
 #include "test_dbc.h"
 #include "test_dict.h"
-#include "test_eds.h"
 #include "test_nmt.h"
 #include "test_os.h"
 #include "test_pdo.h"
@@ -276,10 +275,8 @@ int main(void)
             cmocka_unit_test(test_parse_command_script_run),
             cmocka_unit_test(test_completion_callback_help),
             cmocka_unit_test(test_completion_callback_empty_prefix),
-            cmocka_unit_test(test_list_eds),
             /* cmocka_unit_test(test_run_conformance_test_invalid_path), */
-            /* cmocka_unit_test(test_run_conformance_test_missing_package), */
-            cmocka_unit_test(test_validate_eds_invalid_file_no),
+            /* cmocka_unit_test(test_run_conformance_test_missing_package) */
         };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

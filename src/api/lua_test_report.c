@@ -8,7 +8,6 @@
  **/
 
 #include "core.h"
-#include "eds.h"
 #include "lauxlib.h"
 #include "lua.h"
 #include "os.h"
@@ -40,16 +39,10 @@ int lua_test_clear_results(lua_State* L)
 
 int lua_test_eds_file(lua_State* L)
 {
-    int node_id = luaL_checkinteger(L, 1);
-    const char* file_name = lua_tostring(L, 2);
-    const char* package = lua_tostring(L, 3);
+    (void)L; /* Suppress unused parameter warning */
 
-    if (NULL == package)
-    {
-        package = "EDS";
-    }
-
-    run_conformance_test(file_name, package, node_id, SCRIPT_MODE);
+    /* Deprecated as of version 2.05. Use -e command-line parameter instead. */
+    os_log(LOG_WARNING, "test_eds_file() is deprecated as of version 2.05. Please use the -e command-line parameter instead.");
 
     return 0;
 }

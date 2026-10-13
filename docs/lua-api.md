@@ -471,6 +471,8 @@ Resulting XML file:
 
 ### test_eds_file()
 
+!> **Deprecated as of version 2.05** — Use the `-e` command-line parameter instead.
+
 <!-- tabs:start -->
 <!-- tab:Description -->
 ```lua
@@ -485,8 +487,14 @@ test_eds_file (node_id, file_name, [package])
 
 **Returns**: Nothing.
 
+**Note**: This function is deprecated. For EDS file conformance testing, use the command-line parameter:
+```
+canopenterm -e <eds_file> -n <node_id>
+```
+
 <!-- tab:Example -->
 ```lua
+-- Deprecated usage (no longer recommended)
 test_eds_file(0x50, "eds/DS301_profile.eds")
 test_generate_report()
 ```
