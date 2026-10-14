@@ -383,6 +383,28 @@ end
 ```
 <!-- tabs:end -->
 
+### sdo_set_timeout()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set the SDO timeout.
+
+```lua
+sdo_set_timeout (timeout_ms)
+```
+
+> **timeout_ms** Timeout in milliseconds.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```lua
+sdo_set_timeout(1000)
+```
+<!-- tabs:end -->
+
 ### dict_lookup()
 
 <!-- tabs:start -->

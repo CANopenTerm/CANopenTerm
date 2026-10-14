@@ -399,6 +399,28 @@ if sdo_write_string(0x123, 0x4600, 0x01, "Hello, world!"):
 ```
 <!-- tabs:end -->
 
+### sdo_set_timeout()
+
+<!-- tabs:start -->
+<!-- tab:Description -->
+Set the SDO timeout.
+
+```python
+sdo_set_timeout (timeout_ms)
+```
+
+> **timeout_ms** Timeout in milliseconds.
+
+**Returns**: Nothing.
+
+**Since**: 2.05
+
+<!-- tab:Example -->
+```python
+sdo_set_timeout(1000)
+```
+<!-- tabs:end -->
+
 ### dict_lookup()
 
 <!-- tabs:start -->

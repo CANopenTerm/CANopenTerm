@@ -22,6 +22,7 @@ bool py_sdo_read(int argc, py_Ref argv);
 bool py_sdo_write(int argc, py_Ref argv);
 bool py_sdo_write_file(int argc, py_Ref argv);
 bool py_sdo_write_string(int argc, py_Ref argv);
+bool py_sdo_set_timeout(int argc, py_Ref argv);
 bool py_dict_lookup(int argc, py_Ref argv);
 
 void python_sdo_init(void)
@@ -31,6 +32,7 @@ void python_sdo_init(void)
     py_bind(mod, "sdo_read(node_id, index, sub_index, show_output=False, comment=\"\")", py_sdo_read);
     py_bind(mod, "sdo_write(node_id, index, sub_index, length, data=0, show_output=False, comment=\"\")", py_sdo_write);
     py_bind(mod, "sdo_write_string(node_id, index, sub_index, data=\"\", show_output=False, comment=\"\")", py_sdo_write_string);
+    py_bind(mod, "sdo_set_timeout(timeout_ms)", py_sdo_set_timeout);
 
     py_bindfunc(mod, "sdo_lookup_abort_code", py_sdo_lookup_abort_code);
     py_bindfunc(mod, "sdo_write_file", py_sdo_write_file);
@@ -282,6 +284,20 @@ bool py_sdo_write_string(int argc, py_Ref argv)
             py_newbool(py_retval(), true);
             break;
     }
+
+    return true;
+}
+
+bool py_sdo_set_timeout(int argc, py_Ref argv)
+{
+    int timeout_ms;
+
+    PY_CHECK_ARGC(1);
+    PY_CHECK_ARG_TYPE(0, tp_int);
+
+    timeout_ms = py_toint(py_arg(0));
+    sdo_set_timeout((uint32)timeout_ms);
+    py_newnone(py_retval());
 
     return true;
 }

@@ -98,5 +98,6 @@ sdo_state_t sdo_read(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 
 sdo_state_t sdo_write(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment);
 sdo_state_t sdo_write_block(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 node_id, uint16 index, uint8 sub_index, const char* filename, const char* comment);
 sdo_state_t sdo_write_segmented(can_message_t* sdo_response, disp_mode_t disp_mode, uint32 node_id, uint16 index, uint8 sub_index, uint32 length, void* data, const char* comment);
+void sdo_set_timeout(uint32 timeout_ms);
 
 #endif /* SDO_H */

@@ -18,6 +18,7 @@ int lua_sdo_read(lua_State* L);
 int lua_sdo_write(lua_State* L);
 int lua_sdo_write_file(lua_State* L);
 int lua_sdo_write_string(lua_State* L);
+int lua_sdo_set_timeout(lua_State* L);
 int lua_dict_lookup(lua_State* L);
 void lua_register_sdo_commands(core_t* core);
 

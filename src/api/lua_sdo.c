@@ -216,6 +216,13 @@ int lua_sdo_write_string(lua_State* L)
     return 1;
 }
 
+int lua_sdo_set_timeout(lua_State* L)
+{
+    int timeout_ms = luaL_checkinteger(L, 1);
+    sdo_set_timeout((uint32)timeout_ms);
+    return 0;
+}
+
 int lua_dict_lookup(lua_State* L)
 {
     int index = luaL_checkinteger(L, 1);
@@ -250,6 +257,9 @@ void lua_register_sdo_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_sdo_write_string);
     lua_setglobal(core->L, "sdo_write_string");
+    
+    lua_pushcfunction(core->L, lua_sdo_set_timeout);
+    lua_setglobal(core->L, "sdo_set_timeout");
 
     lua_pushcfunction(core->L, lua_dict_lookup);
     lua_setglobal(core->L, "dict_lookup");

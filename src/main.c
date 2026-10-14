@@ -15,6 +15,7 @@
 #include "ctt.h"
 #include "os.h"
 #include "scripts.h"
+#include "sdo.h"
 #include "tachometer.h"
 #include "window.h"
 
@@ -93,6 +94,18 @@ int main(int argc, char* argv[])
                     exit(EXIT_FAILURE);
                 }
             }
+            else if (0 == os_strcmp(argv[i], "-w") && (i + 1) < argc)
+            {
+                char* endptr;
+
+                uint32 timeout_ms = (uint32)os_strtol(argv[++i], &endptr, 0);
+                if (*endptr != '\0')
+                {
+                    os_printf("Invalid timeout value.\n");
+                    exit(EXIT_FAILURE);
+                }
+                sdo_set_timeout(timeout_ms);
+            }
             else if (0 == os_strcmp(argv[i], "-f"))
             {
                 fullscreen = true;
@@ -123,6 +136,7 @@ int main(int argc, char* argv[])
                 os_printf("    -r REPORT         Generate conformance test report (JUnit XML)\n");
                 os_printf("    -e EDS_FILE       Test device conformance, implies -t\n");
                 os_printf("    -n NODE_ID        Set node ID, default: 0x01\n");
+                os_printf("    -w TIMEOUT_MS     Set SDO timeout in milliseconds\n");
                 os_printf("    -f                Full screen widget window\n");
                 os_printf("    -p                Run in plain mode\n");
                 os_printf("    -t                Run conformance test, implies -p\n");
