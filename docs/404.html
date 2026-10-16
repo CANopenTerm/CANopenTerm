@@ -14,11 +14,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
     <link rel="stylesheet" href="font.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@xterm/xterm@5/css/xterm.min.css">
 
     <style>
         .docsify-tabs__tab {
             min-width: 33%;
             max-width: 33%;
+            word-wrap: break-word;
         }
     </style>
 </head>
@@ -26,22 +28,89 @@
     <div id="app"></div>
     <!-- index.html -->
     <script>
-        window.$docsify = {
-            name: 'CANopenTerm',
-            nameLink: '/',
-            repo: 'CANopenTerm/CANopenTerm',
-            loadSidebar: true,
-            subMaxLevel: 2,
-            routerMode: 'history',
-            tabs: {
-                theme: 'classic',
-                sync: false
-            }
-        }
+                window.$docsify = {
+                    copyCode: {
+                        buttonText: 'Copy',
+                        errorText: 'Error',
+                        successText: 'Copied',
+                    },
+                    name: 'CANopenTerm',
+                    nameLink: '/',
+                    repo: 'CANopenTerm/CANopenTerm',
+                    loadSidebar: true,
+                    subMaxLevel: 2,
+                    routerMode: 'history',
+                    tabs: {
+                        theme: 'classic',
+                        sync: false
+                    },
+                    plugins: [
+                        function (hook) {
+                            var term = null;
+                            var socket = null;
+                            var onResize = null;
+
+                            function cleanup() {
+                                if (socket) { socket.onclose = null; socket.close(); socket = null; }
+                                if (onResize) { window.removeEventListener('resize', onResize); onResize = null; }
+                                if (term) { term.dispose(); term = null; }
+                            }
+
+                            hook.doneEach(function () {
+                                var el = document.getElementById('canopenterm-shell');
+
+                                cleanup();
+                                if (!el || typeof Terminal === 'undefined') { return; }
+
+                                var url = 'ws://localhost:4120';
+                                var fit = new FitAddon.FitAddon();
+
+                                var t = term = new Terminal({
+                                    cursorBlink: true,
+                                    theme: {
+                                        background: '#1e2b38'
+                                    }
+                                });
+
+                                t.loadAddon(fit);
+                                t.open(el);
+                                fit.fit();
+                                onResize = function () { fit.fit(); };
+                                window.addEventListener('resize', onResize);
+
+                                function connect() {
+                                    var s = socket = new WebSocket(url);
+
+                                    t.writeln('Connecting to ' + url + ' ...');
+                                    s.onopen = function () { t.clear(); };
+                                    s.onmessage = function (e) { t.write(e.data); };
+                                    s.onclose = function () {
+                                        socket = null;
+                                        t.writeln('\r\n\x1b[33mDisconnected. Press Enter to reconnect.\x1b[0m');
+                                    };
+                                }
+
+                                t.onData(function (data) {
+                                    if (socket && socket.readyState === WebSocket.OPEN) {
+                                        socket.send(data);
+                                    } else if (!socket && data === '\r') {
+                                        connect();
+                                    }
+                                });
+
+                                connect();
+                            });
+                        }
+                    ]
+                }
     </script>
     <!-- Docsify v4 -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="//cdn.jsdelivr.net/npm/@xterm/xterm@5/lib/xterm.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/@xterm/addon-fit@0/lib/addon-fit.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
