@@ -11,6 +11,7 @@ target_link_libraries(
   codb2json
   ${CJSON_LIBRARY}
   ${SDL3_LIBRARY}
+  ${SDL3_NET_LIBRARY}
   ${SDL2MAIN_LIBRARY}
   ${PLATFORM_LIBS}
 )
