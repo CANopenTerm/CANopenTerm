@@ -48,6 +48,14 @@ if (USE_SYSTEM_LIBS)
     message(FATAL_ERROR "SDL3 not found")
   endif()
 
+  find_package(SDL3_net REQUIRED)
+  if (SDL3_net_FOUND)
+    include_directories(${SDL3_net_INCLUDE_DIRS})
+    set(PLATFORM_LIBS ${PLATFORM_LIBS} ${SDL3_net_LIBRARIES})
+  else()
+    message(FATAL_ERROR "SDL3_net not found")
+  endif()
+
   find_package(CANvenient REQUIRED)
   if (CANvenient_FOUND)
     include_directories(${CANvenient_INCLUDE_DIR})
@@ -338,6 +346,34 @@ ExternalProject_Add(SDL3_devel
 set(SDL3_INCLUDE_DIR ${SDL3_PATH}/include)
 set(SDL3_LIBRARY     ${SDL3_PATH}_build/libSDL3.so)
 
+# SDL3_net
+dep_sdl3_net()
+set(SDL3_NET_PATH      ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}/SDL3_net-${DEP_SDL3_NET_VERSION})
+set(SDL3_NET_DEVEL_PKG SDL3_net-${DEP_SDL3_NET_VERSION}.tar.gz)
+
+ExternalProject_Add(SDL3_net_devel
+  URL ${DEP_SDL3_NET_URL_BASE}/${SDL3_NET_DEVEL_PKG}
+  URL_HASH SHA1=${DEP_SDL3_NET_SHA1_LINUX}
+  DOWNLOAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps_${PLATFORM}
+  DOWNLOAD_NO_PROGRESS true
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  TLS_VERIFY true
+  SOURCE_DIR ${SDL3_NET_PATH}/
+  BINARY_DIR ${SDL3_NET_PATH}_build
+  BUILD_BYPRODUCTS ${SDL3_NET_PATH}_build/libSDL3_net.so
+  DEPENDS SDL3_devel
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DSDL3_DIR=${SDL3_PATH}_build
+    -DSDLNET_VENDORED=OFF
+
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E echo "Skipping install step."
+  PATCH_COMMAND   ${CMAKE_COMMAND} -E echo "Skipping patch step."
+)
+
+set(SDL3_NET_INCLUDE_DIR ${SDL3_NET_PATH}/include)
+set(SDL3_NET_LIBRARY     ${SDL3_NET_PATH}_build/libSDL3_net.so)
+
 if(EXISTS "/proc/cpuinfo")
   file(READ "/proc/cpuinfo" CPUINFO)
   if(CPUINFO MATCHES "Raspberry Pi")
@@ -361,6 +397,7 @@ set(PLATFORM_LIBS
   ${CANVENIENT_LIBRARY}
   ${CJSON_LIBRARY}
   ${SDL3_LIBRARY}
+  ${SDL3_NET_LIBRARY}
   ${INIH_LIBRARY}
   ${ISOCLINE_LIBRARY}
   ${LUA_LIBRARY}
@@ -380,10 +417,12 @@ set(PLATFORM_CORE_DEPS
   Lua_devel
   pocketpy_devel
   SDL3_devel
+  SDL3_net_devel
 )
 
 include_directories(
   SYSTEM ${SDL3_INCLUDE_DIR}
+  SYSTEM ${SDL3_NET_INCLUDE_DIR}
   SYSTEM ${CANVENIENT_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
   SYSTEM ${POCKETPY_INCLUDE_DIR}

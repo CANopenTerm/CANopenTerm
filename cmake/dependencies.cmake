@@ -69,6 +69,15 @@ function(dep_sdl3)
   set(DEP_SDL3_SHA1_WINDOWS "1efa2d90821b844d7f427c254d92a6b4624e3639" PARENT_SCOPE)
 endfunction()
 
+# SDL3_net
+
+function(dep_sdl3_net)
+  set(DEP_SDL3_NET_VERSION "3.2.0" PARENT_SCOPE)
+  set(DEP_SDL3_NET_URL_BASE "https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0" PARENT_SCOPE)
+  set(DEP_SDL3_NET_SHA1_LINUX "d0731fc7ac87054c2dc9982a67ab62e25a4ecd4a" PARENT_SCOPE)
+  set(DEP_SDL3_NET_SHA1_WINDOWS "0f4ce55f539d1968c11cd6da4396ad4d8ad6ae20" PARENT_SCOPE)
+endfunction()
+
 # dirent
 function(dep_dirent)
   set(DEP_DIRENT_VERSION "1.26" PARENT_SCOPE)
@@ -86,6 +95,7 @@ function(get_all_dependency_versions)
   dep_isocline()
   dep_lua()
   dep_sdl3()
+  dep_sdl3_net()
   dep_dirent()
 
   message(STATUS "Dependency Versions:")
@@ -97,5 +107,6 @@ function(get_all_dependency_versions)
   message(STATUS "  isocline: ${DEP_ISOCLINE_VERSION}")
   message(STATUS "  Lua: ${DEP_LUA_VERSION}")
   message(STATUS "  SDL3: ${DEP_SDL3_VERSION}")
+  message(STATUS "  SDL3_net: ${DEP_SDL3_NET_VERSION}")
   message(STATUS "  dirent: ${DEP_DIRENT_VERSION}")
 endfunction()
