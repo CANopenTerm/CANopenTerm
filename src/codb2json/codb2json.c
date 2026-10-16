@@ -1131,7 +1131,7 @@ static void write_json(const char* output_file_name, bool format_output)
     }
 
     os_fprintf(output_file, "%s\n", string);
-    os_free(string);
+    cJSON_free(string);
     cJSON_Delete(root);
 
     os_fclose(output_file);
