@@ -14,6 +14,7 @@
 #include "lua.h"
 #include "os.h"
 #include "scripts.h"
+#include "server.h"
 
 int lua_delay_ms(lua_State* L)
 {
@@ -67,7 +68,7 @@ int lua_console_show(lua_State* L)
 
 int lua_key_is_hit(lua_State* L)
 {
-    lua_pushboolean(L, os_key_is_hit());
+    lua_pushboolean(L, server_is_active() ? server_key_is_hit() : os_key_is_hit());
     return 1;
 }
 
@@ -147,6 +148,76 @@ int lua_run_sequence(lua_State* L)
     return 1;
 }
 
+/* In server mode stdout is silenced and stdin is the local console, so scripts need to talk to the WebSocket clients. */
+static int lua_server_print(lua_State* L)
+{
+    int i;
+    int n = lua_gettop(L);
+
+    for (i = 1; i <= n; i++)
+    {
+        size_t len;
+        const char* text = luaL_tolstring(L, i, &len);
+
+        if (i > 1)
+        {
+            os_forward_output(DEFAULT_COLOR, "\t");
+        }
+        os_forward_output(DEFAULT_COLOR, text);
+        lua_pop(L, 1);
+    }
+    os_forward_output(DEFAULT_COLOR, "\n");
+
+    return 0;
+}
+
+static int lua_server_io_write(lua_State* L)
+{
+    int i;
+    int n = lua_gettop(L);
+
+    for (i = 1; i <= n; i++)
+    {
+        os_forward_output(DEFAULT_COLOR, luaL_checkstring(L, i));
+    }
+
+    lua_getglobal(L, "io");
+    lua_getfield(L, -1, "stdout");
+    return 1;
+}
+
+/* Only line input is supported, a numeric format ("n") converts the line to a number. */
+static int lua_server_io_read(lua_State* L)
+{
+    char line[COMMAND_BUFFER_SIZE] = {0};
+    const char* format = luaL_optstring(L, 1, "l");
+
+    if (false == server_read_line(line, sizeof(line)))
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    if ('*' == format[0])
+    {
+        format++;
+    }
+
+    if ('n' == format[0])
+    {
+        if (0 == lua_stringtonumber(L, line))
+        {
+            lua_pushnil(L);
+        }
+    }
+    else
+    {
+        lua_pushstring(L, line);
+    }
+
+    return 1;
+}
+
 void lua_register_misc_commands(core_t* core)
 {
     /* Store core pointer in Lua registry for use by lua_run_sequence. */
@@ -176,4 +247,17 @@ void lua_register_misc_commands(core_t* core)
 
     lua_pushcfunction(core->L, lua_run_sequence);
     lua_setglobal(core->L, "run_sequence");
+
+    if (true == core->is_server_mode)
+    {
+        lua_pushcfunction(core->L, lua_server_print);
+        lua_setglobal(core->L, "print");
+
+        lua_getglobal(core->L, "io");
+        lua_pushcfunction(core->L, lua_server_io_write);
+        lua_setfield(core->L, -2, "write");
+        lua_pushcfunction(core->L, lua_server_io_read);
+        lua_setfield(core->L, -2, "read");
+        lua_pop(core->L, 1);
+    }
 }

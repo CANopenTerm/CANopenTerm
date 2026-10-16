@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
     bool fullscreen = false;
     bool is_headless = false;
     bool has_server_option = false;
+    bool allow_server_scripts = false;
     char* host = SERVER_DEFAULT_HOST;
     uint16 port = SERVER_DEFAULT_PORT;
     char* can_interface = DEFAULT_CAN_INTERFACE;
@@ -125,6 +126,11 @@ int main(int argc, char* argv[])
                 is_headless = true;
                 is_plain_mode = true;
             }
+            else if (0 == os_strcmp(argv[i], "-A"))
+            {
+                allow_server_scripts = true;
+                has_server_option = true;
+            }
             else if (0 == os_strcmp(argv[i], "-a") && (i + 1) < argc)
             {
                 host = argv[++i];
@@ -174,6 +180,7 @@ int main(int argc, char* argv[])
                 os_printf("                      Ctrl+C quits unless a client is connected\n");
                 os_printf("    -a ADDRESS        Server bind address, default: %s\n", SERVER_DEFAULT_HOST);
                 os_printf("    -P PORT           Server port, default: %d\n", SERVER_DEFAULT_PORT);
+                os_printf("    -A                Allow scripts in server mode\n");
 
                 exit((0 == os_strcmp(argv[i], "-h")) ? EXIT_SUCCESS : EXIT_FAILURE);
             }
@@ -182,10 +189,10 @@ int main(int argc, char* argv[])
 
     if (true == has_server_option && false == is_headless)
     {
-        os_printf("Options -a and -P have no effect without -S.\n");
+        os_printf("Options -a, -A and -P have no effect without -S.\n");
     }
 
-    if (core_init(&core, is_plain_mode, is_headless) != ALL_OK)
+    if (core_init(&core, is_plain_mode, is_headless, allow_server_scripts) != ALL_OK)
     {
         os_log(LOG_ERROR, "Failed to initialize core.");
         return EXIT_FAILURE;
@@ -237,12 +244,15 @@ int main(int argc, char* argv[])
             core_deinit(core);
             return EXIT_FAILURE;
         }
-        core->is_server_mode = true;
     }
 
-    if ((true == is_headless) && ((true == run_cct) || (script != NULL)))
+    if ((true == is_headless) && (true == run_cct))
     {
-        os_log(LOG_WARNING, "Scripts and tests are not available in server mode.");
+        os_log(LOG_WARNING, "Tests are not available in server mode.");
+    }
+    else if ((true == is_headless) && (script != NULL) && (false == allow_server_scripts))
+    {
+        os_log(LOG_WARNING, "Scripts are not available in server mode.  Use -A to allow them.");
     }
     else if (true == run_cct)
     {

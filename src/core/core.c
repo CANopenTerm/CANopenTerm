@@ -34,7 +34,7 @@
 #include "test_report.h"
 #include "version.h"
 
-status_t core_init(core_t** core, bool is_plain_mode, bool is_server_mode)
+status_t core_init(core_t** core, bool is_plain_mode, bool is_server_mode, bool allow_server_scripts)
 {
     status_t status;
 
@@ -47,6 +47,7 @@ status_t core_init(core_t** core, bool is_plain_mode, bool is_server_mode)
     (*core)->baud_rate = 1;
     (*core)->is_plain_mode = is_plain_mode;
     (*core)->is_server_mode = is_server_mode;
+    (*core)->allow_server_scripts = allow_server_scripts;
 
     status = os_console_init(is_plain_mode);
     if (status != ALL_OK)
@@ -72,8 +73,7 @@ status_t core_init(core_t** core, bool is_plain_mode, bool is_server_mode)
         return status;
     }
 
-    /* The server is a remote terminal only, scripting is not available. */
-    if (false == is_server_mode)
+    if ((false == is_server_mode) || (true == allow_server_scripts))
     {
         scripts_init((*core));
         if (NULL != (*core)->L)
@@ -147,7 +147,7 @@ void core_deinit(core_t* core)
     can_quit(core);
     codb_deinit();
     dbc_unload();
-    if (false == core->is_server_mode)
+    if ((false == core->is_server_mode) || (true == core->allow_server_scripts))
     {
         scripts_deinit(core);
     }

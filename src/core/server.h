@@ -19,6 +19,10 @@
 status_t server_init(const char* host, uint16 port);
 bool server_update(char command[COMMAND_BUFFER_SIZE]);
 bool server_is_quit_requested(void);
+bool server_is_active(void);
+bool server_key_is_hit(void);
+bool server_read_line(char* line, size_t size);
+int server_getchar(void);
 void server_deinit(void);
 
 #endif /* SERVER_H */

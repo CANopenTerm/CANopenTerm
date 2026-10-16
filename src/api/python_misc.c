@@ -13,6 +13,7 @@
 #include <pocketpy.h>
 #include "scripts.h"
 #include "command.h"
+#include "server.h"
 
 typedef bool (*py_CFunction)(int argc, py_Ref argv);
 
@@ -27,11 +28,23 @@ bool py_print_heading(int argc, py_Ref argv);
 bool py_print_result(int argc, py_Ref argv);
 bool py_run_sequence(int argc, py_Ref argv);
 
+static void py_server_print(const char* text)
+{
+    os_forward_output(DEFAULT_COLOR, text);
+}
+
 void python_misc_init(core_t* core)
 {
     py_GlobalRef mod = py_getmodule("__main__");
 
     g_py_core = core;
+
+    if (true == core->is_server_mode)
+    {
+        /* Stdout is silenced and stdin is the local console in server mode. */
+        py_callbacks()->print = py_server_print;
+        py_callbacks()->getchr = server_getchar;
+    }
 
     py_bind(mod, "delay_ms(delay_in_ms, show_output=False, comment=\"\")", py_delay_ms);
 
@@ -109,7 +122,7 @@ bool py_console_show(int argc, py_Ref argv)
 
 bool py_key_is_hit(int argc, py_Ref argv)
 {
-    py_newbool(py_retval(), os_key_is_hit());
+    py_newbool(py_retval(), server_is_active() ? server_key_is_hit() : os_key_is_hit());
     return true;
 }
 

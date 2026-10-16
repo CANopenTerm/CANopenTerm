@@ -37,6 +37,7 @@ typedef struct core
     bool is_script_running;
     bool is_plain_mode;
     bool is_server_mode;
+    bool allow_server_scripts;
     bool is_test_mode;
     bool is_window_fullscreen;
     bool is_window_shown;
@@ -47,7 +48,7 @@ typedef struct core
 
 extern core_t* core;
 
-status_t core_init(core_t** core, bool is_plain_mode, bool is_server_mode);
+status_t core_init(core_t** core, bool is_plain_mode, bool is_server_mode, bool allow_server_scripts);
 void core_register_ctrl_c_handler(void);
 int core_update(void* core_pt);
 void core_deinit(core_t* core);

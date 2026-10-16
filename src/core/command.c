@@ -44,7 +44,7 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if ((input[1] != ' ') && (input[1] != '\0'))
     {
-        if (true == core->is_server_mode)
+        if ((true == core->is_server_mode) && (false == core->allow_server_scripts))
         {
             os_log(LOG_WARNING, "Scripts are not available in server mode.");
             return;
@@ -192,7 +192,7 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if (0 == os_strncmp(token, "l", 1))
     {
-        if (true == core->is_server_mode)
+        if ((true == core->is_server_mode) && (false == core->allow_server_scripts))
         {
             os_log(LOG_WARNING, "Scripts are not available in server mode.");
             return;
@@ -440,7 +440,7 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if (0 == os_strncmp(token, "s", 1))
     {
-        if (true == core->is_server_mode)
+        if ((true == core->is_server_mode) && (false == core->allow_server_scripts))
         {
             os_log(LOG_WARNING, "Scripts are not available in server mode.");
             return;
@@ -535,7 +535,7 @@ status_t print_usage_information(bool show_all)
         table_print_row(" y ", "(identifier)", "Set CAN channel", &table);
         table_print_row(" c ", " ", "Clear output", &table);
         table_print_row(" x ", " ", "Clear operations", &table);
-        if (false == core->is_server_mode)
+        if ((false == core->is_server_mode) || (true == core->allow_server_scripts))
         {
             table_print_row(" l ", " ", "List scripts", &table);
             table_print_row(" s ", "[identifier](.lua)", "Run script", &table);
@@ -694,7 +694,7 @@ static void completion_add(completions_t* cenv, const char* word)
         os_completion_add(cenv, "0x1016", "1016h", "Write Consumer Heartbeat Time");
         os_completion_add(cenv, "0x1017", "1017h", "Write Producer Heartbeat Time");
     }
-    else if ((false == core->is_server_mode) && ((prefix[0] == 's' && prefix[1] == ' ') || (prefix[0] == ' ')))
+    else if (((false == core->is_server_mode) || (true == core->allow_server_scripts)) && ((prefix[0] == 's' && prefix[1] == ' ') || (prefix[0] == ' ')))
     {
         scripts_add_completions(cenv);
     }

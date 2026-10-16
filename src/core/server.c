@@ -168,6 +168,109 @@ static void sigint_handler(int sig)
     os_signal(OS_SIGINT, sigint_handler);
 }
 
+bool server_is_active(void)
+{
+    return NULL != server;
+}
+
+/* Polls the WebSocket clients for a keystroke, e.g. while a script is running.  Consumes pending input. */
+bool server_key_is_hit(void)
+{
+    int i;
+    bool is_hit = false;
+
+    if (NULL == server)
+    {
+        return false;
+    }
+
+    queue_flush();
+    accept_clients();
+
+    for (i = 0; i < SERVER_MAX_CLIENTS; i++)
+    {
+        client_t* client = &clients[i];
+
+        if (NULL == client->socket)
+        {
+            continue;
+        }
+
+        if (client->in_pos >= client->in_len)
+        {
+            if (false == read_client(client))
+            {
+                drop_client(client);
+                continue;
+            }
+        }
+
+        if (client->in_pos < client->in_len)
+        {
+            client->in_pos = client->in_len;
+            is_hit = true;
+        }
+    }
+
+    return is_hit;
+}
+
+/* Blocks until a client has entered a line.  Returns false if no client is attached. */
+bool server_read_line(char* line, size_t size)
+{
+    char command[COMMAND_BUFFER_SIZE] = {0};
+    int i;
+
+    while (true)
+    {
+        bool has_client = false;
+
+        if (true == server_update(command))
+        {
+            os_strlcpy(line, command, size);
+            return true;
+        }
+
+        for (i = 0; i < SERVER_MAX_CLIENTS; i++)
+        {
+            if (NULL != clients[i].socket && true == clients[i].is_upgraded)
+            {
+                has_client = true;
+            }
+        }
+
+        if (false == has_client)
+        {
+            return false;
+        }
+
+        os_delay(10);
+    }
+}
+
+/* Returns the next input character, or -1 if no client is attached. */
+int server_getchar(void)
+{
+    static char pending[COMMAND_BUFFER_SIZE + 2];
+    static size_t pos = 0;
+    static size_t len = 0;
+
+    if (pos >= len)
+    {
+        char line[COMMAND_BUFFER_SIZE] = {0};
+
+        if (false == server_read_line(line, sizeof(line)))
+        {
+            return -1;
+        }
+
+        len = (size_t)os_snprintf(pending, sizeof(pending), "%s\n", line);
+        pos = 0;
+    }
+
+    return (unsigned char)pending[pos++];
+}
+
 bool server_update(char command[COMMAND_BUFFER_SIZE])
 {
     int i;
