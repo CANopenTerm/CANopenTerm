@@ -68,6 +68,10 @@ Key functionalities include:
 - **Grahical Widgets**:
   Intuitive graphical widgets for real-time CAN data visualisation.
 
+- **WebSocket Server**:
+  Use CANopenTerm as a WebSocket server and connect to it from other applications,
+  such as web-based dashboards.
+
 ## Media & Press
 
 CANopenTerm has been featured in various media outlets and has received

@@ -63,10 +63,10 @@ When combined with
 generates a comprehensive conformance test report.
 .TP
 .BI \-n " NODE_ID"
-Set the default node ID (1\(en127, default: 0x01).
+Set the default node ID (0x01\(en0x7F, default: 0x01).
 .TP
 .BI \-w " TIMEOUT_MS"
-Set the SDO timeout in milliseconds (default: 100 ms).
+Set the SDO timeout in milliseconds.
 .TP
 .B \-f
 Open the widget window in full-screen mode.
@@ -77,6 +77,20 @@ Run in plain (non-graphical) mode.
 .B \-t
 Run the CANopen conformance test and exit.  Implies
 .BR \-p .
+.TP
+.B \-S
+Run headless as WebSocket server.  Implies
+.BR \-p .
+Ctrl+C quits unless a client is connected.
+.TP
+.BI \-a
+Server bind address (default: localhost).
+.TP
+.BI \-P " PORT"
+Server port (default: 8080).
+.TP
+.B \-h
+Show help message and exit.
 .SH FILES
 .TP
 .I ~/.config/canopenterm/
