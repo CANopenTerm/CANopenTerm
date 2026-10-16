@@ -80,39 +80,39 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_atof
-#error os_atof() not defined
+#error os_atof not defined
 #endif
 
 #ifndef os_atoi
-#error os_atoi() not defined
+#error os_atoi not defined
 #endif
 
 #ifndef os_calloc
-#error os_calloc() not defined
+#error os_calloc not defined
 #endif
 
 #ifndef os_clock
-#error os_clock() not defined
+#error os_clock not defined
 #endif
 
 #ifndef os_closedir
-#error os_closedir() not defined
+#error os_closedir not defined
 #endif
 
 #ifndef os_exit
-#error os_exit() not defined
+#error os_exit not defined
 #endif
 
 #ifndef os_fclose
-#error os_fclose() not defined
+#error os_fclose not defined
 #endif
 
 #ifndef os_fgets
-#error os_fgets() not defined
+#error os_fgets not defined
 #endif
 
 #ifndef os_fopen
-#error os_fopen() not defined
+#error os_fopen not defined
 #endif
 
 #ifndef os_fprintf
@@ -120,35 +120,35 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_free
-#error os_free() not defined
+#error os_free not defined
 #endif
 
 #ifndef os_fread
-#error os_fread() not defined
+#error os_fread not defined
 #endif
 
 #ifndef os_freopen
-#error os_freopen() not defined
+#error os_freopen not defined
 #endif
 
 #ifndef os_fseek
-#error os_fseek() not defined
+#error os_fseek not defined
 #endif
 
 #ifndef os_ftell
-#error os_ftell() not defined
+#error os_ftell not defined
 #endif
 
 #ifndef os_isdigit
-#error os_isdigit() not defined
+#error os_isdigit not defined
 #endif
 
 #ifndef os_isprint
-#error os_isprint() not defined
+#error os_isprint not defined
 #endif
 
 #ifndef os_isspace
-#error os_isspace() not defined
+#error os_isspace not defined
 #endif
 
 #ifndef os_isxdigit
@@ -156,135 +156,235 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_itoa
-#error os_itoa() not defined
+#error os_itoa not defined
 #endif
 
 #ifndef os_memcpy
-#error os_memcpy() not defined
+#error os_memcpy not defined
 #endif
 
 #ifndef os_memmove
-#error os_memmove() not defined
+#error os_memmove not defined
 #endif
 
 #ifndef os_memset
-#error os_memset() not defined
+#error os_memset not defined
 #endif
 
 #ifndef os_opendir
-#error os_opendir() not defined
+#error os_opendir not defined
 #endif
 
 #ifndef os_printf
-#error os_printf() not defined
+#error os_printf not defined
 #endif
 
 #ifndef os_readdir
-#error os_readdir() not defined
+#error os_readdir not defined
 #endif
 
 #ifndef os_realloc
-#error os_realloc() not defined
+#error os_realloc not defined
 #endif
 
 #ifndef os_rewind
-#error os_rewind() not defined
+#error os_rewind not defined
 #endif
 
 #ifndef os_sscanf
-#error os_sscanf() not defined
+#error os_sscanf not defined
 #endif
 
 #ifndef os_snprintf
-#error os_snprintf() not defined
+#error os_snprintf not defined
+#endif
+
+#ifndef os_signal
+#error os_signal not defined
+#endif
+
+#ifndef os_sig_atomic
+#error os_sig_atomic not defined
+#endif
+
+#ifndef OS_SIGINT
+#error OS_SIGINT not defined
+#endif
+
+#ifndef OS_SIG_ERR
+#error OS_SIG_ERR not defined
 #endif
 
 #ifndef os_strchr
-#error os_strchr() not defined
+#error os_strchr not defined
 #endif
 
 #ifndef os_strcmp
-#error os_strcmp() not defined
+#error os_strcmp not defined
+#endif
+
+#ifndef os_strncasecmp
+#error os_strncasecmp not defined
 #endif
 
 #ifndef os_strcspn
-#error os_strcspn() not defined
+#error os_strcspn not defined
 #endif
 
 #ifndef os_strdup
-#error os_strdump() not defined
+#error os_strdump not defined
 #endif
 
 #ifndef os_strlcat
-#error os_strlcat() not defined
+#error os_strlcat not defined
 #endif
 
 #ifndef os_strlen
-#error os_strlen() not defined
+#error os_strlen not defined
 #endif
 
 #ifndef os_strncmp
-#error os_strncmp() not defined
+#error os_strncmp not defined
+#endif
+
+#ifndef os_strncasecmp
+#error os_strncasecmp not defined
 #endif
 
 #ifndef os_strlcpy
-#error os_strlcpy() not defined
+#error os_strlcpy not defined
 #endif
 
 #ifndef os_strrchr
-#error os_strrchr() not defined
+#error os_strrchr not defined
 #endif
 
 #ifndef os_strstr
-#error os_strstr() not defined
+#error os_strstr not defined
 #endif
 
 #ifndef os_strtokr_r
-#error os_strtok_r() not defined
+#error os_strtok_r not defined
 #endif
 
 #ifndef os_strtol
-#error os_strtol() not defined
+#error os_strtol not defined
 #endif
 
 #ifndef os_strtoul
-#error os_strtoul() not defined
+#error os_strtoul not defined
 #endif
 
 #ifndef os_strtoull
-#error os_strtoull() not defined
+#error os_strtoull not defined
 #endif
 
 #ifndef os_tolower
-#error os_tolower() not defined
+#error os_tolower not defined
 #endif
 
 #ifndef os_toupper
-#error os_toupper() not defined
+#error os_toupper not defined
 #endif
 
 #ifndef os_va_arg
-#error os_va_arg() not defined
+#error os_va_arg not defined
 #endif
 
 #ifndef os_va_end
-#error os_va_end() not defined
+#error os_va_end not defined
 #endif
 
 #ifndef os_va_start
-#error os_va_start() not defined
+#error os_va_start not defined
 #endif
 
 #ifndef os_vsnprintf
-#error os_vsnprintf() not defined
+#error os_vsnprintf not defined
 #endif
 
 #ifndef os_start_text_input
-#error os_start_text_input() not defined
+#error os_start_text_input not defined
 #endif
 
 #ifndef os_stop_text_input
-#error os_stop_text_input() not defined
+#error os_stop_text_input not defined
+#endif
+
+#ifndef os_mutex
+#error os_mutex not defined
+#endif
+
+#ifndef os_mutex_create
+#error os_mutex_create not defined
+#endif
+
+#ifndef os_mutex_destroy
+#error os_mutex_destroy not defined
+#endif
+
+#ifndef os_mutex_lock 
+#error os_mutex_lock not defined
+#endif
+
+#ifndef os_mutex_unlock 
+#error os_mutex_unlock not defined
+#endif
+
+#ifndef os_net_init
+#error os_net_init not defined
+#endif
+
+#ifndef os_net_quit
+#error os_net_quit not defined
+#endif
+
+#ifndef os_net_address       
+#error os_net_address not defined
+#endif
+
+#ifndef os_net_server        
+#error os_net_server not defined
+#endif
+
+#ifndef os_net_socket        
+#error os_net_socket not defined
+#endif
+
+#ifndef os_net_resolve       
+#error os_net_resolve not defined
+#endif
+
+#ifndef os_net_wait_resolved 
+#error os_net_wait_resolved not defined
+#endif
+
+#ifndef os_net_unref_address 
+#error os_net_unref_address not defined
+#endif
+
+#ifndef os_net_server_create 
+#error os_net_server_create not defined
+#endif
+
+#ifndef os_net_server_destroy
+#error os_net_server_destroy not defined
+#endif
+
+#ifndef os_net_accept 
+#error os_net_accept not defined
+#endif
+
+#ifndef os_net_read 
+#error os_net_read not defined
+#endif
+
+#ifndef os_net_write 
+#error os_net_write not defined
+#endif
+
+#ifndef os_net_socket_destroy
+#error os_net_socket_destroy not defined
 #endif
 
 #ifndef os_thread
@@ -356,27 +456,27 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #endif
 
 #ifndef os_completion_add
-#error os_completion_add() not defined
+#error os_completion_add not defined
 #endif
 
 #ifndef os_set_color
-#error os_set_color() not defined
+#error os_set_color not defined
 #endif
 
 #ifndef os_draw_pixel
-#error os_draw_pixel() not defined
+#error os_draw_pixel not defined
 #endif
 
 #ifndef os_draw_line
-#error os_draw_line() not defined
+#error os_draw_line not defined
 #endif
 
 #ifndef os_draw_rect
-#error os_draw_rect() not defined
+#error os_draw_rect not defined
 #endif
 
 #ifndef os_draw_fill_rect
-#error os_draw_fill_rect() not defined.
+#error os_draw_fill_rect not defined.
 #endif
 
 #ifndef CLEAR_CMD
@@ -434,5 +534,11 @@ os_memory_hooks os_get_allocator_hooks(void);
 
 void os_destroy_renderer(os_renderer* renderer);
 void os_destroy_window(os_window* window);
+
+typedef void (*os_output_cb)(const color_t color, const char* text);
+
+void os_set_output_cb(os_output_cb callback);
+void os_silence_output(void);
+void os_forward_output(const color_t color, const char* text);
 
 #endif /* OS_H */

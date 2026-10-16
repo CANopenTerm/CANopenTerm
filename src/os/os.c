@@ -11,6 +11,37 @@
 
 #include "os.h"
 
+static os_output_cb output_cb = NULL;
+
+void os_set_output_cb(os_output_cb callback)
+{
+    output_cb = callback;
+}
+
+/* Local console output is not wanted when output is delivered to remote clients. */
+void os_silence_output(void)
+{
+#ifdef _WIN32
+    const char* null_device = "NUL";
+#else
+    const char* null_device = "/dev/null";
+#endif
+
+    fflush(stdout);
+    if (NULL == os_freopen(null_device, "w", stdout))
+    {
+        os_log(LOG_WARNING, "Unable to silence local output.");
+    }
+}
+
+void os_forward_output(const color_t color, const char* text)
+{
+    if (NULL != output_cb)
+    {
+        output_cb(color, text);
+    }
+}
+
 char* os_fix_path(char* path)
 {
     for (size_t i = 0; i < os_strlen(path); ++i)

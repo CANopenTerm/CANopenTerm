@@ -295,6 +295,8 @@ void os_print(const color_t color, const char* format, ...)
     os_vsnprintf(buffer, sizeof(buffer), format, varg);
     os_va_end(varg);
 
+    os_forward_output(color, buffer);
+
     if (false == console_is_plain_mode)
     {
         os_snprintf(print_buffer, sizeof(print_buffer), "%s%s\x1b[0m", color_code, buffer);

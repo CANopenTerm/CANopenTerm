@@ -116,6 +116,7 @@ set(common_core_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/pdo.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scripts.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/sdo.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/core/server.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/table.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/core/test_report.c
 )

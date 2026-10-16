@@ -346,6 +346,8 @@ void os_print(const color_t color, const char* format, ...)
     os_vsnprintf(buffer, 1024, format, args);
     os_va_end(args);
 
+    os_forward_output(color, buffer);
+
     if (true == use_buffer())
     {
         buffer_write(buffer);

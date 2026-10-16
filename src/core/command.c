@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "can.h"
+#include "codb.h"
 #include "command.h"
 #include "core.h"
 #include "dict.h"
@@ -43,6 +44,11 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if ((input[1] != ' ') && (input[1] != '\0'))
     {
+        if (true == core->is_server_mode)
+        {
+            os_log(LOG_WARNING, "Scripts are not available in server mode.");
+            return;
+        }
         run_script(token, core);
         return;
     }
@@ -82,7 +88,12 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if (0 == os_strncmp(token, "c", 1))
     {
-        if (0 != system(CLEAR_CMD))
+        if (true == core->is_server_mode)
+        {
+            /* Clear screen and scrollback of the remote terminal. */
+            os_print(DEFAULT_COLOR, "\033[2J\033[3J\033[H");
+        }
+        else if (0 != system(CLEAR_CMD))
         {
             os_log(LOG_WARNING, "Could not clear screen");
         }
@@ -114,7 +125,15 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if (0 == os_strncmp(token, "q", 1))
     {
-        core->is_running = false;
+        if (true == core->is_server_mode)
+        {
+            /* Remote clients must not be able to terminate the server. */
+            os_log(LOG_WARNING, "Quit is disabled in server mode.");
+        }
+        else
+        {
+            core->is_running = false;
+        }
     }
     else if (0 == os_strncmp(token, "h", 1))
     {
@@ -173,6 +192,11 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if (0 == os_strncmp(token, "l", 1))
     {
+        if (true == core->is_server_mode)
+        {
+            os_log(LOG_WARNING, "Scripts are not available in server mode.");
+            return;
+        }
         list_scripts();
     }
     else if (0 == os_strncmp(token, "p", 1))
@@ -416,6 +440,12 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
     }
     else if (0 == os_strncmp(token, "s", 1))
     {
+        if (true == core->is_server_mode)
+        {
+            os_log(LOG_WARNING, "Scripts are not available in server mode.");
+            return;
+        }
+
         token = os_strtokr_r(input_savptr, delim, &input_savptr);
         if (NULL == token)
         {
@@ -505,8 +535,11 @@ status_t print_usage_information(bool show_all)
         table_print_row(" y ", "(identifier)", "Set CAN channel", &table);
         table_print_row(" c ", " ", "Clear output", &table);
         table_print_row(" x ", " ", "Clear operations", &table);
-        table_print_row(" l ", " ", "List scripts", &table);
-        table_print_row(" s ", "[identifier](.lua)", "Run script", &table);
+        if (false == core->is_server_mode)
+        {
+            table_print_row(" l ", " ", "List scripts", &table);
+            table_print_row(" s ", "[identifier](.lua)", "Run script", &table);
+        }
     }
 
     table_print_row(" n ", "[node_id] [command or alias]", "NMT command", &table);
@@ -578,7 +611,6 @@ static bool has_node_id_arg(const char* prefix, char cmd)
 }
 
 static const char* s_completion_prefix = NULL;
-
 static void completion_add(completions_t* cenv, const char* word)
 {
     const char* prefix = s_completion_prefix;
@@ -662,7 +694,7 @@ static void completion_add(completions_t* cenv, const char* word)
         os_completion_add(cenv, "0x1016", "1016h", "Write Consumer Heartbeat Time");
         os_completion_add(cenv, "0x1017", "1017h", "Write Producer Heartbeat Time");
     }
-    else if ((prefix[0] == 's' && prefix[1] == ' ') || (prefix[0] == ' '))
+    else if ((false == core->is_server_mode) && ((prefix[0] == 's' && prefix[1] == ' ') || (prefix[0] == ' ')))
     {
         scripts_add_completions(cenv);
     }

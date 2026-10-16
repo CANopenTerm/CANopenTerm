@@ -11,9 +11,11 @@
 #define OS_LINUX_H
 
 #include <SDL3/SDL.h>
+#include <SDL3_net/SDL_net.h>
 #include <dirent.h>
 #include <inttypes.h>
 #include <isocline.h>
+#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -50,6 +52,10 @@
 #define os_rewind rewind
 #define os_sscanf SDL_sscanf
 #define os_snprintf SDL_snprintf
+#define os_signal signal
+#define os_sig_atomic sig_atomic_t
+#define OS_SIGINT SIGINT
+#define OS_SIG_ERR SIG_ERR
 #define os_strchr SDL_strchr
 #define os_strcmp SDL_strcmp
 #define os_strcspn strcspn
@@ -57,6 +63,7 @@
 #define os_strlcat SDL_strlcat
 #define os_strlen SDL_strlen
 #define os_strncmp SDL_strncmp
+#define os_strncasecmp SDL_strncasecmp
 #define os_strlcpy SDL_strlcpy
 #define os_strrchr SDL_strrchr
 #define os_strstr SDL_strstr
@@ -73,6 +80,27 @@
 
 #define os_start_text_input SDL_StartTextInput
 #define os_stop_text_input SDL_StopTextInput
+
+#define os_mutex SDL_Mutex
+#define os_mutex_create SDL_CreateMutex
+#define os_mutex_destroy SDL_DestroyMutex
+#define os_mutex_lock SDL_LockMutex
+#define os_mutex_unlock SDL_UnlockMutex
+
+#define os_net_init NET_Init
+#define os_net_quit NET_Quit
+#define os_net_address NET_Address
+#define os_net_server NET_Server
+#define os_net_socket NET_StreamSocket
+#define os_net_resolve NET_ResolveHostname
+#define os_net_wait_resolved NET_WaitUntilResolved
+#define os_net_unref_address NET_UnrefAddress
+#define os_net_server_create NET_CreateServer
+#define os_net_server_destroy NET_DestroyServer
+#define os_net_accept NET_AcceptClient
+#define os_net_read NET_ReadFromStreamSocket
+#define os_net_write NET_WriteToStreamSocket
+#define os_net_socket_destroy NET_DestroyStreamSocket
 
 #define os_thread SDL_Thread
 #define os_thread_func SDL_ThreadFunction

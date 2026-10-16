@@ -11,11 +11,13 @@
 
 #include "can.h"
 #include "codb.h"
+#include "command.h"
 #include "core.h"
 #include "ctt.h"
 #include "os.h"
 #include "scripts.h"
 #include "sdo.h"
+#include "server.h"
 #include "tachometer.h"
 #include "window.h"
 
@@ -26,6 +28,10 @@ int main(int argc, char* argv[])
     bool is_plain_mode = false;
     bool run_cct = false;
     bool fullscreen = false;
+    bool is_headless = false;
+    bool has_server_option = false;
+    char* host = SERVER_DEFAULT_HOST;
+    uint16 port = SERVER_DEFAULT_PORT;
     char* can_interface = DEFAULT_CAN_INTERFACE;
     char* script = NULL;
     char* db_file = NULL;
@@ -114,6 +120,29 @@ int main(int argc, char* argv[])
             {
                 is_plain_mode = true;
             }
+            else if (0 == os_strcmp(argv[i], "-S"))
+            {
+                is_headless = true;
+                is_plain_mode = true;
+            }
+            else if (0 == os_strcmp(argv[i], "-a") && (i + 1) < argc)
+            {
+                host = argv[++i];
+                has_server_option = true;
+            }
+            else if (0 == os_strcmp(argv[i], "-P") && (i + 1) < argc)
+            {
+                char* endptr;
+                long value = os_strtol(argv[++i], &endptr, 0);
+
+                if (value < 1 || value > 65535 || *endptr != '\0')
+                {
+                    os_printf("Invalid port.  Must be between 1 and 65535.\n");
+                    exit(EXIT_FAILURE);
+                }
+                port = (uint16)value;
+                has_server_option = true;
+            }
             else if (0 == os_strcmp(argv[i], "-t"))
             {
                 run_cct = true;
@@ -140,13 +169,23 @@ int main(int argc, char* argv[])
                 os_printf("    -f                Full screen widget window\n");
                 os_printf("    -p                Run in plain mode\n");
                 os_printf("    -t                Run conformance test, implies -p\n");
+                os_printf("    -h                Show this help\n");
+                os_printf("    -S                Run headless as WebSocket server, implies -p\n");
+                os_printf("                      Ctrl+C quits unless a client is connected\n");
+                os_printf("    -a ADDRESS        Server bind address, default: %s\n", SERVER_DEFAULT_HOST);
+                os_printf("    -P PORT           Server port, default: %d\n", SERVER_DEFAULT_PORT);
 
-                exit(EXIT_FAILURE);
+                exit((0 == os_strcmp(argv[i], "-h")) ? EXIT_SUCCESS : EXIT_FAILURE);
             }
         }
     }
 
-    if (core_init(&core, is_plain_mode) != ALL_OK)
+    if (true == has_server_option && false == is_headless)
+    {
+        os_printf("Options -a and -P have no effect without -S.\n");
+    }
+
+    if (core_init(&core, is_plain_mode, is_headless) != ALL_OK)
     {
         os_log(LOG_ERROR, "Failed to initialize core.");
         return EXIT_FAILURE;
@@ -178,7 +217,11 @@ int main(int argc, char* argv[])
         can_set_baud_rate(baud_rate_index, core);
     }
 
-    if (! window_init(core))
+    if (true == is_headless)
+    {
+        /* No window in server mode. */
+    }
+    else if (! window_init(core))
     {
         /* Nothing to do here. */
     }
@@ -187,7 +230,21 @@ int main(int argc, char* argv[])
         window_fullscreen(fullscreen);
     }
 
-    if (true == run_cct)
+    if (true == is_headless)
+    {
+        if (server_init(host, port) != ALL_OK)
+        {
+            core_deinit(core);
+            return EXIT_FAILURE;
+        }
+        core->is_server_mode = true;
+    }
+
+    if ((true == is_headless) && ((true == run_cct) || (script != NULL)))
+    {
+        os_log(LOG_WARNING, "Scripts and tests are not available in server mode.");
+    }
+    else if (true == run_cct)
     {
         /* Wait for DS301 database to be loaded before running conformance test. */
         while (false == is_ds301_loaded()) {}
@@ -202,9 +259,32 @@ int main(int argc, char* argv[])
 
     while (true == core->is_running)
     {
-        core_update((void*)core);
+        if (true == is_headless)
+        {
+            char command[COMMAND_BUFFER_SIZE] = {0};
+
+            if (true == server_is_quit_requested())
+            {
+                core->is_running = false;
+                break;
+            }
+
+            if (true == server_update(command))
+            {
+                if (command[0] != '\0')
+                {
+                    parse_command(command, core, TERM_MODE);
+                }
+                os_print_prompt();
+            }
+        }
+        else
+        {
+            core_update((void*)core);
+        }
         os_delay(10);
     }
+    server_deinit();
     core_deinit(core);
     os_print(DEFAULT_COLOR, "\nKeep the Heartbeat alive.");
     os_print(DARK_RED, " \u2665 ");

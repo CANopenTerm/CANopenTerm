@@ -34,7 +34,7 @@
 #include "test_report.h"
 #include "version.h"
 
-status_t core_init(core_t** core, bool is_plain_mode)
+status_t core_init(core_t** core, bool is_plain_mode, bool is_server_mode)
 {
     status_t status;
 
@@ -46,6 +46,7 @@ status_t core_init(core_t** core, bool is_plain_mode)
 
     (*core)->baud_rate = 1;
     (*core)->is_plain_mode = is_plain_mode;
+    (*core)->is_server_mode = is_server_mode;
 
     status = os_console_init(is_plain_mode);
     if (status != ALL_OK)
@@ -71,31 +72,35 @@ status_t core_init(core_t** core, bool is_plain_mode)
         return status;
     }
 
-    scripts_init((*core));
-    if (NULL != (*core)->L)
+    /* The server is a remote terminal only, scripting is not available. */
+    if (false == is_server_mode)
     {
-        lua_register_can_commands((*core));
-        lua_register_dbc_commands((*core));
-        lua_register_misc_commands((*core));
-        lua_register_nmt_command((*core));
-        lua_register_pdo_commands((*core));
-        lua_register_sdo_commands((*core));
-        lua_register_test_commands((*core));
-        lua_register_widget_commands((*core));
-        python_can_init();
-        python_dbc_init();
-        python_misc_init((*core));
-        python_nmt_init();
-        python_pdo_init();
-        python_sdo_init();
-        python_test_init();
-        python_widget_init();
-    }
-    else
-    {
-        os_free(*core);
-        *core = NULL;
-        return SCRIPT_INIT_ERROR;
+        scripts_init((*core));
+        if (NULL != (*core)->L)
+        {
+            lua_register_can_commands((*core));
+            lua_register_dbc_commands((*core));
+            lua_register_misc_commands((*core));
+            lua_register_nmt_command((*core));
+            lua_register_pdo_commands((*core));
+            lua_register_sdo_commands((*core));
+            lua_register_test_commands((*core));
+            lua_register_widget_commands((*core));
+            python_can_init();
+            python_dbc_init();
+            python_misc_init((*core));
+            python_nmt_init();
+            python_pdo_init();
+            python_sdo_init();
+            python_test_init();
+            python_widget_init();
+        }
+        else
+        {
+            os_free(*core);
+            *core = NULL;
+            return SCRIPT_INIT_ERROR;
+        }
     }
 
     /* Initialise base database. */
@@ -142,7 +147,10 @@ void core_deinit(core_t* core)
     can_quit(core);
     codb_deinit();
     dbc_unload();
-    scripts_deinit(core);
+    if (false == core->is_server_mode)
+    {
+        scripts_deinit(core);
+    }
 
     /* Clean up renderer and window resources */
     if (core->renderer != NULL)
