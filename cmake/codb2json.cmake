@@ -21,5 +21,6 @@ if(NOT USE_SYSTEM_LIBS)
     codb2json
     cJSON_devel
     SDL3_devel
+    SDL3_net_devel
   )
 endif()
