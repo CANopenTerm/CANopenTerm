@@ -27,6 +27,7 @@ add_dependencies(
   cJSON_devel
   CMocka_devel
   SDL3_devel
+  SDL3_net_devel
   Lua_devel
 )
 
@@ -52,5 +53,6 @@ include_directories(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
   SYSTEM ${CMocka_INCLUDE_DIR}
   SYSTEM ${SDL3_INCLUDE_DIR}
+  SYSTEM ${SDL3_NET_INCLUDE_DIR}
   SYSTEM ${LUA_INCLUDE_DIR}
 )
