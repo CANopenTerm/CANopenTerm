@@ -193,6 +193,10 @@ int main(void)
             cmocka_unit_test(test_os_console_init),
             cmocka_unit_test(test_os_log),
             cmocka_unit_test(test_os_print),
+            cmocka_unit_test(test_os_output_callback),
+            cmocka_unit_test(test_os_strncasecmp),
+            cmocka_unit_test(test_os_mutex),
+            cmocka_unit_test(test_os_signal),
             cmocka_unit_test(test_os_print_prompt),
             cmocka_unit_test(test_os_key_is_hit),
             cmocka_unit_test(test_os_clear_window),
@@ -277,6 +281,8 @@ int main(void)
             cmocka_unit_test(test_completion_callback_empty_prefix),
             /* cmocka_unit_test(test_run_conformance_test_invalid_path), */
             /* cmocka_unit_test(test_run_conformance_test_missing_package) */
+            /* This test redirects stdout for the rest of the process. */
+            cmocka_unit_test(test_os_silence_output)
         };
 
     return cmocka_run_group_tests(tests, NULL, NULL);

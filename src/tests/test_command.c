@@ -26,7 +26,7 @@ static core_t* create_test_core(void)
     core_t* test_core = (core_t*)os_calloc(1, sizeof(core_t));
     if (test_core)
     {
-        test_core->baud_rate = 5;  /* Default baud rate index */
+        test_core->baud_rate = 5; /* Default baud rate index */
         test_core->can_channel = 0;
         test_core->node_id = 1;
         test_core->is_can_initialised = false;
@@ -34,6 +34,14 @@ static core_t* create_test_core(void)
         test_core->is_abort = false;
     }
     return test_core;
+}
+
+static void parse_test_command(char* input, core_t* test_core)
+{
+    core_t* previous_core = core;
+    core = test_core;
+    parse_command(input, test_core, SILENT);
+    core = previous_core;
 }
 
 /* Test: parse_command with empty input */
@@ -45,7 +53,7 @@ void test_parse_command_empty_input(void** state)
     (void)state;
 
     /* Calling parse_command with empty input should not crash */
-    parse_command(input, test_core, SILENT);
+    parse_test_command(input, test_core);
 
     assert_non_null(test_core);
     os_free(test_core);
@@ -63,7 +71,7 @@ void test_parse_command_help(void** state)
     os_strlcpy(input, "h", sizeof(input));
 
     /* Parse help command - should display usage without crashing */
-    parse_command(input, test_core, SILENT);
+    parse_test_command(input, test_core);
 
     assert_non_null(test_core);
     os_free(test_core);
@@ -80,7 +88,7 @@ void test_parse_command_clear(void** state)
     os_strlcpy(input, "c", sizeof(input));
 
     /* Parse clear command - should execute system clear without crash */
-    parse_command(input, test_core, SILENT);
+    parse_test_command(input, test_core);
 
     assert_non_null(test_core);
     os_free(test_core);
@@ -97,7 +105,7 @@ void test_parse_command_quit(void** state)
     os_strlcpy(input, "q", sizeof(input));
 
     /* Parse quit command - should handle gracefully in SILENT mode */
-    parse_command(input, test_core, SILENT);
+    parse_test_command(input, test_core);
 
     /* Test passes if no crash occurs */
     assert_true(true);
@@ -112,13 +120,13 @@ void test_parse_command_script_run(void** state)
 
     (void)state;
 
-    /* Using 'h' (help) command as a single-char built-in that won't 
+    /* Using 'h' (help) command as a single-char built-in that won't
      * be interpreted as a script filename. Script file handling is
      * tested through integration tests with actual script files. */
     os_strlcpy(input, "h", sizeof(input));
 
-    /* This will execute help - should handle gracefully */
-    parse_command(input, test_core, SILENT);
+    /* This will execute help; should handle gracefully */
+    parse_test_command(input, test_core);
 
     /* Test passes if no crash occurs */
     assert_true(true);
@@ -135,7 +143,7 @@ void test_completion_callback_help(void** state)
      * This test verifies the function can be called without crashing
      * when initialized by isocline. */
 
-    /* This test is a placeholder - full testing would require 
+    /* This test is a placeholder - full testing would require
      * isocline library initialization which is done at runtime. */
     assert_true(true);
 }
@@ -146,7 +154,7 @@ void test_completion_callback_empty_prefix(void** state)
     (void)state;
 
     /* Similar to above - completions_t requires isocline initialization.
-     * Full endpoint-to-endpoint testing is done at runtime via the 
+     * Full endpoint-to-endpoint testing is done at runtime via the
      * interactive CLI, not unit tests. */
 
     assert_true(true);

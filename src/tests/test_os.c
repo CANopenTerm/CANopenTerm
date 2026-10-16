@@ -13,12 +13,42 @@
 #include <stdint.h>
 #include <string.h>
 
+#ifdef _WIN32
+#include <io.h>
+#define OS_CLOSE _close
+#define OS_DUP _dup
+#define OS_DUP2 _dup2
+#define OS_FILENO _fileno
+#else
+#include <unistd.h>
+#define OS_CLOSE close
+#define OS_DUP dup
+#define OS_DUP2 dup2
+#define OS_FILENO fileno
+#endif
+
 #include "buffer.h"
 #include "cmocka.h"
 #include "os.h"
 #include "test_os.h"
 
 static int sum_values(int count, ...);
+static color_t forwarded_color;
+static char forwarded_text[128];
+static unsigned int forwarded_count;
+static volatile os_sig_atomic received_signal;
+
+static void capture_output(const color_t color, const char* text)
+{
+    forwarded_color = color;
+    os_strlcpy(forwarded_text, text, sizeof(forwarded_text));
+    forwarded_count += 1;
+}
+
+static void capture_signal(int signal_number)
+{
+    received_signal = signal_number;
+}
 
 void test_os_atof(void** state)
 {
@@ -869,6 +899,95 @@ void test_os_print(void** state)
     buffer_free();
 }
 
+void test_os_output_callback(void** state)
+{
+    (void)state;
+
+    assert_true(buffer_init(256) == ALL_OK);
+    forwarded_count = 0;
+    forwarded_text[0] = '\0';
+    os_set_output_cb(capture_output);
+
+    os_print(LIGHT_GREEN, "value %d", 42);
+    os_set_output_cb(NULL);
+    os_forward_output(DEFAULT_COLOR, "ignored");
+    buffer_free();
+
+    assert_int_equal(forwarded_count, 1);
+    assert_int_equal(forwarded_color, LIGHT_GREEN);
+    assert_string_equal(forwarded_text, "value 42");
+}
+
+void test_os_silence_output(void** state)
+{
+    int stdout_fd;
+    int saved_stdout_fd;
+    int restore_result;
+
+    (void)state;
+
+    assert_int_equal(fflush(stdout), 0);
+    stdout_fd = OS_FILENO(stdout);
+    assert_true(stdout_fd >= 0);
+    saved_stdout_fd = OS_DUP(stdout_fd);
+    assert_true(saved_stdout_fd >= 0);
+
+    os_silence_output();
+
+    stdout_fd = OS_FILENO(stdout);
+    assert_true(stdout_fd >= 0);
+    restore_result = OS_DUP2(saved_stdout_fd, stdout_fd);
+    OS_CLOSE(saved_stdout_fd);
+#ifdef _WIN32
+    assert_int_equal(restore_result, 0);
+#else
+    assert_int_equal(restore_result, stdout_fd);
+#endif
+    assert_int_equal(fflush(stdout), 0);
+}
+
+void test_os_strncasecmp(void** state)
+{
+    (void)state;
+
+    assert_int_equal(os_strncasecmp("Server", "sERVER", 6), 0);
+    assert_int_not_equal(os_strncasecmp("server", "senior", 3), 0);
+    assert_int_equal(os_strncasecmp("abc", "ABZ", 2), 0);
+}
+
+void test_os_mutex(void** state)
+{
+    os_mutex* mutex;
+
+    (void)state;
+
+    mutex = os_mutex_create();
+    assert_non_null(mutex);
+    os_mutex_lock(mutex);
+    os_mutex_unlock(mutex);
+    os_mutex_destroy(mutex);
+}
+
+void test_os_signal(void** state)
+{
+    void (*previous_handler)(int);
+    void (*restored_handler)(int);
+    int raise_result;
+
+    (void)state;
+
+    received_signal = 0;
+    previous_handler = os_signal(OS_SIGINT, capture_signal);
+    assert_true(previous_handler != OS_SIG_ERR);
+
+    raise_result = raise(OS_SIGINT);
+    restored_handler = os_signal(OS_SIGINT, previous_handler);
+
+    assert_true(restored_handler != OS_SIG_ERR);
+    assert_int_equal(raise_result, 0);
+    assert_int_equal(received_signal, OS_SIGINT);
+}
+
 void test_os_print_prompt(void** state)
 {
     (void)state;
@@ -1063,15 +1182,15 @@ void test_os_isprint_extended(void** state)
     assert_int_not_equal(os_isprint('z'), 0);
     assert_int_not_equal(os_isprint('0'), 0);
     assert_int_not_equal(os_isprint('!'), 0);
-    assert_int_not_equal(os_isprint(' '), 0);  /* Space is printable */
-    assert_int_not_equal(os_isprint('~'), 0);  /* Tilde (ASCII 126) is last printable */
+    assert_int_not_equal(os_isprint(' '), 0); /* Space is printable */
+    assert_int_not_equal(os_isprint('~'), 0); /* Tilde (ASCII 126) is last printable */
 
     /* Non-printable control characters */
-    assert_int_equal(os_isprint('\0'), 0);     /* NULL */
-    assert_int_equal(os_isprint('\n'), 0);     /* Newline */
-    assert_int_equal(os_isprint('\r'), 0);     /* Carriage return */
-    assert_int_equal(os_isprint('\t'), 0);     /* Tab */
-    assert_int_equal(os_isprint('\x7F'), 0);   /* DEL (ASCII 127, not printable) */
+    assert_int_equal(os_isprint('\0'), 0);   /* NULL */
+    assert_int_equal(os_isprint('\n'), 0);   /* Newline */
+    assert_int_equal(os_isprint('\r'), 0);   /* Carriage return */
+    assert_int_equal(os_isprint('\t'), 0);   /* Tab */
+    assert_int_equal(os_isprint('\x7F'), 0); /* DEL (ASCII 127, not printable) */
 }
 
 void test_os_isspace_extended(void** state)
@@ -1079,12 +1198,12 @@ void test_os_isspace_extended(void** state)
     (void)state;
 
     /* Whitespace characters */
-    assert_int_not_equal(os_isspace(' '), 0);   /* Space */
-    assert_int_not_equal(os_isspace('\t'), 0);  /* Tab */
-    assert_int_not_equal(os_isspace('\n'), 0);  /* Newline */
-    assert_int_not_equal(os_isspace('\r'), 0);  /* Carriage return */
-    assert_int_not_equal(os_isspace('\f'), 0);  /* Form feed */
-    assert_int_not_equal(os_isspace('\v'), 0);  /* Vertical tab */
+    assert_int_not_equal(os_isspace(' '), 0);  /* Space */
+    assert_int_not_equal(os_isspace('\t'), 0); /* Tab */
+    assert_int_not_equal(os_isspace('\n'), 0); /* Newline */
+    assert_int_not_equal(os_isspace('\r'), 0); /* Carriage return */
+    assert_int_not_equal(os_isspace('\f'), 0); /* Form feed */
+    assert_int_not_equal(os_isspace('\v'), 0); /* Vertical tab */
 
     /* Non-whitespace characters */
     assert_int_equal(os_isspace('a'), 0);
