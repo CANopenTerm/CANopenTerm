@@ -83,8 +83,17 @@ Run headless as WebSocket server.  Implies
 .BR \-p .
 Ctrl+C quits unless a client is connected.
 .TP
+.B \-c
+Connect to a running server instance, using the address and port given with
+.B \-a
+and
+.BR \-P .
+Implies
+.BR \-p .
+Press Ctrl+] to disconnect.
+.TP
 .BI \-a
-Server bind address (default: localhost).
+Server bind or connect address (default: localhost).
 .TP
 .BI \-P " PORT"
 Server port (default: 8080).

@@ -69,9 +69,10 @@ Key functionalities include:
 - **Grahical Widgets**:
   Intuitive graphical widgets for real-time CAN data visualisation.
 
-- **WebSocket Server**:
+- **WebSocket Server & Client**:
   Use CANopenTerm as a WebSocket server and connect to it from other applications,
-  such as web-based dashboards.
+  such as [Xterm.js](https://canopenterm.de/term).  Additionally, CANopenTerm can
+  also act as a WebSocket client to connect to other servers.
 
 ## Media & Press
 

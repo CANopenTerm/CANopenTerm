@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "can.h"
+#include "client.h"
 #include "codb.h"
 #include "command.h"
 #include "core.h"
@@ -19,6 +20,7 @@
 #include "pdo.h"
 #include "scripts.h"
 #include "sdo.h"
+#include "server.h"
 #include "table.h"
 
 static void convert_token_to_uint(char* token, uint32* result);
@@ -455,6 +457,36 @@ void parse_command(char* input, core_t* core, disp_mode_t disp_mode)
 
         run_script(token, core);
     }
+    else if (0 == os_strncmp(token, "o", 1))
+    {
+        const char* host = SERVER_DEFAULT_HOST;
+        uint32 port = SERVER_DEFAULT_PORT;
+
+        if (true == core->is_server_mode)
+        {
+            os_log(LOG_WARNING, "Connecting to a server is not available in server mode.");
+            return;
+        }
+
+        token = os_strtokr_r(input_savptr, delim, &input_savptr);
+        if (NULL != token)
+        {
+            host = token;
+
+            token = os_strtokr_r(input_savptr, delim, &input_savptr);
+            if (NULL != token)
+            {
+                convert_token_to_uint(token, &port);
+                if ((port < 1) || (port > 65535))
+                {
+                    os_log(LOG_ERROR, "Invalid port.  Must be between 1 and 65535.");
+                    return;
+                }
+            }
+        }
+
+        (void)client_connect(host, (uint16)port);
+    }
     else if (0 == os_strncmp(token, "x", 1))
     {
         can_message_t msg = {0};
@@ -535,6 +567,10 @@ status_t print_usage_information(bool show_all)
         table_print_row(" y ", "(identifier)", "Set CAN channel", &table);
         table_print_row(" c ", " ", "Clear output", &table);
         table_print_row(" x ", " ", "Clear operations", &table);
+        if (false == core->is_server_mode)
+        {
+            table_print_row(" o ", "(host) (port)", "Connect to server", &table);
+        }
         if ((false == core->is_server_mode) || (true == core->allow_server_scripts))
         {
             table_print_row(" l ", " ", "List scripts", &table);
@@ -627,6 +663,7 @@ static void completion_add(completions_t* cenv, const char* word)
         os_completion_add(cenv, "b", "b", "Set baud rate");
         os_completion_add(cenv, "d", "d", "Load data base");
         os_completion_add(cenv, "n", "n", "NMT command");
+        os_completion_add(cenv, "o", "o", "Connect to server");
         os_completion_add(cenv, "q", "q", "Quit");
         os_completion_add(cenv, "r", "r", "Read SDO");
         os_completion_add(cenv, "s", "s", "Run script");

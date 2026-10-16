@@ -5,6 +5,7 @@ add_executable(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/run_unit_tests.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_buffer.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_can.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_client.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_codb.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dbc.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_dict.c

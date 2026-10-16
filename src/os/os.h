@@ -363,6 +363,14 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 #error os_net_unref_address not defined
 #endif
 
+#ifndef os_net_client_create
+#error os_net_client_create not defined
+#endif
+
+#ifndef os_net_wait_connected
+#error os_net_wait_connected not defined
+#endif
+
 #ifndef os_net_server_create 
 #error os_net_server_create not defined
 #endif
@@ -494,6 +502,9 @@ size_t os_strlcpy(char* dst, const char* src, size_t dstsize);
 os_timer_id os_add_timer(uint64 interval, os_timer_cb callback, void* param);
 status_t os_console_init(bool is_plain_mode);
 void os_console_hide(void);
+bool os_console_raw_enter(void);
+void os_console_raw_leave(void);
+int os_console_getch(void); /* Non-blocking, returns -1 if no key is available */
 void os_console_show(void);
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data);
 void os_delay(uint32 delay_in_ms);

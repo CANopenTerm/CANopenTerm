@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "can.h"
+#include "client.h"
 #include "codb.h"
 #include "command.h"
 #include "core.h"
@@ -29,6 +30,7 @@ int main(int argc, char* argv[])
     bool run_cct = false;
     bool fullscreen = false;
     bool is_headless = false;
+    bool is_client = false;
     bool has_server_option = false;
     bool allow_server_scripts = false;
     char* host = SERVER_DEFAULT_HOST;
@@ -126,10 +128,14 @@ int main(int argc, char* argv[])
                 is_headless = true;
                 is_plain_mode = true;
             }
+            else if (0 == os_strcmp(argv[i], "-c"))
+            {
+                is_client = true;
+                is_plain_mode = true;
+            }
             else if (0 == os_strcmp(argv[i], "-A"))
             {
-                allow_server_scripts = true;
-                has_server_option = true;
+                allow_server_scripts = true;                has_server_option = true;
             }
             else if (0 == os_strcmp(argv[i], "-a") && (i + 1) < argc)
             {
@@ -178,7 +184,9 @@ int main(int argc, char* argv[])
                 os_printf("    -h                Show this help\n");
                 os_printf("    -S                Run headless as WebSocket server, implies -p\n");
                 os_printf("                      Ctrl+C quits unless a client is connected\n");
-                os_printf("    -a ADDRESS        Server bind address, default: %s\n", SERVER_DEFAULT_HOST);
+                os_printf("    -c                Connect to a running server, implies -p\n");
+                os_printf("                      Press Ctrl+] to disconnect\n");
+                os_printf("    -a ADDRESS        Server bind or connect address, default: %s\n", SERVER_DEFAULT_HOST);
                 os_printf("    -P PORT           Server port, default: %d\n", SERVER_DEFAULT_PORT);
                 os_printf("    -A                Allow scripts in server mode\n");
 
@@ -187,9 +195,25 @@ int main(int argc, char* argv[])
         }
     }
 
+    if (true == is_client && true == is_headless)
+    {
+        os_printf("Options -c and -S can't be combined.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (true == is_client)
+    {
+        if (os_console_init(true) != ALL_OK)
+        {
+            return EXIT_FAILURE;
+        }
+
+        return (ALL_OK == client_connect(host, port)) ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
+
     if (true == has_server_option && false == is_headless)
     {
-        os_printf("Options -a, -A and -P have no effect without -S.\n");
+        os_printf("Options -a, -A and -P have no effect without -S or -c.\n");
     }
 
     if (core_init(&core, is_plain_mode, is_headless, allow_server_scripts) != ALL_OK)

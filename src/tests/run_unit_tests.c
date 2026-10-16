@@ -16,6 +16,7 @@
 #include "core.h"
 #include "test_buffer.h"
 #include "test_can.h"
+#include "test_client.h"
 #include "test_codb.h"
 #include "test_command.h"
 #include "test_common.h"
@@ -279,6 +280,11 @@ int main(void)
             cmocka_unit_test(test_parse_command_script_run),
             cmocka_unit_test(test_completion_callback_help),
             cmocka_unit_test(test_completion_callback_empty_prefix),
+            cmocka_unit_test(test_client_connect_refused),
+            cmocka_unit_test(test_client_connect_unresolvable_host),
+            cmocka_unit_test(test_parse_command_connect_invalid_port),
+            cmocka_unit_test(test_parse_command_connect_server_mode),
+            cmocka_unit_test(test_parse_command_connect_refused),
             /* cmocka_unit_test(test_run_conformance_test_invalid_path), */
             /* cmocka_unit_test(test_run_conformance_test_missing_package) */
             /* This test redirects stdout for the rest of the process. */

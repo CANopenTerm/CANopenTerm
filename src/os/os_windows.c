@@ -84,6 +84,66 @@ void os_console_show()
     }
 }
 
+static DWORD raw_saved_in_mode;
+static DWORD raw_saved_out_mode;
+static bool raw_is_active = false;
+
+/* Unbuffered, unechoed input and ANSI escape sequence output, e.g. for remote terminal sessions. */
+bool os_console_raw_enter(void)
+{
+    HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
+    HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    if (true == raw_is_active)
+    {
+        return true;
+    }
+
+    if (0 == GetConsoleMode(hin, &raw_saved_in_mode) || 0 == GetConsoleMode(hout, &raw_saved_out_mode))
+    {
+        return false;
+    }
+
+    SetConsoleMode(hin, raw_saved_in_mode & ~(ENABLE_PROCESSED_INPUT | ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT));
+    SetConsoleMode(hout, raw_saved_out_mode | ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    raw_is_active = true;
+
+    return true;
+}
+
+void os_console_raw_leave(void)
+{
+    if (false == raw_is_active)
+    {
+        return;
+    }
+
+    SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), raw_saved_in_mode);
+    SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), raw_saved_out_mode);
+    raw_is_active = false;
+}
+
+int os_console_getch(void)
+{
+    int key;
+
+    if (0 == os_kbhit())
+    {
+        return -1;
+    }
+
+    key = _getch();
+
+    /* Function and cursor keys come as a prefix followed by a scan code; ignore them. */
+    if (0 == key || 0xe0 == key)
+    {
+        (void)_getch();
+        return -1;
+    }
+
+    return key;
+}
+
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data)
 {
     return SDL_CreateThread(fn, name, data);

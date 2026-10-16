@@ -95,6 +95,8 @@
 #define os_net_resolve NET_ResolveHostname
 #define os_net_wait_resolved NET_WaitUntilResolved
 #define os_net_unref_address NET_UnrefAddress
+#define os_net_client_create NET_CreateClient
+#define os_net_wait_connected NET_WaitUntilConnected
 #define os_net_server_create NET_CreateServer
 #define os_net_server_destroy NET_DestroyServer
 #define os_net_accept NET_AcceptClient

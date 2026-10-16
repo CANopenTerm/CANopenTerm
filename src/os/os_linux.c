@@ -12,6 +12,7 @@
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <sys/select.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -183,6 +184,61 @@ bool os_key_is_hit(void)
     {
         return false;
     }
+}
+
+static struct termios raw_saved_termios;
+static bool raw_is_active = false;
+
+/* Unbuffered, unechoed input, e.g. for remote terminal sessions. */
+bool os_console_raw_enter(void)
+{
+    if (true == raw_is_active)
+    {
+        return true;
+    }
+
+    if (0 != tcgetattr(STDIN_FILENO, &raw_saved_termios))
+    {
+        return false;
+    }
+
+    set_terminal_raw_mode(&raw_saved_termios);
+    raw_is_active = true;
+
+    return true;
+}
+
+void os_console_raw_leave(void)
+{
+    if (false == raw_is_active)
+    {
+        return;
+    }
+
+    reset_terminal_mode(&raw_saved_termios);
+    raw_is_active = false;
+}
+
+int os_console_getch(void)
+{
+    unsigned char key;
+    fd_set fds;
+    struct timeval timeout = {0, 0};
+
+    FD_ZERO(&fds);
+    FD_SET(STDIN_FILENO, &fds);
+
+    if (select(STDIN_FILENO + 1, &fds, NULL, NULL, &timeout) <= 0)
+    {
+        return -1;
+    }
+
+    if (read(STDIN_FILENO, &key, 1) <= 0)
+    {
+        return -1;
+    }
+
+    return key;
 }
 
 void os_key_send(uint16 key)
