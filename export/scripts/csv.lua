@@ -156,4 +156,4 @@ end
 print(string.format("Exporting to CSV: %s", output_name))
 generate_csv(trc_data, output_name, filter_id)
 
-print(string.format("\n✓ Successfully exported to: %s\n", output_name))
+print(string.format("\nSuccessfully exported to: %s\n", output_name))
