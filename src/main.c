@@ -135,7 +135,8 @@ int main(int argc, char* argv[])
             }
             else if (0 == os_strcmp(argv[i], "-A"))
             {
-                allow_server_scripts = true;                has_server_option = true;
+                allow_server_scripts = true;
+                has_server_option = true;
             }
             else if (0 == os_strcmp(argv[i], "-a") && (i + 1) < argc)
             {
@@ -251,6 +252,7 @@ int main(int argc, char* argv[])
     if (true == is_headless)
     {
         /* No window in server mode. */
+        os_console_hide();
     }
     else if (! window_init(core))
     {
