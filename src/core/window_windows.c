@@ -32,6 +32,12 @@ os_renderer* window_get_renderer(void)
     return core ? core->renderer : NULL;
 }
 
+os_window* window_get_window(void)
+{
+    extern core_t* core;
+    return core ? core->window : NULL;
+}
+
 bool window_is_shown(void)
 {
     extern core_t* core;
@@ -99,6 +105,10 @@ bool window_init(core_t* core)
     }
 
     SDL_SetWindowPosition(core->window, 128, 128);
+
+    /* Register window with tray system for console_hide/show functionality. */
+    os_set_tray_window(core->window);
+
     return true;
 }
 
@@ -198,6 +208,8 @@ status_t window_update(bool render)
                     break;
                 }
                 case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+                    return CORE_QUIT;
+                case SDL_EVENT_QUIT:
                     return CORE_QUIT;
             }
         }

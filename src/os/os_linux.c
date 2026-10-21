@@ -19,6 +19,7 @@
 #include "buffer.h"
 #include "command.h"
 #include "dirent.h"
+#include "icon.h"
 #include "os.h"
 #include "palette.h"
 
@@ -39,14 +40,293 @@ status_t os_console_init(bool is_plain_mode)
     return ALL_OK;
 }
 
+static SDL_Tray* tray = NULL;
+static os_window* tray_window = NULL;
+static SDL_Surface* tray_icon_surface = NULL;
+static bool should_show_console = false;
+static bool tray_enabled = true;
+
+static SDL_Surface* icon_bmp_data = NULL; /* Keep reference for clean-up. */
+
+static SDL_Surface* os_load_icon_surface(void)
+{
+    SDL_IOStream* io;
+    SDL_Surface* surface = NULL;
+    unsigned char offset_bytes[4];
+    uint32_t bmp_offset;
+    uint32_t bmp_size;
+    unsigned char bmp_file_header[14];
+    unsigned char* bmp_data;
+    size_t bytes_read;
+    uint32_t pixel_offset;
+
+    /* Create a read-only I/O stream from the embedded icon data. */
+    io = SDL_IOFromMem((void*)icon_ico, icon_ico_len);
+    if (NULL == io)
+    {
+        return NULL;
+    }
+
+    /* Parse .ico header to get BMP offset and size. */
+    if (SDL_SeekIO(io, 14, SDL_IO_SEEK_SET) < 0)
+    {
+        SDL_CloseIO(io);
+        return NULL;
+    }
+
+    /* Read BMP size (dwBytesInRes at offset 14-17). */
+    if (SDL_ReadIO(io, offset_bytes, 4) != 4)
+    {
+        SDL_CloseIO(io);
+        return NULL;
+    }
+    bmp_size = offset_bytes[0] | (offset_bytes[1] << 8) |
+               (offset_bytes[2] << 16) | (offset_bytes[3] << 24);
+
+    /* Read BMP offset (dwImageOffset at offset 18-21) */
+    if (SDL_ReadIO(io, offset_bytes, 4) != 4)
+    {
+        SDL_CloseIO(io);
+        return NULL;
+    }
+    bmp_offset = offset_bytes[0] | (offset_bytes[1] << 8) |
+                 (offset_bytes[2] << 16) | (offset_bytes[3] << 24);
+
+    /* For a standard 32-bit BMP with no color palette:
+     * - BMP file header: 14 bytes
+     * - BITMAPINFOHEADER: 40 bytes
+     * - Pixel data starts at: 14 + 40 = 54 bytes from file start
+     */
+    pixel_offset = 54;
+
+    /* Allocate buffer for full BMP file (header + icon data). */
+    bmp_data = (unsigned char*)SDL_malloc(14 + bmp_size);
+    if (NULL == bmp_data)
+    {
+        SDL_CloseIO(io);
+        return NULL;
+    }
+
+    /* Create BMP file header. */
+    bmp_file_header[0] = 'B';
+    bmp_file_header[1] = 'M';
+    uint32_t file_size = 14 + bmp_size;
+    bmp_file_header[2] = (unsigned char)(file_size & 0xFF);
+    bmp_file_header[3] = (unsigned char)((file_size >> 8) & 0xFF);
+    bmp_file_header[4] = (unsigned char)((file_size >> 16) & 0xFF);
+    bmp_file_header[5] = (unsigned char)((file_size >> 24) & 0xFF);
+    bmp_file_header[6] = 0;
+    bmp_file_header[7] = 0;
+    bmp_file_header[8] = 0;
+    bmp_file_header[9] = 0;
+    bmp_file_header[10] = (unsigned char)(pixel_offset & 0xFF);
+    bmp_file_header[11] = (unsigned char)((pixel_offset >> 8) & 0xFF);
+    bmp_file_header[12] = (unsigned char)((pixel_offset >> 16) & 0xFF);
+    bmp_file_header[13] = (unsigned char)((pixel_offset >> 24) & 0xFF);
+
+    /* Copy header to buffer. */
+    for (int i = 0; i < 14; i++)
+    {
+        bmp_data[i] = bmp_file_header[i];
+    }
+
+    /* Read BMP data from icon. */
+    if (SDL_SeekIO(io, bmp_offset, SDL_IO_SEEK_SET) < 0)
+    {
+        SDL_free(bmp_data);
+        SDL_CloseIO(io);
+        return NULL;
+    }
+
+    bytes_read = SDL_ReadIO(io, bmp_data + 14, bmp_size);
+    if (bytes_read != bmp_size)
+    {
+        SDL_free(bmp_data);
+        SDL_CloseIO(io);
+        return NULL;
+    }
+
+    /* Fix the height field in BITMAPINFOHEADER
+     * ICO format stores height as 2x (for AND mask), but for BMP we need the actual height.
+     * Height is at offset 14+8 = 22 in the combined buffer.
+     */
+    int32_t height_offset = 22;
+    int32_t ico_height = (int32_t)(bmp_data[height_offset] | (bmp_data[height_offset + 1] << 8) |
+                                   (bmp_data[height_offset + 2] << 16) | (bmp_data[height_offset + 3] << 24));
+    int32_t bmp_height = ico_height / 2;
+
+    bmp_data[height_offset] = (unsigned char)(bmp_height & 0xFF);
+    bmp_data[height_offset + 1] = (unsigned char)((bmp_height >> 8) & 0xFF);
+    bmp_data[height_offset + 2] = (unsigned char)((bmp_height >> 16) & 0xFF);
+    bmp_data[height_offset + 3] = (unsigned char)((bmp_height >> 24) & 0xFF);
+
+    SDL_CloseIO(io);
+
+    /* Create SDL_IOStream from the complete BMP data; don't free on close. */
+    SDL_IOStream* bmp_io = SDL_IOFromMem((void*)bmp_data, 14 + bmp_size);
+    if (NULL == bmp_io)
+    {
+        SDL_free(bmp_data);
+        return NULL;
+    }
+
+    /* Load BMP surface; pass SDL_FALSE to NOT close the stream. */
+    surface = SDL_LoadBMP_IO(bmp_io, false);
+    SDL_CloseIO(bmp_io); /* Close manually */
+
+    if (NULL == surface)
+    {
+        SDL_free(bmp_data);
+        return NULL;
+    }
+
+    /* Keep bmp_data alive until surface is destroyed. */
+    icon_bmp_data = (SDL_Surface*)bmp_data; /* Store for later clean-up. */
+
+    return surface;
+}
+
+static void os_tray_show_callback(void* userdata, SDL_TrayEntry* entry)
+{
+    (void)entry;
+    (void)userdata;
+
+    /* Set flag to show console; don't call os_console_show directly
+     * since we're in a tray event callback and destroying the tray
+     * during event handling can cause issues.
+     */
+    should_show_console = true;
+}
+
+static void os_tray_hide_callback(void* userdata, SDL_TrayEntry* entry)
+{
+    (void)entry;
+    (void)userdata;
+
+    /* Set flag to hide console; don't call os_console_hide directly
+     * since we're in a tray event callback and destroying the tray
+     * during event handling can cause issues.
+     */
+    should_show_console = false;
+}
+
+static void os_tray_quit_callback(void* userdata, SDL_TrayEntry* entry)
+{
+    (void)entry;
+    (void)userdata;
+
+    SDL_Event e;
+    e.type = SDL_EVENT_QUIT;
+    SDL_PushEvent(&e);
+}
+
+static void os_tray_create_internal(void)
+{
+    SDL_TrayMenu* menu;
+    SDL_TrayEntry* entry;
+
+    if (NULL == tray_window)
+    {
+        return;
+    }
+
+    if (false == tray_enabled)
+    {
+        return;
+    }
+
+    if (NULL != tray)
+    {
+        return;
+    }
+
+    /* Load the icon surface from embedded data. */
+    if (NULL == tray_icon_surface)
+    {
+        tray_icon_surface = os_load_icon_surface();
+    }
+
+    /* Create tray with the icon surface (or NULL if icon loading fails). */
+    tray = SDL_CreateTray(tray_icon_surface, "CANopenTerm");
+
+    if (NULL != tray)
+    {
+        menu = SDL_CreateTrayMenu(tray);
+
+        if (NULL != menu)
+        {
+            entry = SDL_InsertTrayEntryAt(menu, -1, "Show", SDL_TRAYENTRY_BUTTON);
+            if (NULL != entry)
+            {
+                SDL_SetTrayEntryCallback(entry, os_tray_show_callback, NULL);
+            }
+
+            entry = SDL_InsertTrayEntryAt(menu, -1, "Hide", SDL_TRAYENTRY_BUTTON);
+            if (NULL != entry)
+            {
+                SDL_SetTrayEntryCallback(entry, os_tray_hide_callback, NULL);
+            }
+
+            entry = SDL_InsertTrayEntryAt(menu, -1, "Quit", SDL_TRAYENTRY_BUTTON);
+            if (NULL != entry)
+            {
+                SDL_SetTrayEntryCallback(entry, os_tray_quit_callback, NULL);
+            }
+        }
+    }
+}
+
+static void os_tray_destroy_internal(void)
+{
+    if (NULL != tray)
+    {
+        SDL_DestroyTray(tray);
+        tray = NULL;
+    }
+
+    if (NULL != tray_icon_surface)
+    {
+        SDL_DestroySurface(tray_icon_surface);
+        tray_icon_surface = NULL;
+    }
+
+    if (NULL != icon_bmp_data)
+    {
+        SDL_free(icon_bmp_data);
+        icon_bmp_data = NULL;
+    }
+}
+
+void os_set_tray_window(os_window* window)
+{
+    tray_window = window;
+}
+
+void os_disable_tray(void)
+{
+    tray_enabled = false;
+}
+
 void os_console_hide()
 {
-    /* Not yet implemented. */
+    if (true == tray_enabled)
+    {
+        os_tray_create_internal();
+    }
 }
 
 void os_console_show()
 {
-    /* Not yet implemented. */
+    /* On Linux, console is typically always shown. */
+}
+
+void os_update_tray_state(void)
+{
+    if (should_show_console)
+    {
+        should_show_console = false;
+        os_console_show();
+    }
 }
 
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data)
@@ -158,6 +438,8 @@ status_t os_init(void)
             status = OS_INIT_ERROR;
         }
     }
+
+    SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_IDENTIFIER_STRING, "de.canopenterm.CANopenTerm");
 
     return status;
 }
@@ -470,8 +752,7 @@ os_memory_hooks os_get_allocator_hooks(void)
 {
     os_memory_hooks hooks = {
         .malloc_fn = SDL_malloc,
-        .free_fn = SDL_free
-    };
+        .free_fn = SDL_free};
     return hooks;
 }
 
@@ -490,4 +771,3 @@ void os_destroy_window(os_window* window)
         SDL_DestroyWindow(window);
     }
 }
-

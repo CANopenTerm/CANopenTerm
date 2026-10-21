@@ -506,6 +506,9 @@ bool os_console_raw_enter(void);
 void os_console_raw_leave(void);
 int os_console_getch(void); /* Non-blocking, returns -1 if no key is available */
 void os_console_show(void);
+void os_update_tray_state(void);
+void os_set_tray_window(os_window* window);
+void os_disable_tray(void);
 os_thread* os_create_thread(os_thread_func fn, const char* name, void* data);
 void os_delay(uint32 delay_in_ms);
 void os_detach_thread(os_thread* thread);

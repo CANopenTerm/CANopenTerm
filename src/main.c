@@ -251,7 +251,14 @@ int main(int argc, char* argv[])
 
     if (true == is_headless)
     {
-        /* No window in server mode. */
+        /* In headless mode, initialize window first for display, then hide the console.
+         * The tray will be created when console is hidden.
+         */
+        if (! window_init(core))
+        {
+            os_log(LOG_ERROR, "Failed to initialize window");
+            return EXIT_FAILURE;
+        }
         os_console_hide();
     }
     else if (! window_init(core))
@@ -298,6 +305,14 @@ int main(int argc, char* argv[])
         if (true == is_headless)
         {
             char command[COMMAND_BUFFER_SIZE] = {0};
+
+            if (CORE_QUIT == window_update(false))
+            {
+                core->is_running = false;
+                break;
+            }
+
+            os_update_tray_state();
 
             if (true == server_is_quit_requested())
             {
