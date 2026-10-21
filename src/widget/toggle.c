@@ -16,22 +16,22 @@
 #define MAX_TOGGLE_WIDGETS 32
 
 /* Global toggle widget registry */
-static toggle_widget_t g_toggle_widgets[MAX_TOGGLE_WIDGETS] = {0};
-static bool g_toggle_initialized[MAX_TOGGLE_WIDGETS] = {false};
+static toggle_widget_t toggle_widgets[MAX_TOGGLE_WIDGETS] = {0};
+static bool toggle_initialized[MAX_TOGGLE_WIDGETS] = {false};
 
 uint32 widget_toggle_register(uint32 pos_x, uint32 pos_y, uint32 size, bool initial_state)
 {
     for (uint32 i = 0; i < MAX_TOGGLE_WIDGETS; i++)
     {
-        if (! g_toggle_initialized[i])
+        if (! toggle_initialized[i])
         {
-            g_toggle_widgets[i].pos_x = pos_x;
-            g_toggle_widgets[i].pos_y = pos_y;
-            g_toggle_widgets[i].size = size;
-            g_toggle_widgets[i].state = initial_state;
-            g_toggle_widgets[i].is_hovered = false;
-            g_toggle_widgets[i].callback = NULL;
-            g_toggle_initialized[i] = true;
+            toggle_widgets[i].pos_x = pos_x;
+            toggle_widgets[i].pos_y = pos_y;
+            toggle_widgets[i].size = size;
+            toggle_widgets[i].state = initial_state;
+            toggle_widgets[i].is_hovered = false;
+            toggle_widgets[i].callback = NULL;
+            toggle_initialized[i] = true;
             return i;
         }
     }
@@ -42,8 +42,8 @@ void widget_toggle_unregister(uint32 toggle_id)
 {
     if (toggle_id < MAX_TOGGLE_WIDGETS)
     {
-        g_toggle_initialized[toggle_id] = false;
-        g_toggle_widgets[toggle_id].callback = NULL;
+        toggle_initialized[toggle_id] = false;
+        toggle_widgets[toggle_id].callback = NULL;
     }
 }
 
@@ -142,37 +142,37 @@ void widget_toggle(uint32 pos_x, uint32 pos_y, uint32 size, bool state)
 
 void widget_toggle_set_callback(uint32 toggle_id, toggle_callback_t callback)
 {
-    if (toggle_id < MAX_TOGGLE_WIDGETS && g_toggle_initialized[toggle_id])
+    if (toggle_id < MAX_TOGGLE_WIDGETS && toggle_initialized[toggle_id])
     {
-        g_toggle_widgets[toggle_id].callback = callback;
+        toggle_widgets[toggle_id].callback = callback;
     }
 }
 
 bool widget_toggle_get_state(uint32 toggle_id)
 {
-    if (toggle_id < MAX_TOGGLE_WIDGETS && g_toggle_initialized[toggle_id])
+    if (toggle_id < MAX_TOGGLE_WIDGETS && toggle_initialized[toggle_id])
     {
-        return g_toggle_widgets[toggle_id].state;
+        return toggle_widgets[toggle_id].state;
     }
     return false;
 }
 
 void widget_toggle_set_state(uint32 toggle_id, bool state)
 {
-    if (toggle_id < MAX_TOGGLE_WIDGETS && g_toggle_initialized[toggle_id])
+    if (toggle_id < MAX_TOGGLE_WIDGETS && toggle_initialized[toggle_id])
     {
-        g_toggle_widgets[toggle_id].state = state;
+        toggle_widgets[toggle_id].state = state;
     }
 }
 
 static bool widget_toggle_point_inside(uint32 toggle_id, uint32 mouse_x, uint32 mouse_y)
 {
-    if (toggle_id >= MAX_TOGGLE_WIDGETS || ! g_toggle_initialized[toggle_id])
+    if (toggle_id >= MAX_TOGGLE_WIDGETS || ! toggle_initialized[toggle_id])
     {
         return false;
     }
 
-    toggle_widget_t* toggle = &g_toggle_widgets[toggle_id];
+    toggle_widget_t* toggle = &toggle_widgets[toggle_id];
     uint32 toggle_height = (toggle->size * 3) / 5;
     uint32 toggle_width = toggle->size * 2;
     uint32 toggle_top = toggle->pos_y + (toggle->size / 2) - (toggle_height / 2);
@@ -188,15 +188,15 @@ bool widget_toggle_check_click(uint32 mouse_x, uint32 mouse_y)
     /* Check all registered toggles in reverse order (last drawn should be checked first) */
     for (int i = MAX_TOGGLE_WIDGETS - 1; i >= 0; i--)
     {
-        if (g_toggle_initialized[i] && widget_toggle_point_inside(i, mouse_x, mouse_y))
+        if (toggle_initialized[i] && widget_toggle_point_inside(i, mouse_x, mouse_y))
         {
             /* Toggle the state */
-            g_toggle_widgets[i].state = ! g_toggle_widgets[i].state;
+            toggle_widgets[i].state = ! toggle_widgets[i].state;
 
             /* Call callback if registered */
-            if (g_toggle_widgets[i].callback)
+            if (toggle_widgets[i].callback)
             {
-                g_toggle_widgets[i].callback(i, g_toggle_widgets[i].state);
+                toggle_widgets[i].callback(i, toggle_widgets[i].state);
             }
 
             return true;
@@ -212,9 +212,9 @@ void widget_toggle_update(void)
 
 void widget_toggle_set_position(uint32 toggle_id, uint32 pos_x, uint32 pos_y)
 {
-    if (toggle_id < MAX_TOGGLE_WIDGETS && g_toggle_initialized[toggle_id])
+    if (toggle_id < MAX_TOGGLE_WIDGETS && toggle_initialized[toggle_id])
     {
-        g_toggle_widgets[toggle_id].pos_x = pos_x;
-        g_toggle_widgets[toggle_id].pos_y = pos_y;
+        toggle_widgets[toggle_id].pos_x = pos_x;
+        toggle_widgets[toggle_id].pos_y = pos_y;
     }
 }
