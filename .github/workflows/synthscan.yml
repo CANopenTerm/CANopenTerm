@@ -1,0 +1,22 @@
+
+name: AI code pattern scan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  synthscan:
+    name: AI pattern scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: marcoramilli/SynthScan@v2
+        with:
+          scan_path: "."
+          create_issue: "false"
