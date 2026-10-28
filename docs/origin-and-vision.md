@@ -104,3 +104,5 @@ Collaboration from the community helps guide future features, improve
 functionality, and extend the ecosystem for all users.
 
 – *Michael Fitzmayer, Developer of CANopenTerm*
+
+[![Made by Human](https://madebyhuman.iamjarl.com/badges/made-white.svg)](https://madebyhuman.iamjarl.com)
